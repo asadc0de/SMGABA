@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "@tanstack/react-router";
 import {
   ChevronDown,
   Menu,
@@ -20,6 +21,7 @@ import {
   CalendarCheck,
   ArrowRight,
   Sparkles,
+  MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -33,12 +35,11 @@ type NavSubItem = {
 type NavItem = {
   label: string;
   href: string;
-  active?: boolean;
   children?: NavSubItem[];
 };
 
 const NAV: NavItem[] = [
-  { label: "HOME", href: "/", active: true },
+  { label: "HOME", href: "/" },
   { label: "ABOUT US", href: "/about-us" },
   {
     label: "SOLUTIONS",
@@ -46,26 +47,26 @@ const NAV: NavItem[] = [
     children: [
       {
         label: "Outsourced Bookkeeping",
-        href: "/solutions#outsourced-bookkeeping",
+        href: "/solutions/bookkeeping",
         desc: "Dedicated bookkeeping, monthly closings & real-time ledgers.",
         icon: Calculator,
       },
       {
-        label: "CFO on the Go",
-        href: "/solutions#cfo-on-the-go",
+        label: "CFO Advisory Services",
+        href: "/solutions/cfo-advisory-services",
         desc: "Executive financial leadership & cash-flow forecasting.",
         icon: Compass,
       },
       {
         label: "Tax Services",
-        href: "/solutions#tax-services",
+        href: "/solutions/tax",
         desc: "Multi-state tax planning, compliance & year-end filings.",
         icon: FileText,
       },
       {
-        label: "Back Office Management",
-        href: "/solutions#back-office",
-        desc: "Payroll processing, vendor AP/AR & POS integration.",
+        label: "Wealth Management",
+        href: "/solutions/wealth-management",
+        desc: "Retirement planning, asset protection & legacy strategy.",
         icon: Layers,
       },
     ],
@@ -129,29 +130,107 @@ const NAV: NavItem[] = [
   { label: "TESTIMONIALS", href: "/testimonials" },
   {
     label: "NEWSLETTERS",
-    href: "/resources",
+    href: "/blog",
     children: [
       {
-        label: "Insights & Resources",
-        href: "/resources",
-        desc: "Articles, tax changes & hospitality tips.",
+        label: "BLOG",
+        href: "/blog",
+        desc: "Latest accounting insights, tax updates & strategies.",
         icon: FileText,
       },
       {
-        label: "Subscribe to Newsletter",
-        href: "/resources#newsletter",
-        desc: "Get industry updates delivered to your inbox.",
+        label: "RESOURCES",
+        href: "/resources",
+        desc: "Helpful business tools, guides, and newsletters.",
         icon: Sparkles,
       },
     ],
   },
-  { label: "CONTACT", href: "/contact" },
+  {
+    label: "CONTACT",
+    href: "/contact",
+    children: [
+      {
+        label: "Islandia, NY",
+        href: "/islandia-location",
+        desc: "Corporate Headquarters (Long Island)",
+        icon: Building2,
+      },
+      {
+        label: "New York, NY",
+        href: "/new-york-city-location",
+        desc: "Manhattan Regional Office",
+        icon: Building2,
+      },
+      {
+        label: "St. Petersburg, FL",
+        href: "/florida-location",
+        desc: "Tampa Bay Regional Office",
+        icon: MapPin,
+      },
+    ],
+  },
 ];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+
+  const location = useLocation();
+  const rawPath = location?.pathname || (typeof window !== "undefined" ? window.location.pathname : "/");
+  const pathname = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
+
+  const isChildActive = (childHref: string) => {
+    const cleanHref = childHref.split("#")[0].replace(/\/$/, "") || "/";
+    if (cleanHref === "/") return pathname === "/";
+    return pathname === cleanHref || pathname.startsWith(cleanHref + "/");
+  };
+
+  const isItemActive = (item: NavItem) => {
+    const cleanHref = item.href.split("#")[0].replace(/\/$/, "") || "/";
+    if (item.label === "HOME") {
+      return pathname === "/";
+    }
+    if (item.label === "INDUSTRIES") {
+      const industryPaths = [
+        "/industries",
+        "/hospitality",
+        "/real-estate",
+        "/automotive",
+        "/healthcare",
+        "/legal-professionals",
+        "/construction",
+        "/manufacturers",
+        "/retail",
+      ];
+      return industryPaths.includes(pathname);
+    }
+    if (item.label === "SOLUTIONS") {
+      return pathname === "/solutions" || pathname.startsWith("/solutions/");
+    }
+    if (item.label === "NEWSLETTERS") {
+      return pathname === "/resources" || pathname === "/blog" || pathname.startsWith("/blog/");
+    }
+    if (item.label === "CONTACT") {
+      const contactPaths = [
+        "/contact",
+        "/islandia-location",
+        "/new-york-city-location",
+        "/florida-location",
+        "/tierra-verde-fl",
+        "/bookanappointment",
+      ];
+      return contactPaths.includes(pathname);
+    }
+    if (cleanHref !== "/" && (pathname === cleanHref || pathname.startsWith(cleanHref + "/"))) {
+      return true;
+    }
+    if (item.children) {
+      return item.children.some((child) => isChildActive(child.href));
+    }
+    return false;
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -168,380 +247,318 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-4 md:px-8 md:pt-5 transition-all duration-300">
-      {/* Floating Pill Capsule Bar matching the reference UI */}
+    <header className="fixed inset-x-0 top-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 transition-all duration-300 pointer-events-none">
       <div
         className={cn(
-          "mx-auto flex max-w-7xl items-center justify-between gap-2 rounded-full border border-white/20 px-3.5 py-2 transition-all duration-300 sm:px-5 sm:py-2.5",
+          "mx-auto w-full max-w-[1260px] transition-all duration-300 pointer-events-auto rounded-full",
+          "border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.37)] backdrop-blur-xl",
           scrolled
-            ? "bg-[#0b172e]/90 shadow-[0_12px_35px_rgba(0,0,0,0.5)] backdrop-blur-xl border-white/25"
-            : "bg-[#142343]/60 shadow-[0_8px_30px_rgba(0,0,0,0.25)] backdrop-blur-md"
+            ? "bg-[#0b172e]/90 shadow-[0_12px_40px_rgba(0,0,0,0.6)] border-white/20"
+            : "bg-[#0b172e]/75 hover:bg-[#0b172e]/85"
         )}
       >
-        {/* User's Exact SVG Logo */}
-        <a
-          href="/"
-          className="group flex shrink-0 items-center focus:outline-none"
-          aria-label="SMG Accounting, Bookkeeping & Advisory"
-        >
-          <svg
-            version="1.1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlnsXlink="http://www.w3.org/1999/xlink"
-            viewBox="0 0 287.3 153.7"
-            className="h-9 sm:h-10 md:h-11 w-auto transition-transform duration-300 group-hover:scale-105"
-            style={{ enableBackground: "new 0 0 287.3 153.7" }}
-            xmlSpace="preserve"
-          >
-            <style type="text/css">{`
-              .st0{fill:#6982B1;}
-              .st1{fill:#FFFFFF;}
-              .st2{fill:#C3CDE0;}
-            `}</style>
-            <g id="Layer_4"></g>
-            <g id="logo">
-              <g>
-                <defs>
-                  <path
-                    id="SVGID_1_header"
-                    d="M21.8,75.9c0,33.2,26.9,60.1,60.1,60.1S142,109.1,142,75.9c0-33.2-26.9-60.1-60.1-60.1 S21.8,42.7,21.8,75.9"
-                  ></path>
-                </defs>
-                <linearGradient
-                  id="SVGID_00000151534562640292646780000007270768716216825756_header"
-                  gradientUnits="userSpaceOnUse"
-                  x1="142.0411"
-                  y1="75.8814"
-                  x2="21.7651"
-                  y2="75.8814"
-                >
-                  <stop offset="0" style={{ stopColor: "#375896" }}></stop>
-                  <stop offset="0.1086" style={{ stopColor: "#3D61A3" }}></stop>
-                  <stop offset="0.359" style={{ stopColor: "#375896" }}></stop>
-                  <stop offset="0.73" style={{ stopColor: "#2A457A" }}></stop>
-                  <stop offset="0.9307" style={{ stopColor: "#14356D" }}></stop>
-                </linearGradient>
-                <use
-                  xlinkHref="#SVGID_1_header"
-                  style={{
-                    overflow: "visible",
-                    fill: "url(#SVGID_00000151534562640292646780000007270768716216825756_header)",
-                  }}
-                ></use>
-              </g>
-              <path
-                className="st0"
-                d="M81.9,11.1c-35.7,0-64.8,29.1-64.8,64.8c0,35.7,29.1,64.8,64.8,64.8c35.7,0,64.8-29.1,64.8-64.8 C146.7,40.1,117.6,11.1,81.9,11.1z M81.9,138.4c-34.5,0-62.5-28-62.5-62.5c0-34.5,28-62.5,62.5-62.5c34.5,0,62.5,28,62.5,62.5 C144.4,110.3,116.4,138.4,81.9,138.4z"
-              ></path>
-              <g>
-                <path
-                  className="st1"
-                  d="M30.3,83.9c1.2,1.3,3.5,3,6.9,3c3,0,5.1-1.7,5.1-4.4c0-7-12.2-5.3-12.2-13.5c0-4.6,3.8-7,7.9-7 c3.6,0,6.3,2,7,2.8l-1.8,2.5c-1.2-1.2-3.1-2.2-5.2-2.2c-2.3,0-4.4,1.2-4.4,3.7c0,5.8,12.3,4.2,12.3,13.7c0,3.8-3.3,7.5-9,7.5 c-3.7,0-7.3-2.1-8.5-3.6L30.3,83.9z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M89,89.3l-1.7-15.9c0-0.3,0-1.1,0-1.3c-0.1,0.2-0.4,0.8-0.6,1.2l-9.3,17.1l-9.4-17c-0.2-0.5-0.5-0.9-0.6-1.3 c0.1,0.4,0.1,0.9,0,1.4l-1.6,15.9h-3.6l3.2-27.5l11.6,20.7c0.1,0.1,0.4,0.8,0.5,1.1c0.1-0.3,0.4-1,0.5-1.1l11.5-20.7l3.2,27.5H89z"
-                ></path>
-                <path
-                  className="st2"
-                  d="M125.1,79.2v-3.1h10.7C135.7,85.8,129.5,90,123,90c-7.9,0-14.3-6.2-14.3-13.8c0-7.8,6.1-14,14.3-14 c6.3,0,9.9,3.5,10.1,3.7l-1.8,2.5c-0.2-0.2-3.4-3.1-8.4-3.1c-6.6,0-10.6,4.8-10.6,11c0,5.5,4.5,10.7,10.9,10.7 c4.6,0,8.5-2.9,8.9-7.7H125.1z"
-                ></path>
-                <rect x="53.2" y="53.9" className="st1" width="1.6" height="42.9"></rect>
-                <rect x="99.8" y="53.9" className="st1" width="1.6" height="42.9"></rect>
-              </g>
-            </g>
-            <g id="text">
-              <g>
-                <path
-                  className="st1"
-                  d="M164.7,63l-1-2.2h-5.2l-1,2.2h-2.1l5.7-11.6l5.7,11.6H164.7z M161.3,55.6c-0.1-0.1-0.2-0.4-0.2-0.5 c0,0.1-0.1,0.4-0.2,0.5l-1.6,3.5h3.6L161.3,55.6z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M177.2,61.7c-1,1-2.3,1.5-3.9,1.5c-3.6,0-6.2-2.6-6.2-5.8c0-3.1,2.4-5.8,6-5.8c2.3,0,3.7,1.1,4.1,1.6l-1,1.3 c-0.8-0.8-1.9-1.2-3.1-1.2c-2.5,0-4,1.9-4,4c0,2.3,1.7,4.2,4.3,4.2c1.4,0,2.5-0.6,3-1L177.2,61.7z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M188.1,61.7c-1,1-2.3,1.5-3.9,1.5c-3.6,0-6.2-2.6-6.2-5.8c0-3.1,2.4-5.8,6-5.8c2.3,0,3.7,1.1,4.1,1.6l-1,1.3 c-0.8-0.8-1.9-1.2-3.1-1.2c-2.5,0-4,1.9-4,4c0,2.3,1.7,4.2,4.3,4.2c1.4,0,2.5-0.6,3-1L188.1,61.7z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M195.1,63.2c-3.4,0-6.1-2.6-6.1-5.8c0-3.2,2.7-5.8,6.1-5.8c3.4,0,6,2.5,6,5.9 C201.1,60.6,198.4,63.2,195.1,63.2 M195.1,53.3c-2.2,0-4.1,1.8-4.1,4.1c0,2.2,1.8,4.2,4,4.2c2.3,0,4.1-1.8,4.1-4.1 C199.1,55,197.3,53.3,195.1,53.3"
-                ></path>
-                <path
-                  className="st1"
-                  d="M210.3,51.8h1.9v9.8c-0.8,0.9-2.3,1.6-4.5,1.6c-2.9,0-4.5-1.4-4.5-4.3v-7h1.9v6c0,2.8,0.7,3.7,2.9,3.7 c0.9,0,1.7-0.2,2.3-0.6V51.8z"
-                ></path>
-                <polygon
-                  className="st1"
-                  points="216.7,55.9 216.7,63 214.8,63 214.8,51.5 223.1,59.1 223.1,51.8 225,51.8 224.9,63.4"
-                ></polygon>
-                <polygon
-                  className="st1"
-                  points="230,63 230,53.5 226.7,53.5 226.7,51.8 235.1,51.8 235.1,53.5 231.8,53.5 231.8,63"
-                ></polygon>
-                <path
-                  className="st1"
-                  d="M243.8,63l-1-2.2h-5.2l-1,2.2h-2.1l5.7-11.6l5.7,11.6H243.8z M240.4,55.6c-0.1-0.1-0.2-0.4-0.2-0.5 c0,0.1-0.1,0.4-0.2,0.5l-1.6,3.5h3.6L240.4,55.6z"
-                ></path>
-                <polygon
-                  className="st1"
-                  points="249,55.9 249.1,63 247.2,63 247.2,51.5 255.5,59.1 255.4,51.8 257.3,51.8 257.3,63.4"
-                ></polygon>
-                <polygon
-                  className="st1"
-                  points="262.3,63 262.3,53.5 259,53.5 259,51.8 267.5,51.8 267.5,53.5 264.2,53.5 264.2,63"
-                ></polygon>
-                <path
-                  className="st1"
-                  d="M269.3,60.3c0.5,0.5,1.6,1.2,2.9,1.2c1.2,0,1.9-0.6,1.9-1.5c0-1.3-1-1.6-2.1-2.2c-1.4-0.7-2.8-1.5-2.8-3.2 c0-1.9,1.8-3,3.6-3c1.7,0,2.8,1,3,1.2l-0.9,1.4c-0.6-0.6-1.3-1-2.1-1c-0.8,0-1.6,0.4-1.6,1.2c0,2.1,5,1.6,5,5.5 c0,1.7-1.5,3.2-4,3.2c-1.6,0-3.1-0.9-3.7-1.6L269.3,60.3z"
-                ></path>
-                <polygon
-                  className="st1"
-                  points="277,64.6 278.2,61.2 280.1,61.2 278.2,64.6"
-                ></polygon>
-                <path
-                  className="st1"
-                  d="M156.9,80.9V69.8h2.6c2.2,0,4.1,0.7,4.1,2.7c0,1.4-1,2.1-1.6,2.4c1.1,0.3,2.6,1.1,2.6,2.9 c0,1.8-1.5,3.1-4.5,3.1H156.9z M159.7,74.2c1.2,0,2-0.4,2-1.4c0-0.9-0.7-1.4-1.8-1.4h-1.1v2.7H159.7z M160.4,79.2 c1.5,0,2.1-0.7,2.1-1.6c0-1-0.8-1.7-2.2-1.7h-1.6v3.3H160.4z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M172,81.2c-3.4,0-6.1-2.6-6.1-5.8c0-3.2,2.7-5.8,6.1-5.8c3.4,0,6,2.5,6,5.9C178,78.6,175.3,81.2,172,81.2 M172,71.2c-2.2,0-4.1,1.8-4.1,4.1c0,2.2,1.8,4.2,4,4.2c2.3,0,4.1-1.8,4.1-4.1C176,73,174.2,71.2,172,71.2"
-                ></path>
-                <path
-                  className="st1"
-                  d="M185.6,81.2c-3.4,0-6.1-2.6-6.1-5.8c0-3.2,2.7-5.8,6.1-5.8c3.4,0,6,2.5,6,5.9 C191.6,78.6,188.8,81.2,185.6,81.2 M185.6,71.2c-2.2,0-4.1,1.8-4.1,4.1c0,2.2,1.8,4.2,4,4.2c2.3,0,4.1-1.8,4.1-4.1 C189.6,73,187.8,71.2,185.6,71.2"
-                ></path>
-                <polygon
-                  className="st1"
-                  points="200.5,80.9 195.6,76.4 195.6,80.9 193.7,80.9 193.7,69.8 195.6,69.8 195.6,74.3 199.8,69.8 202.2,69.8 196.9,75.2 203.3,80.9"
-                ></polygon>
-                <polygon
-                  className="st1"
-                  points="211.2,80.9 206.3,76.4 206.3,80.9 204.4,80.9 204.4,69.8 206.3,69.8 206.3,74.3 210.5,69.8 213,69.8 207.6,75.2 214,80.9"
-                ></polygon>
-                <polygon
-                  className="st1"
-                  points="215.2,80.9 215.2,69.8 221.6,69.8 221.6,71.5 217.1,71.5 217.1,74.1 220.7,74.1 220.7,75.9 217.1,75.9 217.1,79.2 222.1,79.2 222.1,80.9"
-                ></polygon>
-                <polygon
-                  className="st1"
-                  points="224.1,80.9 224.1,69.8 230.6,69.8 230.6,71.5 226,71.5 226,74.1 229.7,74.1 229.7,75.9 226,75.9 226,79.2 231.1,79.2 231.1,80.9"
-                ></polygon>
-                <path
-                  className="st1"
-                  d="M233.1,80.9V69.8h2.4c2.6,0,4.7,0.9,4.7,3.6c0,2.2-1.4,3.7-4.4,3.7H235v3.8H233.1z M235.8,75.4 c1.6,0,2.5-0.9,2.5-2.1c0-1.1-0.7-1.8-2.2-1.8H235v3.9H235.8z"
-                ></path>
-                <polygon
-                  className="st1"
-                  points="242.2,80.9 242.2,69.8 248.6,69.8 248.6,71.5 244.1,71.5 244.1,74.1 247.7,74.1 247.7,75.9 244.1,75.9 244.1,79.2 249.1,79.2 249.1,80.9"
-                ></polygon>
-                <path
-                  className="st1"
-                  d="M257.1,80.9l-3.8-4.1H253v4.1h-1.9V69.8h2.4c2.1,0,4.7,0.5,4.7,3.4c0,1.5-1.2,3-2.9,3.3l4.4,4.4H257.1z M253.8,75.2c1.7,0,2.5-0.9,2.5-1.8c0-1.2-0.7-1.8-2.4-1.8H253v3.7H253.8z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M260.8,78.2c0.5,0.5,1.6,1.2,2.9,1.2c1.2,0,1.9-0.6,1.9-1.5c0-1.3-1-1.6-2.1-2.2c-1.4-0.7-2.8-1.5-2.8-3.2 c0-1.9,1.8-3,3.6-3c1.7,0,2.8,1,3,1.2l-0.9,1.4c-0.6-0.6-1.3-1-2.1-1c-0.8,0-1.6,0.4-1.6,1.2c0,2.1,5,1.6,5,5.5 c0,1.7-1.5,3.2-4,3.2c-1.6,0-3.1-0.9-3.7-1.6L260.8,78.2z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M164.9,98.9l-1.4-1.6c-0.4,0.7-1.5,1.8-3.4,1.8c-2.3,0-4-1.8-4-4c0-1.8,1.2-3.1,2.4-3.6 c-0.4-0.5-0.6-0.9-0.6-1.6c0-1.3,0.9-2.3,2.4-2.3c1.3,0,2,0.8,2.3,1.1l-1,1c-0.3-0.2-0.8-0.7-1.3-0.7c-0.4,0-0.9,0.3-0.9,0.9 c0,0.5,0.3,0.8,0.6,1.2h4l-0.3,1.4h-2.4l5.7,6.4H164.9z M159.5,92.6c-0.4,0.1-1.8,0.8-1.8,2.4c0,1.6,1.3,2.6,2.6,2.6 c1.3,0,2.1-1,2.3-1.5L159.5,92.6z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M179.8,98.9l-1-2.2h-5.2l-1,2.2h-2.1l5.7-11.6l5.7,11.6H179.8z M176.4,91.5c-0.1-0.1-0.2-0.4-0.2-0.5 c0,0.1-0.1,0.4-0.2,0.5l-1.6,3.5h3.6L176.4,91.5z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M183.2,98.9V87.7h3.2c3.3,0,6,1.9,6,5.6c0,3.5-2.5,5.6-6.3,5.6H183.2z M186.4,97.2c2.2,0,4.1-1.1,4.1-3.9 c0-2.3-1.6-3.8-3.8-3.8h-1.5v7.7H186.4z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M192.8,87.7h2.1l3.3,7.5c0.1,0.1,0.1,0.3,0.1,0.5c0-0.2,0-0.4,0.1-0.5l3.2-7.5h2.1l-5.4,11.7L192.8,87.7z"
-                ></path>
-                <rect x="205" y="87.7" className="st1" width="1.9" height="11.1"></rect>
-                <path
-                  className="st1"
-                  d="M209.8,96.2c0.5,0.5,1.6,1.2,2.9,1.2c1.2,0,1.9-0.6,1.9-1.5c0-1.3-1-1.6-2.1-2.2c-1.4-0.7-2.8-1.5-2.8-3.2 c0-1.9,1.8-3,3.6-3c1.7,0,2.8,1,3,1.2l-0.9,1.4c-0.6-0.6-1.3-1-2.1-1s-1.6,0.4-1.6,1.2c0,2.1,5,1.6,5,5.5c0,1.7-1.5,3.2-4,3.2 c-1.6,0-3.1-0.9-3.7-1.6L209.8,96.2z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M224,99.1c-3.4,0-6.1-2.6-6.1-5.8c0-3.2,2.7-5.8,6.1-5.8c3.4,0,6,2.5,6,5.9C230,96.5,227.3,99.1,224,99.1 M224,89.2c-2.2,0-4.1,1.8-4.1,4.1c0,2.2,1.8,4.2,4,4.2c2.3,0,4.1-1.8,4.1-4.1C228,91,226.2,89.2,224,89.2"
-                ></path>
-                <path
-                  className="st1"
-                  d="M238.1,98.9l-3.8-4.1H234v4.1h-1.9V87.7h2.4c2.1,0,4.7,0.5,4.7,3.4c0,1.5-1.2,3-2.9,3.3l4.4,4.4H238.1z M234.8,93.1c1.7,0,2.5-0.9,2.5-1.8c0-1.2-0.7-1.8-2.4-1.8H234v3.7H234.8z"
-                ></path>
-                <path
-                  className="st1"
-                  d="M241.7,96.2c0.5,0.5,1.6,1.2,2.9,1.2c1.2,0,1.9-0.6,1.9-1.5c0-1.3-1-1.6-2.1-2.2c-1.4-0.7-2.8-1.5-2.8-3.2 c0-1.9,1.8-3,3.6-3c1.7,0,2.8,1,3,1.2l-0.9,1.4c-0.6-0.6-1.3-1-2.1-1c-0.8,0-1.6,0.4-1.6,1.2c0,2.1,5,1.6,5,5.5 c0,1.7-1.5,3.2-4,3.2c-1.6,0-3.1-0.9-3.7-1.6L241.7,96.2z"
-                ></path>
-              </g>
-            </g>
-          </svg>
-        </a>
-
-        {/* Center Nav Links */}
-        <nav
-          className="hidden items-center gap-1 xl:gap-2 2xl:gap-2.5 lg:flex"
-          aria-label="Main Navigation"
-        >
-          {NAV.map((item) => (
-            <div key={item.label} className="group relative">
-              <a
-                href={item.href}
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.72rem] xl:text-[0.76rem] font-bold tracking-wider uppercase transition-all duration-200",
-                  item.active
-                    ? "text-[#4a9eff] font-extrabold"
-                    : "text-white/80 hover:text-white hover:bg-white/10"
-                )}
+        <div className="px-3.5 sm:px-5 lg:px-6 py-2 sm:py-2.5">
+          <div className="flex items-center justify-between">
+            {/* ── Logo ── */}
+            <a
+              href="/"
+              className="group flex shrink-0 items-center focus:outline-none"
+              aria-label="SMG Accounting, Bookkeeping & Advisory"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 263 129.65"
+                className="h-10 sm:h-11 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-[1.03]"
               >
-                <span>{item.label}</span>
-                {item.children && (
-                  <ChevronDown className="size-3 opacity-70 transition-transform duration-200 group-hover:rotate-180 group-hover:opacity-100" />
-                )}
+                <defs>
+                  <style>{`
+                    .nav-cls-1{fill:url(#nav-smg-grad);}
+                    .nav-cls-2{fill:#6982b1;}
+                    .nav-cls-3{fill:#fff;}
+                    .nav-cls-4{fill:#c3cde0;}
+                    .nav-cls-5{fill:#ffffff;}
+                  `}</style>
+                  <linearGradient
+                    id="nav-smg-grad"
+                    x1="142.04"
+                    y1="75.88"
+                    x2="21.77"
+                    y2="75.88"
+                    gradientUnits="userSpaceOnUse"
+                  >
+                    <stop offset="0" stopColor="#375896" />
+                    <stop offset="0.11" stopColor="#3d61a3" />
+                    <stop offset="0.36" stopColor="#375896" />
+                    <stop offset="0.73" stopColor="#2a457a" />
+                    <stop offset="0.93" stopColor="#14356d" />
+                  </linearGradient>
+                </defs>
+                <g id="logo">
+                  <path className="nav-cls-1" d="M21.77,75.88A60.14,60.14,0,1,0,81.9,15.74,60.13,60.13,0,0,0,21.77,75.88" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-2" d="M81.9,11.06a64.83,64.83,0,1,0,64.83,64.82A64.9,64.9,0,0,0,81.9,11.06Zm0,127.3a62.48,62.48,0,1,1,62.49-62.48A62.55,62.55,0,0,1,81.9,138.36Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-3" d="M30.31,83.91a9.28,9.28,0,0,0,6.89,3c3,0,5.06-1.7,5.06-4.35,0-7-12.2-5.31-12.2-13.48,0-4.56,3.78-7,7.92-7a10.45,10.45,0,0,1,7,2.79l-1.77,2.48A7.61,7.61,0,0,0,38,65.16c-2.3,0-4.42,1.17-4.42,3.68,0,5.77,12.31,4.21,12.31,13.69,0,3.78-3.29,7.46-9,7.46a12.12,12.12,0,0,1-8.45-3.6Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-3" d="M89,89.3l-1.7-15.91c0-.32,0-1.07,0-1.35-.07.21-.39.78-.61,1.2L77.3,90.33l-9.38-17a12.47,12.47,0,0,1-.6-1.27,6.07,6.07,0,0,1,0,1.38L65.73,89.3H62.12l3.19-27.52L76.87,82.51a3.92,3.92,0,0,1,.46,1.13,9.35,9.35,0,0,1,.46-1.13L89.32,61.82,92.54,89.3Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-4" d="M125.07,79.21V76.13h10.71C135.71,85.82,129.49,90,123,90a13.92,13.92,0,1,1,0-27.83,14.54,14.54,0,0,1,10.08,3.68l-1.77,2.51A12.65,12.65,0,0,0,123,65.23c-6.58,0-10.61,4.81-10.61,11A10.79,10.79,0,0,0,123.26,87c4.6,0,8.53-2.9,9-7.74Z" transform="translate(-17.08 -11.06)" />
+                  <rect className="nav-cls-3" x="36.13" y="42.89" width="1.6" height="42.94" />
+                  <rect className="nav-cls-3" x="82.77" y="42.89" width="1.6" height="42.94" />
+                </g>
+                <g id="text">
+                  <path className="nav-cls-5" d="M164.71,63l-1-2.18h-5.16l-1,2.18h-2.1l5.7-11.58L166.81,63Zm-3.39-7.33a1.79,1.79,0,0,1-.19-.53,4.49,4.49,0,0,1-.23.53l-1.58,3.45h3.6Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M177.17,61.72a5.48,5.48,0,0,1-3.92,1.48,5.92,5.92,0,0,1-6.18-5.83,5.79,5.79,0,0,1,6-5.79,5.54,5.54,0,0,1,4.06,1.57l-1,1.31A4.37,4.37,0,0,0,173,53.28a3.88,3.88,0,0,0-4,4,4.13,4.13,0,0,0,4.26,4.19,4.51,4.51,0,0,0,3-1Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M188.14,61.72a5.46,5.46,0,0,1-3.92,1.48,5.91,5.91,0,0,1-6.17-5.83,5.78,5.78,0,0,1,6-5.79,5.54,5.54,0,0,1,4.06,1.57l-1,1.31A4.37,4.37,0,0,0,184,53.28a3.88,3.88,0,0,0-4,4,4.13,4.13,0,0,0,4.26,4.19,4.56,4.56,0,0,0,3-1Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M195.09,63.2a5.82,5.82,0,1,1,0-11.62,5.86,5.86,0,0,1,6,5.86,6,6,0,0,1-6,5.76m0-9.92A4,4,0,0,0,191,57.34a4.17,4.17,0,0,0,4,4.17,4.12,4.12,0,0,0,.1-8.23" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M210.27,51.83h1.88v9.78a6,6,0,0,1-4.51,1.59c-2.85,0-4.49-1.44-4.49-4.34v-7H205v6c0,2.76.66,3.7,2.93,3.7a3.94,3.94,0,0,0,2.3-.65Z" transform="translate(-17.08 -11.06)" />
+                  <polygon className="nav-cls-5" points="199.61 44.85 199.64 51.89 197.75 51.89 197.77 40.46 206.03 48.07 206 40.77 207.88 40.77 207.87 52.3 199.61 44.85" />
+                  <polygon className="nav-cls-5" points="212.89 51.89 212.89 42.49 209.61 42.49 209.61 40.78 218.03 40.78 218.03 42.49 214.77 42.49 214.77 51.89 212.89 51.89" />
+                  <path className="nav-cls-5" d="M243.79,63l-1-2.18h-5.16l-1,2.18h-2.1l5.7-11.58L245.89,63Zm-3.39-7.33a1.79,1.79,0,0,1-.19-.53,4.31,4.31,0,0,1-.22.53l-1.59,3.45H242Z" transform="translate(-17.08 -11.06)" />
+                  <polygon className="nav-cls-5" points="231.96 44.85 231.99 51.89 230.1 51.89 230.12 40.46 238.38 48.07 238.35 40.77 240.23 40.77 240.22 52.3 231.96 44.85" />
+                  <polygon className="nav-cls-5" points="245.24 51.89 245.24 42.49 241.96 42.49 241.96 40.78 250.38 40.78 250.38 42.49 247.12 42.49 247.12 51.89 245.24 51.89" />
+                  <path className="nav-cls-5" d="M269.32,60.28a4.26,4.26,0,0,0,2.85,1.22c1.18,0,1.86-.58,1.86-1.49,0-1.28-1-1.64-2.15-2.22-1.42-.73-2.84-1.5-2.84-3.23,0-1.94,1.8-3,3.6-3a4.32,4.32,0,0,1,3,1.25l-.91,1.39a3,3,0,0,0-2.09-1c-.81,0-1.65.37-1.65,1.22,0,2.1,5,1.59,5,5.51,0,1.68-1.45,3.22-4,3.22a5.66,5.66,0,0,1-3.72-1.57Z" transform="translate(-17.08 -11.06)" />
+                  <polygon className="nav-cls-5" points="259.93 53.51 261.15 50.1 263 50.1 261.13 53.51 259.93 53.51" />
+                  <path className="nav-cls-5" d="M156.89,80.91V69.78h2.63c2.25,0,4.12.72,4.12,2.69a2.57,2.57,0,0,1-1.65,2.4,3,3,0,0,1,2.56,2.89c0,1.82-1.47,3.15-4.47,3.15Zm2.76-6.68c1.24,0,2-.42,2-1.36s-.75-1.38-1.77-1.38h-1.11v2.74Zm.77,5c1.45,0,2.13-.69,2.13-1.63s-.82-1.72-2.19-1.72h-1.59V79.2Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M172,81.16a5.82,5.82,0,1,1,0-11.63,5.86,5.86,0,0,1,6,5.86,6,6,0,0,1-6,5.77m0-9.92a4,4,0,0,0-4.07,4.05,4.17,4.17,0,0,0,4,4.18,4.12,4.12,0,0,0,.1-8.23" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M185.59,81.16a5.82,5.82,0,1,1,0-11.63,5.85,5.85,0,0,1,6,5.86,6,6,0,0,1-6,5.77m0-9.92a4,4,0,0,0-4.07,4.05,4.17,4.17,0,0,0,4,4.18,4.12,4.12,0,0,0,.11-8.23" transform="translate(-17.08 -11.06)" />
+                  <polygon className="nav-cls-5" points="183.42 69.85 178.53 65.35 178.53 69.85 176.64 69.85 176.64 58.73 178.53 58.73 178.53 63.27 182.73 58.73 185.17 58.73 179.82 64.16 186.18 69.85 183.42 69.85" />
+                  <polygon className="nav-cls-5" points="194.14 69.85 189.25 65.35 189.25 69.85 187.37 69.85 187.37 58.73 189.25 58.73 189.25 63.27 193.45 58.73 195.89 58.73 190.54 64.16 196.91 69.85 194.14 69.85" />
+                  <polygon className="nav-cls-5" points="198.09 69.83 198.09 58.74 204.53 58.74 204.53 60.44 199.97 60.44 199.97 63.09 203.65 63.09 203.65 64.79 199.97 64.79 199.97 68.13 205 68.13 205 69.83 198.09 69.83" />
+                  <polygon className="nav-cls-5" points="207.07 69.83 207.07 58.74 213.51 58.74 213.51 60.44 208.95 60.44 208.95 63.09 212.63 63.09 212.63 64.79 208.95 64.79 208.95 68.13 213.98 68.13 213.98 69.83 207.07 69.83" />
+                  <path className="nav-cls-5" d="M233.12,80.91V69.78h2.43c2.63,0,4.66.87,4.66,3.56,0,2.23-1.4,3.74-4.4,3.74H235v3.83Zm2.65-5.53c1.63,0,2.45-.87,2.45-2.06s-.75-1.82-2.16-1.82H235v3.88Z" transform="translate(-17.08 -11.06)" />
+                  <polygon className="nav-cls-5" points="225.11 69.83 225.11 58.74 231.55 58.74 231.55 60.44 226.99 60.44 226.99 63.09 230.66 63.09 230.66 64.79 226.99 64.79 226.99 68.13 232.02 68.13 232.02 69.83 225.11 69.83" />
+                  <path className="nav-cls-5" d="M257.12,80.91l-3.78-4.12h-.29v4.12h-1.88V69.78h2.35c2,0,4.71.53,4.71,3.44a3.46,3.46,0,0,1-2.91,3.29l4.4,4.4Zm-3.34-5.75c1.66,0,2.48-.85,2.48-1.84,0-1.19-.74-1.82-2.35-1.82h-.86v3.66Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M260.77,78.23a4.21,4.21,0,0,0,2.85,1.22c1.18,0,1.86-.57,1.86-1.48,0-1.28-1-1.65-2.15-2.22-1.42-.74-2.84-1.5-2.84-3.24,0-1.94,1.8-3,3.6-3a4.36,4.36,0,0,1,3,1.25l-.91,1.4a3,3,0,0,0-2.09-1c-.81,0-1.65.36-1.65,1.22,0,2.1,5,1.58,5,5.51,0,1.67-1.45,3.22-4,3.22a5.66,5.66,0,0,1-3.72-1.58Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M165,98.86l-1.36-1.64A4,4,0,0,1,156.22,95a3.91,3.91,0,0,1,2.39-3.6,2.6,2.6,0,0,1-.6-1.59,2.27,2.27,0,0,1,2.42-2.3,3.16,3.16,0,0,1,2.3,1.07l-1,1a2.24,2.24,0,0,0-1.33-.69.84.84,0,0,0-.89.85,2,2,0,0,0,.65,1.25h4l-.33,1.4h-2.44L167,98.86Zm-5.43-6.3A2.51,2.51,0,0,0,157.74,95a2.57,2.57,0,0,0,2.59,2.6,2.61,2.61,0,0,0,2.29-1.48Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M179.84,98.86l-1-2.17h-5.16l-1,2.17h-2.1l5.7-11.58,5.67,11.58Zm-3.39-7.33a1.79,1.79,0,0,1-.19-.53,4.31,4.31,0,0,1-.22.53L174.45,95h3.6Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M183.25,98.86V87.74h3.22c3.32,0,6,1.92,6,5.57s-2.51,5.55-6.3,5.55Zm3.19-1.7c2.22,0,4.05-1.11,4.05-3.9a3.65,3.65,0,0,0-3.83-3.82h-1.53v7.72Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M192.84,87.74h2.1l3.32,7.46a1.43,1.43,0,0,1,.09.52,2.49,2.49,0,0,1,.09-.52l3.17-7.46h2.11l-5.43,11.71Z" transform="translate(-17.08 -11.06)" />
+                  <rect className="nav-cls-5" x="187.93" y="76.68" width="1.88" height="11.12" />
+                  <path className="nav-cls-5" d="M209.75,96.19a4.19,4.19,0,0,0,2.85,1.22c1.18,0,1.85-.58,1.85-1.49,0-1.28-1-1.64-2.14-2.22-1.43-.73-2.84-1.5-2.84-3.23,0-1.94,1.79-3,3.6-3a4.26,4.26,0,0,1,3,1.25l-.91,1.39a3,3,0,0,0-2.08-1c-.81,0-1.65.37-1.65,1.22,0,2.1,5,1.59,5,5.51,0,1.68-1.45,3.22-4,3.22a5.64,5.64,0,0,1-3.72-1.57Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M224,99.11a5.82,5.82,0,1,1,0-11.62,5.86,5.86,0,0,1,6,5.86,6,6,0,0,1-6,5.76m0-9.92a4,4,0,0,0-4.07,4.06,4.18,4.18,0,0,0,4,4.17,4.12,4.12,0,0,0,.1-8.23" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M238.09,98.86l-3.77-4.11H234v4.11h-1.88V87.74h2.35c2.06,0,4.72.53,4.72,3.44a3.47,3.47,0,0,1-2.91,3.29l4.39,4.39Zm-3.33-5.74c1.66,0,2.48-.86,2.48-1.84,0-1.19-.75-1.82-2.35-1.82H234v3.66Z" transform="translate(-17.08 -11.06)" />
+                  <path className="nav-cls-5" d="M241.75,96.19a4.19,4.19,0,0,0,2.85,1.22c1.17,0,1.85-.58,1.85-1.49,0-1.28-1-1.64-2.14-2.22-1.43-.73-2.84-1.5-2.84-3.23,0-1.94,1.79-3,3.6-3a4.26,4.26,0,0,1,3,1.25l-.91,1.39a3,3,0,0,0-2.09-1c-.8,0-1.64.37-1.64,1.22,0,2.1,5,1.59,5,5.51,0,1.68-1.46,3.22-4,3.22a5.61,5.61,0,0,1-3.72-1.57Z" transform="translate(-17.08 -11.06)" />
+                </g>
+              </svg>
+            </a>
+
+            {/* ── Desktop Nav Links ── */}
+            <nav
+              className="hidden items-center lg:flex"
+              aria-label="Main Navigation"
+            >
+              <div className="flex items-center gap-0.5 xl:gap-1.5">
+                {NAV.map((item) => {
+                  const active = isItemActive(item);
+                  return (
+                    <div key={item.label} className="group relative">
+                      <a
+                        href={item.href}
+                        className={cn(
+                          "relative inline-flex items-center gap-1 px-2 xl:px-2.5 py-1.5 text-[0.72rem] xl:text-[0.8rem] font-bold tracking-[0.05em] uppercase whitespace-nowrap transition-all duration-200 rounded-md",
+                          active
+                            ? "text-[#38bdf8]"
+                            : "text-white/80 hover:text-white hover:bg-white/5"
+                        )}
+                      >
+                        <span className="relative">
+                          {item.label}
+                        </span>
+                        {item.children && (
+                          <ChevronDown className="size-3 shrink-0 opacity-70 transition-transform duration-200 group-hover:rotate-180 group-hover:opacity-100" />
+                        )}
+                      </a>
+
+                      {item.children && (
+                        <div className="invisible absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 w-72">
+                          <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-1.5 shadow-2xl backdrop-blur-2xl">
+                            <ul className="space-y-0.5">
+                              {item.children.map((child) => {
+                                const Icon = child.icon;
+                                const childActive = isChildActive(child.href);
+                                return (
+                                  <li key={child.label}>
+                                    <a
+                                      href={child.href}
+                                      className={cn(
+                                        "flex items-start gap-2.5 rounded-lg p-2.5 transition-all",
+                                        childActive
+                                          ? "bg-[#38bdf8]/15 text-white"
+                                          : "text-white/85 hover:bg-white/8 hover:text-white"
+                                      )}
+                                    >
+                                      {Icon && (
+                                        <div
+                                          className={cn(
+                                            "mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-md",
+                                            childActive
+                                              ? "bg-[#38bdf8] text-[#0b172e]"
+                                              : "bg-white/10 text-blue-300"
+                                          )}
+                                        >
+                                          <Icon className="size-3.5" />
+                                        </div>
+                                      )}
+                                      <div>
+                                        <div
+                                          className={cn(
+                                            "text-xs font-semibold",
+                                            childActive
+                                              ? "text-[#38bdf8]"
+                                              : "text-white"
+                                          )}
+                                        >
+                                          {child.label}
+                                        </div>
+                                        {child.desc && (
+                                          <p className="mt-0.5 text-[0.68rem] leading-relaxed text-slate-400">
+                                            {child.desc}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </a>
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Schedule CTA */}
+              <a
+                href="/bookanappointment"
+                className="ml-2 xl:ml-3.5 whitespace-nowrap inline-flex items-center gap-1.5 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] px-4 xl:px-5 py-2 text-[0.72rem] xl:text-[0.78rem] font-bold uppercase tracking-wider text-white shadow-[0_0_20px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] shrink-0"
+              >
+                <span>Schedule Now</span>
+                <ChevronDown className="size-3.5 stroke-[2.5]" />
+              </a>
+            </nav>
+
+            {/* ── Mobile Controls ── */}
+            <div className="flex items-center gap-2 lg:hidden">
+              <a
+                href="tel:6314818600"
+                className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+                aria-label="Call SMG"
+              >
+                <Phone className="size-4" />
               </a>
 
-              {/* Dropdown Card */}
-              {item.children && (
-                <div className="invisible absolute left-1/2 -translate-x-1/2 top-full pt-3 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 w-72">
-                  <div className="overflow-hidden rounded-2xl border border-white/15 bg-[#102040]/95 p-2 shadow-2xl backdrop-blur-xl">
-                    <ul className="space-y-1">
-                      {item.children.map((child) => {
-                        const Icon = child.icon;
-                        return (
-                          <li key={child.label}>
-                            <a
-                              href={child.href}
-                              className="flex items-start gap-2.5 rounded-xl p-2.5 text-white/90 transition-colors hover:bg-white/10 hover:text-white"
-                            >
-                              {Icon && (
-                                <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300">
-                                  <Icon className="size-3.5" />
-                                </div>
-                              )}
-                              <div>
-                                <div className="text-xs font-bold text-white">
-                                  {child.label}
-                                </div>
-                                {child.desc && (
-                                  <p className="mt-0.5 text-[0.7rem] leading-relaxed text-slate-300/80">
-                                    {child.desc}
-                                  </p>
-                                )}
-                              </div>
-                            </a>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => setOpen((v) => !v)}
+                aria-label={open ? "Close menu" : "Open menu"}
+                aria-expanded={open}
+                className="inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors hover:bg-white/20"
+              >
+                {open ? (
+                  <X className="size-4" />
+                ) : (
+                  <Menu className="size-4" />
+                )}
+              </button>
             </div>
-          ))}
-        </nav>
-
-        {/* Right Action Button - Blue Pill with Chevron matching reference */}
-        <div className="hidden items-center gap-2 lg:flex">
-          <a
-            href="/contact"
-            className="group inline-flex items-center gap-1.5 rounded-full bg-[#2563eb] px-4 py-2 text-[0.75rem] font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-600/30 transition-all duration-300 hover:bg-[#1d4ed8] hover:shadow-blue-600/50 hover:scale-[1.02]"
-          >
-            <span>SCHEDULE NOW</span>
-            <ChevronDown className="size-3.5 transition-transform duration-200 group-hover:translate-y-0.5" />
-          </a>
-        </div>
-
-        {/* Mobile Hamburger & Call */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <a
-            href="tel:6314818600"
-            className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-            aria-label="Call SMG"
-          >
-            <Phone className="size-4" />
-          </a>
-
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            className="inline-flex size-9 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition-colors hover:bg-white/20"
-          >
-            {open ? <X className="size-4" /> : <Menu className="size-4" />}
-          </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* ── Mobile Drawer ── */}
       <div
         className={cn(
-          "mx-auto mt-2 max-w-7xl overflow-hidden rounded-3xl border border-white/20 bg-[#0e1b36]/95 backdrop-blur-2xl transition-[max-height] duration-300 lg:hidden",
-          open ? "max-h-[85vh] overflow-y-auto shadow-2xl p-5" : "max-h-0 border-0 p-0"
+          "mx-auto mt-2 max-w-lg overflow-hidden rounded-2xl border border-white/15 bg-[#0c1a32]/98 backdrop-blur-2xl transition-[max-height] duration-300 lg:hidden pointer-events-auto",
+          open
+            ? "max-h-[85vh] overflow-y-auto shadow-2xl p-5"
+            : "max-h-0 border-0 p-0"
         )}
       >
         <nav aria-label="Mobile Navigation" className="space-y-1">
-          {NAV.map((item) => (
-            <div key={item.label} className="border-b border-white/10 pb-1 last:border-0">
-              {item.children ? (
-                <div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpenGroup((g) => (g === item.label ? null : item.label))
-                    }
-                    className="flex w-full items-center justify-between py-2.5 text-left text-sm font-bold uppercase tracking-wider text-white"
-                  >
-                    <span>{item.label}</span>
-                    <ChevronDown
+          {NAV.map((item) => {
+            const active = isItemActive(item);
+            return (
+              <div
+                key={item.label}
+                className="border-b border-white/8 pb-1 last:border-0"
+              >
+                {item.children ? (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setOpenGroup((g) =>
+                          g === item.label ? null : item.label
+                        )
+                      }
                       className={cn(
-                        "size-4 transition-transform",
-                        openGroup === item.label && "rotate-180 text-blue-400"
+                        "flex w-full items-center justify-between py-2.5 text-left text-sm font-bold uppercase tracking-wider",
+                        active ? "text-[#38bdf8]" : "text-white"
                       )}
-                    />
-                  </button>
-                  {openGroup === item.label && (
-                    <div className="mb-2 space-y-1 rounded-2xl bg-white/5 p-2.5">
-                      {item.children.map((child) => (
-                        <a
-                          key={child.label}
-                          href={child.href}
-                          onClick={() => setOpen(false)}
-                          className="block rounded-lg p-2 text-xs font-medium text-slate-200 hover:bg-white/10 hover:text-white"
-                        >
-                          <div className="font-semibold text-white">{child.label}</div>
-                          {child.desc && (
-                            <div className="mt-0.5 text-[0.68rem] text-slate-400">
-                              {child.desc}
-                            </div>
-                          )}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <a
-                  href={item.href}
-                  onClick={() => setOpen(false)}
-                  className={cn(
-                    "block py-2.5 text-sm font-bold uppercase tracking-wider",
-                    item.active ? "text-blue-400" : "text-white/90"
-                  )}
-                >
-                  {item.label}
-                </a>
-              )}
-            </div>
-          ))}
+                    >
+                      <span>{item.label}</span>
+                      <ChevronDown
+                        className={cn(
+                          "size-4 transition-transform",
+                          openGroup === item.label &&
+                          "rotate-180 text-blue-400"
+                        )}
+                      />
+                    </button>
+                    {openGroup === item.label && (
+                      <div className="mb-2 space-y-1 rounded-xl bg-white/5 p-2.5">
+                        {item.children.map((child) => {
+                          const childActive = isChildActive(child.href);
+                          return (
+                            <a
+                              key={child.label}
+                              href={child.href}
+                              onClick={() => setOpen(false)}
+                              className={cn(
+                                "block rounded-lg p-2 text-xs transition-colors",
+                                childActive
+                                  ? "bg-[#38bdf8]/15 text-[#38bdf8] font-bold border-l-2 border-[#38bdf8] pl-2.5"
+                                  : "text-slate-200 hover:bg-white/10 hover:text-white font-medium"
+                              )}
+                            >
+                              <div
+                                className={cn(
+                                  "font-semibold",
+                                  childActive ? "text-[#38bdf8]" : "text-white"
+                                )}
+                              >
+                                {child.label}
+                              </div>
+                              {child.desc && (
+                                <div className="mt-0.5 text-[0.68rem] text-slate-400">
+                                  {child.desc}
+                                </div>
+                              )}
+                            </a>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <a
+                    href={item.href}
+                    onClick={() => setOpen(false)}
+                    className={cn(
+                      "block py-2.5 text-sm font-bold uppercase tracking-wider transition-colors",
+                      active ? "text-[#38bdf8]" : "text-white/90"
+                    )}
+                  >
+                    {item.label}
+                  </a>
+                )}
+              </div>
+            );
+          })}
 
           <div className="pt-4">
             <a
-              href="/contact"
+              href="/bookanappointment"
               onClick={() => setOpen(false)}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#2563eb] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-600/30"
             >

@@ -2,85 +2,98 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   Check,
-  Quote,
-  Send,
   CheckCircle2,
+  BookOpen,
+  TrendingUp,
+  FileCheck2,
+  Landmark,
+  ArrowRight,
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 
-export const Route = createFileRoute("/solutions")({
+export const Route = createFileRoute("/solutions/")({
   head: () => ({
     meta: [
       { title: "Solutions | SMG Accounting, Bookkeeping & Advisory" },
       {
         name: "description",
         content:
-          "Explore SMG's financial solutions: Outsourced Bookkeeping, CFO on the Go, Tax Services, and Back Office Management tailored for your business.",
+          "Explore SMG's financial solutions: Outsourced Bookkeeping, CFO Advisory Services, Tax Services, and Wealth Management tailored for your business.",
       },
     ],
   }),
-  component: SolutionsPage,
+  component: SolutionsIndexPage,
 });
 
 const SOLUTIONS_DATA = [
   {
-    id: "outsourced-bookkeeping",
-    title: "Outsourced Bookkeeping",
-    subtitle: "Let our professionals take care of your day-to-day accounting needs.",
+    id: "bookkeeping",
+    href: "/solutions/bookkeeping",
+    title: "Bookkeeping Services",
+    subtitle: "Accurate, timely bookkeeping backed by responsive professionals who help you stay organized and focused on growth.",
+    icon: BookOpen,
     points: [
-      "Reliable, Responsive Bookkeeping",
-      "Dedicated Team Member",
-      "General Ledger & Bookkeeping",
-      "Seamless Onboarding",
-      "Communication with Care",
+      "Monthly Bookkeeping & Closing",
+      "Bank & Credit Card Reconciliations",
+      "Financial Statements Preparation",
+      "Accounts Payable & Receivable Support",
+      "Catch-Up & Cleanup Bookkeeping",
+      "Year-End Reporting Support",
     ],
     image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-bookkeeping-1.jpeg",
     reverse: false,
     bgClass: "bg-white",
   },
   {
-    id: "cfo-on-the-go",
-    title: "CFO on the Go",
-    subtitle: "Don't need a full-time CFO? Our experts can fill those shoes with top-level financial management.",
+    id: "cfo-advisory",
+    href: "/solutions/cfo-advisory-services",
+    title: "CFO Advisory Services",
+    subtitle: "Executive-level financial leadership, cash flow forecasting, and strategy to improve profitability without the overhead of a full-time CFO.",
+    icon: TrendingUp,
     points: [
-      "Treasurer Conversations / Dedicated CFO as a Partner of the Day",
-      "Budgeting & Forecasting",
-      "Cash Flow Analysis",
-      "Key Performance Indicator Evaluation",
-      "Profitability Analysis",
+      "Financial Strategy & Multi-Year Planning",
+      "Budgeting & Dynamic Cash Flow Forecasting",
+      "KPI & Performance Dashboard Reporting",
+      "Profitability & Margin Analysis",
+      "Business Growth & Financing Advisory",
     ],
     image: "https://www.smgaba.com/wp-content/uploads/2021/10/AdobeStock_201950021-1.jpeg",
     reverse: true,
     bgClass: "bg-[#faf9f6]",
   },
   {
-    id: "tax-services",
+    id: "tax",
+    href: "/solutions/tax",
     title: "Tax Services",
-    subtitle: "Leave the stress of tax preparation to us.",
+    subtitle: "Proactive, year-round tax planning and accurate preparation tailored to reduce liabilities and eliminate surprises.",
+    icon: FileCheck2,
     points: [
-      "Trusted Experts",
-      "Tax Planning & Preparation",
-      "Multi-State Filing & Representation",
-      "Partnership & Corporate Returns",
-      "Compliance & Regulation",
+      "Business Tax Return Preparation (Federal, State, Local)",
+      "Strategic Year-Round Tax Planning",
+      "Estimated & Quarterly Tax Management",
+      "Multi-State Compliance & Filing Support",
+      "Tax Notice & Audit Representation",
+      "Entity & Transaction Structuring",
     ],
     image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-tax-services-1.jpeg",
     reverse: false,
     bgClass: "bg-white",
   },
   {
-    id: "back-office",
-    title: "Back Office",
-    subtitle: "Our seasoned team is dedicated to providing you the edge you need.",
+    id: "wealth-management",
+    href: "/solutions/wealth-management",
+    title: "Wealth Management",
+    subtitle: "Comprehensive wealth management, retirement planning, and financial strategies to protect and grow your legacy.",
+    icon: Landmark,
     points: [
-      "Payroll Reconciliation",
-      "Receivables & Payables",
-      "Due Diligence Support",
-      "System Realignment and Optimization",
-      "Vendor Relationship",
-      "Third Party Integration",
+      "Retirement Planning & Income Strategies",
+      "Point-in-Time & Ongoing Investment Advice",
+      "Wealth Preservation & Risk Management",
+      "Insurance & Asset Protection Solutions",
+      "Legacy, Estate, Trust & Philanthropy Strategies",
+      "Business Transition & Exit Planning",
     ],
     image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-back-office-1.jpeg",
     reverse: true,
@@ -102,14 +115,14 @@ const TESTIMONIALS = [
     subtitle: "Harbor View Hospitality",
   },
   {
-    quote: "The CFO on the Go program allowed us to model cash projections accurately and secure commercial bank financing with total ease.",
+    quote: "The CFO Advisory program allowed us to model cash projections accurately and secure commercial bank financing with total ease.",
     author: "David K.",
     company: "TRI-STATE",
     subtitle: "Tri-State Development",
   },
 ];
 
-function SolutionsPage() {
+function SolutionsIndexPage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [submitted, setSubmitted] = useState(false);
 
@@ -119,78 +132,104 @@ function SolutionsPage() {
 
       <main>
         {/* =========================================================================
-            1. HERO SECTION (Photographic background + blue gradient overlay + CTA)
+            1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
           bgImage="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1920&q=80"
-          title="Solutions"
-          description="SMG offers a wide range of financial services provided by our specialized staff to ensure the smooth running of the back-end operations for a variety of businesses."
-          buttonText="CONTACT US"
-          buttonHref="#contact-form"
+          eyebrow="Our Solutions"
+          title="Financial Solutions Built for Growth"
+          description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy and wealth management—tailored to give your business clarity and momentum."
+          buttonText="GET A CONSULTATION"
+          buttonHref="/bookanappointment"
         />
 
         {/* =========================================================================
-            2. CATERING SOLUTIONS FOR ALL INDUSTRIES (4 Alternating Rows)
+            2. SOLUTIONS GRID / ROWS
            ========================================================================= */}
         <section className="py-16 sm:py-24">
           <div className="text-center mb-16 px-6">
-            <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
-              Catering Solutions For All Industries
+            <span className="text-xs font-bold uppercase tracking-widest text-[#1b4e94]">Tailored Capabilities</span>
+            <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
+              Catering Solutions For All Businesses
             </h2>
+            <p className="mt-4 max-w-2xl mx-auto text-sm sm:text-base text-slate-600">
+              Whether you need dependable monthly bookkeeping, high-level CFO leadership, proactive tax mitigation, or long-term wealth planning, our team is equipped to deliver.
+            </p>
           </div>
 
           <div className="space-y-0">
-            {SOLUTIONS_DATA.map((solution) => (
-              <div
-                key={solution.id}
-                id={solution.id}
-                className={`py-16 sm:py-24 ${solution.bgClass} border-b border-stone-200/50 last:border-0`}
-              >
-                <div className="mx-auto max-w-6xl px-6 lg:px-12">
-                  <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
-                    {/* Text Column */}
-                    <div className={`lg:col-span-7 ${solution.reverse ? "lg:order-2" : "lg:order-1"}`}>
-                      <h3 className="font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-[#142340]">
-                        {solution.title}
-                      </h3>
-                      <p className="mt-3 text-base sm:text-lg text-slate-600 font-normal">
-                        {solution.subtitle}
-                      </p>
+            {SOLUTIONS_DATA.map((solution) => {
+              const Icon = solution.icon;
+              return (
+                <div
+                  key={solution.id}
+                  id={solution.id}
+                  className={`py-16 sm:py-24 ${solution.bgClass} border-b border-stone-200/50 last:border-0`}
+                >
+                  <div className="mx-auto max-w-6xl px-6 lg:px-12">
+                    <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
+                      {/* Text Column */}
+                      <div className={`lg:col-span-7 ${solution.reverse ? "lg:order-2" : "lg:order-1"}`}>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="flex size-10 items-center justify-center rounded-xl bg-blue-100 text-[#1b4e94]">
+                            <Icon className="size-5" />
+                          </div>
+                          <span className="text-xs font-bold uppercase tracking-widest text-[#1b4e94]">Core Solution</span>
+                        </div>
+                        <h3 className="font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-[#142340]">
+                          {solution.title}
+                        </h3>
+                        <p className="mt-3 text-base sm:text-lg text-slate-600 font-normal leading-relaxed">
+                          {solution.subtitle}
+                        </p>
 
-                      <ul className="mt-8 space-y-4">
-                        {solution.points.map((point) => (
-                          <li key={point} className="flex items-start gap-3.5">
-                            <div className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1b4e94] text-white">
-                              <Check className="size-3 stroke-[3]" />
-                            </div>
-                            <span className="text-sm sm:text-base font-medium text-slate-700 leading-relaxed">
-                              {point}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                        <ul className="mt-8 space-y-3.5">
+                          {solution.points.map((point) => (
+                            <li key={point} className="flex items-start gap-3.5">
+                              <div className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-[#1b4e94] text-white">
+                                <Check className="size-3 stroke-[3]" />
+                              </div>
+                              <span className="text-sm sm:text-base font-medium text-slate-700 leading-relaxed">
+                                {point}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
 
-                    {/* Circular Image Column */}
-                    <div className={`lg:col-span-5 flex justify-center ${solution.reverse ? "lg:order-1" : "lg:order-2"}`}>
-                      <div className="relative size-72 sm:size-84 overflow-hidden rounded-full border-4 border-[#3b82f6]/20 p-2 shadow-2xl bg-white">
-                        <img
-                          src={solution.image}
-                          alt={solution.title}
-                          className="size-full rounded-full object-cover"
-                          loading="lazy"
-                        />
+                        <div className="mt-8">
+                          <a
+                            href={solution.href}
+                            className="inline-flex items-center gap-2 font-bold text-[#1b4e94] hover:text-[#142340] hover:underline text-sm group"
+                          >
+                            <span>Explore {solution.title}</span>
+                            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                          </a>
+                        </div>
+                      </div>
+
+                      {/* Circular Image Column */}
+                      <div className={`lg:col-span-5 flex justify-center ${solution.reverse ? "lg:order-1" : "lg:order-2"}`}>
+                        <a href={solution.href} className="group relative block">
+                          <div className="relative size-72 sm:size-84 overflow-hidden rounded-full border-4 border-[#3b82f6]/20 p-2 shadow-2xl bg-white transition-transform duration-300 group-hover:scale-105">
+                            <img
+                              src={solution.image}
+                              alt={solution.title}
+                              className="size-full rounded-full object-cover"
+                              loading="lazy"
+                            />
+                          </div>
+                        </a>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
         {/* =========================================================================
-            3. HERE'S WHY WE'RE RECOMMENDED (Testimonial Spotlight with JRM)
+            3. TESTIMONIAL SPOTLIGHT
            ========================================================================= */}
         <section className="py-24 bg-[#0f2142] text-white relative overflow-hidden">
           <div className="relative mx-auto max-w-4xl px-6 lg:px-10 text-center">
@@ -241,7 +280,7 @@ function SolutionsPage() {
         </section>
 
         {/* =========================================================================
-            4. LET'S TALK (Clean Consultation Form)
+            4. LET'S TALK
            ========================================================================= */}
         <section id="contact-form" className="py-20 sm:py-28 bg-[#0b172e] text-white">
           <div className="mx-auto max-w-xl px-6 lg:px-8">
@@ -250,7 +289,7 @@ function SolutionsPage() {
                 Let's Talk
               </h2>
               <p className="mt-2 text-sm sm:text-base text-blue-200">
-                How We Can Help?
+                How Can We Help Your Business?
               </p>
             </div>
 
@@ -311,21 +350,20 @@ function SolutionsPage() {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5">
-                    Services
+                    Solutions Needed
                   </label>
                   <select className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none">
-                    <option value="Outsourced Bookkeeping">Outsourced Bookkeeping</option>
-                    <option value="CFO on the Go">CFO on the Go</option>
-                    <option value="Tax Services">Tax Services</option>
-                    <option value="Back Office">Back Office Management</option>
-                    <option value="Hospitality Accounting">Hospitality &amp; Restaurant Practice</option>
+                    <option value="Bookkeeping">Bookkeeping Services</option>
+                    <option value="CFO Advisory">CFO Advisory Services</option>
+                    <option value="Tax Services">Tax Planning & Preparation</option>
+                    <option value="Wealth Management">Wealth Management</option>
                   </select>
                 </div>
 
                 <div>
                   <textarea
                     rows={4}
-                    placeholder="Comments"
+                    placeholder="How can we help your business?"
                     className="w-full rounded-xl border border-white/20 bg-white/10 p-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
                 </div>
@@ -341,10 +379,6 @@ function SolutionsPage() {
                     I agree to receive messages and updates from SMG Accounting &amp; Advisory.
                   </label>
                 </div>
-
-                <p className="text-[0.7rem] text-slate-400/80 pt-1 leading-relaxed">
-                  By submitting this form, you consent to our communication regarding your inquiry. Your information is kept strictly confidential.
-                </p>
 
                 <div className="pt-4 text-center">
                   <button

@@ -1,121 +1,65 @@
-import { useState } from "react";
-import { Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { ArrowRight, CheckCircle2, Clock, Shield } from "lucide-react";
 
 export function QuoteForm() {
-  const [optIn, setOptIn] = useState(false);
-  const [sent, setSent] = useState(false);
-
   return (
-    <section className="section-y bg-background" id="get-a-quote">
-      <div className="mx-auto max-w-3xl px-5 lg:px-8">
-        <div className="text-center">
-          <p className="eyebrow">Get in touch</p>
-          <h2 className="mt-3 text-3xl md:text-4xl">Get a Quote</h2>
-        </div>
+    <section className="py-16 sm:py-24 bg-[#f8f9fb] px-4 sm:px-6 lg:px-8">
+      <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 sm:p-14 lg:p-16 shadow-xl shadow-slate-200/60 text-center">
+        {/* Subtle top color bar matching brand */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#1b4e94] via-[#2563eb] to-[#1b4e94]" />
 
-        <form
-          className="card-surface mt-10 p-6 md:p-10"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setSent(true);
-          }}
-        >
-          <div className="grid gap-6 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <label htmlFor="phone" className="mb-2 block text-sm font-semibold text-navy">
-                Phone
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                required
-                placeholder="(631) 481-8600"
-                className="h-12 w-full rounded-xl border border-input bg-background px-4 text-base outline-none transition-shadow placeholder:text-muted-foreground/70 focus:border-primary focus:ring-4 focus:ring-primary/15"
-              />
-              <p className="mt-2 text-sm text-muted-foreground">This is a mobile phone</p>
-            </div>
+        <div className="mx-auto max-w-3xl">
+          {/* Eyebrow Label */}
+          <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] text-[#1b4e94] mb-3">
+            Partner With SMG
+          </span>
 
-            <div>
-              <label htmlFor="best-time" className="mb-2 block text-sm font-semibold text-navy">
-                Best Time to Contact
-              </label>
-              <select
-                id="best-time"
-                name="best-time"
-                defaultValue="Anytime"
-                className="h-12 w-full appearance-none rounded-xl border border-input bg-background px-4 text-base outline-none transition-shadow focus:border-primary focus:ring-4 focus:ring-primary/15"
-              >
-                <option>Anytime</option>
-                <option>Morning</option>
-                <option>Afternoon</option>
-                <option>Evening</option>
-              </select>
-            </div>
+          {/* Heading */}
+          <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340] leading-tight tracking-tight">
+            Ready to Transform Your
+            <br />
+            <span className="text-[#1b4e94]">Financial Operations?</span>
+          </h2>
 
-            <div>
-              <label htmlFor="timezone" className="mb-2 block text-sm font-semibold text-navy">
-                Timezone
-              </label>
-              <select
-                id="timezone"
-                name="timezone"
-                defaultValue="Eastern"
-                className="h-12 w-full appearance-none rounded-xl border border-input bg-background px-4 text-base outline-none transition-shadow focus:border-primary focus:ring-4 focus:ring-primary/15"
-              >
-                <option>Eastern</option>
-                <option>Central</option>
-                <option>Mountain</option>
-                <option>Pacific</option>
-              </select>
-            </div>
-          </div>
+          <p className="mt-4 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
+            Connect with our team of accounting professionals to discuss your bookkeeping, CFO advisory, or tax strategy.
+          </p>
 
-          <div className="mt-8 rounded-2xl bg-secondary p-5">
-            <button
-              type="button"
-              onClick={() => setOptIn((v) => !v)}
-              aria-pressed={optIn}
-              className="flex w-full items-start gap-3 text-left"
+          {/* TWO BUTTONS CTA */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/bookanappointment"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[#1b4e94] hover:bg-[#2563eb] px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <span
-                className={cn(
-                  "mt-0.5 grid size-5 shrink-0 place-items-center rounded-md border-2 transition-colors",
-                  optIn ? "border-navy bg-navy text-navy-foreground" : "border-input bg-background",
-                )}
-              >
-                {optIn && <Check className="size-3.5" />}
-              </span>
-              <span className="text-sm font-semibold text-navy">
-                Opt In to receive automated phone calls and/or texts
-              </span>
-            </button>
-            <p className="mt-3 pl-8 text-xs leading-relaxed text-muted-foreground">
-              Opting in means you agree to the{" "}
-              <a
-                href="#"
-                className="font-semibold text-primary underline-offset-2 hover:underline"
-              >
-                Privacy Policy
-              </a>{" "}
-              and consent to receiving automated calls and/or texts from, or on behalf of SMG. You do not
-              need to opt in to request a quote. If you choose to opt in, you may opt out at any time.
-              Message frequency may vary. Message and data rates apply. Text HELP for help. Opt out at
-              anytime by texting STOP.
-            </p>
+              <span>Schedule Consultation</span>
+              <ArrowRight className="size-4" />
+            </a>
+
+            <a
+              href="/contact"
+              className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border-2 border-[#1b4e94] text-[#1b4e94] hover:bg-[#1b4e94] hover:text-white px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <span>Contact Our Team</span>
+            </a>
           </div>
 
-          <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row">
-            <Button type="submit" size="lg" className="w-full sm:w-auto">
-              Get a Quote
-            </Button>
-            {sent && (
-              <p className="text-sm font-semibold text-primary">Thanks — we'll be in touch shortly.</p>
-            )}
+          {/* Clean authentic feature highlights */}
+          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-slate-100 max-w-3xl mx-auto">
+            <div className="flex items-center justify-center gap-2.5 text-slate-600">
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+              <span className="text-xs font-semibold">No long-term contracts</span>
+            </div>
+
+            <div className="flex items-center justify-center gap-2.5 text-slate-600">
+              <Clock className="size-4 text-[#1b4e94] shrink-0" />
+              <span className="text-xs font-semibold">Same-day response</span>
+            </div>
+
+            <div className="flex items-center justify-center gap-2.5 text-slate-600">
+              <Shield className="size-4 text-indigo-600 shrink-0" />
+              <span className="text-xs font-semibold">Dedicated specialist</span>
+            </div>
           </div>
-        </form>
+        </div>
       </div>
     </section>
   );

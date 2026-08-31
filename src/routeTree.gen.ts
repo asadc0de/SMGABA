@@ -10,11 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as AutomotiveRouteImport } from './routes/automotive'
+import { Route as BookanappointmentRouteImport } from './routes/bookanappointment'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContactUsRouteImport } from './routes/contact-us'
+import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
 import { Route as HospitalityRouteImport } from './routes/hospitality'
 import { Route as IndustriesRouteImport } from './routes/industries'
@@ -23,16 +27,28 @@ import { Route as LegalProfessionalsRouteImport } from './routes/legal-professio
 import { Route as ManufacturersRouteImport } from './routes/manufacturers'
 import { Route as NewYorkCityLocationRouteImport } from './routes/new-york-city-location'
 import { Route as OurTeamRouteImport } from './routes/our-team'
+import { Route as PrivacyPolicy2RouteImport } from './routes/privacy-policy-2'
 import { Route as RealEstateRouteImport } from './routes/real-estate'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RetailRouteImport } from './routes/retail'
-import { Route as SolutionsRouteImport } from './routes/solutions'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TierraVerdeFlRouteImport } from './routes/tierra-verde-fl'
+import { Route as BlogIndexRouteImport } from './routes/blog/index'
+import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
+import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/bookkeeping'
+import { Route as SolutionsCfoAdvisoryServicesRouteImport } from './routes/solutions/cfo-advisory-services'
+import { Route as SolutionsTaxRouteImport } from './routes/solutions/tax'
+import { Route as SolutionsWealthManagementRouteImport } from './routes/solutions/wealth-management'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SlugRoute = SlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutUsRoute = AboutUsRouteImport.update({
@@ -43,6 +59,11 @@ const AboutUsRoute = AboutUsRouteImport.update({
 const AutomotiveRoute = AutomotiveRouteImport.update({
   id: '/automotive',
   path: '/automotive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookanappointmentRoute = BookanappointmentRouteImport.update({
+  id: '/bookanappointment',
+  path: '/bookanappointment',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CareersRoute = CareersRouteImport.update({
@@ -58,6 +79,16 @@ const ConstructionRoute = ConstructionRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactUsRoute = ContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FloridaLocationRoute = FloridaLocationRouteImport.update({
+  id: '/florida-location',
+  path: '/florida-location',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HealthcareRoute = HealthcareRouteImport.update({
@@ -100,6 +131,11 @@ const OurTeamRoute = OurTeamRouteImport.update({
   path: '/our-team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyPolicy2Route = PrivacyPolicy2RouteImport.update({
+  id: '/privacy-policy-2',
+  path: '/privacy-policy-2',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RealEstateRoute = RealEstateRouteImport.update({
   id: '/real-estate',
   path: '/real-estate',
@@ -115,11 +151,6 @@ const RetailRoute = RetailRouteImport.update({
   path: '/retail',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SolutionsRoute = SolutionsRouteImport.update({
-  id: '/solutions',
-  path: '/solutions',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const TestimonialsRoute = TestimonialsRouteImport.update({
   id: '/testimonials',
   path: '/testimonials',
@@ -130,14 +161,55 @@ const TierraVerdeFlRoute = TierraVerdeFlRouteImport.update({
   path: '/tierra-verde-fl',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolutionsIndexRoute = SolutionsIndexRouteImport.update({
+  id: '/solutions/',
+  path: '/solutions/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolutionsBookkeepingRoute = SolutionsBookkeepingRouteImport.update({
+  id: '/solutions/bookkeeping',
+  path: '/solutions/bookkeeping',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolutionsCfoAdvisoryServicesRoute =
+  SolutionsCfoAdvisoryServicesRouteImport.update({
+    id: '/solutions/cfo-advisory-services',
+    path: '/solutions/cfo-advisory-services',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SolutionsTaxRoute = SolutionsTaxRouteImport.update({
+  id: '/solutions/tax',
+  path: '/solutions/tax',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SolutionsWealthManagementRoute =
+  SolutionsWealthManagementRouteImport.update({
+    id: '/solutions/wealth-management',
+    path: '/solutions/wealth-management',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
   '/automotive': typeof AutomotiveRoute
+  '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
+  '/contact-us': typeof ContactUsRoute
+  '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
   '/industries': typeof IndustriesRoute
@@ -146,20 +218,31 @@ export interface FileRoutesByFullPath {
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
-  '/solutions': typeof SolutionsRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
+  '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
+  '/solutions/tax': typeof SolutionsTaxRoute
+  '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/blog/': typeof BlogIndexRoute
+  '/solutions/': typeof SolutionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
   '/automotive': typeof AutomotiveRoute
+  '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
+  '/contact-us': typeof ContactUsRoute
+  '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
   '/industries': typeof IndustriesRoute
@@ -168,21 +251,32 @@ export interface FileRoutesByTo {
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
-  '/solutions': typeof SolutionsRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
+  '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
+  '/solutions/tax': typeof SolutionsTaxRoute
+  '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/blog': typeof BlogIndexRoute
+  '/solutions': typeof SolutionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
   '/automotive': typeof AutomotiveRoute
+  '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
+  '/contact-us': typeof ContactUsRoute
+  '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
   '/industries': typeof IndustriesRoute
@@ -191,22 +285,33 @@ export interface FileRoutesById {
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
-  '/solutions': typeof SolutionsRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
+  '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
+  '/solutions/tax': typeof SolutionsTaxRoute
+  '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/blog/': typeof BlogIndexRoute
+  '/solutions/': typeof SolutionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$slug'
     | '/about-us'
     | '/automotive'
+    | '/bookanappointment'
     | '/careers'
     | '/construction'
     | '/contact'
+    | '/contact-us'
+    | '/florida-location'
     | '/healthcare'
     | '/hospitality'
     | '/industries'
@@ -215,20 +320,31 @@ export interface FileRouteTypes {
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/privacy-policy-2'
     | '/real-estate'
     | '/resources'
     | '/retail'
-    | '/solutions'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/blog/$slug'
+    | '/solutions/bookkeeping'
+    | '/solutions/cfo-advisory-services'
+    | '/solutions/tax'
+    | '/solutions/wealth-management'
+    | '/blog/'
+    | '/solutions/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$slug'
     | '/about-us'
     | '/automotive'
+    | '/bookanappointment'
     | '/careers'
     | '/construction'
     | '/contact'
+    | '/contact-us'
+    | '/florida-location'
     | '/healthcare'
     | '/hospitality'
     | '/industries'
@@ -237,20 +353,31 @@ export interface FileRouteTypes {
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/privacy-policy-2'
     | '/real-estate'
     | '/resources'
     | '/retail'
-    | '/solutions'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/blog/$slug'
+    | '/solutions/bookkeeping'
+    | '/solutions/cfo-advisory-services'
+    | '/solutions/tax'
+    | '/solutions/wealth-management'
+    | '/blog'
+    | '/solutions'
   id:
     | '__root__'
     | '/'
+    | '/$slug'
     | '/about-us'
     | '/automotive'
+    | '/bookanappointment'
     | '/careers'
     | '/construction'
     | '/contact'
+    | '/contact-us'
+    | '/florida-location'
     | '/healthcare'
     | '/hospitality'
     | '/industries'
@@ -259,21 +386,32 @@ export interface FileRouteTypes {
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/privacy-policy-2'
     | '/real-estate'
     | '/resources'
     | '/retail'
-    | '/solutions'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/blog/$slug'
+    | '/solutions/bookkeeping'
+    | '/solutions/cfo-advisory-services'
+    | '/solutions/tax'
+    | '/solutions/wealth-management'
+    | '/blog/'
+    | '/solutions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SlugRoute: typeof SlugRoute
   AboutUsRoute: typeof AboutUsRoute
   AutomotiveRoute: typeof AutomotiveRoute
+  BookanappointmentRoute: typeof BookanappointmentRoute
   CareersRoute: typeof CareersRoute
   ConstructionRoute: typeof ConstructionRoute
   ContactRoute: typeof ContactRoute
+  ContactUsRoute: typeof ContactUsRoute
+  FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
   HospitalityRoute: typeof HospitalityRoute
   IndustriesRoute: typeof IndustriesRoute
@@ -282,12 +420,19 @@ export interface RootRouteChildren {
   ManufacturersRoute: typeof ManufacturersRoute
   NewYorkCityLocationRoute: typeof NewYorkCityLocationRoute
   OurTeamRoute: typeof OurTeamRoute
+  PrivacyPolicy2Route: typeof PrivacyPolicy2Route
   RealEstateRoute: typeof RealEstateRoute
   ResourcesRoute: typeof ResourcesRoute
   RetailRoute: typeof RetailRoute
-  SolutionsRoute: typeof SolutionsRoute
   TestimonialsRoute: typeof TestimonialsRoute
   TierraVerdeFlRoute: typeof TierraVerdeFlRoute
+  BlogSlugRoute: typeof BlogSlugRoute
+  SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
+  SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
+  SolutionsTaxRoute: typeof SolutionsTaxRoute
+  SolutionsWealthManagementRoute: typeof SolutionsWealthManagementRoute
+  BlogIndexRoute: typeof BlogIndexRoute
+  SolutionsIndexRoute: typeof SolutionsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -297,6 +442,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$slug': {
+      id: '/$slug'
+      path: '/$slug'
+      fullPath: '/$slug'
+      preLoaderRoute: typeof SlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about-us': {
@@ -311,6 +463,13 @@ declare module '@tanstack/react-router' {
       path: '/automotive'
       fullPath: '/automotive'
       preLoaderRoute: typeof AutomotiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookanappointment': {
+      id: '/bookanappointment'
+      path: '/bookanappointment'
+      fullPath: '/bookanappointment'
+      preLoaderRoute: typeof BookanappointmentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/careers': {
@@ -332,6 +491,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/florida-location': {
+      id: '/florida-location'
+      path: '/florida-location'
+      fullPath: '/florida-location'
+      preLoaderRoute: typeof FloridaLocationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/healthcare': {
@@ -390,6 +563,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OurTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy-policy-2': {
+      id: '/privacy-policy-2'
+      path: '/privacy-policy-2'
+      fullPath: '/privacy-policy-2'
+      preLoaderRoute: typeof PrivacyPolicy2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/real-estate': {
       id: '/real-estate'
       path: '/real-estate'
@@ -411,13 +591,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RetailRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/solutions': {
-      id: '/solutions'
-      path: '/solutions'
-      fullPath: '/solutions'
-      preLoaderRoute: typeof SolutionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/testimonials': {
       id: '/testimonials'
       path: '/testimonials'
@@ -432,16 +605,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TierraVerdeFlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/blog/': {
+      id: '/blog/'
+      path: '/blog'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/blog/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solutions/': {
+      id: '/solutions/'
+      path: '/solutions'
+      fullPath: '/solutions/'
+      preLoaderRoute: typeof SolutionsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solutions/bookkeeping': {
+      id: '/solutions/bookkeeping'
+      path: '/solutions/bookkeeping'
+      fullPath: '/solutions/bookkeeping'
+      preLoaderRoute: typeof SolutionsBookkeepingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solutions/cfo-advisory-services': {
+      id: '/solutions/cfo-advisory-services'
+      path: '/solutions/cfo-advisory-services'
+      fullPath: '/solutions/cfo-advisory-services'
+      preLoaderRoute: typeof SolutionsCfoAdvisoryServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solutions/tax': {
+      id: '/solutions/tax'
+      path: '/solutions/tax'
+      fullPath: '/solutions/tax'
+      preLoaderRoute: typeof SolutionsTaxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/solutions/wealth-management': {
+      id: '/solutions/wealth-management'
+      path: '/solutions/wealth-management'
+      fullPath: '/solutions/wealth-management'
+      preLoaderRoute: typeof SolutionsWealthManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SlugRoute: SlugRoute,
   AboutUsRoute: AboutUsRoute,
   AutomotiveRoute: AutomotiveRoute,
+  BookanappointmentRoute: BookanappointmentRoute,
   CareersRoute: CareersRoute,
   ConstructionRoute: ConstructionRoute,
   ContactRoute: ContactRoute,
+  ContactUsRoute: ContactUsRoute,
+  FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,
   HospitalityRoute: HospitalityRoute,
   IndustriesRoute: IndustriesRoute,
@@ -450,12 +676,19 @@ const rootRouteChildren: RootRouteChildren = {
   ManufacturersRoute: ManufacturersRoute,
   NewYorkCityLocationRoute: NewYorkCityLocationRoute,
   OurTeamRoute: OurTeamRoute,
+  PrivacyPolicy2Route: PrivacyPolicy2Route,
   RealEstateRoute: RealEstateRoute,
   ResourcesRoute: ResourcesRoute,
   RetailRoute: RetailRoute,
-  SolutionsRoute: SolutionsRoute,
   TestimonialsRoute: TestimonialsRoute,
   TierraVerdeFlRoute: TierraVerdeFlRoute,
+  BlogSlugRoute: BlogSlugRoute,
+  SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
+  SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
+  SolutionsTaxRoute: SolutionsTaxRoute,
+  SolutionsWealthManagementRoute: SolutionsWealthManagementRoute,
+  BlogIndexRoute: BlogIndexRoute,
+  SolutionsIndexRoute: SolutionsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

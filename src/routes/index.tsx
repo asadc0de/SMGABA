@@ -80,7 +80,7 @@ const LOCATIONS = [
     phone: "(727) 388-3378",
     fax: "FAX: (727) 318-4096",
     hours: ["Monday-Friday", "9:00am - 5:00pm"],
-    href: "/tierra-verde-fl",
+    href: "/florida-location",
   },
 ];
 

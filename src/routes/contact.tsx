@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Clock, MapPin, Phone, Printer, Mail, CalendarCheck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
@@ -7,17 +7,13 @@ import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact Us | SMG Accounting, Bookkeeping & Advisory" },
-      {
-        name: "description",
-        content:
-          "Connect with SMG's offices in Long Island, Manhattan, and Florida. Schedule a consultation or contact our advisory team directly.",
-      },
-    ],
-  }),
-  component: ContactPage,
+  beforeLoad: () => {
+    throw redirect({
+      to: "/islandia-location",
+      statusCode: 301,
+    });
+  },
+  component: () => null,
 });
 
 const LOCATIONS = [
@@ -43,7 +39,7 @@ const LOCATIONS = [
     phone: "(727) 388-3378",
     fax: "(727) 318-4096",
     hours: ["Monday–Friday: 9:00am – 5:00pm"],
-    href: "/tierra-verde-fl",
+    href: "/florida-location",
   },
 ];
 

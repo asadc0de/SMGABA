@@ -11,10 +11,10 @@ const COMPANY_LINKS = [
 ];
 
 const SOLUTION_LINKS = [
-  { label: "Outsourced Bookkeeping", href: "/solutions#outsourced-bookkeeping" },
-  { label: "CFO on the Go", href: "/solutions#cfo-on-the-go" },
-  { label: "Tax Services", href: "/solutions#tax-services" },
-  { label: "Back Office Management", href: "/solutions#back-office" },
+  { label: "Bookkeeping Services", href: "/solutions/bookkeeping" },
+  { label: "CFO Advisory Services", href: "/solutions/cfo-advisory-services" },
+  { label: "Tax Services", href: "/solutions/tax" },
+  { label: "Wealth Management", href: "/solutions/wealth-management" },
 ];
 
 const INDUSTRY_LINKS = [
@@ -45,7 +45,7 @@ const OFFICES = [
     name: "Florida",
     address: "646 94th Ave N, St. Petersburg, FL 33702",
     phone: "(727) 388-3378",
-    href: "/tierra-verde-fl",
+    href: "/florida-location",
   },
 ];
 
@@ -261,9 +261,7 @@ export function Footer() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 text-[0.7rem] text-slate-400/70 sm:flex-row lg:px-10">
           <p>© {new Date().getFullYear()} SMG Accounting, Bookkeeping & Advisory. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <a href="#" className="transition-colors hover:text-white">Privacy Policy</a>
-            <span className="text-white/20">|</span>
-            <a href="#" className="transition-colors hover:text-white">Terms of Service</a>
+            <a href="/privacy-policy-2" className="transition-colors hover:text-white">Privacy Policy</a>
           </div>
         </div>
       </div>

@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
-export const Route = createFileRoute("/tierra-verde-fl")({
+export const Route = createFileRoute("/contact-us")({
   beforeLoad: () => {
     throw redirect({
-      to: "/florida-location",
+      to: "/islandia-location",
       statusCode: 301,
     });
   },

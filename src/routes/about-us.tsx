@@ -15,6 +15,7 @@ import {
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
+import { QuoteForm } from "@/components/site/QuoteForm";
 
 export const Route = createFileRoute("/about-us")({
   head: () => ({
@@ -81,7 +82,6 @@ const TESTIMONIALS = [
 
 function AboutUsPage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const [submitted, setSubmitted] = useState(false);
 
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
@@ -261,9 +261,8 @@ function AboutUsPage() {
                   key={idx}
                   type="button"
                   onClick={() => setActiveTestimonial(idx)}
-                  className={`size-2.5 rounded-full transition-all ${
-                    activeTestimonial === idx ? "w-7 bg-white" : "bg-white/30"
-                  }`}
+                  className={`size-2.5 rounded-full transition-all ${activeTestimonial === idx ? "w-7 bg-white" : "bg-white/30"
+                    }`}
                   aria-label={`Testimonial slide ${idx + 1}`}
                 />
               ))}
@@ -280,124 +279,8 @@ function AboutUsPage() {
           </div>
         </section>
 
-        {/* =========================================================================
-            7. LET'S TALK (Clean, Pristine Consultation Form)
-           ========================================================================= */}
-        <section id="contact-form" className="py-20 sm:py-28 bg-[#0b172e] text-white">
-          <div className="mx-auto max-w-xl px-6 lg:px-8">
-            <div className="text-center mb-10">
-              <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                Let's Talk
-              </h2>
-              <p className="mt-2 text-sm sm:text-base text-blue-200">
-                How We Can Help?
-              </p>
-            </div>
+        <QuoteForm />
 
-            {submitted ? (
-              <div className="rounded-2xl border border-blue-400/30 bg-blue-500/10 p-8 text-center backdrop-blur-md">
-                <CheckCircle2 className="mx-auto size-12 text-blue-400" />
-                <h3 className="mt-3 font-serif-hero text-2xl font-bold text-white">
-                  Thank You!
-                </h3>
-                <p className="mt-2 text-sm text-blue-100">
-                  Your message has been received. Our team will contact you shortly.
-                </p>
-              </div>
-            ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSubmitted(true);
-                }}
-                className="space-y-4"
-              >
-                <div>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Your Name *"
-                    className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    placeholder="Company Name"
-                    className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
-                  />
-                </div>
-
-                <div>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Email or Phone Number *"
-                    className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5">
-                    Best Time to Contact
-                  </label>
-                  <select className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none">
-                    <option value="Morning">Morning (8:30am – 12:00pm)</option>
-                    <option value="Afternoon">Afternoon (12:00pm – 5:00pm)</option>
-                    <option value="Evening">Evening (5:00pm – 7:00pm)</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5">
-                    Services
-                  </label>
-                  <select className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none">
-                    <option value="Outsourced Bookkeeping">Outsourced Bookkeeping</option>
-                    <option value="CFO on the Go">CFO on the Go</option>
-                    <option value="Tax Services">Tax Services</option>
-                    <option value="Back Office Management">Back Office Management</option>
-                    <option value="Hospitality Accounting">Hospitality Accounting</option>
-                  </select>
-                </div>
-
-                <div>
-                  <textarea
-                    rows={4}
-                    placeholder="Comments"
-                    className="w-full rounded-xl border border-white/20 bg-white/10 p-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
-                  />
-                </div>
-
-                <div className="flex items-start gap-3 pt-1">
-                  <input
-                    type="checkbox"
-                    id="optin-check"
-                    required
-                    className="mt-1 size-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-0"
-                  />
-                  <label htmlFor="optin-check" className="text-xs text-slate-300/90 leading-relaxed">
-                    I agree to receive messages and updates from SMG Accounting &amp; Advisory.
-                  </label>
-                </div>
-
-                <p className="text-[0.7rem] text-slate-400/80 pt-1 leading-relaxed">
-                  By submitting this form, you consent to our communication regarding your inquiry. Your information is kept strictly confidential.
-                </p>
-
-                <div className="pt-4 text-center">
-                  <button
-                    type="submit"
-                    className="inline-flex items-center justify-center rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95"
-                  >
-                    SEND
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        </section>
       </main>
 
       <Footer />
