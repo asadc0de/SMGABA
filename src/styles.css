@@ -231,3 +231,34 @@
     transform: translateX(-50%);
   }
 }
+
+@utility animate-flow-dash {
+  stroke-dasharray: 6 6;
+  animation: smg-flow-clockwise 1.6s linear infinite;
+}
+
+@keyframes smg-flow-clockwise {
+  from {
+    stroke-dashoffset: 0;
+  }
+
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
+@utility animate-spin-slow {
+  animation: smg-spin-slow 24s linear infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes smg-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -16,6 +16,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
+import { CoreValues } from "@/components/site/CoreValues";
 
 export const Route = createFileRoute("/about-us")({
   head: () => ({
@@ -30,29 +31,6 @@ export const Route = createFileRoute("/about-us")({
   }),
   component: AboutUsPage,
 });
-
-const CORE_VALUES = [
-  {
-    icon: Users,
-    label: "Dedicated Team",
-  },
-  {
-    icon: Clock,
-    label: "Responsiveness",
-  },
-  {
-    icon: Shield,
-    label: "Integrity",
-  },
-  {
-    icon: Lightbulb,
-    label: "Value, Accuracy and Accessibility",
-  },
-  {
-    icon: Heart,
-    label: "Execute with Passion",
-  },
-];
 
 const FIVE_BENEFITS = [
   "Dedicated Team Member",
@@ -135,31 +113,10 @@ function AboutUsPage() {
         </section>
 
         {/* =========================================================================
-            3. OUR CORE VALUES (5 Circular Navy Medallions in clean row)
+            3. OUR CORE VALUES (5-Petal Flower Radial Diagram matching brand deck)
            ========================================================================= */}
-        <section className="py-20 sm:py-24 bg-[#faf9f6] border-y border-stone-200/70">
-          <div className="mx-auto max-w-6xl px-6 lg:px-10 text-center">
-            <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
-              Our Core Values
-            </h2>
+        <CoreValues />
 
-            <div className="mt-14 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5 items-start justify-center">
-              {CORE_VALUES.map((val) => {
-                const Icon = val.icon;
-                return (
-                  <div key={val.label} className="flex flex-col items-center text-center group">
-                    <div className="flex size-24 sm:size-28 items-center justify-center rounded-full bg-[#14284b] text-white shadow-md transition-transform duration-300 group-hover:scale-110 group-hover:shadow-xl">
-                      <Icon className="size-10 sm:size-12 stroke-[1.5]" />
-                    </div>
-                    <div className="mt-5 font-serif-hero text-base sm:text-lg font-bold text-[#14284b] max-w-[160px] leading-snug">
-                      {val.label}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
 
         {/* =========================================================================
             4. OUR MISSION (Royal Blue Ribbon Banner)
