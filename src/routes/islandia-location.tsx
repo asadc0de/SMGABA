@@ -89,7 +89,7 @@ function IslandiaLocationPage() {
 
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Button asChild size="lg" className="w-full sm:w-auto bg-navy text-white hover:bg-navy/90">
-                      <a href="/contact">
+                      <a href="/bookanappointment">
                         Schedule Appointment <ArrowRight className="ml-2 size-4" />
                       </a>
                     </Button>
