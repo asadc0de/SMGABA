@@ -389,7 +389,7 @@ function TestimonialsPage() {
                       : "bg-white text-slate-600 border border-stone-200 hover:bg-slate-50"
                   }`}
                 >
-                  Hospitality &amp; Food
+                  Hospitality & Food
                 </button>
                 <button
                   type="button"
@@ -400,7 +400,7 @@ function TestimonialsPage() {
                       : "bg-white text-slate-600 border border-stone-200 hover:bg-slate-50"
                   }`}
                 >
-                  Real Estate &amp; Construction
+                  Real Estate & Construction
                 </button>
                 <button
                   type="button"
@@ -411,7 +411,7 @@ function TestimonialsPage() {
                       : "bg-white text-slate-600 border border-stone-200 hover:bg-slate-50"
                   }`}
                 >
-                  General Business &amp; Retail
+                  General Business & Retail
                 </button>
               </div>
             </div>
@@ -553,7 +553,7 @@ function TestimonialsPage() {
                     className="mt-1 size-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-0"
                   />
                   <label htmlFor="optin-check-testimonials" className="text-xs text-slate-300/90 leading-relaxed">
-                    I agree to receive messages and updates from SMG Accounting &amp; Advisory.
+                    I agree to receive messages and updates from SMG Accounting & Advisory.
                   </label>
                 </div>
 

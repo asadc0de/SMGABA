@@ -77,14 +77,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SMG ABA | Accounting, Bookkeeping & Advisory" },
+      {
+        name: "description",
+        content:
+          "SMG is a full-service accounting, bookkeeping, and advisory firm serving hospitality, real estate, and small business owners across NY and FL.",
+      },
+      { name: "author", content: "SMG ABA" },
+      {
+        property: "og:title",
+        content: "SMG ABA | Accounting, Bookkeeping & Advisory",
+      },
+      {
+        property: "og:description",
+        content:
+          "Building relationships with passion, care & responsiveness. Outsourced bookkeeping, CFO advisory, tax services and back office support.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@SMGABALLC" },
     ],
     links: [
       {

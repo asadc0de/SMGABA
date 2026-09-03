@@ -108,7 +108,7 @@ function Index() {
             <div>
               <p className="eyebrow">Welcome to SMG</p>
               <h2 className="mt-3 text-3xl md:text-4xl">
-                A full-service accounting, bookkeeping &amp; advisory firm
+                A full-service accounting, bookkeeping & advisory firm
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
                 SMG is a full-service accounting, bookkeeping, and advisory firm that provides services

@@ -127,7 +127,7 @@ function AboutUsPage() {
               Our Mission
             </h2>
             <p className="mt-3 text-lg sm:text-xl text-blue-50 font-normal">
-              Building Relationships with Passion, Care, &amp; Responsiveness.
+              Building Relationships with Passion, Care, & Responsiveness.
             </p>
             <div className="mt-8">
               <a
