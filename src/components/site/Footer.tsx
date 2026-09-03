@@ -84,7 +84,7 @@ export function Footer() {
               </p>
             </div>
             <Button asChild size="lg" className="shrink-0 rounded-full bg-white text-navy font-bold hover:bg-slate-100 shadow-lg shadow-black/20">
-              <a href="/contact">
+              <a href="/islandia-location">
                 Schedule Now <ArrowUpRight className="ml-2 size-4" />
               </a>
             </Button>
