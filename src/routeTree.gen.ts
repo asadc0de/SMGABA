@@ -12,12 +12,15 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AboutUsRouteImport } from './routes/about-us'
+import { Route as AccountsPayableWebinarRouteImport } from './routes/accounts-payable-webinar'
 import { Route as AutomotiveRouteImport } from './routes/automotive'
 import { Route as BookanappointmentRouteImport } from './routes/bookanappointment'
+import { Route as BusinessStructureWebinarRouteImport } from './routes/business-structure-webinar'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ContactUsRouteImport } from './routes/contact-us'
+import { Route as DressYourBusinessWebinarRouteImport } from './routes/dress-your-business-webinar'
 import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
 import { Route as HospitalityRouteImport } from './routes/hospitality'
@@ -33,6 +36,8 @@ import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RetailRouteImport } from './routes/retail'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TierraVerdeFlRouteImport } from './routes/tierra-verde-fl'
+import { Route as YearEndTaxPlanningWebinarRouteImport } from './routes/year-end-tax-planning-webinar'
+import { Route as YearEndTaxWebinarRouteImport } from './routes/year-end-tax-webinar'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
@@ -56,6 +61,11 @@ const AboutUsRoute = AboutUsRouteImport.update({
   path: '/about-us',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AccountsPayableWebinarRoute = AccountsPayableWebinarRouteImport.update({
+  id: '/accounts-payable-webinar',
+  path: '/accounts-payable-webinar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AutomotiveRoute = AutomotiveRouteImport.update({
   id: '/automotive',
   path: '/automotive',
@@ -66,6 +76,12 @@ const BookanappointmentRoute = BookanappointmentRouteImport.update({
   path: '/bookanappointment',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BusinessStructureWebinarRoute =
+  BusinessStructureWebinarRouteImport.update({
+    id: '/business-structure-webinar',
+    path: '/business-structure-webinar',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const CareersRoute = CareersRouteImport.update({
   id: '/careers',
   path: '/careers',
@@ -86,6 +102,12 @@ const ContactUsRoute = ContactUsRouteImport.update({
   path: '/contact-us',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DressYourBusinessWebinarRoute =
+  DressYourBusinessWebinarRouteImport.update({
+    id: '/dress-your-business-webinar',
+    path: '/dress-your-business-webinar',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const FloridaLocationRoute = FloridaLocationRouteImport.update({
   id: '/florida-location',
   path: '/florida-location',
@@ -161,6 +183,17 @@ const TierraVerdeFlRoute = TierraVerdeFlRouteImport.update({
   path: '/tierra-verde-fl',
   getParentRoute: () => rootRouteImport,
 } as any)
+const YearEndTaxPlanningWebinarRoute =
+  YearEndTaxPlanningWebinarRouteImport.update({
+    id: '/year-end-tax-planning-webinar',
+    path: '/year-end-tax-planning-webinar',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const YearEndTaxWebinarRoute = YearEndTaxWebinarRouteImport.update({
+  id: '/year-end-tax-webinar',
+  path: '/year-end-tax-webinar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -203,12 +236,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
+  '/accounts-payable-webinar': typeof AccountsPayableWebinarRoute
   '/automotive': typeof AutomotiveRoute
   '/bookanappointment': typeof BookanappointmentRoute
+  '/business-structure-webinar': typeof BusinessStructureWebinarRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
   '/contact-us': typeof ContactUsRoute
+  '/dress-your-business-webinar': typeof DressYourBusinessWebinarRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
@@ -224,6 +260,8 @@ export interface FileRoutesByFullPath {
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
+  '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -236,12 +274,15 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
+  '/accounts-payable-webinar': typeof AccountsPayableWebinarRoute
   '/automotive': typeof AutomotiveRoute
   '/bookanappointment': typeof BookanappointmentRoute
+  '/business-structure-webinar': typeof BusinessStructureWebinarRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
   '/contact-us': typeof ContactUsRoute
+  '/dress-your-business-webinar': typeof DressYourBusinessWebinarRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
@@ -257,6 +298,8 @@ export interface FileRoutesByTo {
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
+  '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -270,12 +313,15 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
+  '/accounts-payable-webinar': typeof AccountsPayableWebinarRoute
   '/automotive': typeof AutomotiveRoute
   '/bookanappointment': typeof BookanappointmentRoute
+  '/business-structure-webinar': typeof BusinessStructureWebinarRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
   '/contact-us': typeof ContactUsRoute
+  '/dress-your-business-webinar': typeof DressYourBusinessWebinarRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
@@ -291,6 +337,8 @@ export interface FileRoutesById {
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
+  '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -305,12 +353,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/about-us'
+    | '/accounts-payable-webinar'
     | '/automotive'
     | '/bookanappointment'
+    | '/business-structure-webinar'
     | '/careers'
     | '/construction'
     | '/contact'
     | '/contact-us'
+    | '/dress-your-business-webinar'
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
@@ -326,6 +377,8 @@ export interface FileRouteTypes {
     | '/retail'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/year-end-tax-planning-webinar'
+    | '/year-end-tax-webinar'
     | '/blog/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -338,12 +391,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/about-us'
+    | '/accounts-payable-webinar'
     | '/automotive'
     | '/bookanappointment'
+    | '/business-structure-webinar'
     | '/careers'
     | '/construction'
     | '/contact'
     | '/contact-us'
+    | '/dress-your-business-webinar'
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
@@ -359,6 +415,8 @@ export interface FileRouteTypes {
     | '/retail'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/year-end-tax-planning-webinar'
+    | '/year-end-tax-webinar'
     | '/blog/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -371,12 +429,15 @@ export interface FileRouteTypes {
     | '/'
     | '/$slug'
     | '/about-us'
+    | '/accounts-payable-webinar'
     | '/automotive'
     | '/bookanappointment'
+    | '/business-structure-webinar'
     | '/careers'
     | '/construction'
     | '/contact'
     | '/contact-us'
+    | '/dress-your-business-webinar'
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
@@ -392,6 +453,8 @@ export interface FileRouteTypes {
     | '/retail'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/year-end-tax-planning-webinar'
+    | '/year-end-tax-webinar'
     | '/blog/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -405,12 +468,15 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SlugRoute: typeof SlugRoute
   AboutUsRoute: typeof AboutUsRoute
+  AccountsPayableWebinarRoute: typeof AccountsPayableWebinarRoute
   AutomotiveRoute: typeof AutomotiveRoute
   BookanappointmentRoute: typeof BookanappointmentRoute
+  BusinessStructureWebinarRoute: typeof BusinessStructureWebinarRoute
   CareersRoute: typeof CareersRoute
   ConstructionRoute: typeof ConstructionRoute
   ContactRoute: typeof ContactRoute
   ContactUsRoute: typeof ContactUsRoute
+  DressYourBusinessWebinarRoute: typeof DressYourBusinessWebinarRoute
   FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
   HospitalityRoute: typeof HospitalityRoute
@@ -426,6 +492,8 @@ export interface RootRouteChildren {
   RetailRoute: typeof RetailRoute
   TestimonialsRoute: typeof TestimonialsRoute
   TierraVerdeFlRoute: typeof TierraVerdeFlRoute
+  YearEndTaxPlanningWebinarRoute: typeof YearEndTaxPlanningWebinarRoute
+  YearEndTaxWebinarRoute: typeof YearEndTaxWebinarRoute
   BlogSlugRoute: typeof BlogSlugRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
   SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
@@ -458,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutUsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/accounts-payable-webinar': {
+      id: '/accounts-payable-webinar'
+      path: '/accounts-payable-webinar'
+      fullPath: '/accounts-payable-webinar'
+      preLoaderRoute: typeof AccountsPayableWebinarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/automotive': {
       id: '/automotive'
       path: '/automotive'
@@ -470,6 +545,13 @@ declare module '@tanstack/react-router' {
       path: '/bookanappointment'
       fullPath: '/bookanappointment'
       preLoaderRoute: typeof BookanappointmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business-structure-webinar': {
+      id: '/business-structure-webinar'
+      path: '/business-structure-webinar'
+      fullPath: '/business-structure-webinar'
+      preLoaderRoute: typeof BusinessStructureWebinarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/careers': {
@@ -498,6 +580,13 @@ declare module '@tanstack/react-router' {
       path: '/contact-us'
       fullPath: '/contact-us'
       preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dress-your-business-webinar': {
+      id: '/dress-your-business-webinar'
+      path: '/dress-your-business-webinar'
+      fullPath: '/dress-your-business-webinar'
+      preLoaderRoute: typeof DressYourBusinessWebinarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/florida-location': {
@@ -605,6 +694,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TierraVerdeFlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/year-end-tax-planning-webinar': {
+      id: '/year-end-tax-planning-webinar'
+      path: '/year-end-tax-planning-webinar'
+      fullPath: '/year-end-tax-planning-webinar'
+      preLoaderRoute: typeof YearEndTaxPlanningWebinarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/year-end-tax-webinar': {
+      id: '/year-end-tax-webinar'
+      path: '/year-end-tax-webinar'
+      fullPath: '/year-end-tax-webinar'
+      preLoaderRoute: typeof YearEndTaxWebinarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -661,12 +764,15 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
   AboutUsRoute: AboutUsRoute,
+  AccountsPayableWebinarRoute: AccountsPayableWebinarRoute,
   AutomotiveRoute: AutomotiveRoute,
   BookanappointmentRoute: BookanappointmentRoute,
+  BusinessStructureWebinarRoute: BusinessStructureWebinarRoute,
   CareersRoute: CareersRoute,
   ConstructionRoute: ConstructionRoute,
   ContactRoute: ContactRoute,
   ContactUsRoute: ContactUsRoute,
+  DressYourBusinessWebinarRoute: DressYourBusinessWebinarRoute,
   FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,
   HospitalityRoute: HospitalityRoute,
@@ -682,6 +788,8 @@ const rootRouteChildren: RootRouteChildren = {
   RetailRoute: RetailRoute,
   TestimonialsRoute: TestimonialsRoute,
   TierraVerdeFlRoute: TierraVerdeFlRoute,
+  YearEndTaxPlanningWebinarRoute: YearEndTaxPlanningWebinarRoute,
+  YearEndTaxWebinarRoute: YearEndTaxWebinarRoute,
   BlogSlugRoute: BlogSlugRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
   SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
