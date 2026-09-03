@@ -1,5 +1,6 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, redirect, notFound } from "@tanstack/react-router";
 import { getBlogPostBySlug, BLOG_POSTS } from "@/data/blogPosts";
+import { LEGACY_BLOG_SLUGS } from "@/data/legacyRedirects";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -7,6 +8,13 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/$slug")({
+  beforeLoad: ({ params }) => {
+    // If this slug is a known legacy blog post, 301 to the canonical /blog/<slug> URL.
+    // Old WordPress site served posts at root level; new site serves them under /blog/.
+    if (LEGACY_BLOG_SLUGS.has(params.slug)) {
+      throw redirect({ to: `/blog/${params.slug}`, statusCode: 301 });
+    }
+  },
   head: ({ params }) => {
     const post = getBlogPostBySlug(params.slug);
     if (!post) {
@@ -41,9 +49,7 @@ function DynamicSlugPage() {
         <main className="py-32 px-6 text-center">
           <div className="mx-auto max-w-md card-surface p-10">
             <BookOpen className="mx-auto size-12 text-muted-foreground" />
-            <h1 className="mt-4 font-serif-hero text-2xl font-bold text-navy">
-              Page Not Found
-            </h1>
+            <h1 className="mt-4 font-serif-hero text-2xl font-bold text-navy">Page Not Found</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               The article or page you are looking for does not exist or has been moved.
             </p>

@@ -24,18 +24,23 @@ import { Route as DressYourBusinessWebinarRouteImport } from './routes/dress-you
 import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
 import { Route as HospitalityRouteImport } from './routes/hospitality'
+import { Route as HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018RouteImport } from './routes/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+import { Route as HospitalityNewsletterNysnycLegalEditionJune2019RouteImport } from './routes/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+import { Route as HospitalityNewsletterSustainabilityEditionOctober2018RouteImport } from './routes/hospitality-newsletter-sustainability-edition-october-2018'
 import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as IslandiaLocationRouteImport } from './routes/islandia-location'
 import { Route as LegalProfessionalsRouteImport } from './routes/legal-professionals'
 import { Route as ManufacturersRouteImport } from './routes/manufacturers'
 import { Route as NewYorkCityLocationRouteImport } from './routes/new-york-city-location'
 import { Route as OurTeamRouteImport } from './routes/our-team'
+import { Route as PppForgivenessGuidancePart1RouteImport } from './routes/ppp-forgiveness-guidance-part-1'
 import { Route as PrivacyPolicy2RouteImport } from './routes/privacy-policy-2'
 import { Route as RealEstateRouteImport } from './routes/real-estate'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RetailRouteImport } from './routes/retail'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as TierraVerdeFlRouteImport } from './routes/tierra-verde-fl'
+import { Route as WebinarThePppFlexibilityActRouteImport } from './routes/webinar-the-ppp-flexibility-act'
 import { Route as YearEndTaxPlanningWebinarRouteImport } from './routes/year-end-tax-planning-webinar'
 import { Route as YearEndTaxWebinarRouteImport } from './routes/year-end-tax-webinar'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
@@ -123,6 +128,26 @@ const HospitalityRoute = HospitalityRouteImport.update({
   path: '/hospitality',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route =
+  HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018RouteImport.update(
+    {
+      id: '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018',
+      path: '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018',
+      getParentRoute: () => rootRouteImport,
+    } as any,
+  )
+const HospitalityNewsletterNysnycLegalEditionJune2019Route =
+  HospitalityNewsletterNysnycLegalEditionJune2019RouteImport.update({
+    id: '/hospitality-newsletter-nysnyc-legal-edition-june-2019',
+    path: '/hospitality-newsletter-nysnyc-legal-edition-june-2019',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const HospitalityNewsletterSustainabilityEditionOctober2018Route =
+  HospitalityNewsletterSustainabilityEditionOctober2018RouteImport.update({
+    id: '/hospitality-newsletter-sustainability-edition-october-2018',
+    path: '/hospitality-newsletter-sustainability-edition-october-2018',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const IndustriesRoute = IndustriesRouteImport.update({
   id: '/industries',
   path: '/industries',
@@ -153,6 +178,12 @@ const OurTeamRoute = OurTeamRouteImport.update({
   path: '/our-team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PppForgivenessGuidancePart1Route =
+  PppForgivenessGuidancePart1RouteImport.update({
+    id: '/ppp-forgiveness-guidance-part-1',
+    path: '/ppp-forgiveness-guidance-part-1',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PrivacyPolicy2Route = PrivacyPolicy2RouteImport.update({
   id: '/privacy-policy-2',
   path: '/privacy-policy-2',
@@ -183,6 +214,12 @@ const TierraVerdeFlRoute = TierraVerdeFlRouteImport.update({
   path: '/tierra-verde-fl',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WebinarThePppFlexibilityActRoute =
+  WebinarThePppFlexibilityActRouteImport.update({
+    id: '/webinar-the-ppp-flexibility-act',
+    path: '/webinar-the-ppp-flexibility-act',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const YearEndTaxPlanningWebinarRoute =
   YearEndTaxPlanningWebinarRouteImport.update({
     id: '/year-end-tax-planning-webinar',
@@ -248,18 +285,23 @@ export interface FileRoutesByFullPath {
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
+  '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018': typeof HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route
+  '/hospitality-newsletter-nysnyc-legal-edition-june-2019': typeof HospitalityNewsletterNysnycLegalEditionJune2019Route
+  '/hospitality-newsletter-sustainability-edition-october-2018': typeof HospitalityNewsletterSustainabilityEditionOctober2018Route
   '/industries': typeof IndustriesRoute
   '/islandia-location': typeof IslandiaLocationRoute
   '/legal-professionals': typeof LegalProfessionalsRoute
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/ppp-forgiveness-guidance-part-1': typeof PppForgivenessGuidancePart1Route
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/webinar-the-ppp-flexibility-act': typeof WebinarThePppFlexibilityActRoute
   '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
   '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -286,18 +328,23 @@ export interface FileRoutesByTo {
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
+  '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018': typeof HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route
+  '/hospitality-newsletter-nysnyc-legal-edition-june-2019': typeof HospitalityNewsletterNysnycLegalEditionJune2019Route
+  '/hospitality-newsletter-sustainability-edition-october-2018': typeof HospitalityNewsletterSustainabilityEditionOctober2018Route
   '/industries': typeof IndustriesRoute
   '/islandia-location': typeof IslandiaLocationRoute
   '/legal-professionals': typeof LegalProfessionalsRoute
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/ppp-forgiveness-guidance-part-1': typeof PppForgivenessGuidancePart1Route
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/webinar-the-ppp-flexibility-act': typeof WebinarThePppFlexibilityActRoute
   '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
   '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -325,18 +372,23 @@ export interface FileRoutesById {
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
+  '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018': typeof HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route
+  '/hospitality-newsletter-nysnyc-legal-edition-june-2019': typeof HospitalityNewsletterNysnycLegalEditionJune2019Route
+  '/hospitality-newsletter-sustainability-edition-october-2018': typeof HospitalityNewsletterSustainabilityEditionOctober2018Route
   '/industries': typeof IndustriesRoute
   '/islandia-location': typeof IslandiaLocationRoute
   '/legal-professionals': typeof LegalProfessionalsRoute
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/ppp-forgiveness-guidance-part-1': typeof PppForgivenessGuidancePart1Route
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/tierra-verde-fl': typeof TierraVerdeFlRoute
+  '/webinar-the-ppp-flexibility-act': typeof WebinarThePppFlexibilityActRoute
   '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
   '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -365,18 +417,23 @@ export interface FileRouteTypes {
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
+    | '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+    | '/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+    | '/hospitality-newsletter-sustainability-edition-october-2018'
     | '/industries'
     | '/islandia-location'
     | '/legal-professionals'
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/ppp-forgiveness-guidance-part-1'
     | '/privacy-policy-2'
     | '/real-estate'
     | '/resources'
     | '/retail'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/webinar-the-ppp-flexibility-act'
     | '/year-end-tax-planning-webinar'
     | '/year-end-tax-webinar'
     | '/blog/$slug'
@@ -403,18 +460,23 @@ export interface FileRouteTypes {
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
+    | '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+    | '/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+    | '/hospitality-newsletter-sustainability-edition-october-2018'
     | '/industries'
     | '/islandia-location'
     | '/legal-professionals'
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/ppp-forgiveness-guidance-part-1'
     | '/privacy-policy-2'
     | '/real-estate'
     | '/resources'
     | '/retail'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/webinar-the-ppp-flexibility-act'
     | '/year-end-tax-planning-webinar'
     | '/year-end-tax-webinar'
     | '/blog/$slug'
@@ -441,18 +503,23 @@ export interface FileRouteTypes {
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
+    | '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+    | '/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+    | '/hospitality-newsletter-sustainability-edition-october-2018'
     | '/industries'
     | '/islandia-location'
     | '/legal-professionals'
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/ppp-forgiveness-guidance-part-1'
     | '/privacy-policy-2'
     | '/real-estate'
     | '/resources'
     | '/retail'
     | '/testimonials'
     | '/tierra-verde-fl'
+    | '/webinar-the-ppp-flexibility-act'
     | '/year-end-tax-planning-webinar'
     | '/year-end-tax-webinar'
     | '/blog/$slug'
@@ -480,18 +547,23 @@ export interface RootRouteChildren {
   FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
   HospitalityRoute: typeof HospitalityRoute
+  HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route: typeof HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route
+  HospitalityNewsletterNysnycLegalEditionJune2019Route: typeof HospitalityNewsletterNysnycLegalEditionJune2019Route
+  HospitalityNewsletterSustainabilityEditionOctober2018Route: typeof HospitalityNewsletterSustainabilityEditionOctober2018Route
   IndustriesRoute: typeof IndustriesRoute
   IslandiaLocationRoute: typeof IslandiaLocationRoute
   LegalProfessionalsRoute: typeof LegalProfessionalsRoute
   ManufacturersRoute: typeof ManufacturersRoute
   NewYorkCityLocationRoute: typeof NewYorkCityLocationRoute
   OurTeamRoute: typeof OurTeamRoute
+  PppForgivenessGuidancePart1Route: typeof PppForgivenessGuidancePart1Route
   PrivacyPolicy2Route: typeof PrivacyPolicy2Route
   RealEstateRoute: typeof RealEstateRoute
   ResourcesRoute: typeof ResourcesRoute
   RetailRoute: typeof RetailRoute
   TestimonialsRoute: typeof TestimonialsRoute
   TierraVerdeFlRoute: typeof TierraVerdeFlRoute
+  WebinarThePppFlexibilityActRoute: typeof WebinarThePppFlexibilityActRoute
   YearEndTaxPlanningWebinarRoute: typeof YearEndTaxPlanningWebinarRoute
   YearEndTaxWebinarRoute: typeof YearEndTaxWebinarRoute
   BlogSlugRoute: typeof BlogSlugRoute
@@ -610,6 +682,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HospitalityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018': {
+      id: '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+      path: '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+      fullPath: '/hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018'
+      preLoaderRoute: typeof HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hospitality-newsletter-nysnyc-legal-edition-june-2019': {
+      id: '/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+      path: '/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+      fullPath: '/hospitality-newsletter-nysnyc-legal-edition-june-2019'
+      preLoaderRoute: typeof HospitalityNewsletterNysnycLegalEditionJune2019RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hospitality-newsletter-sustainability-edition-october-2018': {
+      id: '/hospitality-newsletter-sustainability-edition-october-2018'
+      path: '/hospitality-newsletter-sustainability-edition-october-2018'
+      fullPath: '/hospitality-newsletter-sustainability-edition-october-2018'
+      preLoaderRoute: typeof HospitalityNewsletterSustainabilityEditionOctober2018RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/industries': {
       id: '/industries'
       path: '/industries'
@@ -652,6 +745,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OurTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ppp-forgiveness-guidance-part-1': {
+      id: '/ppp-forgiveness-guidance-part-1'
+      path: '/ppp-forgiveness-guidance-part-1'
+      fullPath: '/ppp-forgiveness-guidance-part-1'
+      preLoaderRoute: typeof PppForgivenessGuidancePart1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy-policy-2': {
       id: '/privacy-policy-2'
       path: '/privacy-policy-2'
@@ -692,6 +792,13 @@ declare module '@tanstack/react-router' {
       path: '/tierra-verde-fl'
       fullPath: '/tierra-verde-fl'
       preLoaderRoute: typeof TierraVerdeFlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/webinar-the-ppp-flexibility-act': {
+      id: '/webinar-the-ppp-flexibility-act'
+      path: '/webinar-the-ppp-flexibility-act'
+      fullPath: '/webinar-the-ppp-flexibility-act'
+      preLoaderRoute: typeof WebinarThePppFlexibilityActRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/year-end-tax-planning-webinar': {
@@ -776,18 +883,26 @@ const rootRouteChildren: RootRouteChildren = {
   FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,
   HospitalityRoute: HospitalityRoute,
+  HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route:
+    HospitalityNewsletterFeaturingDineMarketAndProInsuranceAgencyHrComplianceEditionJuly2018Route,
+  HospitalityNewsletterNysnycLegalEditionJune2019Route:
+    HospitalityNewsletterNysnycLegalEditionJune2019Route,
+  HospitalityNewsletterSustainabilityEditionOctober2018Route:
+    HospitalityNewsletterSustainabilityEditionOctober2018Route,
   IndustriesRoute: IndustriesRoute,
   IslandiaLocationRoute: IslandiaLocationRoute,
   LegalProfessionalsRoute: LegalProfessionalsRoute,
   ManufacturersRoute: ManufacturersRoute,
   NewYorkCityLocationRoute: NewYorkCityLocationRoute,
   OurTeamRoute: OurTeamRoute,
+  PppForgivenessGuidancePart1Route: PppForgivenessGuidancePart1Route,
   PrivacyPolicy2Route: PrivacyPolicy2Route,
   RealEstateRoute: RealEstateRoute,
   ResourcesRoute: ResourcesRoute,
   RetailRoute: RetailRoute,
   TestimonialsRoute: TestimonialsRoute,
   TierraVerdeFlRoute: TierraVerdeFlRoute,
+  WebinarThePppFlexibilityActRoute: WebinarThePppFlexibilityActRoute,
   YearEndTaxPlanningWebinarRoute: YearEndTaxPlanningWebinarRoute,
   YearEndTaxWebinarRoute: YearEndTaxWebinarRoute,
   BlogSlugRoute: BlogSlugRoute,
