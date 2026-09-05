@@ -1,6 +1,7 @@
-import { createFileRoute, redirect, notFound } from "@tanstack/react-router";
+import { createFileRoute, redirect, notFound, isRedirect } from "@tanstack/react-router";
 import { getBlogPostBySlug, BLOG_POSTS } from "@/data/blogPosts";
-import { LEGACY_BLOG_SLUGS } from "@/data/legacyRedirects";
+import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
+import { resolveWebinarSlug } from "@/lib/webinar-redirects";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -8,11 +9,40 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/$slug")({
-  beforeLoad: ({ params }) => {
-    // If this slug is a known legacy blog post, 301 to the canonical /blog/<slug> URL.
+  beforeLoad: async ({ params }) => {
+    // 1. Skip static assets, favicon, system paths
+    if (params.slug.includes(".") || params.slug === "internal" || params.slug === "tools") {
+      return;
+    }
+
+    // 2. If this slug is a known legacy blog post, 301 to the canonical /blog/<slug> URL.
     // Old WordPress site served posts at root level; new site serves them under /blog/.
     if (LEGACY_BLOG_SLUGS.has(params.slug)) {
       throw redirect({ to: `/blog/${params.slug}`, statusCode: 301 });
+    }
+
+    // 2. Check stale sitemap static fallback redirects if any
+    if (STALE_SITEMAP_REDIRECTS && STALE_SITEMAP_REDIRECTS[params.slug]) {
+      throw redirect({ to: STALE_SITEMAP_REDIRECTS[params.slug], statusCode: 301 });
+    }
+
+    // 3. Check dynamic webinar redirect from Supabase
+    try {
+      const webinarTarget = await resolveWebinarSlug({ data: params.slug });
+      if (webinarTarget) {
+        if (webinarTarget.startsWith("http://") || webinarTarget.startsWith("https://")) {
+          throw redirect({ href: webinarTarget, statusCode: 301 });
+        } else {
+          throw redirect({ to: webinarTarget, statusCode: 301 });
+        }
+      }
+    } catch (err) {
+      // If it's a redirect, rethrow it
+      if (isRedirect(err)) {
+        throw err;
+      }
+      // Otherwise log and allow falling through to blog/not found
+      console.warn(`[webinar-redirect] lookup skipped for "${params.slug}":`, err);
     }
   },
   head: ({ params }) => {

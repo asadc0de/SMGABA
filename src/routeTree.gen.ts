@@ -45,11 +45,14 @@ import { Route as YearEndTaxPlanningWebinarRouteImport } from './routes/year-end
 import { Route as YearEndTaxWebinarRouteImport } from './routes/year-end-tax-webinar'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
 import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/bookkeeping'
 import { Route as SolutionsCfoAdvisoryServicesRouteImport } from './routes/solutions/cfo-advisory-services'
 import { Route as SolutionsTaxRouteImport } from './routes/solutions/tax'
 import { Route as SolutionsWealthManagementRouteImport } from './routes/solutions/wealth-management'
+import { Route as ToolsLinksRouteImport } from './routes/tools/links'
+import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -241,6 +244,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InternalWebinarLinksRoute = InternalWebinarLinksRouteImport.update({
+  id: '/internal/webinar-links',
+  path: '/internal/webinar-links',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SolutionsIndexRoute = SolutionsIndexRouteImport.update({
   id: '/solutions/',
   path: '/solutions/',
@@ -268,6 +276,16 @@ const SolutionsWealthManagementRoute =
     path: '/solutions/wealth-management',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ToolsLinksRoute = ToolsLinksRouteImport.update({
+  id: '/tools/links',
+  path: '/tools/links',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsRedirectionsRoute = ToolsRedirectionsRouteImport.update({
+  id: '/tools/redirections',
+  path: '/tools/redirections',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -305,10 +323,13 @@ export interface FileRoutesByFullPath {
   '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
   '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/tools/links': typeof ToolsLinksRoute
+  '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
 }
@@ -348,10 +369,13 @@ export interface FileRoutesByTo {
   '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
   '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/tools/links': typeof ToolsLinksRoute
+  '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog': typeof BlogIndexRoute
   '/solutions': typeof SolutionsIndexRoute
 }
@@ -392,10 +416,13 @@ export interface FileRoutesById {
   '/year-end-tax-planning-webinar': typeof YearEndTaxPlanningWebinarRoute
   '/year-end-tax-webinar': typeof YearEndTaxWebinarRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/tools/links': typeof ToolsLinksRoute
+  '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
 }
@@ -437,10 +464,13 @@ export interface FileRouteTypes {
     | '/year-end-tax-planning-webinar'
     | '/year-end-tax-webinar'
     | '/blog/$slug'
+    | '/internal/webinar-links'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
     | '/solutions/wealth-management'
+    | '/tools/links'
+    | '/tools/redirections'
     | '/blog/'
     | '/solutions/'
   fileRoutesByTo: FileRoutesByTo
@@ -480,10 +510,13 @@ export interface FileRouteTypes {
     | '/year-end-tax-planning-webinar'
     | '/year-end-tax-webinar'
     | '/blog/$slug'
+    | '/internal/webinar-links'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
     | '/solutions/wealth-management'
+    | '/tools/links'
+    | '/tools/redirections'
     | '/blog'
     | '/solutions'
   id:
@@ -523,10 +556,13 @@ export interface FileRouteTypes {
     | '/year-end-tax-planning-webinar'
     | '/year-end-tax-webinar'
     | '/blog/$slug'
+    | '/internal/webinar-links'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
     | '/solutions/wealth-management'
+    | '/tools/links'
+    | '/tools/redirections'
     | '/blog/'
     | '/solutions/'
   fileRoutesById: FileRoutesById
@@ -567,10 +603,13 @@ export interface RootRouteChildren {
   YearEndTaxPlanningWebinarRoute: typeof YearEndTaxPlanningWebinarRoute
   YearEndTaxWebinarRoute: typeof YearEndTaxWebinarRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
   SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
   SolutionsTaxRoute: typeof SolutionsTaxRoute
   SolutionsWealthManagementRoute: typeof SolutionsWealthManagementRoute
+  ToolsLinksRoute: typeof ToolsLinksRoute
+  ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
   BlogIndexRoute: typeof BlogIndexRoute
   SolutionsIndexRoute: typeof SolutionsIndexRoute
 }
@@ -829,6 +868,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/internal/webinar-links': {
+      id: '/internal/webinar-links'
+      path: '/internal/webinar-links'
+      fullPath: '/internal/webinar-links'
+      preLoaderRoute: typeof InternalWebinarLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/solutions/': {
       id: '/solutions/'
       path: '/solutions'
@@ -862,6 +908,20 @@ declare module '@tanstack/react-router' {
       path: '/solutions/wealth-management'
       fullPath: '/solutions/wealth-management'
       preLoaderRoute: typeof SolutionsWealthManagementRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/links': {
+      id: '/tools/links'
+      path: '/tools/links'
+      fullPath: '/tools/links'
+      preLoaderRoute: typeof ToolsLinksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/redirections': {
+      id: '/tools/redirections'
+      path: '/tools/redirections'
+      fullPath: '/tools/redirections'
+      preLoaderRoute: typeof ToolsRedirectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -906,10 +966,13 @@ const rootRouteChildren: RootRouteChildren = {
   YearEndTaxPlanningWebinarRoute: YearEndTaxPlanningWebinarRoute,
   YearEndTaxWebinarRoute: YearEndTaxWebinarRoute,
   BlogSlugRoute: BlogSlugRoute,
+  InternalWebinarLinksRoute: InternalWebinarLinksRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
   SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
   SolutionsTaxRoute: SolutionsTaxRoute,
   SolutionsWealthManagementRoute: SolutionsWealthManagementRoute,
+  ToolsLinksRoute: ToolsLinksRoute,
+  ToolsRedirectionsRoute: ToolsRedirectionsRoute,
   BlogIndexRoute: BlogIndexRoute,
   SolutionsIndexRoute: SolutionsIndexRoute,
 }
