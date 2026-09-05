@@ -229,24 +229,29 @@ export async function lookupWebinarRedirect(rawSlug: string): Promise<string | n
 
   const client = getSupabaseServerClient();
 
-  if (!client) {
-    const fallback = localFallbackRedirects.get(slug);
-    return fallback ? fallback.target_url : null;
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from("webinar_redirects")
+        .select("target_url")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (!error && data?.target_url) {
+        return data.target_url;
+      }
+    } catch (e) {
+      console.error(`[Supabase] Error resolving slug "${slug}":`, e);
+    }
   }
 
-  const { data, error } = await client
-    .from("webinar_redirects")
-    .select("target_url")
-    .eq("slug", slug)
-    .maybeSingle();
-
-  if (error) {
-    console.error(`[Supabase] Error resolving slug "${slug}":`, error.message);
-    const fallback = localFallbackRedirects.get(slug);
-    return fallback ? fallback.target_url : null;
+  // Fallback to static webinar redirects or local memory
+  if (WEBINAR_REDIRECTS[slug]) {
+    return WEBINAR_REDIRECTS[slug];
   }
 
-  return data?.target_url || null;
+  const fallback = localFallbackRedirects.get(slug);
+  return fallback ? fallback.target_url : null;
 }
 
 /**

@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, notFound, isRedirect } from "@tanstack/react-router";
 import { getBlogPostBySlug, BLOG_POSTS } from "@/data/blogPosts";
 import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
+import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 import { resolveWebinarSlug } from "@/lib/webinar-redirects";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
@@ -21,9 +22,14 @@ export const Route = createFileRoute("/$slug")({
       throw redirect({ to: `/blog/${params.slug}`, statusCode: 301 });
     }
 
-    // 2. Check stale sitemap static fallback redirects if any
+    // 3. Check stale sitemap static fallback redirects if any
     if (STALE_SITEMAP_REDIRECTS && STALE_SITEMAP_REDIRECTS[params.slug]) {
       throw redirect({ to: STALE_SITEMAP_REDIRECTS[params.slug], statusCode: 301 });
+    }
+
+    // 4. Check static webinar redirect fallback
+    if (WEBINAR_REDIRECTS && WEBINAR_REDIRECTS[params.slug]) {
+      throw redirect({ href: WEBINAR_REDIRECTS[params.slug], statusCode: 301 });
     }
 
     // 3. Check dynamic webinar redirect from Supabase

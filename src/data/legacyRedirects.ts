@@ -56,4 +56,8 @@ export const STALE_SITEMAP_REDIRECTS: Record<string, string> = {
   "hospitality-newsletter-sustainability-edition-october-2018": "/hospitality",
   "hospitality-newsletter-featuring-dine-market-and-pro-insurance-agency-hr-compliance-edition-july-2018":
     "/hospitality",
+  "contact-us": "/islandia-location",
+  "contact": "/islandia-location",
+  "tierra-verde-fl": "/florida-location",
 };
+
