@@ -17,6 +17,7 @@ import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { CoreValues } from "@/components/site/CoreValues";
+import { IntegrationsMarquee } from "@/components/site/IntegrationsMarquee";
 
 export const Route = createFileRoute("/about-us")({
   head: () => ({
@@ -81,7 +82,7 @@ function AboutUsPage() {
             2. THE SMG ADVANTAGE / CHANGING THE GAME (Clean, Centered, Elegant)
            ========================================================================= */}
         <section className="py-20 sm:py-28 bg-white">
-          <div className="mx-auto max-w-4xl px-6 lg:px-10 text-center">
+          <div className="mx-auto max-w-6xl px-6 lg:px-12 text-center">
             <h2 className="font-serif-hero text-2xl sm:text-3xl font-bold text-[#142340] tracking-tight">
               The SMG Advantage
             </h2>
@@ -89,7 +90,7 @@ function AboutUsPage() {
               Changing the Game
             </h3>
 
-            <div className="mt-10 space-y-6 text-left text-base sm:text-[1.05rem] leading-relaxed text-slate-600 font-normal">
+            <div className="mt-10 space-y-6 text-left text-base sm:text-lg leading-relaxed text-slate-600 font-normal">
               <p>
                 SMG provides accounting, bookkeeping and account management to diverse businesses and individuals. Whether business, personal or non-profit we partner and work with you to understand your real-time.
               </p>
@@ -111,6 +112,11 @@ function AboutUsPage() {
             </div>
           </div>
         </section>
+
+        {/* =========================================================================
+            INTEGRATIONS MARQUEE
+           ========================================================================= */}
+        <IntegrationsMarquee />
 
         {/* =========================================================================
             3. OUR CORE VALUES (5-Petal Flower Radial Diagram matching brand deck)

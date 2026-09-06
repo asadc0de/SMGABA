@@ -274,7 +274,7 @@ function CreateRedirectPage() {
                     <Input
                       id="admin-pass"
                       type={showPassword ? "text" : "password"}
-                      placeholder="webinar admin password"
+                      placeholder="Enter webinar admin password"
                       value={passwordInput}
                       onChange={(e) => {
                         setPasswordInput(e.target.value);
