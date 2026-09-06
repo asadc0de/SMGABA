@@ -239,17 +239,24 @@ export function Footer() {
             <h4 className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">Our Offices</h4>
             <div className="mt-4 space-y-5">
               {OFFICES.map((office) => (
-                <a key={office.name} href={office.href} className="group block rounded-xl border border-white/8 bg-white/[0.03] p-4 transition-all hover:border-blue-400/20 hover:bg-white/[0.06]">
-                  <div className="text-xs font-bold uppercase tracking-wider text-white/90">{office.name}</div>
+                <div key={office.name} className="group block rounded-xl border border-white/8 bg-white/[0.03] p-4 transition-all hover:border-blue-400/20 hover:bg-white/[0.06]">
+                  <a href={office.href} className="text-xs font-bold uppercase tracking-wider text-white/90 hover:text-blue-300 transition-colors block">
+                    {office.name}
+                  </a>
                   <div className="mt-1.5 flex items-start gap-2 text-xs text-slate-400">
                     <MapPin className="mt-0.5 size-3 shrink-0 text-blue-400/60" />
                     <span>{office.address}</span>
                   </div>
                   <div className="mt-1.5 flex items-center gap-2 text-xs text-slate-400">
                     <Phone className="size-3 shrink-0 text-blue-400/60" />
-                    <span className="font-medium text-slate-300">{office.phone}</span>
+                    <a
+                      href={`tel:${office.phone.replace(/\D/g, "")}`}
+                      className="font-medium text-slate-300 hover:text-white hover:underline transition-colors"
+                    >
+                      {office.phone}
+                    </a>
                   </div>
-                </a>
+                </div>
               ))}
             </div>
           </div>

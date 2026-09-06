@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useLocation,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -11,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { setupGlobalAnalyticsListeners, trackPageView } from "../lib/trackEvent";
 
 function NotFoundComponent() {
   return (
@@ -115,9 +117,30 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
+        {/* Google Tag Manager */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NM3WDPXD');`,
+          }}
+        />
+        {/* End Google Tag Manager */}
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-NM3WDPXD"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
         {children}
         <Scripts />
       </body>
@@ -127,6 +150,22 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const location = useLocation();
+
+  useEffect(() => {
+    // Setup global analytics listeners (phone clicks, CTA buttons, Calendly postMessages)
+    const cleanup = setupGlobalAnalyticsListeners();
+    return cleanup;
+  }, []);
+
+  useEffect(() => {
+    // SPA virtual pageview tracking on every route navigation
+    const timer = setTimeout(() => {
+      trackPageView(location.pathname, document.title);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname, location.search]);
 
   return (
     <QueryClientProvider client={queryClient}>
