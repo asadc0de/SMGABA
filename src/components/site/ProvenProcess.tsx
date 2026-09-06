@@ -92,7 +92,7 @@ export function ProvenProcess() {
   const [activeStep, setActiveStep] = useState<number>(0);
 
   return (
-    <section className="section-y bg-background relative overflow-hidden" id="proven-process">
+    <section className="pt-2 pb-16 md:pt-4 md:pb-28 bg-background relative overflow-hidden" id="proven-process">
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 -right-28 size-96 bg-mist/30 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute bottom-12 -left-28 size-96 bg-primary/8 rounded-full blur-3xl pointer-events-none -z-10" />

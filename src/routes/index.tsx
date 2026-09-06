@@ -163,7 +163,7 @@ function Index() {
         </section>
 
         {/* 5 — Our Solutions */}
-        <section className="section-y" id="solutions">
+        <section className="pt-16 pb-4 md:pt-24 md:pb-6" id="solutions">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <p className="eyebrow">What we do</p>
