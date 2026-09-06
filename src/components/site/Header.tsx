@@ -484,29 +484,63 @@ export function Header() {
               >
                 {item.children ? (
                   <div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setOpenGroup((g) =>
-                          g === item.label ? null : item.label
-                        )
-                      }
-                      className={cn(
-                        "flex w-full items-center justify-between py-2.5 text-left text-sm font-bold uppercase tracking-wider",
-                        active ? "text-[#38bdf8]" : "text-white"
-                      )}
-                    >
-                      <span>{item.label}</span>
-                      <ChevronDown
+                    <div className="flex w-full items-center justify-between py-1">
+                      <a
+                        href={item.href}
+                        onClick={() => setOpen(false)}
                         className={cn(
-                          "size-4 transition-transform",
-                          openGroup === item.label &&
-                          "rotate-180 text-blue-400"
+                          "py-1.5 text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#38bdf8]",
+                          active ? "text-[#38bdf8]" : "text-white"
                         )}
-                      />
-                    </button>
+                      >
+                        {item.label}
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenGroup((g) =>
+                            g === item.label ? null : item.label
+                          )
+                        }
+                        aria-label={`Toggle ${item.label} submenu`}
+                        className="flex size-9 items-center justify-center rounded-lg text-white/70 transition-colors hover:bg-white/10 hover:text-white active:bg-white/15"
+                      >
+                        <ChevronDown
+                          className={cn(
+                            "size-4.5 transition-transform duration-200",
+                            openGroup === item.label &&
+                              "rotate-180 text-[#38bdf8]"
+                          )}
+                        />
+                      </button>
+                    </div>
+
                     {openGroup === item.label && (
                       <div className="mb-2 space-y-1 rounded-xl bg-white/5 p-2.5">
+                        <a
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          className={cn(
+                            "flex items-center justify-between rounded-lg p-2 text-xs font-bold transition-colors border-b border-white/10 pb-2 mb-1.5",
+                            pathname === item.href
+                              ? "bg-[#38bdf8]/15 text-[#38bdf8]"
+                              : "text-blue-300 hover:bg-white/10 hover:text-white"
+                          )}
+                        >
+                          <span>
+                            {item.label === "SOLUTIONS"
+                              ? "Explore All Solutions"
+                              : item.label === "INDUSTRIES"
+                              ? "Explore All Industries"
+                              : item.label === "NEWSLETTERS"
+                              ? "All Newsletters & Blog"
+                              : item.label === "CONTACT"
+                              ? "All Contact & Locations"
+                              : `All ${item.label}`}
+                          </span>
+                          <ArrowRight className="size-3.5" />
+                        </a>
+
                         {item.children.map((child) => {
                           const childActive = isChildActive(child.href);
                           return (
