@@ -31,6 +31,7 @@ import {
   EyeOff,
   ListFilter,
   Sparkles,
+  Calendar,
 } from "lucide-react";
 
 const searchSchema = z.object({
@@ -350,6 +351,17 @@ function CreateRedirectPage() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2.5 flex-wrap">
+                <Button
+                  asChild
+                  variant="outline"
+                  className="rounded-xl border-navy/20 text-navy hover:bg-navy hover:text-white font-semibold text-xs transition-colors"
+                >
+                  <Link to="/tools/events">
+                    <Calendar className="mr-1.5 size-3.5" />
+                    Events & Webinars
+                  </Link>
+                </Button>
+
                 <Button
                   asChild
                   className="rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold shadow-xs transition-colors"

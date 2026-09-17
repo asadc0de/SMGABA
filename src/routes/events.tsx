@@ -1,0 +1,352 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
+import {
+  Calendar as CalendarIcon,
+  Clock,
+  User,
+  ExternalLink,
+  Play,
+  Video,
+  Sparkles,
+  Layers,
+  ChevronRight,
+  ShieldCheck,
+  AlertCircle,
+} from "lucide-react";
+import { Header } from "@/components/site/Header";
+import { Footer } from "@/components/site/Footer";
+import { SubpageHero } from "@/components/site/SubpageHero";
+import { Button } from "@/components/ui/button";
+import { getPublicEventsFeed } from "@/lib/events-admin";
+import {
+  getUpcomingEvents,
+  getPastEvents,
+  getEventStatus,
+  type EventItem,
+} from "@/data/events";
+
+export const Route = createFileRoute("/events")({
+  head: () => ({
+    meta: [
+      { title: "Events & Webinars | SMG ABA Accountants & Advisors" },
+      {
+        name: "description",
+        content:
+          "Explore upcoming educational webinars and watch on-demand recordings hosted by SMG ABA partners and accounting specialists.",
+      },
+    ],
+  }),
+  loader: async () => {
+    try {
+      const { events } = await getPublicEventsFeed();
+      return { events };
+    } catch (err) {
+      console.error("Error loading events feed:", err);
+      return { events: [] };
+    }
+  },
+  component: EventsPage,
+});
+
+function formatEventDisplayDate(dateStr: string): string {
+  try {
+    const parts = dateStr.split("-");
+    if (parts.length === 3) {
+      const year = parseInt(parts[0], 10);
+      const month = parseInt(parts[1], 10) - 1;
+      const day = parseInt(parts[2], 10);
+      const d = new Date(Date.UTC(year, month, day, 12, 0, 0));
+      return d.toLocaleDateString("en-US", {
+        timeZone: "UTC",
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      });
+    }
+    return dateStr;
+  } catch {
+    return dateStr;
+  }
+}
+
+function EventCard({ event }: { event: EventItem }) {
+  const status = getEventStatus(event);
+  const isUpcoming = status === "upcoming";
+  const hasRecording = Boolean(event.recording_link && event.recording_link.trim());
+
+  return (
+    <div
+      className="card-surface flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-card group"
+      id={`event-${event.id}`}
+    >
+      <div>
+        {/* Thumbnail or Fallback Header Banner */}
+        {event.thumbnail_url ? (
+          <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+            <img
+              src={event.thumbnail_url}
+              alt={event.title}
+              className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute top-3 right-3">
+              {isUpcoming ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-blue-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-xs">
+                  <Sparkles className="size-3" /> Upcoming Webinar
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-xs">
+                  <Video className="size-3" /> Past Webinar
+                </span>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className="relative bg-gradient-to-br from-navy via-[#1b3668] to-[#122448] p-6 text-white overflow-hidden">
+            <div className="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-10">
+              <CalendarIcon className="size-32" />
+            </div>
+            <div className="flex items-center justify-between gap-2 relative z-10">
+              {isUpcoming ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-0.5 text-[11px] font-bold text-blue-100 backdrop-blur-xs border border-white/20">
+                  <Sparkles className="size-3" /> Upcoming Webinar
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-0.5 text-[11px] font-bold text-slate-200 backdrop-blur-xs border border-white/10">
+                  <Video className="size-3" /> On-Demand
+                </span>
+              )}
+
+              <span className="font-mono text-xs font-semibold text-blue-200/90">
+                {event.time_range}
+              </span>
+            </div>
+            <div className="mt-3 text-lg font-bold font-serif-hero text-white tracking-wide relative z-10">
+              {formatEventDisplayDate(event.event_date)}
+            </div>
+          </div>
+        )}
+
+        {/* Content Body */}
+        <div className="p-6 sm:p-7 space-y-4">
+          {/* Date & Time (if thumbnail exists, show here) */}
+          {event.thumbnail_url && (
+            <div className="flex items-center justify-between text-xs text-muted-foreground border-b border-border/60 pb-3 font-mono">
+              <div className="flex items-center gap-1.5 font-bold text-navy">
+                <CalendarIcon className="size-3.5 text-primary" />
+                {formatEventDisplayDate(event.event_date)}
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="size-3.5" />
+                {event.time_range}
+              </div>
+            </div>
+          )}
+
+          {/* Title & Subtitle */}
+          <div>
+            <h3 className="font-serif-hero text-xl font-bold text-navy leading-snug tracking-tight group-hover:text-primary transition-colors">
+              {event.title}
+            </h3>
+            {event.subtitle && (
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-1.5 leading-relaxed">
+                {event.subtitle}
+              </p>
+            )}
+          </div>
+
+          {/* Host Speaker Credential Tag */}
+          <div className="flex items-center gap-2 pt-1 text-xs text-navy font-semibold">
+            <div className="flex size-7 items-center justify-center rounded-full bg-navy/10 text-navy">
+              <User className="size-3.5" />
+            </div>
+            <div>
+              <span className="text-muted-foreground font-normal">Presented by </span>
+              <span className="font-bold text-navy">
+                {event.host}
+                {event.host_title && `, ${event.host_title}`}
+              </span>
+            </div>
+          </div>
+
+          {/* Description */}
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+            {event.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Dual-purpose CTA Footer */}
+      <div className="p-6 sm:p-7 pt-0 border-t border-border/60 mt-4">
+        <div className="pt-4">
+          {isUpcoming ? (
+            /* Upcoming Event: Register Now */
+            <Button
+              asChild
+              className="w-full rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold py-5 shadow-xs transition-transform active:scale-[0.99]"
+            >
+              <a
+                href={event.registration_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Register for ${event.title}`}
+              >
+                Register Now
+                <ExternalLink className="ml-2 size-4" />
+              </a>
+            </Button>
+          ) : hasRecording ? (
+            /* Past Event WITH Recording: Watch Recording */
+            <Button
+              asChild
+              className="w-full rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 font-semibold py-5 shadow-xs transition-transform active:scale-[0.99]"
+            >
+              <a
+                href={event.recording_link!}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Watch recording of ${event.title}`}
+              >
+                <Play className="mr-2 size-4 fill-current" />
+                Watch Recording
+                <ExternalLink className="ml-2 size-4 opacity-80" />
+              </a>
+            </Button>
+          ) : (
+            /* Past Event WITHOUT Recording: Recording Coming Soon */
+            <Button
+              disabled
+              variant="outline"
+              className="w-full rounded-xl border-dashed border-border/80 text-muted-foreground bg-secondary/40 font-medium py-5 cursor-not-allowed opacity-70"
+            >
+              <Clock className="mr-2 size-4" />
+              Recording Coming Soon
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EventsPage() {
+  const loaderData = Route.useLoaderData();
+  const allEvents = loaderData?.events || [];
+
+  const upcomingEvents = useMemo(() => getUpcomingEvents(allEvents), [allEvents]);
+  const pastEvents = useMemo(() => getPastEvents(allEvents), [allEvents]);
+
+  return (
+    <div className="min-h-screen bg-background flex flex-col justify-between selection:bg-primary/20">
+      <Header />
+
+      <main className="flex-1">
+        {/* Subpage Hero */}
+        <SubpageHero
+          bgImage="https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg"
+          eyebrow="Knowledge & Insights"
+          title="Events & Webinars"
+          description="Join SMG ABA partners and accounting leaders for live executive webinars, practical structuring workshops, and on-demand financial masterclasses."
+        />
+
+        {/* Section 1: Upcoming Webinars */}
+        <section className="py-16 sm:py-20 px-6 lg:px-12 max-w-7xl mx-auto w-full">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-border/70">
+            <div>
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
+                <Sparkles className="size-3.5" />
+                Live Sessions
+              </div>
+              <h2 className="font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-navy">
+                Upcoming Webinars & Workshops
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-xl">
+                Register in advance to reserve your spot and receive live Microsoft Teams access links and session calendar reminders.
+              </p>
+            </div>
+
+            <div className="text-xs text-muted-foreground font-mono">
+              Showing <strong className="text-navy">{upcomingEvents.length}</strong> upcoming session
+              {upcomingEvents.length === 1 ? "" : "s"}
+            </div>
+          </div>
+
+          {upcomingEvents.length === 0 ? (
+            <div className="my-12 text-center py-16 px-4 card-surface rounded-2xl border-border/70">
+              <CalendarIcon className="size-12 mx-auto text-muted-foreground/60 mb-3" />
+              <h3 className="text-base font-bold text-navy">No Live Sessions Scheduled Right Now</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1">
+                We regularly add new webinars covering tax strategy, bookkeeping modernizations, and financial advisory. Browse our on-demand recordings below!
+              </p>
+            </div>
+          ) : (
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {upcomingEvents.map((event) => (
+                <EventCard key={event.id} event={event} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Section 2: On-Demand Recording Library */}
+        <section className="py-16 sm:py-20 bg-secondary/30 border-t border-border/70">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-border/70">
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold uppercase tracking-wider mb-2">
+                  <Video className="size-3.5" />
+                  Past Sessions
+                </div>
+                <h2 className="font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-navy">
+                  On-Demand Webinar Library
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-xl">
+                  Catch up on previous broadcasts. Video recordings are published here following live sessions.
+                </p>
+              </div>
+
+              <div className="text-xs text-muted-foreground font-mono">
+                Showing <strong className="text-navy">{pastEvents.length}</strong> past session
+                {pastEvents.length === 1 ? "" : "s"}
+              </div>
+            </div>
+
+            {pastEvents.length === 0 ? (
+              <div className="my-12 text-center py-16 px-4 card-surface rounded-2xl border-border/70">
+                <Video className="size-12 mx-auto text-muted-foreground/60 mb-3" />
+                <h3 className="text-base font-bold text-navy">All Events Are Currently Upcoming</h3>
+                <p className="text-xs text-muted-foreground max-w-md mx-auto mt-1">
+                  Once an event date passes, its card automatically transitions here so attendees can access the recording.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {pastEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Section 3: Consultation Call to Action */}
+        <section className="py-16 px-6 lg:px-12 max-w-5xl mx-auto text-center">
+          <div className="card-surface p-8 sm:p-12 rounded-3xl border-primary/20 bg-gradient-to-b from-blue-50/50 to-transparent dark:from-navy/20 dark:to-transparent space-y-4">
+            <h3 className="font-serif-hero text-2xl sm:text-3xl font-bold text-navy">
+              Have Questions About a Webinar Topic?
+            </h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              Our partners and advisory team are available for one-on-one discovery consultations tailored to your business structure, tax scenario, and financial goals.
+            </p>
+            <div className="pt-2">
+              <Button asChild size="lg" className="rounded-full bg-navy text-white hover:bg-navy/90 font-bold shadow-md">
+                <a href="/islandia-location">Schedule a Consultation</a>
+              </Button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}

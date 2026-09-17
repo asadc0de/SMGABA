@@ -16,6 +16,7 @@ import { Route as AutomotiveRouteImport } from './routes/automotive'
 import { Route as BookanappointmentRouteImport } from './routes/bookanappointment'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
+import { Route as EventsRouteImport } from './routes/events'
 import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
 import { Route as HospitalityRouteImport } from './routes/hospitality'
@@ -38,6 +39,7 @@ import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/boo
 import { Route as SolutionsCfoAdvisoryServicesRouteImport } from './routes/solutions/cfo-advisory-services'
 import { Route as SolutionsTaxRouteImport } from './routes/solutions/tax'
 import { Route as SolutionsWealthManagementRouteImport } from './routes/solutions/wealth-management'
+import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
 
@@ -74,6 +76,11 @@ const CareersRoute = CareersRouteImport.update({
 const ConstructionRoute = ConstructionRouteImport.update({
   id: '/construction',
   path: '/construction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FloridaLocationRoute = FloridaLocationRouteImport.update({
@@ -188,6 +195,11 @@ const SolutionsWealthManagementRoute =
     path: '/solutions/wealth-management',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ToolsEventsRoute = ToolsEventsRouteImport.update({
+  id: '/tools/events',
+  path: '/tools/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsLinksRoute = ToolsLinksRouteImport.update({
   id: '/tools/links',
   path: '/tools/links',
@@ -207,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
+  '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
@@ -227,6 +240,7 @@ export interface FileRoutesByFullPath {
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
@@ -240,6 +254,7 @@ export interface FileRoutesByTo {
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
+  '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
@@ -260,6 +275,7 @@ export interface FileRoutesByTo {
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog': typeof BlogIndexRoute
@@ -274,6 +290,7 @@ export interface FileRoutesById {
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
+  '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
   '/hospitality': typeof HospitalityRoute
@@ -294,6 +311,7 @@ export interface FileRoutesById {
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
+  '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
@@ -309,6 +327,7 @@ export interface FileRouteTypes {
     | '/bookanappointment'
     | '/careers'
     | '/construction'
+    | '/events'
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
@@ -329,6 +348,7 @@ export interface FileRouteTypes {
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
     | '/solutions/wealth-management'
+    | '/tools/events'
     | '/tools/links'
     | '/tools/redirections'
     | '/blog/'
@@ -342,6 +362,7 @@ export interface FileRouteTypes {
     | '/bookanappointment'
     | '/careers'
     | '/construction'
+    | '/events'
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
@@ -362,6 +383,7 @@ export interface FileRouteTypes {
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
     | '/solutions/wealth-management'
+    | '/tools/events'
     | '/tools/links'
     | '/tools/redirections'
     | '/blog'
@@ -375,6 +397,7 @@ export interface FileRouteTypes {
     | '/bookanappointment'
     | '/careers'
     | '/construction'
+    | '/events'
     | '/florida-location'
     | '/healthcare'
     | '/hospitality'
@@ -395,6 +418,7 @@ export interface FileRouteTypes {
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
     | '/solutions/wealth-management'
+    | '/tools/events'
     | '/tools/links'
     | '/tools/redirections'
     | '/blog/'
@@ -409,6 +433,7 @@ export interface RootRouteChildren {
   BookanappointmentRoute: typeof BookanappointmentRoute
   CareersRoute: typeof CareersRoute
   ConstructionRoute: typeof ConstructionRoute
+  EventsRoute: typeof EventsRoute
   FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
   HospitalityRoute: typeof HospitalityRoute
@@ -429,6 +454,7 @@ export interface RootRouteChildren {
   SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
   SolutionsTaxRoute: typeof SolutionsTaxRoute
   SolutionsWealthManagementRoute: typeof SolutionsWealthManagementRoute
+  ToolsEventsRoute: typeof ToolsEventsRoute
   ToolsLinksRoute: typeof ToolsLinksRoute
   ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
   BlogIndexRoute: typeof BlogIndexRoute
@@ -484,6 +510,13 @@ declare module '@tanstack/react-router' {
       path: '/construction'
       fullPath: '/construction'
       preLoaderRoute: typeof ConstructionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/florida-location': {
@@ -640,6 +673,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SolutionsWealthManagementRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/events': {
+      id: '/tools/events'
+      path: '/tools/events'
+      fullPath: '/tools/events'
+      preLoaderRoute: typeof ToolsEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/links': {
       id: '/tools/links'
       path: '/tools/links'
@@ -665,6 +705,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookanappointmentRoute: BookanappointmentRoute,
   CareersRoute: CareersRoute,
   ConstructionRoute: ConstructionRoute,
+  EventsRoute: EventsRoute,
   FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,
   HospitalityRoute: HospitalityRoute,
@@ -685,6 +726,7 @@ const rootRouteChildren: RootRouteChildren = {
   SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
   SolutionsTaxRoute: SolutionsTaxRoute,
   SolutionsWealthManagementRoute: SolutionsWealthManagementRoute,
+  ToolsEventsRoute: ToolsEventsRoute,
   ToolsLinksRoute: ToolsLinksRoute,
   ToolsRedirectionsRoute: ToolsRedirectionsRoute,
   BlogIndexRoute: BlogIndexRoute,
