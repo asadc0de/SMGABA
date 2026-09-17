@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   AlertCircle,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
@@ -70,77 +71,109 @@ function formatEventDisplayDate(dateStr: string): string {
 }
 
 function EventCard({ event }: { event: EventItem }) {
+  const [imgError, setImgError] = useState(false);
   const status = getEventStatus(event);
   const isUpcoming = status === "upcoming";
   const hasRecording = Boolean(event.recording_link && event.recording_link.trim());
+  const showImage = Boolean(event.thumbnail_url && event.thumbnail_url.trim() && !imgError);
 
   return (
     <div
-      className="card-surface flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg bg-card group"
+      className={cn(
+        "group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40",
+        !isUpcoming && "opacity-95"
+      )}
       id={`event-${event.id}`}
     >
       <div>
-        {/* Thumbnail or Fallback Header Banner */}
-        {event.thumbnail_url ? (
-          <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
+        {/* Full-width ~16:9 Media Header */}
+        <div className="relative aspect-video w-full overflow-hidden bg-slate-900 select-none">
+          {showImage ? (
             <img
-              src={event.thumbnail_url}
+              src={event.thumbnail_url!}
               alt={event.title}
-              className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+              onError={() => setImgError(true)}
+              className={cn(
+                "size-full object-cover transition-transform duration-500 group-hover:scale-105",
+                !isUpcoming && "filter brightness-[0.88] contrast-95"
+              )}
             />
-            <div className="absolute top-3 right-3">
-              {isUpcoming ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-600/90 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-xs">
-                  <Sparkles className="size-3" /> Upcoming Webinar
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-slate-900/80 px-3 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-xs">
-                  <Video className="size-3" /> Past Webinar
-                </span>
+          ) : (
+            /* Branded Elegant Fallback Banner */
+            <div
+              className={cn(
+                "relative size-full flex flex-col items-center justify-center p-6 text-white overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]",
+                isUpcoming
+                  ? "bg-gradient-to-br from-[#0c1833] via-[#162d5c] to-[#1e3e7b]"
+                  : "bg-gradient-to-br from-[#091122] via-[#12203e] to-[#0f1d38]"
               )}
-            </div>
-          </div>
-        ) : (
-          <div className="relative bg-gradient-to-br from-navy via-[#1b3668] to-[#122448] p-6 text-white overflow-hidden">
-            <div className="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-10">
-              <CalendarIcon className="size-32" />
-            </div>
-            <div className="flex items-center justify-between gap-2 relative z-10">
-              {isUpcoming ? (
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-0.5 text-[11px] font-bold text-blue-100 backdrop-blur-xs border border-white/20">
-                  <Sparkles className="size-3" /> Upcoming Webinar
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-0.5 text-[11px] font-bold text-slate-200 backdrop-blur-xs border border-white/10">
-                  <Video className="size-3" /> On-Demand
-                </span>
-              )}
-
-              <span className="font-mono text-xs font-semibold text-blue-200/90">
-                {event.time_range}
-              </span>
-            </div>
-            <div className="mt-3 text-lg font-bold font-serif-hero text-white tracking-wide relative z-10">
-              {formatEventDisplayDate(event.event_date)}
-            </div>
-          </div>
-        )}
-
-        {/* Content Body */}
-        <div className="p-6 sm:p-7 space-y-4">
-          {/* Date & Time (if thumbnail exists, show here) */}
-          {event.thumbnail_url && (
-            <div className="flex items-center justify-between text-xs text-muted-foreground border-b border-border/60 pb-3 font-mono">
-              <div className="flex items-center gap-1.5 font-bold text-navy">
-                <CalendarIcon className="size-3.5 text-primary" />
-                {formatEventDisplayDate(event.event_date)}
+            >
+              {/* Background watermark icon */}
+              <div className="absolute right-0 bottom-0 translate-x-6 translate-y-6 opacity-10 pointer-events-none">
+                <CalendarIcon className="size-44" />
               </div>
-              <div className="flex items-center gap-1">
-                <Clock className="size-3.5" />
-                {event.time_range}
+              <div className="absolute left-0 top-0 -translate-x-6 -translate-y-6 opacity-5 pointer-events-none">
+                <Video className="size-40" />
+              </div>
+
+              {/* Center Branded Badge */}
+              <div className="relative z-10 flex flex-col items-center text-center space-y-2.5">
+                <div
+                  className={cn(
+                    "flex size-12 items-center justify-center rounded-2xl border shadow-inner transition-transform duration-300 group-hover:scale-110",
+                    isUpcoming
+                      ? "bg-white/10 border-white/20 text-white shadow-blue-950/40"
+                      : "bg-white/5 border-white/10 text-slate-300"
+                  )}
+                >
+                  {isUpcoming ? (
+                    <Sparkles className="size-5 text-blue-300" />
+                  ) : (
+                    <Video className="size-5 text-slate-300" />
+                  )}
+                </div>
+                <div className="space-y-0.5">
+                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-blue-200/80">
+                    SMG ABA Webinar Series
+                  </span>
+                  <p className="font-serif-hero text-sm font-bold text-white/95 line-clamp-1 max-w-[220px]">
+                    {event.title}
+                  </p>
+                </div>
               </div>
             </div>
           )}
+
+          {/* Floating Status Badge (Top-Right) */}
+          <div className="absolute top-3 right-3 z-20">
+            {isUpcoming ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600/95 px-3 py-1 text-[11px] font-bold text-white shadow-lg backdrop-blur-md border border-white/20">
+                <Sparkles className="size-3 text-blue-200" /> Upcoming Webinar
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950/85 px-3 py-1 text-[11px] font-bold text-slate-200 shadow-lg backdrop-blur-md border border-white/15">
+                <Video className="size-3 text-slate-400" /> Past Recording
+              </span>
+            )}
+          </div>
+
+          {/* Subtle bottom gradient over image */}
+          <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        </div>
+
+        {/* Content Body */}
+        <div className="p-6 sm:p-7 space-y-4">
+          {/* Date & Time Row */}
+          <div className="flex items-center justify-between text-xs text-muted-foreground border-b border-border/60 pb-3 font-mono">
+            <div className="flex items-center gap-1.5 font-bold text-navy">
+              <CalendarIcon className="size-3.5 text-primary" />
+              {formatEventDisplayDate(event.event_date)}
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="size-3.5" />
+              {event.time_range}
+            </div>
+          </div>
 
           {/* Title & Subtitle */}
           <div>

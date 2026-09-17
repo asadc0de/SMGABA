@@ -128,6 +128,7 @@ const NAV: NavItem[] = [
   { label: "OUR TEAM", href: "/our-team" },
   { label: "CAREERS", href: "/careers" },
   { label: "TESTIMONIALS", href: "/testimonials" },
+  { label: "EVENTS", href: "/events" },
   {
     label: "NEWSLETTERS",
     href: "/blog",
@@ -427,14 +428,33 @@ export function Header() {
                 })}
               </div>
 
-              {/* Schedule CTA */}
-              <a
-                href="/bookanappointment"
-                className="ml-2 xl:ml-3.5 whitespace-nowrap inline-flex items-center gap-1.5 rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] px-4 xl:px-5 py-2 text-[0.72rem] xl:text-[0.78rem] font-bold uppercase tracking-wider text-white shadow-[0_0_20px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] shrink-0"
-              >
-                <span>Schedule Now</span>
-                <ChevronDown className="size-3.5 stroke-[2.5]" />
-              </a>
+              {/* Schedule CTA – icon-only with custom tooltip */}
+              <div className="group/cta relative ml-2 xl:ml-3">
+                <a
+                  href="/bookanappointment"
+                  aria-label="Book an appointment"
+                  className="flex size-9 items-center justify-center rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-[0_0_20px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-[1.08] hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] shrink-0"
+                >
+                  <CalendarCheck className="size-4 stroke-[2.5]" />
+                </a>
+                {/* Tooltip – styled like nav dropdowns */}
+                <div className="invisible absolute right-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover/cta:visible group-hover/cta:opacity-100 w-48 z-50">
+                  <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-3 shadow-2xl backdrop-blur-2xl">
+                    <a
+                      href="/bookanappointment"
+                      className="flex items-center gap-2.5 rounded-lg p-2 text-white/85 hover:bg-white/8 hover:text-white transition-all"
+                    >
+                      <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[#2563eb] text-white">
+                        <CalendarCheck className="size-3.5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-semibold text-white">Book Appointment</div>
+                        <p className="mt-0.5 text-[0.68rem] leading-relaxed text-slate-400">Schedule a consultation</p>
+                      </div>
+                    </a>
+                  </div>
+                </div>
+              </div>
             </nav>
 
             {/* ── Mobile Controls ── */}

@@ -6,6 +6,7 @@ const COMPANY_LINKS = [
   { label: "Our Team", href: "/our-team" },
   { label: "Careers", href: "/careers" },
   { label: "Testimonials", href: "/testimonials" },
+  { label: "Events & Webinars", href: "/events" },
   { label: "Resources", href: "/resources" },
   { label: "Contact Us", href: "/contact" },
 ];
