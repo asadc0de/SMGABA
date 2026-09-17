@@ -80,91 +80,82 @@ function EventCard({ event }: { event: EventItem }) {
   return (
     <div
       className={cn(
-        "group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-primary/40",
+        "group relative flex flex-col md:flex-row overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:border-primary/40",
         !isUpcoming && "opacity-95"
       )}
       id={`event-${event.id}`}
     >
-      <div>
-        {/* Full-width ~16:9 Media Header */}
-        <div className="relative aspect-video w-full overflow-hidden bg-slate-900 select-none">
-          {showImage ? (
-            <img
-              src={event.thumbnail_url!}
-              alt={event.title}
-              onError={() => setImgError(true)}
-              className={cn(
-                "size-full object-cover transition-transform duration-500 group-hover:scale-105",
-                !isUpcoming && "filter brightness-[0.88] contrast-95"
-              )}
-            />
-          ) : (
-            /* Branded Elegant Fallback Banner */
-            <div
-              className={cn(
-                "relative size-full flex flex-col items-center justify-center p-6 text-white overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]",
-                isUpcoming
-                  ? "bg-gradient-to-br from-[#0c1833] via-[#162d5c] to-[#1e3e7b]"
-                  : "bg-gradient-to-br from-[#091122] via-[#12203e] to-[#0f1d38]"
-              )}
-            >
-              {/* Background watermark icon */}
-              <div className="absolute right-0 bottom-0 translate-x-6 translate-y-6 opacity-10 pointer-events-none">
-                <CalendarIcon className="size-44" />
+      {/* Left: Thumbnail (fixed width on desktop) */}
+      <div className="relative w-full md:w-[380px] lg:w-[420px] shrink-0 overflow-hidden bg-slate-900">
+        {showImage ? (
+          <img
+            src={event.thumbnail_url!}
+            alt={event.title}
+            onError={() => setImgError(true)}
+            className={cn(
+              "size-full object-cover transition-transform duration-500 group-hover:scale-105",
+              !isUpcoming && "filter brightness-[0.88] contrast-95"
+            )}
+          />
+        ) : (
+          /* Branded Elegant Fallback Banner */
+          <div
+            className={cn(
+              "relative size-full min-h-[200px] flex flex-col items-center justify-center p-6 text-white overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]",
+              isUpcoming
+                ? "bg-gradient-to-br from-[#0c1833] via-[#162d5c] to-[#1e3e7b]"
+                : "bg-gradient-to-br from-[#091122] via-[#12203e] to-[#0f1d38]"
+            )}
+          >
+            <div className="absolute right-0 bottom-0 translate-x-6 translate-y-6 opacity-10 pointer-events-none">
+              <CalendarIcon className="size-32" />
+            </div>
+            <div className="relative z-10 flex flex-col items-center text-center space-y-2">
+              <div
+                className={cn(
+                  "flex size-10 items-center justify-center rounded-xl border shadow-inner",
+                  isUpcoming
+                    ? "bg-white/10 border-white/20 text-white"
+                    : "bg-white/5 border-white/10 text-slate-300"
+                )}
+              >
+                {isUpcoming ? (
+                  <Sparkles className="size-4 text-blue-300" />
+                ) : (
+                  <Video className="size-4 text-slate-300" />
+                )}
               </div>
-              <div className="absolute left-0 top-0 -translate-x-6 -translate-y-6 opacity-5 pointer-events-none">
-                <Video className="size-40" />
-              </div>
-
-              {/* Center Branded Badge */}
-              <div className="relative z-10 flex flex-col items-center text-center space-y-2.5">
-                <div
-                  className={cn(
-                    "flex size-12 items-center justify-center rounded-2xl border shadow-inner transition-transform duration-300 group-hover:scale-110",
-                    isUpcoming
-                      ? "bg-white/10 border-white/20 text-white shadow-blue-950/40"
-                      : "bg-white/5 border-white/10 text-slate-300"
-                  )}
-                >
-                  {isUpcoming ? (
-                    <Sparkles className="size-5 text-blue-300" />
-                  ) : (
-                    <Video className="size-5 text-slate-300" />
-                  )}
-                </div>
-                <div className="space-y-0.5">
-                  <span className="font-mono text-[10px] uppercase font-bold tracking-widest text-blue-200/80">
-                    SMG ABA Webinar Series
-                  </span>
-                  <p className="font-serif-hero text-sm font-bold text-white/95 line-clamp-1 max-w-[220px]">
-                    {event.title}
-                  </p>
-                </div>
+              <div className="space-y-0.5">
+                <span className="font-mono text-[9px] uppercase font-bold tracking-widest text-blue-200/80">
+                  SMG ABA Webinar Series
+                </span>
+                <p className="font-serif-hero text-sm font-bold text-white/95 line-clamp-2 max-w-[220px]">
+                  {event.title}
+                </p>
               </div>
             </div>
-          )}
-
-          {/* Floating Status Badge (Top-Right) */}
-          <div className="absolute top-3 right-3 z-20">
-            {isUpcoming ? (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600/95 px-3 py-1 text-[11px] font-bold text-white shadow-lg backdrop-blur-md border border-white/20">
-                <Sparkles className="size-3 text-blue-200" /> Upcoming Webinar
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950/85 px-3 py-1 text-[11px] font-bold text-slate-200 shadow-lg backdrop-blur-md border border-white/15">
-                <Video className="size-3 text-slate-400" /> Past Recording
-              </span>
-            )}
           </div>
+        )}
 
-          {/* Subtle bottom gradient over image */}
-          <div className="absolute inset-x-0 bottom-0 h-6 bg-gradient-to-t from-black/30 to-transparent pointer-events-none" />
+        {/* Floating Status Badge */}
+        <div className="absolute top-3 left-3 z-20">
+          {isUpcoming ? (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600/95 px-3 py-1 text-[11px] font-bold text-white shadow-lg backdrop-blur-md border border-white/20">
+              <Sparkles className="size-3 text-blue-200" /> Upcoming Webinar
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950/85 px-3 py-1 text-[11px] font-bold text-slate-200 shadow-lg backdrop-blur-md border border-white/15">
+              <Video className="size-3 text-slate-400" /> Past Recording
+            </span>
+          )}
         </div>
+      </div>
 
-        {/* Content Body */}
-        <div className="p-6 sm:p-7 space-y-4">
+      {/* Right: Content + CTA */}
+      <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+        <div className="space-y-3">
           {/* Date & Time Row */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground border-b border-border/60 pb-3 font-mono">
+          <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono">
             <div className="flex items-center gap-1.5 font-bold text-navy">
               <CalendarIcon className="size-3.5 text-primary" />
               {formatEventDisplayDate(event.event_date)}
@@ -177,20 +168,20 @@ function EventCard({ event }: { event: EventItem }) {
 
           {/* Title & Subtitle */}
           <div>
-            <h3 className="font-serif-hero text-xl font-bold text-navy leading-snug tracking-tight group-hover:text-primary transition-colors">
+            <h3 className="font-serif-hero text-lg sm:text-xl font-bold text-navy leading-snug tracking-tight group-hover:text-primary transition-colors">
               {event.title}
             </h3>
             {event.subtitle && (
-              <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-1.5 leading-relaxed">
+              <p className="text-xs sm:text-sm font-medium text-muted-foreground mt-1 leading-relaxed">
                 {event.subtitle}
               </p>
             )}
           </div>
 
-          {/* Host Speaker Credential Tag */}
-          <div className="flex items-center gap-2 pt-1 text-xs text-navy font-semibold">
-            <div className="flex size-7 items-center justify-center rounded-full bg-navy/10 text-navy">
-              <User className="size-3.5" />
+          {/* Host Speaker */}
+          <div className="flex items-center gap-2 text-xs text-navy font-semibold">
+            <div className="flex size-6 items-center justify-center rounded-full bg-navy/10 text-navy">
+              <User className="size-3" />
             </div>
             <div>
               <span className="text-muted-foreground font-normal">Presented by </span>
@@ -202,20 +193,17 @@ function EventCard({ event }: { event: EventItem }) {
           </div>
 
           {/* Description */}
-          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-3">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed line-clamp-2">
             {event.description}
           </p>
         </div>
-      </div>
 
-      {/* Dual-purpose CTA Footer */}
-      <div className="p-6 sm:p-7 pt-0 border-t border-border/60 mt-4">
-        <div className="pt-4">
+        {/* CTA Button */}
+        <div className="mt-4 pt-3 border-t border-border/60">
           {isUpcoming ? (
-            /* Upcoming Event: Register Now */
             <Button
               asChild
-              className="w-full rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold py-5 shadow-xs transition-transform active:scale-[0.99]"
+              className="rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold py-2.5 px-6 shadow-xs transition-transform active:scale-[0.99]"
             >
               <a
                 href={event.registration_link}
@@ -228,10 +216,9 @@ function EventCard({ event }: { event: EventItem }) {
               </a>
             </Button>
           ) : hasRecording ? (
-            /* Past Event WITH Recording: Watch Recording */
             <Button
               asChild
-              className="w-full rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 font-semibold py-5 shadow-xs transition-transform active:scale-[0.99]"
+              className="rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 font-semibold py-2.5 px-6 shadow-xs transition-transform active:scale-[0.99]"
             >
               <a
                 href={event.recording_link!}
@@ -245,11 +232,10 @@ function EventCard({ event }: { event: EventItem }) {
               </a>
             </Button>
           ) : (
-            /* Past Event WITHOUT Recording: Recording Coming Soon */
             <Button
               disabled
               variant="outline"
-              className="w-full rounded-xl border-dashed border-border/80 text-muted-foreground bg-secondary/40 font-medium py-5 cursor-not-allowed opacity-70"
+              className="rounded-xl border-dashed border-border/80 text-muted-foreground bg-secondary/40 font-medium py-2.5 px-6 cursor-not-allowed opacity-70"
             >
               <Clock className="mr-2 size-4" />
               Recording Coming Soon
@@ -312,7 +298,7 @@ function EventsPage() {
               </p>
             </div>
           ) : (
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="mt-10 flex flex-col gap-6">
               {upcomingEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
@@ -352,7 +338,7 @@ function EventsPage() {
                 </p>
               </div>
             ) : (
-              <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="mt-10 flex flex-col gap-6">
                 {pastEvents.map((event) => (
                   <EventCard key={event.id} event={event} />
                 ))}
