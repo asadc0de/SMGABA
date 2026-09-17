@@ -93,7 +93,7 @@ function EventCard({ event }: { event: EventItem }) {
             alt={event.title}
             onError={() => setImgError(true)}
             className={cn(
-              "size-full object-cover transition-transform duration-500 group-hover:scale-105",
+              "size-full object-contain transition-transform duration-500 group-hover:scale-105",
               !isUpcoming && "filter brightness-[0.88] contrast-95"
             )}
           />
