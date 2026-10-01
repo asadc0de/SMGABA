@@ -22,6 +22,7 @@ import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { TEAM_MEMBERS, type TeamMember } from "@/data/teamMembers";
+import { FIRM_STATS } from "@/data/firmStats";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/our-team")({
@@ -47,11 +48,31 @@ const CATEGORIES = [
   "Operations & HR",
 ];
 
-const FIRM_STATS = [
-  { value: "17+", label: "Dedicated Professionals", desc: "CPAs, EAs, CFPs, CVAs, and executive CFO advisors.", icon: Users },
-  { value: "25+ Yrs", label: "Leadership Experience", desc: "Decades of deep industry expertise across major verticals.", icon: Award },
-  { value: "3 Offices", label: "Regional Locations", desc: "Long Island HQ, Manhattan, and St. Petersburg, Florida.", icon: MapPin },
-  { value: "1,000+", label: "Clients Empowered", desc: "Providing hands-on financial stewardship that accelerates growth.", icon: Building2 },
+const TEAM_PAGE_STATS = [
+  {
+    value: `${FIRM_STATS.professionals}+`,
+    label: "Dedicated Professionals",
+    desc: "CPAs, EAs, CFPs, CVAs, and executive CFO advisors.",
+    icon: Users,
+  },
+  {
+    value: "25+ Yrs",
+    label: "Leadership Experience",
+    desc: "Decades of deep industry expertise across major verticals.",
+    icon: Award,
+  },
+  {
+    value: `${FIRM_STATS.offices} Offices`,
+    label: "Regional Locations",
+    desc: "Long Island HQ, Manhattan, and St. Petersburg, Florida.",
+    icon: MapPin,
+  },
+  {
+    value: `${FIRM_STATS.clients.toLocaleString()}+`,
+    label: "Clients Empowered",
+    desc: "Providing hands-on financial stewardship that accelerates growth.",
+    icon: Building2,
+  },
 ];
 
 function OurTeamPage() {
@@ -105,7 +126,7 @@ function OurTeamPage() {
         <section className="border-b border-border/80 bg-[#faf9f6] py-12 lg:py-16">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {FIRM_STATS.map((stat) => {
+              {TEAM_PAGE_STATS.map((stat) => {
                 const Icon = stat.icon;
                 return (
                   <div

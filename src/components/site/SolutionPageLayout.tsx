@@ -120,7 +120,7 @@ export function SolutionPageLayout({
           title={data.heroTitle}
           description={data.heroDescription}
           buttonText={data.buttonText}
-          buttonHref="#contact-form"
+          buttonHref={data.ctaHref || "#contact-form"}
         />
 
         {/* ── Services Grid ─────────────────────────────────────────────── */}

@@ -360,7 +360,11 @@ function SolutionsIndexPage() {
             </div>
 
             {submitted ? (
-              <div className="rounded-2xl border border-blue-400/30 bg-blue-500/10 p-8 text-center backdrop-blur-md animate-in fade-in duration-300">
+              <div
+                role="status"
+                aria-live="polite"
+                className="rounded-2xl border border-blue-400/30 bg-blue-500/10 p-8 text-center backdrop-blur-md animate-in fade-in duration-300"
+              >
                 <CheckCircle2 className="mx-auto size-12 text-blue-400" />
                 <h3 className="mt-3 font-serif-hero text-2xl font-bold text-white">Thank You!</h3>
                 <p className="mt-2 text-sm text-blue-100">
@@ -394,42 +398,70 @@ function SolutionsIndexPage() {
                 </div>
 
                 <div>
+                  <label
+                    htmlFor="solutions-name"
+                    className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5"
+                  >
+                    Your Name <span className="text-blue-300" aria-hidden="true">*</span>
+                  </label>
                   <input
+                    id="solutions-name"
                     type="text"
                     required
+                    aria-required="true"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Your Name *"
+                    placeholder="e.g. John Doe"
                     className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
                 </div>
 
                 <div>
+                  <label
+                    htmlFor="solutions-company"
+                    className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5"
+                  >
+                    Company Name
+                  </label>
                   <input
+                    id="solutions-company"
                     type="text"
                     value={formData.companyName}
                     onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                    placeholder="Company Name"
+                    placeholder="e.g. Acme Corp"
                     className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
                 </div>
 
                 <div>
+                  <label
+                    htmlFor="solutions-contact"
+                    className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5"
+                  >
+                    Email or Phone <span className="text-blue-300" aria-hidden="true">*</span>
+                  </label>
                   <input
+                    id="solutions-contact"
                     type="text"
                     required
+                    aria-required="true"
+                    aria-describedby={errorMessage ? "solutions-error" : undefined}
                     value={formData.contactInfo}
                     onChange={(e) => setFormData({ ...formData, contactInfo: e.target.value })}
-                    placeholder="Email or Phone Number *"
+                    placeholder="e.g. john@example.com or (555) 123-4567"
                     className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5">
+                  <label
+                    htmlFor="solutions-best-time"
+                    className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5"
+                  >
                     Best Time to Contact
                   </label>
                   <select
+                    id="solutions-best-time"
                     value={formData.bestTime}
                     onChange={(e) => setFormData({ ...formData, bestTime: e.target.value })}
                     className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none"
@@ -441,10 +473,14 @@ function SolutionsIndexPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5">
+                  <label
+                    htmlFor="solutions-needed"
+                    className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5"
+                  >
                     Solutions Needed
                   </label>
                   <select
+                    id="solutions-needed"
                     value={formData.solutionsNeeded}
                     onChange={(e) => setFormData({ ...formData, solutionsNeeded: e.target.value })}
                     className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none"
@@ -457,11 +493,18 @@ function SolutionsIndexPage() {
                 </div>
 
                 <div>
+                  <label
+                    htmlFor="solutions-comments"
+                    className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5"
+                  >
+                    How Can We Help?
+                  </label>
                   <textarea
+                    id="solutions-comments"
                     rows={4}
                     value={formData.comments}
                     onChange={(e) => setFormData({ ...formData, comments: e.target.value })}
-                    placeholder="How can we help your business?"
+                    placeholder="Tell us about your business needs or questions..."
                     className="w-full rounded-xl border border-white/20 bg-white/10 p-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
                 </div>
@@ -471,6 +514,7 @@ function SolutionsIndexPage() {
                     type="checkbox"
                     id="optin-check-solutions"
                     required
+                    aria-required="true"
                     checked={formData.agreed}
                     onChange={(e) => setFormData({ ...formData, agreed: e.target.checked })}
                     className="mt-1 size-4 rounded border-white/20 bg-white/10 text-blue-500 focus:ring-0"
@@ -484,7 +528,11 @@ function SolutionsIndexPage() {
                 </div>
 
                 {errorMessage && (
-                  <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3.5 text-xs text-rose-200 flex items-start gap-2.5 animate-in fade-in">
+                  <div
+                    id="solutions-error"
+                    role="alert"
+                    className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3.5 text-xs text-rose-200 flex items-start gap-2.5 animate-in fade-in"
+                  >
                     <AlertCircle className="size-4 text-rose-400 shrink-0 mt-0.5" />
                     <span>{errorMessage}</span>
                   </div>

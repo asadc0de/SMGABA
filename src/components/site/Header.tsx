@@ -96,13 +96,13 @@ const NAV: NavItem[] = [
       {
         label: "Healthcare",
         href: "/healthcare",
-        desc: "Medical practice billing, physician comp & HIPAA-compliant books.",
+        desc: "Medical practice billing, physician comp & financial advisory.",
         icon: Activity,
       },
       {
         label: "Legal Professionals",
         href: "/legal-professionals",
-        desc: "IOLTA trust accounting, partner draws & billable realization.",
+        desc: "Partner draws, equity distribution & billable realization.",
         icon: Scale,
       },
       {
@@ -130,7 +130,7 @@ const NAV: NavItem[] = [
   { label: "TESTIMONIALS", href: "/testimonials" },
   { label: "EVENTS", href: "/events" },
   {
-    label: "NEWSLETTERS",
+    label: "INSIGHTS",
     href: "/blog",
     children: [
       {
@@ -210,7 +210,7 @@ export function Header() {
     if (item.label === "SOLUTIONS") {
       return pathname === "/solutions" || pathname.startsWith("/solutions/");
     }
-    if (item.label === "NEWSLETTERS") {
+    if (item.label === "INSIGHTS") {
       return pathname === "/resources" || pathname === "/blog" || pathname.startsWith("/blog/");
     }
     if (item.label === "CONTACT") {
@@ -552,8 +552,8 @@ export function Header() {
                               ? "Explore All Solutions"
                               : item.label === "INDUSTRIES"
                               ? "Explore All Industries"
-                              : item.label === "NEWSLETTERS"
-                              ? "All Newsletters & Blog"
+                              : item.label === "INSIGHTS"
+                              ? "All Insights & Blog"
                               : item.label === "CONTACT"
                               ? "All Contact & Locations"
                               : `All ${item.label}`}

@@ -213,7 +213,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       },
       {
         title: "Healthcare Regulatory & Compliance Audits",
-        desc: "Maintaining strict financial separation, HIPAA-compliant accounting records, and Medicare/Medicaid reimbursement records.",
+        desc: "Maintaining strict financial separation and Medicare/Medicaid reimbursement records.",
       },
       {
         title: "Practice Valuation & M&A Due Diligence",
@@ -228,7 +228,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       thankYouMessage:
         "Your healthcare consultation request has been received. We will contact you shortly.",
     },
-    highlights: ["Physician Comp Modeling", "EHR Revenue Reconciliation", "HIPAA-Compliant Books"],
+    highlights: ["Physician Comp Modeling", "EHR Revenue Reconciliation", "Regulatory Compliance Records"],
     iconName: "Activity",
   },
   hospitality: {
@@ -303,19 +303,19 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Legal Professionals & Law Firms",
     metaTitle: "Legal Accounting & Law Firm Advisory | SMG",
     metaDescription:
-      "Specialized financial management for law firms, solo attorneys, and legal practices. IOLTA trust compliance, partner distributions, and billable realization analysis.",
+      "Specialized financial management for law firms, solo attorneys, and legal practices. Partner distributions, capital accounting, and billable realization analysis.",
     heroBg:
       "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Industry Practice",
     heroTitle: "Legal Professionals & Law Firms",
     heroDescription:
-      "Compliant IOLTA trust accounting, partner equity distributions, and strategic financial advisory for boutique law firms, solo practitioners, and multi-partner legal practices.",
+      "Partner equity distributions, capital accounting, and strategic financial advisory for boutique law firms, solo practitioners, and multi-partner legal practices.",
     expertise: {
       heading: "Protecting Your Practice",
-      subheading: "Audit-Ready IOLTA Trust Accounting & Partner Equity",
+      subheading: "Partner Equity & Law Firm Financial Strategy",
       paragraphs: [
-        "Law firms face unique financial challenges: improper trust account handling can lead to disciplinary bar action, while opaque partner distribution formulas create internal friction.",
-        "SMG delivers monthly three-way IOLTA reconciliations, tracks advanced client litigation costs, and provides managing partners with clear realization metrics to maximize law firm profitability.",
+        "Law firms face unique financial challenges: complex operating overhead, multi-state partner tax filings, and distribution formulas that can create internal friction.",
+        "SMG tracks advanced client litigation costs, optimizes partner equity models, and provides managing partners with clear realization metrics to maximize law firm profitability.",
       ],
       image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-tax-services-1.jpeg",
     },
@@ -323,10 +323,6 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     servicesDescription:
       "Meticulous financial oversight tailored for legal professionals and bar compliance.",
     services: [
-      {
-        title: "IOLTA Three-Way Trust Reconciliation",
-        desc: "Strict monthly compliance reconciling bank balances, client ledgers, and trust account journals to protect against state bar audits.",
-      },
       {
         title: "Partner Compensation & Capital Accounts",
         desc: "Structuring partner draws, tiered equity distribution models, origination bonuses, and capital buy-in tracking.",
@@ -358,7 +354,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Your legal practice consultation request has been received. We will contact you shortly.",
     },
     highlights: [
-      "Three-Way IOLTA Audits",
+      "Client Cost Accounting (CCA)",
       "Partner Draw Schedules",
       "Clio & Practice Software Sync",
     ],

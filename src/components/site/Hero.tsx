@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 const HERO_IMAGE = "https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg";
 
@@ -45,7 +46,7 @@ export function Hero() {
           {/* Schedule a Consultation White Pill Button */}
           <div className="mt-8 sm:mt-10">
             <a
-              href="/contact"
+              href={BOOKING_ROUTE}
               className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#1e3a6d] shadow-lg shadow-black/20 transition-all duration-300 hover:bg-white/90 hover:shadow-xl hover:scale-[1.02] hover:-translate-y-0.5"
             >
               SCHEDULE A CONSULTATION

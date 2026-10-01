@@ -15,13 +15,13 @@ const HERO_IMAGE = "https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpa
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "SMG | Accounting, Bookkeeping & Advisory for Hospitality" },
+      { title: "SMG | Accounting, Bookkeeping & Advisory for Growing Businesses" },
       {
         name: "description",
         content:
           "SMG is a full-service accounting, bookkeeping, and advisory firm serving hospitality, real estate, and small business owners across NY and FL.",
       },
-      { property: "og:title", content: "SMG | Accounting, Bookkeeping & Advisory" },
+      { property: "og:title", content: "SMG | Accounting, Bookkeeping & Advisory for Growing Businesses" },
       {
         property: "og:description",
         content:

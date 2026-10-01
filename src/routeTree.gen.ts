@@ -16,6 +16,7 @@ import { Route as AutomotiveRouteImport } from './routes/automotive'
 import { Route as BookanappointmentRouteImport } from './routes/bookanappointment'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
@@ -76,6 +77,11 @@ const CareersRoute = CareersRouteImport.update({
 const ConstructionRoute = ConstructionRouteImport.update({
   id: '/construction',
   path: '/construction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
+  '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
+  '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
+  '/contact': typeof ContactRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -327,6 +336,7 @@ export interface FileRouteTypes {
     | '/bookanappointment'
     | '/careers'
     | '/construction'
+    | '/contact'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/bookanappointment'
     | '/careers'
     | '/construction'
+    | '/contact'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/bookanappointment'
     | '/careers'
     | '/construction'
+    | '/contact'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -433,6 +445,7 @@ export interface RootRouteChildren {
   BookanappointmentRoute: typeof BookanappointmentRoute
   CareersRoute: typeof CareersRoute
   ConstructionRoute: typeof ConstructionRoute
+  ContactRoute: typeof ContactRoute
   EventsRoute: typeof EventsRoute
   FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
@@ -510,6 +523,13 @@ declare module '@tanstack/react-router' {
       path: '/construction'
       fullPath: '/construction'
       preLoaderRoute: typeof ConstructionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -705,6 +725,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookanappointmentRoute: BookanappointmentRoute,
   CareersRoute: CareersRoute,
   ConstructionRoute: ConstructionRoute,
+  ContactRoute: ContactRoute,
   EventsRoute: EventsRoute,
   FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,

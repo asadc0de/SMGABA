@@ -26,7 +26,7 @@ export function CoreValues() {
 
           {/* Subtitle */}
           <p className="text-base sm:text-lg md:text-xl text-slate-700 font-medium mt-2">
-            The Principles That Drives Us
+            The Principles That Drive Us
           </p>
         </div>
 

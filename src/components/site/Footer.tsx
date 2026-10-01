@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Linkedin, Star, Twitter, Phone, MapPin, ArrowUpRight, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about-us" },
@@ -85,7 +86,7 @@ export function Footer() {
               </p>
             </div>
             <Button asChild size="lg" className="shrink-0 rounded-full bg-white text-navy font-bold hover:bg-slate-100 shadow-lg shadow-black/20">
-              <a href="/islandia-location">
+              <a href={BOOKING_ROUTE}>
                 Schedule Now <ArrowUpRight className="ml-2 size-4" />
               </a>
             </Button>

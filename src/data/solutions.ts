@@ -1,3 +1,6 @@
+import { BOOKING_ROUTE } from "./calendly";
+import { FIRM_STATS } from "./firmStats";
+
 export interface SolutionItem {
   title: string;
   desc: string;
@@ -34,6 +37,7 @@ export interface SolutionData {
   heroTitle: string;
   heroDescription: string;
   buttonText: string;
+  ctaHref?: string;
   servicesHeading: string;
   servicesSubheading: string;
   services: SolutionItem[];
@@ -53,7 +57,7 @@ export const COMMON_TRUST_STATS: TrustStat[] = [
     iconName: "Building2",
   },
   {
-    value: "1,000+",
+    value: `${FIRM_STATS.clients.toLocaleString()}+`,
     label: "Businesses Supported",
     desc: "Helping growing businesses build stronger financial foundations.",
     iconName: "Users",
@@ -295,6 +299,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     heroDescription:
       "Stay ahead of tax deadlines, reduce costly surprises, and make confident financial decisions with year-round tax planning and preparation tailored to your business.",
     buttonText: "SCHEDULE A TAX STRATEGY SESSION",
+    ctaHref: BOOKING_ROUTE,
     servicesHeading: "Comprehensive Tax Services Tailored to Your Business",
     servicesSubheading:
       "From multi-entity pass-through returns to proactive tax minimization strategies, our CPAs keep you compliant and protected.",
@@ -394,6 +399,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     heroDescription:
       "Comprehensive wealth management, retirement planning, and financial strategies through SMG ABA's strategic alliance with Ameriprise Financial and Kuttin Wealth Management.",
     buttonText: "SCHEDULE A CONSULTATION",
+    ctaHref: BOOKING_ROUTE,
     servicesHeading: "Comprehensive Wealth Advisory Areas",
     servicesSubheading:
       "Integrated financial planning uniting tax efficiency with long-term wealth preservation.",

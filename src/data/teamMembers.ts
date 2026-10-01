@@ -8,6 +8,8 @@ export interface TeamMember {
   credentials?: string[];
 }
 
+export const CYNTHIA_CORTES_TITLE = "Onboarding Manager";
+
 export const TEAM_MEMBERS: TeamMember[] = [
   {
     "name": "Gregory M. Scotto, CPA",
@@ -107,7 +109,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     "name": "Cynthia Cortes",
-    "role": "Onboarding Manager",
+    "role": CYNTHIA_CORTES_TITLE,
     "category": "Accounting & Client Services",
     "email": "CCortes@smgaba.com",
     "avatar": "https://www.smgaba.com/wp-content/uploads/2026/07/CYNTHIA-CORTES-scaled.jpeg",

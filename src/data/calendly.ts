@@ -3,6 +3,10 @@
  * Centralized configuration for appointment booking widgets & scheduling URLs.
  */
 
+import { CYNTHIA_CORTES_TITLE } from "@/data/teamMembers";
+
+export const BOOKING_ROUTE = "/bookanappointment";
+
 export const CALENDLY_DISCOVERY_URL =
   "https://calendly.com/ccortes-smgaba/new-client-discovery-call?primary_color=375896";
 
@@ -15,7 +19,7 @@ export const CALENDLY_CONFIG = {
   scriptSrc: CALENDLY_SCRIPT_SRC,
   host: {
     name: "Cynthia Cortes",
-    title: "Onboarding Manager",
+    title: CYNTHIA_CORTES_TITLE,
     meetingTitle: "New Client Discovery Call",
     duration: "15-30 min",
     location: "Web conferencing details provided upon confirmation.",

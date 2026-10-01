@@ -144,7 +144,7 @@ VALUES
 (
   'dress-your-business-webinar',
   'DRESS your Business for Success',
-  'For Business Owners and CEO''s',
+  'For Business Owners and CEOs',
   'Gregory M. Scotto',
   'CPA',
   '2026-09-10',

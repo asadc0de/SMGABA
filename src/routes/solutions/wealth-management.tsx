@@ -3,6 +3,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
+import { BOOKING_ROUTE } from "@/data/calendly";
 import {
   Landmark,
   Shield,
@@ -117,7 +118,7 @@ function WealthManagementPage() {
           title="Wealth Management"
           description="Comprehensive wealth management, retirement planning, and financial strategies through SMG ABA's strategic alliance with Ameriprise Financial and Kuttin Wealth Management."
           buttonText="SCHEDULE A CONSULTATION"
-          buttonHref="#contact-form"
+          buttonHref={BOOKING_ROUTE}
         />
 
         {/* Overview Section */}
@@ -185,7 +186,7 @@ function WealthManagementPage() {
                 </p>
                 <div className="mt-8">
                   <a
-                    href="#contact-form"
+                    href={BOOKING_ROUTE}
                     className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-[#142340] shadow-lg transition hover:bg-blue-50 hover:scale-105"
                   >
                     SCHEDULE A CONSULTATION

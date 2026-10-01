@@ -18,6 +18,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { Button } from "@/components/ui/button";
+import { BOOKING_ROUTE } from "@/data/calendly";
 import { getPublicEventsFeed } from "@/lib/events-admin";
 import {
   getUpcomingEvents,
@@ -74,8 +75,14 @@ function EventCard({ event }: { event: EventItem }) {
   const [imgError, setImgError] = useState(false);
   const status = getEventStatus(event);
   const isUpcoming = status === "upcoming";
-  const hasRecording = Boolean(event.recording_link && event.recording_link.trim());
+  const recordingLink = event.recordingUrl || event.recording_link || event.recording_url;
+  const hasRecording = Boolean(recordingLink && recordingLink.trim());
   const showImage = Boolean(event.thumbnail_url && event.thumbnail_url.trim() && !imgError);
+
+  const tz = event.time_zone || event.timeZone;
+  const displayTime = tz && !event.time_range.includes(tz)
+    ? `${event.time_range} ${tz}`
+    : event.time_range;
 
   return (
     <div
@@ -162,7 +169,7 @@ function EventCard({ event }: { event: EventItem }) {
             </div>
             <div className="flex items-center gap-1">
               <Clock className="size-3.5" />
-              {event.time_range}
+              {displayTime}
             </div>
           </div>
 
@@ -199,49 +206,52 @@ function EventCard({ event }: { event: EventItem }) {
         </div>
 
         {/* CTA Button */}
-        <div className="mt-4 pt-3 border-t border-border/60">
-          {isUpcoming ? (
-            <Button
-              asChild
-              className="rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold py-2.5 px-6 shadow-xs transition-transform active:scale-[0.99]"
-            >
-              <a
-                href={event.registration_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`Register for ${event.title}`}
+        {(isUpcoming || hasRecording) && (
+          <div className="mt-4 pt-3 border-t border-border/60">
+            {isUpcoming ? (
+              event.registration_closed ? (
+                <Button
+                  disabled
+                  variant="outline"
+                  className="rounded-xl border-dashed border-border/80 text-muted-foreground bg-secondary/40 font-medium py-2.5 px-6 cursor-not-allowed opacity-70"
+                >
+                  Registration closed
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  className="rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold py-2.5 px-6 shadow-xs transition-transform active:scale-[0.99]"
+                >
+                  <a
+                    href={event.registration_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Register for ${event.title}`}
+                  >
+                    Register Now
+                    <ExternalLink className="ml-2 size-4" />
+                  </a>
+                </Button>
+              )
+            ) : hasRecording ? (
+              <Button
+                asChild
+                className="rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 font-semibold py-2.5 px-6 shadow-xs transition-transform active:scale-[0.99]"
               >
-                Register Now
-                <ExternalLink className="ml-2 size-4" />
-              </a>
-            </Button>
-          ) : hasRecording ? (
-            <Button
-              asChild
-              className="rounded-xl bg-emerald-700 text-white hover:bg-emerald-800 font-semibold py-2.5 px-6 shadow-xs transition-transform active:scale-[0.99]"
-            >
-              <a
-                href={event.recording_link!}
-                target="_blank"
-                rel="noopener noreferrer"
-                title={`Watch recording of ${event.title}`}
-              >
-                <Play className="mr-2 size-4 fill-current" />
-                Watch Recording
-                <ExternalLink className="ml-2 size-4 opacity-80" />
-              </a>
-            </Button>
-          ) : (
-            <Button
-              disabled
-              variant="outline"
-              className="rounded-xl border-dashed border-border/80 text-muted-foreground bg-secondary/40 font-medium py-2.5 px-6 cursor-not-allowed opacity-70"
-            >
-              <Clock className="mr-2 size-4" />
-              Recording Coming Soon
-            </Button>
-          )}
-        </div>
+                <a
+                  href={recordingLink!}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={`Watch recording of ${event.title}`}
+                >
+                  <Play className="mr-2 size-4 fill-current" />
+                  Watch Recording
+                  <ExternalLink className="ml-2 size-4 opacity-80" />
+                </a>
+              </Button>
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -358,7 +368,7 @@ function EventsPage() {
             </p>
             <div className="pt-2">
               <Button asChild size="lg" className="rounded-full bg-navy text-white hover:bg-navy/90 font-bold shadow-md">
-                <a href="/islandia-location">Schedule a Consultation</a>
+                <a href={BOOKING_ROUTE}>Schedule a Consultation</a>
               </Button>
             </div>
           </div>

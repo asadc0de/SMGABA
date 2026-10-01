@@ -154,8 +154,7 @@ export function getAllStaticRedirects(): WebinarRedirect[] {
 
   // 4. Utility / alias routes
   const extraAliases: Record<string, string> = {
-    "contact-us": "/islandia-location",
-    "contact": "/islandia-location",
+    "contact-us": "/contact",
     "tierra-verde-fl": "/florida-location",
     "internal/webinar-links": "/tools/redirections",
   };
