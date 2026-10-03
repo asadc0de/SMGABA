@@ -27,7 +27,7 @@ export const Route = createFileRoute("/solutions/wealth-management")({
       {
         name: "description",
         content:
-          "Comprehensive wealth management, retirement planning, and financial strategies through SMG ABA's alliance with Ameriprise Financial and Kuttin Wealth Management.",
+          "Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management.",
       },
     ],
   }),
@@ -37,22 +37,22 @@ export const Route = createFileRoute("/solutions/wealth-management")({
 const ADVICE_AREAS = [
   {
     title: "Retirement Planning & Income Strategies",
-    desc: "Structure sustainable withdrawal plans, maximize tax-advantaged accounts, and build dependable cash flow for retirement.",
+    desc: "Structure sustainable withdrawal plans, maximize tax-advantaged accounts, and build dependable cash flow for retirement through our partner.",
     icon: TrendingUp,
   },
   {
-    title: "Point-in-Time & Ongoing Investment Advice",
-    desc: "Tailored portfolio construction, asset allocation, and ongoing rebalancing aligned with your risk tolerance and goals.",
+    title: "Investment Guidance & Portfolio Strategies",
+    desc: "Tailored portfolio construction, asset allocation, and ongoing rebalancing available through our partner, Kuttin Wealth Management.",
     icon: Landmark,
   },
   {
     title: "Wealth Preservation Strategies",
-    desc: "Defensive capital allocation and risk management designed to protect accumulated family and business wealth across market cycles.",
+    desc: "Defensive capital allocation and risk management strategies available through our partner to protect accumulated family and business wealth across market cycles.",
     icon: Shield,
   },
   {
     title: "Insurance and Protection Solutions",
-    desc: "Comprehensive life, disability, and long-term care policy evaluations to safeguard loved ones and business continuity.",
+    desc: "Comprehensive life, disability, and long-term care policy evaluations available through our partner to safeguard loved ones and business continuity.",
     icon: HeartHandshake,
   },
   {
@@ -62,17 +62,17 @@ const ADVICE_AREAS = [
   },
   {
     title: "Financial Position and Cash Strategies",
-    desc: "Holistic balance sheet optimization, debt management, and liquidity planning for high-net-worth individuals and business owners.",
+    desc: "Holistic balance sheet optimization, debt management, and liquidity planning available through our partner.",
     icon: Layers,
   },
   {
     title: "Legacy, Estate, Trust & Philanthropy",
-    desc: "Multi-generational wealth transfer strategies, charitable trusts, and estate structuring to honor your family's lasting legacy.",
+    desc: "Multi-generational wealth transfer strategies, charitable trusts, and estate structuring coordinated through our advisory partner.",
     icon: Award,
   },
   {
     title: "Small Business Strategies",
-    desc: "Executive compensation, key-person protection, business succession structuring, and retirement plans (401k, SEP, Defined Benefit).",
+    desc: "Executive compensation, key-person protection, business succession structuring, and retirement plans (401k, SEP, Defined Benefit) available through our partner.",
     icon: Briefcase,
   },
 ];
@@ -116,7 +116,7 @@ function WealthManagementPage() {
           bgImage="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=1920&q=80"
           eyebrow="Solutions / Wealth Management"
           title="Wealth Management"
-          description="Comprehensive wealth management, retirement planning, and financial strategies through SMG ABA's strategic alliance with Ameriprise Financial and Kuttin Wealth Management."
+          description="Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management."
           buttonText="SCHEDULE A CONSULTATION"
           buttonHref={BOOKING_ROUTE}
         />
@@ -127,14 +127,14 @@ function WealthManagementPage() {
             <div className="mx-auto max-w-3xl text-center mb-16">
               <span className="text-xs font-bold uppercase tracking-widest text-[#1b4e94]">Financial Advisory</span>
               <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
-                What Kind of Advice Can I Expect From a Financial Advisor?
+                What Kind of Advice Can You Access Through Our Partner?
               </h2>
               <div className="mt-6 space-y-4 text-base text-slate-600 leading-relaxed text-left sm:text-center">
                 <p>
-                  Some clients want comprehensive, big-picture guidance that covers every aspect of their financial life—from retirement planning and investment strategies to tax and estate planning strategies. Others may need targeted advice focused on a specific goal, like saving for a home, education, or managing their portfolio.
+                  Through our strategic solicitor partnership with Kuttin Wealth Management, SMG connects you with dedicated financial advisors. Some clients want comprehensive, big-picture guidance that covers every aspect of their financial life—from retirement planning and investment strategies to tax and estate planning strategies. Others may need targeted advice focused on a specific goal, like saving for a home, education, or managing their portfolio.
                 </p>
                 <p>
-                  Wherever you are on your financial journey, a skilled advisor helps you make informed decisions and create a clear path forward.
+                  Wherever you are on your financial journey, our strategic partner's skilled advisors help you make informed decisions and create a clear path forward.
                 </p>
               </div>
             </div>
@@ -182,7 +182,7 @@ function WealthManagementPage() {
                   Financial planning services including wealth management strategies and protection planning are made available to our valued clients through a formal referral relationship with Ameriprise Financial and Kuttin Wealth Management—a nationally recognized advisory practice known for excellence.
                 </p>
                 <p className="mt-4 text-base text-blue-100/90 leading-relaxed">
-                  Take the first step in learning more about financial planning and wealth management services by scheduling a complimentary initial consultation today.
+                  Take the first step in learning more about financial planning and wealth management services available through our partner by scheduling a complimentary initial consultation today.
                 </p>
                 <div className="mt-8">
                   <a

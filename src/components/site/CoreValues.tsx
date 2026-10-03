@@ -8,12 +8,12 @@ export function CoreValues() {
       <div className="absolute bottom-10 -right-32 size-96 bg-blue-50/40 rounded-full blur-3xl pointer-events-none -z-10" />
 
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        
+
         {/* ========================================================================= */}
         {/* SECTION HEADER (Matching Reference Graphic)                               */}
         {/* ========================================================================= */}
         <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-12">
-          
+
 
           {/* Main Section Heading with Blue Horizontal Lines */}
           <div className="flex items-center justify-center gap-3 sm:gap-6 mb-2">

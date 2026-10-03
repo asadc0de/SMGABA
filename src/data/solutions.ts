@@ -391,37 +391,37 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     title: "Wealth Management",
     metaTitle: "Wealth Management - SMG Accountants, Bookkeepers & Advisors",
     metaDescription:
-      "Comprehensive wealth management, retirement planning, and financial strategies through SMG ABA's alliance with Ameriprise Financial and Kuttin Wealth Management.",
+      "Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management.",
     heroBg:
       "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=1920&q=80",
     eyebrow: "Solutions / Wealth Management",
     heroTitle: "Wealth Management",
     heroDescription:
-      "Comprehensive wealth management, retirement planning, and financial strategies through SMG ABA's strategic alliance with Ameriprise Financial and Kuttin Wealth Management.",
+      "Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management.",
     buttonText: "SCHEDULE A CONSULTATION",
     ctaHref: BOOKING_ROUTE,
-    servicesHeading: "Comprehensive Wealth Advisory Areas",
+    servicesHeading: "Advisory Areas Available Through Our Strategic Partner",
     servicesSubheading:
-      "Integrated financial planning uniting tax efficiency with long-term wealth preservation.",
+      "Connecting you with dedicated wealth advisors to integrate your tax strategy with long-term financial planning.",
     services: [
       {
         title: "Retirement Planning & Income Strategies",
-        desc: "Structure sustainable withdrawal plans, maximize tax-advantaged accounts, and build dependable cash flow for retirement.",
+        desc: "Structure sustainable withdrawal plans, maximize tax-advantaged accounts, and build dependable cash flow for retirement through our partner.",
         iconName: "TrendingUp",
       },
       {
-        title: "Point-in-Time & Ongoing Investment Advice",
-        desc: "Tailored portfolio construction, asset allocation, and ongoing rebalancing aligned with your risk tolerance and goals.",
+        title: "Investment Advice & Portfolio Strategies",
+        desc: "Tailored portfolio construction, asset allocation, and ongoing rebalancing available through Kuttin Wealth Management.",
         iconName: "Landmark",
       },
       {
         title: "Wealth Preservation Strategies",
-        desc: "Defensive capital allocation and risk management designed to protect accumulated family and business wealth across market cycles.",
+        desc: "Defensive capital allocation and risk management strategies designed to protect accumulated family and business wealth across market cycles.",
         iconName: "Shield",
       },
       {
         title: "Insurance and Protection Solutions",
-        desc: "Comprehensive life, disability, and long-term care policy evaluations to safeguard loved ones and business continuity.",
+        desc: "Comprehensive life, disability, and long-term care policy evaluations available through our partner to safeguard loved ones and business continuity.",
         iconName: "HeartHandshake",
       },
       {
@@ -431,7 +431,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
       },
       {
         title: "Estate and Legacy Planning",
-        desc: "Coordinate with trust attorneys to structure tax-advantaged generational wealth transfers and philanthropic legacies.",
+        desc: "Coordinate with trust attorneys and partner specialists to structure tax-advantaged generational wealth transfers and philanthropic legacies.",
         iconName: "Layers",
       },
     ],

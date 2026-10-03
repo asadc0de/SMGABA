@@ -1,4 +1,5 @@
 import { ArrowRight, CheckCircle2, Clock, Shield } from "lucide-react";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 export function QuoteForm() {
   return (
@@ -27,7 +28,7 @@ export function QuoteForm() {
           {/* TWO BUTTONS CTA */}
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="/bookanappointment"
+              href={BOOKING_ROUTE}
               className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-[#1b4e94] hover:bg-[#2563eb] px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-md transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <span>Schedule Consultation</span>

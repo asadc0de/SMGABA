@@ -64,12 +64,12 @@ export function CalendlyWidget({
       }
     }
 
-    // 2. Timeout fallback after 8 seconds if no iframe is detected
+    // 2. Timeout fallback after 6 seconds if no iframe is detected
     timeoutTimer = setTimeout(() => {
       if (isMounted) {
         setStatus((prev) => (prev === "ready" ? "ready" : "timeout"));
       }
-    }, 8000);
+    }, 6000);
 
     // 3. Script loading & initialization
     const existingScript =
@@ -120,16 +120,16 @@ export function CalendlyWidget({
           </div>
         )}
 
-        {/* 8-second timeout state placeholder */}
+        {/* Timeout state fallback: replaces spinner when loading takes longer than 6s */}
         {status === "timeout" && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white p-6 text-center gap-4 border border-slate-200/80 rounded-2xl">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white p-6 text-center gap-4 border border-slate-200/80 rounded-2xl shadow-inner">
             <AlertCircle className="size-10 text-amber-500" />
             <div className="max-w-md">
               <h3 className="text-base font-bold text-slate-800">
-                The calendar is taking a while to load.
+                The scheduling calendar is taking a moment to load.
               </h3>
               <p className="mt-1 text-xs text-slate-500">
-                You can open our live scheduling engine directly in a new tab:
+                If an ad-blocker is preventing the calendar from displaying, you can open our live booking engine directly:
               </p>
             </div>
             <a
@@ -138,7 +138,7 @@ export function CalendlyWidget({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-[#1b4e94] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-md hover:bg-[#142340] transition hover:scale-105"
             >
-              <span>Open the scheduler in a new tab</span>
+              <span>Open booking page</span>
               <ExternalLink className="size-3.5" />
             </a>
           </div>
@@ -160,7 +160,7 @@ export function CalendlyWidget({
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-[#1b4e94] transition-colors underline underline-offset-2"
         >
-          <span>Trouble viewing the calendar? Book directly here</span>
+          <span>Trouble viewing the calendar? Open booking page</span>
           <ExternalLink className="size-3" />
         </a>
       </div>

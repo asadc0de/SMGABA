@@ -33,11 +33,12 @@ export const EVENTS: EventItem[] = [
     host_title: "CPA",
     event_date: "2026-09-10",
     time_range: "2:30 - 3:30 PM",
-    time_zone: "ET",
+    time_zone: "EDT",
     description:
       "Join Managing Partner Gregory M. Scotto, CPA for an in-depth session detailing the crucial legal and accounting structures modern businesses need. Learn compliance checklists, risk mitigation strategies, and how to present your company to lenders and investors with institutional confidence.",
     registration_link: "https://www.smgaba.com/dress-your-business-webinar",
-    recording_link: undefined,
+    // TODO: paste Google Drive link
+    recording_link: "",
     thumbnail_url: null,
     created_at: "2026-09-01T12:00:00.000Z",
   },
@@ -49,11 +50,12 @@ export const EVENTS: EventItem[] = [
     host_title: undefined,
     event_date: "2026-09-17",
     time_range: "2:30 - 3:30 PM",
-    time_zone: "ET",
+    time_zone: "EDT",
     description:
       "Accounting Manager Kinshuk Sharma breaks down the modern AP tech stack. Discover how automated three-way matching, secure payment gateways, and real-time ledger sync eliminate bottlenecks and protect your business against supplier payment fraud.",
     registration_link: "https://www.smgaba.com/accounts-payable-webinar",
-    recording_link: undefined,
+    // TODO: paste Google Drive link
+    recording_link: "",
     thumbnail_url: null,
     created_at: "2026-09-01T12:00:00.000Z",
   },
@@ -65,11 +67,12 @@ export const EVENTS: EventItem[] = [
     host_title: "CPA",
     event_date: "2026-09-24",
     time_range: "10:00 - 11:00 AM",
-    time_zone: "ET",
+    time_zone: "EDT",
     description:
       "Partner Marc Valente, CPA guides business owners through the nuances of entity formation. Understand pass-through taxation, reasonable compensation guidelines, state franchise taxes, and when restructuring your business saves thousands in annual tax liability.",
     registration_link: "https://www.smgaba.com/business-structure-webinar",
-    recording_link: undefined,
+    // TODO: paste Google Drive link
+    recording_link: "",
     thumbnail_url: null,
     created_at: "2026-09-01T12:00:00.000Z",
   },
@@ -81,11 +84,12 @@ export const EVENTS: EventItem[] = [
     host_title: "CPA, CFP",
     event_date: "2026-09-30",
     time_range: "2:00 - 3:00 PM",
-    time_zone: "ET",
+    time_zone: "EDT",
     description:
       "Senior Tax Manager Corey Adams, CPA, CFP shares proactive tax strategies to implement before December 31st. Topics include Section 179 depreciation acceleration, retirement plan contributions, timing income and expenses, and wealth transfer planning.",
     registration_link: "https://www.smgaba.com/year-end-tax-planning-webinar",
-    recording_link: undefined,
+    // TODO: paste Google Drive link
+    recording_link: "",
     thumbnail_url: null,
     created_at: "2026-09-01T12:00:00.000Z",
   },

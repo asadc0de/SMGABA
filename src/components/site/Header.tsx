@@ -24,6 +24,7 @@ import {
   MapPin,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 type NavSubItem = {
   label: string;
@@ -431,7 +432,7 @@ export function Header() {
               {/* Schedule CTA – icon-only with custom tooltip */}
               <div className="group/cta relative ml-2 xl:ml-3">
                 <a
-                  href="/bookanappointment"
+                  href={BOOKING_ROUTE}
                   aria-label="Book an appointment"
                   className="flex size-9 items-center justify-center rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-[0_0_20px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-[1.08] hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] shrink-0"
                 >
@@ -441,7 +442,7 @@ export function Header() {
                 <div className="invisible absolute right-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover/cta:visible group-hover/cta:opacity-100 w-48 z-50">
                   <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-3 shadow-2xl backdrop-blur-2xl">
                     <a
-                      href="/bookanappointment"
+                      href={BOOKING_ROUTE}
                       className="flex items-center gap-2.5 rounded-lg p-2 text-white/85 hover:bg-white/8 hover:text-white transition-all"
                     >
                       <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[#2563eb] text-white">
@@ -612,7 +613,7 @@ export function Header() {
 
           <div className="pt-4">
             <a
-              href="/bookanappointment"
+              href={BOOKING_ROUTE}
               onClick={() => setOpen(false)}
               className="flex w-full items-center justify-center gap-2 rounded-full bg-[#2563eb] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-600/30"
             >

@@ -5,6 +5,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 export const Route = createFileRoute("/florida-location")({
   head: () => ({
@@ -106,7 +107,7 @@ function FloridaLocationPage() {
 
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                     <Button asChild size="lg" className="w-full sm:w-auto bg-navy text-white hover:bg-navy/90">
-                      <a href="/bookanappointment">
+                      <a href={BOOKING_ROUTE}>
                         Schedule Consultation <ArrowRight className="ml-2 size-4" />
                       </a>
                     </Button>

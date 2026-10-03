@@ -75,8 +75,9 @@ function EventCard({ event }: { event: EventItem }) {
   const [imgError, setImgError] = useState(false);
   const status = getEventStatus(event);
   const isUpcoming = status === "upcoming";
-  const recordingLink = event.recordingUrl || event.recording_link || event.recording_url;
-  const hasRecording = Boolean(recordingLink && recordingLink.trim());
+  const rawRecording = event.recordingUrl || event.recording_link || event.recording_url;
+  const recordingLink = typeof rawRecording === "string" && rawRecording.trim().length > 0 ? rawRecording.trim() : undefined;
+  const hasRecording = Boolean(recordingLink);
   const showImage = Boolean(event.thumbnail_url && event.thumbnail_url.trim() && !imgError);
 
   const tz = event.time_zone || event.timeZone;

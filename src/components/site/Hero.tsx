@@ -30,10 +30,10 @@ export function Hero() {
 
       {/* Content Container - Left Aligned matching Image 2 */}
       <div className="relative mx-auto w-full max-w-7xl px-6 pt-36 pb-20 sm:pt-44 sm:pb-28 md:pt-48 md:pb-32 lg:px-10">
-        <div className="max-w-3xl text-left">
+        <div className="max-w-2xl text-left">
 
           {/* Main Headline */}
-          <h1 className="font-serif-hero text-4xl font-bold tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[4.15rem] lg:leading-[1.12] drop-shadow-sm">
+          <h1 className="font-serif-hero text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.25rem] lg:leading-[1.16] drop-shadow-sm">
             Building Relationships with Passion, Care, &amp; Responsiveness
           </h1>
 
