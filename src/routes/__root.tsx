@@ -148,6 +148,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   );
 }
 
+function ChatbaseWidget() {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Do not load on internal /tools pages
+    if (location.pathname.startsWith("/tools")) return;
+
+    // Guard: don't inject twice
+    if (document.getElementById("w2wTSCgQzP7JI9lkHfkm7")) return;
+    if ((window as any).__chatbaseInjected) return;
+    (window as any).__chatbaseInjected = true;
+
+    // Inject as a <script> element so the code runs outside the module's strict mode
+    const bootstrapScript = document.createElement("script");
+    bootstrapScript.textContent = '(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="w2wTSCgQzP7JI9lkHfkm7";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();';
+    document.body.appendChild(bootstrapScript);
+  }, [location.pathname]);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const location = useLocation();
@@ -169,6 +190,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ChatbaseWidget />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
