@@ -32,6 +32,7 @@ import { Route as RealEstateRouteImport } from './routes/real-estate'
 import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RetailRouteImport } from './routes/retail'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
+import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
@@ -159,6 +160,11 @@ const TestimonialsRoute = TestimonialsRouteImport.update({
   path: '/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChatbaseLeadRoute = ApiChatbaseLeadRouteImport.update({
+  id: '/api/chatbase-lead',
+  path: '/api/chatbase-lead',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -241,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
+  '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
@@ -277,6 +284,7 @@ export interface FileRoutesByTo {
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
+  '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
@@ -314,6 +322,7 @@ export interface FileRoutesById {
   '/resources': typeof ResourcesRoute
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
+  '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/retail'
     | '/testimonials'
+    | '/api/chatbase-lead'
     | '/blog/$slug'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
@@ -388,6 +398,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/retail'
     | '/testimonials'
+    | '/api/chatbase-lead'
     | '/blog/$slug'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
@@ -424,6 +435,7 @@ export interface FileRouteTypes {
     | '/resources'
     | '/retail'
     | '/testimonials'
+    | '/api/chatbase-lead'
     | '/blog/$slug'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
@@ -461,6 +473,7 @@ export interface RootRouteChildren {
   ResourcesRoute: typeof ResourcesRoute
   RetailRoute: typeof RetailRoute
   TestimonialsRoute: typeof TestimonialsRoute
+  ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
   BlogSlugRoute: typeof BlogSlugRoute
   InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
@@ -637,6 +650,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chatbase-lead': {
+      id: '/api/chatbase-lead'
+      path: '/api/chatbase-lead'
+      fullPath: '/api/chatbase-lead'
+      preLoaderRoute: typeof ApiChatbaseLeadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -741,6 +761,7 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesRoute: ResourcesRoute,
   RetailRoute: RetailRoute,
   TestimonialsRoute: TestimonialsRoute,
+  ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
   BlogSlugRoute: BlogSlugRoute,
   InternalWebinarLinksRoute: InternalWebinarLinksRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
