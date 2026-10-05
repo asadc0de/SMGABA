@@ -44,6 +44,9 @@ import { Route as SolutionsWealthManagementRouteImport } from './routes/solution
 import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
+import { Route as InternalPagesIndexRouteImport } from './routes/internal/pages/index'
+import { Route as InternalPagesNewRouteImport } from './routes/internal/pages/new'
+import { Route as InternalPagesIdEditRouteImport } from './routes/internal/pages/$id/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -222,6 +225,21 @@ const ToolsRedirectionsRoute = ToolsRedirectionsRouteImport.update({
   path: '/tools/redirections',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InternalPagesIndexRoute = InternalPagesIndexRouteImport.update({
+  id: '/internal/pages/',
+  path: '/internal/pages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InternalPagesNewRoute = InternalPagesNewRouteImport.update({
+  id: '/internal/pages/new',
+  path: '/internal/pages/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InternalPagesIdEditRoute = InternalPagesIdEditRouteImport.update({
+  id: '/internal/pages/$id/edit',
+  path: '/internal/pages/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -259,6 +277,9 @@ export interface FileRoutesByFullPath {
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
+  '/internal/pages/new': typeof InternalPagesNewRoute
+  '/internal/pages/': typeof InternalPagesIndexRoute
+  '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -296,6 +317,9 @@ export interface FileRoutesByTo {
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog': typeof BlogIndexRoute
   '/solutions': typeof SolutionsIndexRoute
+  '/internal/pages/new': typeof InternalPagesNewRoute
+  '/internal/pages': typeof InternalPagesIndexRoute
+  '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -334,6 +358,9 @@ export interface FileRoutesById {
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
+  '/internal/pages/new': typeof InternalPagesNewRoute
+  '/internal/pages/': typeof InternalPagesIndexRoute
+  '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -373,6 +400,9 @@ export interface FileRouteTypes {
     | '/tools/redirections'
     | '/blog/'
     | '/solutions/'
+    | '/internal/pages/new'
+    | '/internal/pages/'
+    | '/internal/pages/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -410,6 +440,9 @@ export interface FileRouteTypes {
     | '/tools/redirections'
     | '/blog'
     | '/solutions'
+    | '/internal/pages/new'
+    | '/internal/pages'
+    | '/internal/pages/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -447,6 +480,9 @@ export interface FileRouteTypes {
     | '/tools/redirections'
     | '/blog/'
     | '/solutions/'
+    | '/internal/pages/new'
+    | '/internal/pages/'
+    | '/internal/pages/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -485,6 +521,9 @@ export interface RootRouteChildren {
   ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
   BlogIndexRoute: typeof BlogIndexRoute
   SolutionsIndexRoute: typeof SolutionsIndexRoute
+  InternalPagesNewRoute: typeof InternalPagesNewRoute
+  InternalPagesIndexRoute: typeof InternalPagesIndexRoute
+  InternalPagesIdEditRoute: typeof InternalPagesIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -734,6 +773,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRedirectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/internal/pages/': {
+      id: '/internal/pages/'
+      path: '/internal/pages'
+      fullPath: '/internal/pages/'
+      preLoaderRoute: typeof InternalPagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/internal/pages/new': {
+      id: '/internal/pages/new'
+      path: '/internal/pages/new'
+      fullPath: '/internal/pages/new'
+      preLoaderRoute: typeof InternalPagesNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/internal/pages/$id/edit': {
+      id: '/internal/pages/$id/edit'
+      path: '/internal/pages/$id/edit'
+      fullPath: '/internal/pages/$id/edit'
+      preLoaderRoute: typeof InternalPagesIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -773,6 +833,9 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsRedirectionsRoute: ToolsRedirectionsRoute,
   BlogIndexRoute: BlogIndexRoute,
   SolutionsIndexRoute: SolutionsIndexRoute,
+  InternalPagesNewRoute: InternalPagesNewRoute,
+  InternalPagesIndexRoute: InternalPagesIndexRoute,
+  InternalPagesIdEditRoute: InternalPagesIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
