@@ -13,7 +13,7 @@ export interface BlockStyleProps {
   paddingBottom?: Responsive<Space>;
   marginTop?: Responsive<Space>;
   marginBottom?: Responsive<Space>;
-  align?: Responsive<Align>;
+  align?: Responsive<Align> | Align;
 }
 
 export const VALID_SPACES: ReadonlySet<Space> = new Set(["none", "sm", "md", "lg", "xl"]);
@@ -152,15 +152,19 @@ export function buildStyleClasses(
 
   // Alignment (Text alignment or Flex justification)
   const alignMap = isFlexAlign ? FLEX_JUSTIFY_CLASSES : TEXT_ALIGN_CLASSES;
-  const alignBase = style?.align?.base ?? defaultAlign;
+  const normalizedAlign: Responsive<Align> | undefined =
+    typeof style?.align === "string"
+      ? { base: style.align as Align }
+      : style?.align;
+  const alignBase = normalizedAlign?.base ?? defaultAlign;
   if (alignBase && alignMap.base[alignBase]) {
     classes.push(alignMap.base[alignBase]);
   }
-  if (style?.align?.md && alignMap.md[style.align.md]) {
-    classes.push(alignMap.md[style.align.md]);
+  if (normalizedAlign?.md && alignMap.md[normalizedAlign.md]) {
+    classes.push(alignMap.md[normalizedAlign.md]);
   }
-  if (style?.align?.lg && alignMap.lg[style.align.lg]) {
-    classes.push(alignMap.lg[style.align.lg]);
+  if (normalizedAlign?.lg && alignMap.lg[normalizedAlign.lg]) {
+    classes.push(alignMap.lg[normalizedAlign.lg]);
   }
 
   return classes.join(" ");

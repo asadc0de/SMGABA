@@ -35,6 +35,7 @@ import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as InternalSettingsRouteImport } from './routes/internal/settings'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
 import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/bookkeeping'
@@ -47,6 +48,7 @@ import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirectio
 import { Route as InternalPagesIndexRouteImport } from './routes/internal/pages/index'
 import { Route as InternalPagesNewRouteImport } from './routes/internal/pages/new'
 import { Route as InternalPagesIdEditRouteImport } from './routes/internal/pages/$id/edit'
+import { Route as InternalPagesIdPreviewRouteImport } from './routes/internal/pages/$id/preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -178,6 +180,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InternalSettingsRoute = InternalSettingsRouteImport.update({
+  id: '/internal/settings',
+  path: '/internal/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InternalWebinarLinksRoute = InternalWebinarLinksRouteImport.update({
   id: '/internal/webinar-links',
   path: '/internal/webinar-links',
@@ -240,6 +247,11 @@ const InternalPagesIdEditRoute = InternalPagesIdEditRouteImport.update({
   path: '/internal/pages/$id/edit',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InternalPagesIdPreviewRoute = InternalPagesIdPreviewRouteImport.update({
+  id: '/internal/pages/$id/preview',
+  path: '/internal/pages/$id/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -267,6 +279,7 @@ export interface FileRoutesByFullPath {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -280,6 +293,7 @@ export interface FileRoutesByFullPath {
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages/': typeof InternalPagesIndexRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
+  '/internal/pages/$id/preview': typeof InternalPagesIdPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -307,6 +321,7 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -320,6 +335,7 @@ export interface FileRoutesByTo {
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages': typeof InternalPagesIndexRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
+  '/internal/pages/$id/preview': typeof InternalPagesIdPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -348,6 +364,7 @@ export interface FileRoutesById {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -361,6 +378,7 @@ export interface FileRoutesById {
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages/': typeof InternalPagesIndexRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
+  '/internal/pages/$id/preview': typeof InternalPagesIdPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -390,6 +408,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/internal/settings'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -403,6 +422,7 @@ export interface FileRouteTypes {
     | '/internal/pages/new'
     | '/internal/pages/'
     | '/internal/pages/$id/edit'
+    | '/internal/pages/$id/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -430,6 +450,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/internal/settings'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -443,6 +464,7 @@ export interface FileRouteTypes {
     | '/internal/pages/new'
     | '/internal/pages'
     | '/internal/pages/$id/edit'
+    | '/internal/pages/$id/preview'
   id:
     | '__root__'
     | '/'
@@ -470,6 +492,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/internal/settings'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -483,6 +506,7 @@ export interface FileRouteTypes {
     | '/internal/pages/new'
     | '/internal/pages/'
     | '/internal/pages/$id/edit'
+    | '/internal/pages/$id/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -511,6 +535,7 @@ export interface RootRouteChildren {
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  InternalSettingsRoute: typeof InternalSettingsRoute
   InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
   SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
@@ -524,6 +549,7 @@ export interface RootRouteChildren {
   InternalPagesNewRoute: typeof InternalPagesNewRoute
   InternalPagesIndexRoute: typeof InternalPagesIndexRoute
   InternalPagesIdEditRoute: typeof InternalPagesIdEditRoute
+  InternalPagesIdPreviewRoute: typeof InternalPagesIdPreviewRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -710,6 +736,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/internal/settings': {
+      id: '/internal/settings'
+      path: '/internal/settings'
+      fullPath: '/internal/settings'
+      preLoaderRoute: typeof InternalSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/internal/webinar-links': {
       id: '/internal/webinar-links'
       path: '/internal/webinar-links'
@@ -794,6 +827,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalPagesIdEditRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/internal/pages/$id/preview': {
+      id: '/internal/pages/$id/preview'
+      path: '/internal/pages/$id/preview'
+      fullPath: '/internal/pages/$id/preview'
+      preLoaderRoute: typeof InternalPagesIdPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -823,6 +863,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
   BlogSlugRoute: BlogSlugRoute,
+  InternalSettingsRoute: InternalSettingsRoute,
   InternalWebinarLinksRoute: InternalWebinarLinksRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
   SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
@@ -836,6 +877,7 @@ const rootRouteChildren: RootRouteChildren = {
   InternalPagesNewRoute: InternalPagesNewRoute,
   InternalPagesIndexRoute: InternalPagesIndexRoute,
   InternalPagesIdEditRoute: InternalPagesIdEditRoute,
+  InternalPagesIdPreviewRoute: InternalPagesIdPreviewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

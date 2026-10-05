@@ -3,7 +3,10 @@ import { getBlogPostBySlug, type BlogPost } from "@/data/blogPosts";
 import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
 import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 import { resolveWebinarSlug } from "@/lib/webinar-redirects";
-import { lookupPublishedCmsPage, type CmsPage } from "@/lib/cms.server";
+import { lookupPublishedCmsPage, getCmsSiteSettings, type CmsPage } from "@/lib/cms.server";
+import { type CmsSiteSettings } from "@/lib/cms-settings";
+import { type CmsRootProps, isValidCanonicalUrl } from "@/cms/root";
+import { isValidImageUrl } from "@/cms/blocks/Image";
 import { Render } from "@puckeditor/core/rsc";
 import { puckRenderConfig } from "@/cms/render.config";
 import { BlogPostView } from "@/components/site/BlogPostView";
@@ -67,11 +70,42 @@ export const Route = createFileRoute("/$slug")({
 
     if (loaderData?.cmsPage) {
       const page = loaderData.cmsPage;
+      const rootProps = (page.data?.root?.props as CmsRootProps) || {};
+
+      const baseTitle = page.title?.trim() || "SMG ABA";
+      const title = rootProps.seoTitle?.trim() || `${baseTitle} | SMG ABA`;
+      const metaDescription = rootProps.metaDescription?.trim();
+      const ogTitle = rootProps.ogTitle?.trim() || title;
+      const ogDescription = rootProps.ogDescription?.trim() || metaDescription;
+      const ogImage = rootProps.ogImage?.trim();
+      const canonicalUrl = rootProps.canonicalUrl?.trim();
+
+      const meta: Array<{ title?: string; name?: string; property?: string; content?: string }> = [
+        { title },
+        { property: "og:title", content: ogTitle },
+        { property: "og:type", content: "website" },
+      ];
+
+      if (metaDescription) {
+        meta.push({ name: "description", content: metaDescription });
+      }
+
+      if (ogDescription) {
+        meta.push({ property: "og:description", content: ogDescription });
+      }
+
+      if (ogImage && isValidImageUrl(ogImage)) {
+        meta.push({ property: "og:image", content: ogImage });
+      }
+
+      const links: Array<{ rel: string; href: string }> = [];
+      if (canonicalUrl && isValidCanonicalUrl(canonicalUrl)) {
+        links.push({ rel: "canonical", href: canonicalUrl });
+      }
+
       return {
-        meta: [
-          { title: `${page.title} | SMG ABA` },
-          { property: "og:title", content: `${page.title} | SMG ABA` },
-        ],
+        meta,
+        links,
       };
     }
 
@@ -79,7 +113,7 @@ export const Route = createFileRoute("/$slug")({
       meta: [{ title: "Page Not Found | SMG ABA" }],
     };
   },
-  loader: async ({ params }): Promise<{ post: BlogPost | null; cmsPage: CmsPage | null }> => {
+  loader: async ({ params }): Promise<{ post: BlogPost | null; cmsPage: CmsPage | null; settings?: CmsSiteSettings }> => {
     // 1. Check static blog posts first
     const post = getBlogPostBySlug(params.slug);
     if (post) {
@@ -94,7 +128,8 @@ export const Route = createFileRoute("/$slug")({
     }
 
     if (result?.page) {
-      return { post: null, cmsPage: result.page };
+      const settingsRes = await getCmsSiteSettings();
+      return { post: null, cmsPage: result.page, settings: settingsRes.settings };
     }
 
     // 3. Clean not found -> 404
@@ -105,7 +140,7 @@ export const Route = createFileRoute("/$slug")({
 });
 
 function DynamicSlugPage() {
-  const { post, cmsPage } = Route.useLoaderData();
+  const { post, cmsPage, settings } = Route.useLoaderData();
 
   if (post) {
     return <BlogPostView post={post} />;
@@ -114,11 +149,11 @@ function DynamicSlugPage() {
   if (cmsPage) {
     return (
       <div className="min-h-screen bg-background flex flex-col justify-between">
-        <Header />
+        <Header settings={settings} />
         <main className="flex-1 pt-28 sm:pt-36 pb-16">
           <Render config={puckRenderConfig} data={cmsPage.data} />
         </main>
-        <Footer />
+        <Footer settings={settings} />
       </div>
     );
   }

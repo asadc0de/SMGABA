@@ -1,39 +1,20 @@
 import * as React from "react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  type BlockStyleProps,
+  type Responsive,
+  type Align,
+  buildStyleClasses,
+} from "../style";
 
-export interface ButtonBlockProps {
+export interface ButtonBlockProps extends BlockStyleProps {
   label: string;
   url: string;
   variant: "primary" | "secondary";
-  align: "left" | "center" | "right";
+  sizePercent?: number;
 }
 
-/**
- * Validates whether a URL is safe and adheres to allowed protocols.
- *
- * Rules:
- * 1. Must be a non-empty string.
- * 2. Reject any URL containing whitespace (\s), backslashes (\), or control characters (\x00-\x1F, \x7F) anywhere.
- * 3. Reject protocol-relative URLs ("//...").
- * 4. Strict allowlist prefix check (case-insensitive):
- *    - "https://"
- *    - "http://"
- *    - "/" (single-slash relative, e.g. "/contact", but not "//evil.com" or "/\evil.com")
- *    - "mailto:"
- *    - "tel:"
- *
- * Examples:
- * - "/\\evil.com" -> false (rejected: contains backslash)
- * - "/\t/evil.com" -> false (rejected: contains control char / tab)
- * - "//evil.com" -> false (rejected: protocol-relative)
- * - "https://x.com/profile:1" -> true (accepted: valid https://)
- * - "http://localhost:3000" -> true (accepted: valid http://)
- * - "/services/aba-therapy" -> true (accepted: relative path)
- * - "mailto:info@smgaba.com" -> true (accepted: mailto)
- * - "tel:+18005550199" -> true (accepted: tel)
- * - "javascript:alert(1)" -> false (rejected: not in allowlist)
- */
 export function isValidButtonUrl(rawUrl: string): boolean {
   if (!rawUrl || typeof rawUrl !== "string") return false;
   const trimmed = rawUrl.trim();
@@ -65,25 +46,58 @@ export function isValidButtonUrl(rawUrl: string): boolean {
   return false;
 }
 
-const justifyClasses: Record<ButtonBlockProps["align"], string> = {
-  left: "justify-start",
-  center: "justify-center",
-  right: "justify-end",
-};
-
 export function ButtonRender({
   label,
   url,
   variant = "primary",
-  align = "left",
+  sizePercent = 100,
+  align,
+  marginTop,
+  marginBottom,
+  paddingTop,
+  paddingBottom,
 }: ButtonBlockProps) {
-  const justifyClass = justifyClasses[align] || "justify-start";
+  // Backward compatibility: support string or Responsive<Align>
+  const normalizedAlign: Responsive<Align> =
+    typeof align === "string" ? { base: align } : align || { base: "left" };
+
+  const styleClasses = buildStyleClasses(
+    {
+      align: normalizedAlign,
+      marginTop,
+      marginBottom,
+      paddingTop,
+      paddingBottom,
+    },
+    {
+      isFlexAlign: true,
+      defaultMarginTop: "md",
+      defaultMarginBottom: "md",
+      defaultAlign: "left",
+    },
+  );
+
+  const scale = typeof sizePercent === "number" && sizePercent > 0 ? sizePercent / 100 : 1;
+  const customStyle: React.CSSProperties =
+    scale !== 1
+      ? {
+          transform: `scale(${scale})`,
+          transformOrigin:
+            normalizedAlign.base === "center"
+              ? "center center"
+              : normalizedAlign.base === "right"
+                ? "right center"
+                : "left center",
+        }
+      : {};
+
   const isValid = isValidButtonUrl(url);
 
   if (!isValid) {
     return (
-      <div className={`flex w-full my-4 ${justifyClass}`}>
+      <div className={`flex w-full ${styleClasses}`}>
         <span
+          style={customStyle}
           className={cn(
             buttonVariants({
               variant: variant === "secondary" ? "secondary" : "default",
@@ -102,12 +116,13 @@ export function ButtonRender({
   const isExternal = safeUrl.startsWith("http://") || safeUrl.startsWith("https://");
 
   return (
-    <div className={`flex w-full my-4 ${justifyClass}`}>
+    <div className={`flex w-full ${styleClasses}`}>
       <Button
         variant={variant === "secondary" ? "secondary" : "default"}
         size="default"
         asChild
-        className="rounded-full shadow-sm"
+        style={customStyle}
+        className="rounded-full shadow-sm transition-transform"
       >
         <a
           href={safeUrl}
@@ -120,3 +135,4 @@ export function ButtonRender({
     </div>
   );
 }
+

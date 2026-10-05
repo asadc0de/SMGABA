@@ -174,7 +174,29 @@ const NAV: NavItem[] = [
   },
 ];
 
-export function Header() {
+const SUB_ICON_MAP: Record<string, React.ElementType> = {
+  "/solutions/bookkeeping": Calculator,
+  "/solutions/cfo-advisory-services": Compass,
+  "/solutions/tax": FileText,
+  "/solutions/wealth-management": Layers,
+  "/hospitality": Utensils,
+  "/real-estate": Building2,
+  "/automotive": Car,
+  "/healthcare": Activity,
+  "/legal-professionals": Scale,
+  "/construction": HardHat,
+  "/manufacturers": Factory,
+  "/retail": ShoppingBag,
+  "/blog": FileText,
+  "/resources": Sparkles,
+  "/islandia-location": Building2,
+  "/new-york-city-location": Building2,
+  "/florida-location": MapPin,
+};
+
+import { type CmsSiteSettings } from "@/lib/cms-settings";
+
+export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -182,6 +204,18 @@ export function Header() {
   const location = useLocation();
   const rawPath = location?.pathname || (typeof window !== "undefined" ? window.location.pathname : "/");
   const pathname = rawPath === "/" ? "/" : rawPath.replace(/\/$/, "");
+
+  const navItems = settings?.header?.navItems
+    ? settings.header.navItems.filter((i) => i.enabled !== false)
+    : NAV;
+
+  const logoUrl = settings?.header?.logoUrl;
+  const logoAlt = settings?.header?.logoAlt || "SMG Accounting, Bookkeeping & Advisory";
+  const ctaButton = settings?.header?.ctaButton || {
+    enabled: true,
+    label: "Schedule Consultation",
+    href: BOOKING_ROUTE,
+  };
 
   const isChildActive = (childHref: string) => {
     const cleanHref = childHref.split("#")[0].replace(/\/$/, "") || "/";
@@ -265,14 +299,21 @@ export function Header() {
             <a
               href="/"
               className="group flex shrink-0 items-center focus:outline-none"
-              aria-label="SMG Accounting, Bookkeeping & Advisory"
+              aria-label={logoAlt}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                xmlnsXlink="http://www.w3.org/1999/xlink"
-                viewBox="0 0 263 129.65"
-                className="h-10 sm:h-11 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-[1.03]"
-              >
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={logoAlt}
+                  className="h-10 sm:h-11 lg:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+                />
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlnsXlink="http://www.w3.org/1999/xlink"
+                  viewBox="0 0 263 129.65"
+                  className="h-10 sm:h-11 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-[1.03]"
+                >
                 <defs>
                   <style>{`
                     .nav-cls-1{fill:url(#nav-smg-grad);}
@@ -340,7 +381,8 @@ export function Header() {
                   <path className="nav-cls-5" d="M241.75,96.19a4.19,4.19,0,0,0,2.85,1.22c1.17,0,1.85-.58,1.85-1.49,0-1.28-1-1.64-2.14-2.22-1.43-.73-2.84-1.5-2.84-3.23,0-1.94,1.79-3,3.6-3a4.26,4.26,0,0,1,3,1.25l-.91,1.39a3,3,0,0,0-2.09-1c-.8,0-1.64.37-1.64,1.22,0,2.1,5,1.59,5,5.51,0,1.68-1.46,3.22-4,3.22a5.61,5.61,0,0,1-3.72-1.57Z" transform="translate(-17.08 -11.06)" />
                 </g>
               </svg>
-            </a>
+            )}
+          </a>
 
             {/* ── Desktop Nav Links ── */}
             <nav
@@ -348,12 +390,14 @@ export function Header() {
               aria-label="Main Navigation"
             >
               <div className="flex items-center gap-0.5 xl:gap-1.5">
-                {NAV.map((item) => {
+                {navItems.map((item) => {
                   const active = isItemActive(item);
                   return (
-                    <div key={item.label} className="group relative">
+                    <div key={item.id || item.label} className="group relative">
                       <a
                         href={item.href}
+                        target={item.openInNewTab || item.isExternal ? "_blank" : undefined}
+                        rel={item.openInNewTab || item.isExternal ? "noopener noreferrer" : undefined}
                         className={cn(
                           "relative inline-flex items-center gap-1 px-2 xl:px-2.5 py-1.5 text-[0.72rem] xl:text-[0.8rem] font-bold tracking-[0.05em] uppercase whitespace-nowrap transition-all duration-200 rounded-md",
                           active
@@ -364,22 +408,24 @@ export function Header() {
                         <span className="relative">
                           {item.label}
                         </span>
-                        {item.children && (
+                        {item.children && item.children.length > 0 && (
                           <ChevronDown className="size-3 shrink-0 opacity-70 transition-transform duration-200 group-hover:rotate-180 group-hover:opacity-100" />
                         )}
                       </a>
 
-                      {item.children && (
+                      {item.children && item.children.length > 0 && (
                         <div className="invisible absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 w-72">
                           <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-1.5 shadow-2xl backdrop-blur-2xl">
                             <ul className="space-y-0.5">
-                              {item.children.map((child) => {
-                                const Icon = child.icon;
+                              {item.children.filter((c) => c.enabled !== false).map((child) => {
+                                const Icon = (child as any).icon || SUB_ICON_MAP[child.href] || Sparkles;
                                 const childActive = isChildActive(child.href);
                                 return (
-                                  <li key={child.label}>
+                                  <li key={child.id || child.label}>
                                     <a
                                       href={child.href}
+                                      target={child.openInNewTab || child.isExternal ? "_blank" : undefined}
+                                      rel={child.openInNewTab || child.isExternal ? "noopener noreferrer" : undefined}
                                       className={cn(
                                         "flex items-start gap-2.5 rounded-lg p-2.5 transition-all",
                                         childActive
@@ -429,33 +475,35 @@ export function Header() {
                 })}
               </div>
 
-              {/* Schedule CTA – icon-only with custom tooltip */}
-              <div className="group/cta relative ml-2 xl:ml-3">
-                <a
-                  href={BOOKING_ROUTE}
-                  aria-label="Book an appointment"
-                  className="flex size-9 items-center justify-center rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-[0_0_20px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-[1.08] hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] shrink-0"
-                >
-                  <CalendarCheck className="size-4 stroke-[2.5]" />
-                </a>
-                {/* Tooltip – styled like nav dropdowns */}
-                <div className="invisible absolute right-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover/cta:visible group-hover/cta:opacity-100 w-48 z-50">
-                  <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-3 shadow-2xl backdrop-blur-2xl">
-                    <a
-                      href={BOOKING_ROUTE}
-                      className="flex items-center gap-2.5 rounded-lg p-2 text-white/85 hover:bg-white/8 hover:text-white transition-all"
-                    >
-                      <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[#2563eb] text-white">
-                        <CalendarCheck className="size-3.5" />
-                      </div>
-                      <div>
-                        <div className="text-xs font-semibold text-white">Book Appointment</div>
-                        <p className="mt-0.5 text-[0.68rem] leading-relaxed text-slate-400">Schedule a consultation</p>
-                      </div>
-                    </a>
+              {/* Schedule CTA Button */}
+              {ctaButton.enabled && (
+                <div className="group/cta relative ml-2 xl:ml-3">
+                  <a
+                    href={ctaButton.href}
+                    aria-label={ctaButton.label || "Book an appointment"}
+                    className="flex size-9 items-center justify-center rounded-full bg-[#2563eb] hover:bg-[#1d4ed8] text-white shadow-[0_0_20px_rgba(37,99,235,0.45)] transition-all duration-300 hover:scale-[1.08] hover:shadow-[0_0_25px_rgba(37,99,235,0.7)] shrink-0"
+                  >
+                    <CalendarCheck className="size-4 stroke-[2.5]" />
+                  </a>
+                  {/* Tooltip */}
+                  <div className="invisible absolute right-0 top-full pt-2 opacity-0 transition-all duration-200 group-hover/cta:visible group-hover/cta:opacity-100 w-48 z-50">
+                    <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-3 shadow-2xl backdrop-blur-2xl">
+                      <a
+                        href={ctaButton.href}
+                        className="flex items-center gap-2.5 rounded-lg p-2 text-white/85 hover:bg-white/8 hover:text-white transition-all"
+                      >
+                        <div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[#2563eb] text-white">
+                          <CalendarCheck className="size-3.5" />
+                        </div>
+                        <div>
+                          <div className="text-xs font-semibold text-white">{ctaButton.label || "Book Appointment"}</div>
+                          <p className="mt-0.5 text-[0.68rem] leading-relaxed text-slate-400">Schedule a consultation</p>
+                        </div>
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </nav>
 
             {/* ── Mobile Controls ── */}
@@ -496,18 +544,20 @@ export function Header() {
         )}
       >
         <nav aria-label="Mobile Navigation" className="space-y-1">
-          {NAV.map((item) => {
+          {navItems.map((item) => {
             const active = isItemActive(item);
             return (
               <div
-                key={item.label}
+                key={item.id || item.label}
                 className="border-b border-white/8 pb-1 last:border-0"
               >
-                {item.children ? (
+                {item.children && item.children.length > 0 ? (
                   <div>
                     <div className="flex w-full items-center justify-between py-1">
                       <a
                         href={item.href}
+                        target={item.openInNewTab || item.isExternal ? "_blank" : undefined}
+                        rel={item.openInNewTab || item.isExternal ? "noopener noreferrer" : undefined}
                         onClick={() => setOpen(false)}
                         className={cn(
                           "py-1.5 text-sm font-bold uppercase tracking-wider transition-colors hover:text-[#38bdf8]",
@@ -540,6 +590,8 @@ export function Header() {
                       <div className="mb-2 space-y-1 rounded-xl bg-white/5 p-2.5">
                         <a
                           href={item.href}
+                          target={item.openInNewTab || item.isExternal ? "_blank" : undefined}
+                          rel={item.openInNewTab || item.isExternal ? "noopener noreferrer" : undefined}
                           onClick={() => setOpen(false)}
                           className={cn(
                             "flex items-center justify-between rounded-lg p-2 text-xs font-bold transition-colors border-b border-white/10 pb-2 mb-1.5",
@@ -562,15 +614,18 @@ export function Header() {
                           <ArrowRight className="size-3.5" />
                         </a>
 
-                        {item.children.map((child) => {
+                        {item.children.filter((c) => c.enabled !== false).map((child) => {
+                          const Icon = (child as any).icon || SUB_ICON_MAP[child.href] || Sparkles;
                           const childActive = isChildActive(child.href);
                           return (
                             <a
-                              key={child.label}
+                              key={child.id || child.label}
                               href={child.href}
+                              target={child.openInNewTab || child.isExternal ? "_blank" : undefined}
+                              rel={child.openInNewTab || child.isExternal ? "noopener noreferrer" : undefined}
                               onClick={() => setOpen(false)}
                               className={cn(
-                                "block rounded-lg p-2 text-xs transition-colors",
+                                "flex items-start gap-2.5 rounded-lg p-2 text-xs transition-colors",
                                 childActive
                                   ? "bg-[#38bdf8]/15 text-[#38bdf8] font-bold border-l-2 border-[#38bdf8] pl-2.5"
                                   : "text-slate-200 hover:bg-white/10 hover:text-white font-medium"
@@ -578,17 +633,29 @@ export function Header() {
                             >
                               <div
                                 className={cn(
-                                  "font-semibold",
-                                  childActive ? "text-[#38bdf8]" : "text-white"
+                                  "mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md",
+                                  childActive
+                                    ? "bg-[#38bdf8] text-[#0b172e]"
+                                    : "bg-white/10 text-blue-300"
                                 )}
                               >
-                                {child.label}
+                                <Icon className="size-3.5" />
                               </div>
-                              {child.desc && (
-                                <div className="mt-0.5 text-[0.68rem] text-slate-400">
-                                  {child.desc}
+                              <div className="flex-1">
+                                <div
+                                  className={cn(
+                                    "font-semibold",
+                                    childActive ? "text-[#38bdf8]" : "text-white"
+                                  )}
+                                >
+                                  {child.label}
                                 </div>
-                              )}
+                                {child.desc && (
+                                  <div className="mt-0.5 text-[0.68rem] text-slate-400">
+                                    {child.desc}
+                                  </div>
+                                )}
+                              </div>
                             </a>
                           );
                         })}
@@ -598,6 +665,8 @@ export function Header() {
                 ) : (
                   <a
                     href={item.href}
+                    target={item.openInNewTab || item.isExternal ? "_blank" : undefined}
+                    rel={item.openInNewTab || item.isExternal ? "noopener noreferrer" : undefined}
                     onClick={() => setOpen(false)}
                     className={cn(
                       "block py-2.5 text-sm font-bold uppercase tracking-wider transition-colors",
@@ -611,16 +680,18 @@ export function Header() {
             );
           })}
 
-          <div className="pt-4">
-            <a
-              href={BOOKING_ROUTE}
-              onClick={() => setOpen(false)}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#2563eb] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-600/30"
-            >
-              <span>Schedule Consultation</span>
-              <ArrowRight className="size-3.5" />
-            </a>
-          </div>
+          {ctaButton.enabled && (
+            <div className="pt-4">
+              <a
+                href={ctaButton.href}
+                onClick={() => setOpen(false)}
+                className="flex w-full items-center justify-center gap-2 rounded-full bg-[#2563eb] py-3 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-blue-600/30"
+              >
+                <span>{ctaButton.label || "Schedule Consultation"}</span>
+                <ArrowRight className="size-3.5" />
+              </a>
+            </div>
+          )}
         </nav>
       </div>
     </header>

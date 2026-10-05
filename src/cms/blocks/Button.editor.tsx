@@ -1,5 +1,10 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { ButtonRender, isValidButtonUrl, type ButtonBlockProps } from "./Button";
+import {
+  createResponsiveSpaceField,
+  createResponsiveAlignField,
+} from "../fields/ResponsiveSelect";
+import { createSizeSliderField } from "../fields/SizeSlider";
 
 export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
   label: "Button",
@@ -7,7 +12,12 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
     label: "Learn More",
     url: "/contact",
     variant: "primary",
-    align: "left",
+    sizePercent: 100,
+    align: { base: "left" },
+    marginTop: { base: "md" },
+    marginBottom: { base: "md" },
+    paddingTop: { base: "none" },
+    paddingBottom: { base: "none" },
   },
   fields: {
     label: {
@@ -56,15 +66,21 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
         { label: "Secondary", value: "secondary" },
       ],
     },
-    align: {
-      type: "radio",
-      label: "Alignment",
-      options: [
-        { label: "Left", value: "left" },
-        { label: "Center", value: "center" },
-        { label: "Right", value: "right" },
-      ],
-    },
+    sizePercent: createSizeSliderField({
+      label: "Button Size / Scale",
+      min: 60,
+      max: 160,
+      step: 5,
+      defaultValue: 100,
+      presets: [75, 90, 100, 115, 130, 150],
+      description: "Scale button size and proportions.",
+    }),
+    align: createResponsiveAlignField("Alignment", "left"),
+    marginTop: createResponsiveSpaceField("Margin Top", "md"),
+    marginBottom: createResponsiveSpaceField("Margin Bottom", "md"),
+    paddingTop: createResponsiveSpaceField("Padding Top", "none"),
+    paddingBottom: createResponsiveSpaceField("Padding Bottom", "none"),
   },
   render: ButtonRender,
 };
+

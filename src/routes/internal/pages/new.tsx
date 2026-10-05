@@ -147,7 +147,15 @@ function NewCmsPageForm() {
         data: {
           title: title.trim(),
           slug: validation.normalizedSlug,
-          data: { content: [], root: {} },
+          data: {
+            content: [],
+            root: {
+              props: {
+                title: title.trim(),
+                seoTitle: `${title.trim()} | SMG ABA`,
+              },
+            },
+          },
           status: "draft",
           adminPassword,
         },

@@ -1,6 +1,17 @@
-import { Facebook, Instagram, Linkedin, Star, Twitter, Phone, MapPin, ArrowUpRight, Mail } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Star, Twitter, Phone, MapPin, ArrowUpRight, Mail, Globe, Youtube } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BOOKING_ROUTE } from "@/data/calendly";
+import { type CmsSiteSettings, type SocialLink } from "@/lib/cms-settings";
+
+const SOCIAL_ICON_MAP: Record<string, any> = {
+  facebook: Facebook,
+  instagram: Instagram,
+  twitter: Twitter,
+  linkedin: Linkedin,
+  yelp: Star,
+  youtube: Youtube,
+  other: Globe,
+};
 
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about-us" },
@@ -67,32 +78,63 @@ const SOCIALS = [
   },
 ];
 
-export function Footer() {
+export function Footer({ settings }: { settings?: CmsSiteSettings } = {}) {
+  const footerSettings = settings?.footer;
+  const ctaBanner = footerSettings?.ctaBanner || {
+    enabled: true,
+    title: "Ready to Transform Your Finances?",
+    description: "Schedule a consultation with our advisory team and discover how SMG can streamline your operations.",
+    buttonLabel: "Schedule Now",
+    buttonHref: BOOKING_ROUTE,
+  };
+
+  const logoUrl = footerSettings?.logoUrl;
+  const aboutText = footerSettings?.aboutText || "Full-service accounting, bookkeeping, and advisory for hospitality, real estate, and small business owners across New York & Florida.";
+  const copyrightText = footerSettings?.copyrightText || `© ${new Date().getFullYear()} SMG Accounting, Bookkeeping & Advisory. All rights reserved.`;
+
+  const linkGroups = footerSettings?.linkGroups && footerSettings.linkGroups.length > 0
+    ? footerSettings.linkGroups
+    : [
+        { id: "fg-1", title: "Company", links: COMPANY_LINKS.map((l, i) => ({ id: `cl-${i}`, ...l, enabled: true })) },
+        { id: "fg-2", title: "Solutions", links: SOLUTION_LINKS.map((l, i) => ({ id: `sl-${i}`, ...l, enabled: true })) },
+        { id: "fg-3", title: "Industries", links: INDUSTRY_LINKS.map((l, i) => ({ id: `il-${i}`, ...l, enabled: true })) },
+      ];
+
+  const socialLinks: Array<{ label: string; href: string; Icon: any }> = footerSettings?.socialLinks && footerSettings.socialLinks.length > 0
+    ? footerSettings.socialLinks.filter((s) => s.enabled !== false).map((s) => ({
+        label: s.label || s.platform,
+        href: s.href,
+        Icon: SOCIAL_ICON_MAP[s.platform] || Globe,
+      }))
+    : SOCIALS;
+
   return (
     <footer className="relative overflow-hidden text-white" style={{ background: "linear-gradient(170deg, #0e1b36 0%, #162d5c 50%, #0f2040 100%)" }}>
       {/* Subtle top glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-3/4 bg-gradient-to-r from-transparent via-blue-400/30 to-transparent" />
 
       {/* CTA Banner */}
-      <div className="border-b border-white/10">
-        <div className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
-          <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-            <div>
-              <h3 className="font-serif-hero text-2xl font-bold text-white sm:text-3xl">
-                Ready to Transform Your Finances?
-              </h3>
-              <p className="mt-2 max-w-lg text-sm text-slate-300/80">
-                Schedule a consultation with our advisory team and discover how SMG can streamline your operations.
-              </p>
+      {ctaBanner.enabled && (
+        <div className="border-b border-white/10">
+          <div className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
+            <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+              <div>
+                <h3 className="font-serif-hero text-2xl font-bold text-white sm:text-3xl">
+                  {ctaBanner.title}
+                </h3>
+                <p className="mt-2 max-w-lg text-sm text-slate-300/80">
+                  {ctaBanner.description}
+                </p>
+              </div>
+              <Button asChild size="lg" className="shrink-0 rounded-full bg-white text-navy font-bold hover:bg-slate-100 shadow-lg shadow-black/20">
+                <a href={ctaBanner.buttonHref}>
+                  {ctaBanner.buttonLabel} <ArrowUpRight className="ml-2 size-4" />
+                </a>
+              </Button>
             </div>
-            <Button asChild size="lg" className="shrink-0 rounded-full bg-white text-navy font-bold hover:bg-slate-100 shadow-lg shadow-black/20">
-              <a href={BOOKING_ROUTE}>
-                Schedule Now <ArrowUpRight className="ml-2 size-4" />
-              </a>
-            </Button>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Main Footer Grid */}
       <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10 lg:py-16">
@@ -100,16 +142,18 @@ export function Footer() {
 
           {/* Column 1: Logo + Description */}
           <div className="lg:col-span-4">
-            {/* Inline SVG Logo */}
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlnsXlink="http://www.w3.org/1999/xlink"
-              viewBox="0 0 287.3 153.7"
-              className="h-12 w-auto"
-              style={{ enableBackground: "new 0 0 287.3 153.7" } as React.CSSProperties}
-              xmlSpace="preserve"
-            >
+            {logoUrl ? (
+              <img src={logoUrl} alt="SMG ABA" className="h-12 w-auto object-contain" />
+            ) : (
+              <svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 287.3 153.7"
+                className="h-12 w-auto"
+                style={{ enableBackground: "new 0 0 287.3 153.7" } as React.CSSProperties}
+                xmlSpace="preserve"
+              >
               <style type="text/css">{`.fst0{fill:#6982B1;}.fst1{fill:#FFFFFF;}.fst2{fill:#C3CDE0;}`}</style>
               <g id="logo">
                 <g>
@@ -174,14 +218,15 @@ export function Footer() {
                 </g>
               </g>
             </svg>
+            )}
 
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-slate-300/80">
-              Full-service accounting, bookkeeping, and advisory for hospitality, real estate, and small business owners across New York & Florida.
+              {aboutText}
             </p>
 
             {/* Social Icons */}
             <div className="mt-6 flex flex-wrap gap-2.5">
-              {SOCIALS.map(({ label, href, Icon }) => (
+              {socialLinks.map(({ label, href, Icon }) => (
                 <a
                   key={label}
                   href={href}
@@ -199,40 +244,67 @@ export function Footer() {
 
           {/* Column 2: Company Links */}
           <div className="lg:col-span-2">
-            <h4 className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">Company</h4>
+            <h4 className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">
+              {linkGroups[0]?.title || "Company"}
+            </h4>
             <ul className="mt-4 space-y-2.5">
-              {COMPANY_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className="text-sm text-slate-300/90 transition-colors hover:text-white">
-                    {l.label}
-                  </a>
-                </li>
-              ))}
+              {(linkGroups[0]?.links || COMPANY_LINKS.map((l, i) => ({ id: `cl-${i}`, ...l, enabled: true })))
+                .filter((l) => l.enabled !== false)
+                .map((l) => (
+                  <li key={l.id || l.label}>
+                    <a
+                      href={l.href}
+                      target={l.openInNewTab || l.isExternal ? "_blank" : undefined}
+                      rel={l.openInNewTab || l.isExternal ? "noopener noreferrer" : undefined}
+                      className="text-sm text-slate-300/90 transition-colors hover:text-white"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
             </ul>
           </div>
 
-          {/* Column 3: Solutions + Industries */}
+          {/* Column 3: Solutions + Industries Links */}
           <div className="lg:col-span-2">
-            <h4 className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">Solutions</h4>
+            <h4 className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">
+              {linkGroups[1]?.title || "Solutions"}
+            </h4>
             <ul className="mt-4 space-y-2.5">
-              {SOLUTION_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className="text-sm text-slate-300/90 transition-colors hover:text-white">
-                    {l.label}
-                  </a>
-                </li>
-              ))}
+              {(linkGroups[1]?.links || SOLUTION_LINKS.map((l, i) => ({ id: `sl-${i}`, ...l, enabled: true })))
+                .filter((l) => l.enabled !== false)
+                .map((l) => (
+                  <li key={l.id || l.label}>
+                    <a
+                      href={l.href}
+                      target={l.openInNewTab || l.isExternal ? "_blank" : undefined}
+                      rel={l.openInNewTab || l.isExternal ? "noopener noreferrer" : undefined}
+                      className="text-sm text-slate-300/90 transition-colors hover:text-white"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
             </ul>
 
-            <h4 className="mt-8 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">Industries</h4>
+            <h4 className="mt-8 text-[0.65rem] font-bold uppercase tracking-[0.2em] text-blue-300/70">
+              {linkGroups[2]?.title || "Industries"}
+            </h4>
             <ul className="mt-4 space-y-2.5">
-              {INDUSTRY_LINKS.map((l) => (
-                <li key={l.label}>
-                  <a href={l.href} className="text-sm text-slate-300/90 transition-colors hover:text-white">
-                    {l.label}
-                  </a>
-                </li>
-              ))}
+              {(linkGroups[2]?.links || INDUSTRY_LINKS.map((l, i) => ({ id: `il-${i}`, ...l, enabled: true })))
+                .filter((l) => l.enabled !== false)
+                .map((l) => (
+                  <li key={l.id || l.label}>
+                    <a
+                      href={l.href}
+                      target={l.openInNewTab || l.isExternal ? "_blank" : undefined}
+                      rel={l.openInNewTab || l.isExternal ? "noopener noreferrer" : undefined}
+                      className="text-sm text-slate-300/90 transition-colors hover:text-white"
+                    >
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
             </ul>
           </div>
 
@@ -268,7 +340,7 @@ export function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 text-[0.7rem] text-slate-400/70 sm:flex-row lg:px-10">
-          <p>© {new Date().getFullYear()} SMG Accounting, Bookkeeping & Advisory. All rights reserved.</p>
+          <p>{copyrightText}</p>
           <div className="flex items-center gap-4">
             <a href="/privacy-policy-2" className="transition-colors hover:text-white">Privacy Policy</a>
           </div>

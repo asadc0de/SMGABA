@@ -9,11 +9,13 @@ import {
 export interface HeadingProps extends BlockStyleProps {
   text: string;
   level: "h1" | "h2" | "h3";
+  sizePercent?: number;
 }
 
 export function HeadingRender({
   text,
   level = "h2",
+  sizePercent = 100,
   align,
   marginTop,
   marginBottom,
@@ -39,10 +41,27 @@ export function HeadingRender({
     },
   );
 
+  const scale = typeof sizePercent === "number" && sizePercent > 0 ? sizePercent / 100 : 1;
+  const customStyle: React.CSSProperties =
+    scale !== 1
+      ? {
+          fontSize:
+            level === "h1"
+              ? `clamp(1.75rem, ${2.5 * scale}vw + 1rem, ${3.25 * scale}rem)`
+              : level === "h2"
+                ? `clamp(1.5rem, ${2 * scale}vw + 0.75rem, ${2.5 * scale}rem)`
+                : `clamp(1.15rem, ${1.5 * scale}vw + 0.5rem, ${1.75 * scale}rem)`,
+          lineHeight: 1.15,
+        }
+      : {};
+
   if (level === "h1") {
     return (
       <div className={`w-full ${styleClasses}`}>
-        <h1 className="font-serif-hero text-3xl md:text-5xl font-bold tracking-tight text-navy leading-tight">
+        <h1
+          style={customStyle}
+          className="font-serif-hero text-3xl md:text-5xl font-bold tracking-tight text-navy leading-tight"
+        >
           {text}
         </h1>
       </div>
@@ -52,7 +71,10 @@ export function HeadingRender({
   if (level === "h3") {
     return (
       <div className={`w-full ${styleClasses}`}>
-        <h3 className="font-serif-hero text-xl md:text-2xl font-semibold text-navy tracking-tight">
+        <h3
+          style={customStyle}
+          className="font-serif-hero text-xl md:text-2xl font-semibold text-navy tracking-tight"
+        >
           {text}
         </h3>
       </div>
@@ -61,7 +83,10 @@ export function HeadingRender({
 
   return (
     <div className={`w-full ${styleClasses}`}>
-      <h2 className="font-serif-hero text-2xl md:text-4xl font-bold text-navy tracking-tight">
+      <h2
+        style={customStyle}
+        className="font-serif-hero text-2xl md:text-4xl font-bold text-navy tracking-tight"
+      >
         {text}
       </h2>
     </div>
