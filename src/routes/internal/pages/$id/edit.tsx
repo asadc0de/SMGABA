@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { Puck, type Data } from "@puckeditor/core";
-import puckCssUrl from "@puckeditor/core/puck.css?url";
+import puckCssUrl from "@puckeditor/core/dist/index.css?url";
 import { puckConfig } from "@/cms/puck.config";
 import { getCmsPageById, saveCmsPage, type CmsPage } from "@/lib/cms.server";
 import { verifyAdminPassword } from "@/lib/webinar-redirects";

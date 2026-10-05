@@ -175,6 +175,23 @@ export function validatePuckUrlsAndStyles(puckData: unknown): { valid: boolean; 
   return walk(puckData);
 }
 
+function formatDbError(error: { message?: string; code?: string } | null | undefined): string {
+  if (!error) return "An unexpected database error occurred.";
+  const msg = error.message || "";
+  if (
+    msg.includes("schema cache") ||
+    msg.includes("cms_pages") ||
+    error.code === "PGRST205" ||
+    error.code === "42P01"
+  ) {
+    return "The 'cms_pages' table does not exist in Supabase yet. Please run the SQL migration in your Supabase SQL Editor (found in supabase/migrations/create_cms_pages_table.sql).";
+  }
+  if (error.code === "23505") {
+    return "A page with this URL slug already exists. Please choose a different slug.";
+  }
+  return msg || "Database error occurred.";
+}
+
 /**
  * Server function to fetch all CMS pages (Admin only - password gated).
  * Does NOT select the large `data` column.
@@ -233,28 +250,74 @@ export const getAllCmsPages = createServerFn({ method: "POST" })
 
         if (error) {
           console.error("[CMS] Error fetching pages:", error.message);
-          return { success: false, pages: [], error: error.message };
+          return { success: false, pages: [], error: formatDbError(error) };
         }
 
         return { success: true, pages: (records || []) as CmsPage[] };
       } catch (err) {
         const message = err instanceof Error ? err.message : "Unknown error";
         console.error("[CMS] Exception fetching pages:", message);
-        return { success: false, pages: [], error: message };
+        return { success: false, pages: [], error: formatDbError({ message }) };
       }
     },
   );
+
+function parseIdInput(input: unknown): { id: string; adminPassword: string } {
+  if (!input || typeof input !== "object") {
+    return { id: "", adminPassword: "" };
+  }
+  const obj = input as Record<string, unknown>;
+  if (obj.data && typeof obj.data === "object" && "id" in (obj.data as Record<string, unknown>)) {
+    const nested = obj.data as Record<string, unknown>;
+    return {
+      id: String(nested.id || "").trim(),
+      adminPassword: extractAdminPassword(nested.adminPassword || obj.adminPassword || obj),
+    };
+  }
+  return {
+    id: String(obj.id || "").trim(),
+    adminPassword: extractAdminPassword(obj.adminPassword || obj),
+  };
+}
+
+function parseSaveCmsPageInput(input: unknown): SaveCmsPageInput {
+  if (!input || typeof input !== "object") {
+    return { title: "", slug: "", status: "draft" };
+  }
+  const obj = input as Record<string, unknown>;
+  // If TanStack Start wrapped { data: { title: "...", slug: "...", data: {...} } }
+  if (
+    obj.data &&
+    typeof obj.data === "object" &&
+    ("title" in (obj.data as Record<string, unknown>) || "slug" in (obj.data as Record<string, unknown>))
+  ) {
+    const nested = obj.data as Record<string, unknown>;
+    return {
+      id: nested.id ? String(nested.id) : undefined,
+      title: String(nested.title || "").trim(),
+      slug: String(nested.slug || "").trim(),
+      data: (nested.data || { content: [], root: {} }) as Data,
+      status: nested.status === "published" ? "published" : "draft",
+      adminPassword: extractAdminPassword(nested.adminPassword || obj.adminPassword || obj),
+    };
+  }
+  // Standard unwrapped object
+  return {
+    id: obj.id ? String(obj.id) : undefined,
+    title: String(obj.title || "").trim(),
+    slug: String(obj.slug || "").trim(),
+    data: (obj.data || { content: [], root: {} }) as Data,
+    status: obj.status === "published" ? "published" : "draft",
+    adminPassword: extractAdminPassword(obj.adminPassword || obj),
+  };
+}
 
 /**
  * Server function to fetch a single CMS page by ID (Admin only - password gated).
  */
 export const getCmsPageById = createServerFn({ method: "POST" })
   .validator((data: unknown) => {
-    const payload = (data && typeof data === "object" && "data" in data ? (data as { data: unknown }).data : data) as Record<string, unknown>;
-    return {
-      id: String(payload?.id || ""),
-      adminPassword: extractAdminPassword(payload?.adminPassword || data),
-    };
+    return parseIdInput(data);
   })
   .handler(
     async ({
@@ -264,12 +327,13 @@ export const getCmsPageById = createServerFn({ method: "POST" })
       page?: CmsPage;
       error?: string;
     }> => {
+      const parsed = parseIdInput(data);
       const expectedPassword = getEnvVar("INTERNAL_ADMIN_PASSWORD");
-      if (!isAuthorized(data.adminPassword, expectedPassword)) {
+      if (!isAuthorized(parsed.adminPassword, expectedPassword)) {
         return { success: false, error: "Unauthorized: Invalid admin password." };
       }
 
-      const id = data.id.trim();
+      const id = parsed.id;
       if (!id) {
         return { success: false, error: "Page ID is required." };
       }
@@ -298,7 +362,7 @@ export const getCmsPageById = createServerFn({ method: "POST" })
           .maybeSingle();
 
         if (error) {
-          return { success: false, error: error.message };
+          return { success: false, error: formatDbError(error) };
         }
 
         if (!record) {
@@ -308,7 +372,7 @@ export const getCmsPageById = createServerFn({ method: "POST" })
         return { success: true, page: record as CmsPage };
       } catch (err) {
         const message = err instanceof Error ? err.message : "Unknown error";
-        return { success: false, error: message };
+        return { success: false, error: formatDbError({ message }) };
       }
     },
   );
@@ -329,15 +393,7 @@ export interface SaveCmsPageInput {
  */
 export const saveCmsPage = createServerFn({ method: "POST" })
   .validator((input: unknown) => {
-    const payload = (input && typeof input === "object" && "data" in input ? (input as { data: unknown }).data : input) as Record<string, unknown>;
-    return {
-      id: payload?.id ? String(payload.id) : undefined,
-      title: String(payload?.title || ""),
-      slug: String(payload?.slug || ""),
-      data: (payload?.data || { content: [], root: {} }) as Data,
-      status: (payload?.status === "published" ? "published" : "draft") as "draft" | "published",
-      adminPassword: extractAdminPassword(payload?.adminPassword || input),
-    };
+    return parseSaveCmsPageInput(input);
   })
   .handler(
     async ({
@@ -347,25 +403,29 @@ export const saveCmsPage = createServerFn({ method: "POST" })
       page?: CmsPage;
       error?: string;
     }> => {
+      const parsed = parseSaveCmsPageInput(data);
       const expectedPassword = getEnvVar("INTERNAL_ADMIN_PASSWORD");
-      if (!isAuthorized(data.adminPassword, expectedPassword)) {
+      if (!isAuthorized(parsed.adminPassword, expectedPassword)) {
         return { success: false, error: "Unauthorized: Invalid admin password." };
       }
 
-      const title = data.title.trim();
+      const title = parsed.title;
       if (!title) {
-        return { success: false, error: "Page title is required." };
+        return {
+          success: false,
+          error: "Please enter a page title (e.g. 'Special Advisory Services').",
+        };
       }
 
       // Validate slug
-      const slugValidation = validateSlug(data.slug);
+      const slugValidation = validateSlug(parsed.slug);
       if (!slugValidation.valid) {
-        return { success: false, error: slugValidation.error || "Invalid slug." };
+        return { success: false, error: slugValidation.error || "Please enter a valid URL slug." };
       }
       const slug = slugValidation.normalizedSlug;
 
       // Validate URLs and Style properties across entire Puck data tree
-      const treeValidation = validatePuckUrlsAndStyles(data.data);
+      const treeValidation = validatePuckUrlsAndStyles(parsed.data);
       if (!treeValidation.valid) {
         return { success: false, error: treeValidation.error };
       }
@@ -375,18 +435,18 @@ export const saveCmsPage = createServerFn({ method: "POST" })
 
       if (!client) {
         if (isDev) {
-          const existing = data.id
-            ? Array.from(localFallbackPages.values()).find((p) => p.id === data.id)
+          const existing = parsed.id
+            ? Array.from(localFallbackPages.values()).find((p) => p.id === parsed.id)
             : null;
 
           const oldSlug = existing?.slug;
-          const pageId = existing ? existing.id : data.id || `local-${Date.now()}`;
+          const pageId = existing ? existing.id : parsed.id || `local-${Date.now()}`;
           const record: CmsPage = {
             id: pageId,
             title,
             slug,
-            data: data.data,
-            status: data.status,
+            data: parsed.data,
+            status: parsed.status,
             created_at: existing ? existing.created_at : now,
             updated_at: now,
           };
@@ -408,11 +468,11 @@ export const saveCmsPage = createServerFn({ method: "POST" })
       try {
         // If updating, find previous slug to invalidate if changed
         let oldSlug: string | undefined;
-        if (data.id) {
+        if (parsed.id) {
           const { data: existingRecord } = await client
             .from("cms_pages")
             .select("slug")
-            .eq("id", data.id)
+            .eq("id", parsed.id)
             .maybeSingle();
           oldSlug = existingRecord?.slug;
         }
@@ -420,17 +480,17 @@ export const saveCmsPage = createServerFn({ method: "POST" })
         const payload: Record<string, unknown> = {
           title,
           slug,
-          data: data.data,
-          status: data.status,
+          data: parsed.data,
+          status: parsed.status,
           updated_at: now,
         };
 
         let result;
-        if (data.id) {
+        if (parsed.id) {
           result = await client
             .from("cms_pages")
             .update(payload)
-            .eq("id", data.id)
+            .eq("id", parsed.id)
             .select()
             .single();
         } else {
@@ -442,10 +502,7 @@ export const saveCmsPage = createServerFn({ method: "POST" })
         }
 
         if (result.error) {
-          if (result.error.code === "23505") {
-            return { success: false, error: `A page with slug "${slug}" already exists.` };
-          }
-          return { success: false, error: result.error.message };
+          return { success: false, error: formatDbError(result.error) };
         }
 
         // Invalidate lookup cache AFTER DB write succeeds
@@ -457,7 +514,7 @@ export const saveCmsPage = createServerFn({ method: "POST" })
         return { success: true, page: result.data as CmsPage };
       } catch (err) {
         const message = err instanceof Error ? err.message : "Unknown error";
-        return { success: false, error: message };
+        return { success: false, error: formatDbError({ message }) };
       }
     },
   );
@@ -468,11 +525,7 @@ export const saveCmsPage = createServerFn({ method: "POST" })
  */
 export const deleteCmsPage = createServerFn({ method: "POST" })
   .validator((input: unknown) => {
-    const payload = (input && typeof input === "object" && "data" in input ? (input as { data: unknown }).data : input) as Record<string, unknown>;
-    return {
-      id: String(payload?.id || ""),
-      adminPassword: extractAdminPassword(payload?.adminPassword || input),
-    };
+    return parseIdInput(input);
   })
   .handler(
     async ({
@@ -481,12 +534,13 @@ export const deleteCmsPage = createServerFn({ method: "POST" })
       success: boolean;
       error?: string;
     }> => {
+      const parsed = parseIdInput(data);
       const expectedPassword = getEnvVar("INTERNAL_ADMIN_PASSWORD");
-      if (!isAuthorized(data.adminPassword, expectedPassword)) {
+      if (!isAuthorized(parsed.adminPassword, expectedPassword)) {
         return { success: false, error: "Unauthorized: Invalid admin password." };
       }
 
-      const id = data.id.trim();
+      const id = parsed.id;
       if (!id) {
         return { success: false, error: "Page ID is required." };
       }
@@ -522,7 +576,7 @@ export const deleteCmsPage = createServerFn({ method: "POST" })
 
         const { error } = await client.from("cms_pages").delete().eq("id", id);
         if (error) {
-          return { success: false, error: error.message };
+          return { success: false, error: formatDbError(error) };
         }
 
         // Invalidate cache AFTER DB delete succeeds
@@ -535,7 +589,7 @@ export const deleteCmsPage = createServerFn({ method: "POST" })
         return { success: true };
       } catch (err) {
         const message = err instanceof Error ? err.message : "Unknown error";
-        return { success: false, error: message };
+        return { success: false, error: formatDbError({ message }) };
       }
     },
   );

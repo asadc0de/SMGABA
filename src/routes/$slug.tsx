@@ -115,7 +115,7 @@ function DynamicSlugPage() {
     return (
       <div className="min-h-screen bg-background flex flex-col justify-between">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1 pt-28 sm:pt-36 pb-16">
           <Render config={puckRenderConfig} data={cmsPage.data} />
         </main>
         <Footer />

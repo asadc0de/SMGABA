@@ -47,6 +47,7 @@ function NewCmsPageForm() {
 
   // Form State
   const [title, setTitle] = useState<string>("");
+  const [titleError, setTitleError] = useState<string>("");
   const [slug, setSlug] = useState<string>("");
   const [isCustomSlug, setIsCustomSlug] = useState<boolean>(false);
   const [slugError, setSlugError] = useState<string>("");
@@ -98,6 +99,9 @@ function NewCmsPageForm() {
 
   function handleTitleChange(newTitle: string) {
     setTitle(newTitle);
+    if (newTitle.trim()) {
+      setTitleError("");
+    }
     if (!isCustomSlug) {
       const autoSlug = generateSlugFromTitle(newTitle);
       setSlug(autoSlug);
@@ -125,7 +129,8 @@ function NewCmsPageForm() {
     e.preventDefault();
 
     if (!title.trim()) {
-      toast.error("Please enter a page title.");
+      setTitleError("Please enter a page title (e.g. 'Special Advisory Services').");
+      toast.error("Please enter a title for your page.");
       return;
     }
 
@@ -167,7 +172,7 @@ function NewCmsPageForm() {
       <Header />
       <Toaster position="top-right" richColors />
 
-      <main className="flex-1 py-12 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full">
+      <main className="flex-1 pt-28 sm:pt-36 pb-16 px-4 sm:px-6 lg:px-8 max-w-3xl mx-auto w-full">
         <div className="mb-6">
           <Button asChild variant="ghost" size="sm" className="gap-1 text-slate-500 hover:text-navy">
             <Link to="/internal/pages">
@@ -265,13 +270,20 @@ function NewCmsPageForm() {
                   value={title}
                   onChange={(e) => handleTitleChange(e.target.value)}
                   placeholder="e.g. Special Advisory Services"
-                  className="mt-1.5 text-base"
+                  className={`mt-1.5 text-base ${titleError ? "border-destructive focus-visible:ring-destructive" : ""}`}
                   autoFocus
                   required
                 />
-                <p className="text-xs text-slate-500 mt-1">
-                  Used as the internal page name and public page &lt;title&gt;.
-                </p>
+                {titleError ? (
+                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
+                    <AlertCircle className="size-3.5" />
+                    {titleError}
+                  </p>
+                ) : (
+                  <p className="text-xs text-slate-500 mt-1">
+                    Used as the internal page name and public page &lt;title&gt;.
+                  </p>
+                )}
               </div>
 
               <div>
