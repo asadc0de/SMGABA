@@ -6,8 +6,12 @@ import {
   duplicateCmsPage,
   unpublishCmsPage,
   publishCmsPage,
+  getCmsSiteSettings,
   type CmsPage,
 } from "@/lib/cms.server";
+import { type CmsSiteSettings } from "@/lib/cms-settings";
+import { findPageNavigationLinks, type PageNavLinkLocation } from "@/lib/cms-nav-helpers";
+import { AddToNavigationDialog } from "@/components/cms/AddToNavigationDialog";
 import { verifyAdminPassword } from "@/lib/webinar-redirects";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -43,6 +47,7 @@ import {
   ArrowUpDown,
   Filter,
   AlertTriangle,
+  Menu,
 } from "lucide-react";
 
 export const Route = createFileRoute("/internal/pages/")({
@@ -72,6 +77,10 @@ function CmsPagesListPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
+  // Settings & Navigation link state
+  const [siteSettings, setSiteSettings] = useState<CmsSiteSettings | null>(null);
+  const [addToNavTargetPage, setAddToNavTargetPage] = useState<CmsPage | null>(null);
+
   // Search, Filter & Sort State
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -80,6 +89,10 @@ function CmsPagesListPage() {
   // Deletion Safeguard Modal State
   const [deleteTargetPage, setDeleteTargetPage] = useState<CmsPage | null>(null);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+
+  // Unpublish Confirmation Modal State (for pages linked in nav)
+  const [unpublishTargetPage, setUnpublishTargetPage] = useState<CmsPage | null>(null);
+  const [isUnpublishing, setIsUnpublishing] = useState<boolean>(false);
 
   const [, startTransition] = useTransition();
 
@@ -134,11 +147,19 @@ function CmsPagesListPage() {
   async function fetchPages(pwd: string) {
     setIsLoading(true);
     try {
-      const res = await getAllCmsPages({ data: { adminPassword: pwd } });
+      const [res, settingsRes] = await Promise.all([
+        getAllCmsPages({ data: { adminPassword: pwd } }),
+        getCmsSiteSettings(),
+      ]);
+
       if (res.success) {
         setPages(res.pages);
       } else {
         toast.error(res.error || "Failed to load CMS pages");
+      }
+
+      if (settingsRes?.settings) {
+        setSiteSettings(settingsRes.settings);
       }
     } catch (err) {
       console.error("Error fetching pages:", err);
@@ -153,6 +174,7 @@ function CmsPagesListPage() {
     setAdminPassword("");
     setPasswordInput("");
     setPages([]);
+    setSiteSettings(null);
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(AUTH_STORAGE_KEY);
     }
@@ -185,47 +207,68 @@ function CmsPagesListPage() {
     }
   }
 
+  async function executeUnpublish(page: CmsPage) {
+    setActionLoadingId(`pub-${page.id}`);
+    try {
+      const res = await unpublishCmsPage({
+        data: {
+          id: page.id,
+          adminPassword,
+        },
+      });
+
+      if (res.success && res.page) {
+        toast.success(`Unpublished "${page.title}". Status is now Draft.`);
+        startTransition(() => {
+          setPages((prev) =>
+            prev.map((p) => (p.id === page.id ? { ...p, status: "draft", updated_at: res.page!.updated_at } : p))
+          );
+        });
+        setUnpublishTargetPage(null);
+      } else {
+        toast.error(res.error || "Failed to unpublish page.");
+      }
+    } catch (err) {
+      console.error("Unpublish error:", err);
+      toast.error("Failed to unpublish page.");
+    } finally {
+      setActionLoadingId(null);
+    }
+  }
+
   async function handleTogglePublish(page: CmsPage) {
     const isCurrentlyPublished = page.status === "published";
+
+    if (isCurrentlyPublished) {
+      const navLinks = findPageNavigationLinks(page.slug, siteSettings);
+      if (navLinks.length > 0) {
+        // Page is linked in navigation; prompt with non-blocking warning modal
+        setUnpublishTargetPage(page);
+        return;
+      }
+      await executeUnpublish(page);
+      return;
+    }
+
+    // Publish
     setActionLoadingId(`pub-${page.id}`);
-
     try {
-      if (isCurrentlyPublished) {
-        const res = await unpublishCmsPage({
-          data: {
-            id: page.id,
-            adminPassword,
-          },
-        });
+      const res = await publishCmsPage({
+        data: {
+          id: page.id,
+          adminPassword,
+        },
+      });
 
-        if (res.success && res.page) {
-          toast.success(`Unpublished "${page.title}". Status is now Draft.`);
-          startTransition(() => {
-            setPages((prev) =>
-              prev.map((p) => (p.id === page.id ? { ...p, status: "draft", updated_at: res.page!.updated_at } : p))
-            );
-          });
-        } else {
-          toast.error(res.error || "Failed to unpublish page.");
-        }
+      if (res.success && res.page) {
+        toast.success(`Published "${page.title}"! Live at /${res.page.slug}`);
+        startTransition(() => {
+          setPages((prev) =>
+            prev.map((p) => (p.id === page.id ? { ...p, status: "published", updated_at: res.page!.updated_at } : p))
+          );
+        });
       } else {
-        const res = await publishCmsPage({
-          data: {
-            id: page.id,
-            adminPassword,
-          },
-        });
-
-        if (res.success && res.page) {
-          toast.success(`Published "${page.title}"! Live at /${res.page.slug}`);
-          startTransition(() => {
-            setPages((prev) =>
-              prev.map((p) => (p.id === page.id ? { ...p, status: "published", updated_at: res.page!.updated_at } : p))
-            );
-          });
-        } else {
-          toast.error(res.error || "Failed to publish page.");
-        }
+        toast.error(res.error || "Failed to publish page.");
       }
     } catch (err) {
       console.error("Toggle publish error:", err);
@@ -610,18 +653,30 @@ function CmsPagesListPage() {
 
                               {/* Live URL if published */}
                               {page.status === "published" && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  asChild
-                                  className="h-7 px-2 text-xs text-emerald-700 hover:text-emerald-900"
-                                  title="View published page on main site"
-                                >
-                                  <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
-                                    <ExternalLink className="size-3.5 mr-1" />
-                                    Live
-                                  </a>
-                                </Button>
+                                <>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    asChild
+                                    className="h-7 px-2 text-xs text-emerald-700 hover:text-emerald-900"
+                                    title="View published page on main site"
+                                  >
+                                    <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
+                                      <ExternalLink className="size-3.5 mr-1" />
+                                      Live
+                                    </a>
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setAddToNavTargetPage(page)}
+                                    className="h-7 px-2 text-xs text-blue-700 hover:text-blue-900 hover:bg-blue-50"
+                                    title="Add page to Header or Footer navigation"
+                                  >
+                                    <Menu className="size-3.5 mr-1" />
+                                    Add to Nav
+                                  </Button>
+                                </>
                               )}
 
                               {/* Quick Publish / Unpublish Toggle */}
@@ -717,6 +772,24 @@ function CmsPagesListPage() {
             </DialogDescription>
           </DialogHeader>
 
+          {/* Linked Navigation Warning */}
+          {deleteTargetPage && findPageNavigationLinks(deleteTargetPage.slug, siteSettings).length > 0 && (
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 space-y-1 my-2">
+              <div className="font-semibold flex items-center gap-1.5 text-amber-800">
+                <AlertCircle className="size-4 shrink-0 text-amber-600" />
+                Warning: This page is currently linked in navigation:
+              </div>
+              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-800 pl-1">
+                {findPageNavigationLinks(deleteTargetPage.slug, siteSettings).map((loc, i) => (
+                  <li key={i}>{loc.location}</li>
+                ))}
+              </ul>
+              <p className="text-[11px] text-amber-700 pt-1">
+                Deleting this page will leave broken links on the site until they are removed in Site Settings.
+              </p>
+            </div>
+          )}
+
           {deleteTargetPage?.status === "published" && (
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-start gap-2 my-2">
               <AlertCircle className="size-4 shrink-0 text-amber-600 mt-0.5" />
@@ -754,6 +827,73 @@ function CmsPagesListPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Unpublish Safeguard Dialog (when page is linked in navigation) */}
+      <Dialog open={Boolean(unpublishTargetPage)} onOpenChange={(open) => !open && setUnpublishTargetPage(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold text-amber-700">
+              <AlertTriangle className="size-5 text-amber-600" />
+              Unpublish Page Warning
+            </DialogTitle>
+            <DialogDescription className="text-xs text-slate-600 pt-2">
+              Are you sure you want to unpublish:
+              <br />
+              <strong className="text-navy font-semibold text-sm mt-1 block">
+                &ldquo;{unpublishTargetPage?.title}&rdquo; (/{unpublishTargetPage?.slug})
+              </strong>
+            </DialogDescription>
+          </DialogHeader>
+
+          {unpublishTargetPage && (
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 space-y-1 my-2">
+              <div className="font-semibold flex items-center gap-1.5 text-amber-800">
+                <AlertCircle className="size-4 shrink-0 text-amber-600" />
+                This page is currently linked in navigation:
+              </div>
+              <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-800 pl-1">
+                {findPageNavigationLinks(unpublishTargetPage.slug, siteSettings).map((loc, i) => (
+                  <li key={i}>{loc.location}</li>
+                ))}
+              </ul>
+              <p className="text-[11px] text-amber-700 pt-1">
+                Visitors clicking those navigation links will receive a 404 Not Found error until the page is republished or the links are removed in Site Settings.
+              </p>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setUnpublishTargetPage(null)}
+              disabled={isUnpublishing}
+              className="text-xs rounded-full"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => unpublishTargetPage && executeUnpublish(unpublishTargetPage)}
+              disabled={isUnpublishing}
+              className="text-xs rounded-full bg-amber-600 hover:bg-amber-700 text-white"
+            >
+              {isUnpublishing ? "Unpublishing..." : "Proceed & Unpublish"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add to Navigation Dialog */}
+      <AddToNavigationDialog
+        page={addToNavTargetPage}
+        isOpen={Boolean(addToNavTargetPage)}
+        onClose={() => setAddToNavTargetPage(null)}
+        adminPassword={adminPassword}
+        onSuccess={() => fetchPages(adminPassword)}
+      />
 
       <Footer />
     </div>

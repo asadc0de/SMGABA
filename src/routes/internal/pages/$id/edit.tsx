@@ -12,9 +12,13 @@ import {
   getCmsPageVersions,
   restoreCmsPageVersion,
   uploadCmsImage,
+  getCmsSiteSettings,
   type CmsPage,
   type CmsPageVersion,
 } from "@/lib/cms.server";
+import { type CmsSiteSettings } from "@/lib/cms-settings";
+import { findPageNavigationLinks } from "@/lib/cms-nav-helpers";
+import { AddToNavigationDialog } from "@/components/cms/AddToNavigationDialog";
 import { isValidCanonicalUrl, type CmsRootProps } from "@/cms/root";
 import { isValidImageUrl } from "@/cms/blocks/Image";
 import { ImagePickerInput } from "@/cms/fields/ImagePicker";
@@ -51,6 +55,8 @@ import {
   CheckCircle2,
   Clock,
   FileCode,
+  Menu,
+  AlertTriangle,
 } from "lucide-react";
 
 export const Route = createFileRoute("/internal/pages/$id/edit")({
@@ -93,6 +99,11 @@ function CmsPageEditorRoute() {
   const [isPublishing, setIsPublishing] = useState<boolean>(false);
   const [isDuplicating, setIsDuplicating] = useState<boolean>(false);
   const [isUnpublishing, setIsUnpublishing] = useState<boolean>(false);
+
+  // Add to Navigation state
+  const [isAddToNavOpen, setIsAddToNavOpen] = useState<boolean>(false);
+  const [showUnpublishWarning, setShowUnpublishWarning] = useState<boolean>(false);
+  const [siteSettings, setSiteSettings] = useState<CmsSiteSettings | null>(null);
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
 
   // Version History State
@@ -286,11 +297,26 @@ function CmsPageEditorRoute() {
 
   async function handleUnpublish() {
     if (!page) return;
-    const confirmUnpublish = window.confirm(
-      `Are you sure you want to unpublish "${page.title}"? The public URL /${page.slug} will return a 404 until published again.`
-    );
-    if (!confirmUnpublish) return;
 
+    // Check if the page is linked in navigation first
+    try {
+      const settingsRes = await getCmsSiteSettings();
+      if (settingsRes?.settings) {
+        setSiteSettings(settingsRes.settings);
+        const navLinks = findPageNavigationLinks(page.slug, settingsRes.settings);
+        if (navLinks.length > 0) {
+          setShowUnpublishWarning(true);
+          return;
+        }
+      }
+    } catch (_) {}
+
+    await executeUnpublish();
+  }
+
+  async function executeUnpublish() {
+    if (!page) return;
+    setShowUnpublishWarning(false);
     setIsUnpublishing(true);
     try {
       const res = await unpublishCmsPage({
@@ -539,6 +565,19 @@ function CmsPageEditorRoute() {
                 <Copy className={`size-3.5 ${isDuplicating ? "animate-spin" : ""}`} />
                 {isDuplicating ? "Cloning..." : "Duplicate"}
               </Button>
+
+              {/* Add to Navigation - published pages only */}
+              {page.status === "published" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsAddToNavOpen(true)}
+                  className="gap-1 text-xs rounded-full border-blue-300 text-blue-700 hover:bg-blue-50 h-8"
+                >
+                  <Menu className="size-3.5" />
+                  Add to Nav
+                </Button>
+              )}
 
               {/* SEO & Settings */}
               <Button
@@ -989,6 +1028,72 @@ function CmsPageEditorRoute() {
           </div>
         )}
       </main>
+
+      {/* Unpublish Warning Dialog (for pages linked in navigation) */}
+      <Dialog open={showUnpublishWarning} onOpenChange={(open) => !open && setShowUnpublishWarning(false)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base font-bold text-amber-700">
+              <AlertTriangle className="size-5 text-amber-600" />
+              Unpublish Page Warning
+            </DialogTitle>
+          </DialogHeader>
+
+          {page && (
+            <div className="space-y-3">
+              <p className="text-xs text-slate-600">
+                Are you sure you want to unpublish <strong className="text-navy">&ldquo;{page.title}&rdquo;</strong>?
+              </p>
+              <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 space-y-1">
+                <div className="font-semibold flex items-center gap-1.5 text-amber-800">
+                  <AlertCircle className="size-4 shrink-0 text-amber-600" />
+                  This page is currently linked in navigation:
+                </div>
+                <ul className="list-disc list-inside space-y-0.5 text-[11px] text-amber-800 pl-1">
+                  {findPageNavigationLinks(page.slug, siteSettings).map((loc, i) => (
+                    <li key={i}>{loc.location}</li>
+                  ))}
+                </ul>
+                <p className="text-[11px] text-amber-700 pt-1">
+                  Visitors clicking those navigation links will receive a 404 error until the page is republished or the links are removed in Site Settings.
+                </p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="gap-2 sm:gap-0 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowUnpublishWarning(false)}
+              disabled={isUnpublishing}
+              className="text-xs rounded-full"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={executeUnpublish}
+              disabled={isUnpublishing}
+              className="text-xs rounded-full bg-amber-600 hover:bg-amber-700 text-white"
+            >
+              {isUnpublishing ? "Unpublishing..." : "Proceed & Unpublish"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add to Navigation Dialog */}
+      {page && (
+        <AddToNavigationDialog
+          page={page}
+          isOpen={isAddToNavOpen}
+          onClose={() => setIsAddToNavOpen(false)}
+          adminPassword={adminPassword}
+        />
+      )}
     </div>
   );
 }
