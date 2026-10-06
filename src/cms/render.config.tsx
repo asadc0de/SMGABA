@@ -11,6 +11,14 @@ import { CardGridRender, type CardGridProps } from "./blocks/CardGrid";
 import { TestimonialRender, type TestimonialProps } from "./blocks/Testimonial";
 import { TestimonialSliderRender, type TestimonialSliderProps } from "./blocks/TestimonialSlider";
 import { AccordionRender, type AccordionProps } from "./blocks/Accordion";
+import { CTABannerRender, type CTABannerProps } from "./blocks/CTABanner";
+import { StatsRender, type StatsProps } from "./blocks/Stats";
+import { IconFeaturesRender, type IconFeaturesProps } from "./blocks/IconFeatures";
+import { StepsRender, type StepsProps } from "./blocks/Steps";
+import { CalendlyBookingRender, type CalendlyBookingProps } from "./blocks/CalendlyBooking";
+import { VideoEmbedRender, type VideoEmbedProps } from "./blocks/VideoEmbed";
+import { SpacerRender, type SpacerProps } from "./blocks/Spacer";
+import { CalloutRender, type CalloutProps } from "./blocks/Callout";
 import { CmsRoot, type CmsRootProps } from "./root";
 
 export type CmsComponentProps = {
@@ -26,6 +34,14 @@ export type CmsComponentProps = {
   Testimonial: TestimonialProps;
   TestimonialSlider: TestimonialSliderProps;
   Accordion: AccordionProps;
+  CTABanner: CTABannerProps;
+  Stats: StatsProps;
+  IconFeatures: IconFeaturesProps;
+  Steps: StepsProps;
+  CalendlyBooking: CalendlyBookingProps;
+  VideoEmbed: VideoEmbedProps;
+  Spacer: SpacerProps;
+  Callout: CalloutProps;
 };
 
 export { type CmsRootProps } from "./root";
@@ -37,6 +53,14 @@ export const puckRenderConfig: Config<CmsComponentProps, CmsRootProps> = {
     Testimonial: { render: TestimonialRender },
     TestimonialSlider: { render: TestimonialSliderRender },
     Accordion: { render: AccordionRender },
+    CTABanner: { render: CTABannerRender },
+    Stats: { render: StatsRender },
+    IconFeatures: { render: IconFeaturesRender },
+    Steps: { render: StepsRender },
+    CalendlyBooking: { render: CalendlyBookingRender },
+    VideoEmbed: { render: VideoEmbedRender },
+    Spacer: { render: SpacerRender },
+    Callout: { render: CalloutRender },
     Section: { render: SectionRender },
     Columns: { render: ColumnsRender },
     Heading: { render: HeadingRender },
