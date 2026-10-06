@@ -51,6 +51,10 @@ function NewCmsPageForm() {
   const [slug, setSlug] = useState<string>("");
   const [isCustomSlug, setIsCustomSlug] = useState<boolean>(false);
   const [slugError, setSlugError] = useState<string>("");
+  const [showPageHero, setShowPageHero] = useState<boolean>(true);
+  const [heroEyebrow, setHeroEyebrow] = useState<string>("");
+  const [heroDescription, setHeroDescription] = useState<string>("");
+  const [heroImage, setHeroImage] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Auto-verify on mount
@@ -153,6 +157,10 @@ function NewCmsPageForm() {
               props: {
                 title: title.trim(),
                 seoTitle: `${title.trim()} | SMG ABA`,
+                showPageHero,
+                heroEyebrow: heroEyebrow.trim() || undefined,
+                heroDescription: heroDescription.trim() || undefined,
+                heroImage: heroImage.trim() || undefined,
               },
             },
           },
@@ -351,6 +359,73 @@ function NewCmsPageForm() {
                 <p className="text-xs text-slate-500 mt-1">
                   Only lowercase letters, numbers, and single hyphens. Cannot collide with existing static routes, redirects, or blog posts.
                 </p>
+              </div>
+
+              {/* Page Hero Banner Section */}
+              <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label htmlFor="hero-toggle" className="text-sm font-semibold text-navy cursor-pointer">
+                      Automatic Page Hero
+                    </Label>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Renders a branded full-bleed header with page title at the top of the page.
+                    </p>
+                  </div>
+                  <input
+                    id="hero-toggle"
+                    type="checkbox"
+                    checked={showPageHero}
+                    onChange={(e) => setShowPageHero(e.target.checked)}
+                    className="size-4 rounded border-slate-300 text-navy focus:ring-navy cursor-pointer"
+                  />
+                </div>
+
+                {showPageHero && (
+                  <div className="pt-3 border-t border-slate-200 space-y-3">
+                    <div>
+                      <Label htmlFor="hero-eyebrow" className="text-xs font-semibold text-slate-700">
+                        Hero Eyebrow Badge (Optional)
+                      </Label>
+                      <Input
+                        id="hero-eyebrow"
+                        type="text"
+                        value={heroEyebrow}
+                        onChange={(e) => setHeroEyebrow(e.target.value)}
+                        placeholder="e.g. Strategic Financial Leadership"
+                        className="mt-1 text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="hero-description" className="text-xs font-semibold text-slate-700">
+                        Hero Description (Optional)
+                      </Label>
+                      <textarea
+                        id="hero-description"
+                        rows={2}
+                        value={heroDescription}
+                        onChange={(e) => setHeroDescription(e.target.value)}
+                        placeholder="Brief summary for the hero section (defaults to meta description if empty)..."
+                        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-xs outline-none focus:border-ring focus:ring-1 focus:ring-ring"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="hero-image" className="text-xs font-semibold text-slate-700">
+                        Hero Background Image URL (Optional)
+                      </Label>
+                      <Input
+                        id="hero-image"
+                        type="text"
+                        value={heroImage}
+                        onChange={(e) => setHeroImage(e.target.value)}
+                        placeholder="https://... (defaults to SMG wallpaper)"
+                        className="mt-1 text-xs"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">

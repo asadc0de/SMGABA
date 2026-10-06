@@ -11,6 +11,26 @@ export const rootEditorConfig: ComponentConfig<CmsRootProps> = {
       type: "text",
       label: "Page Heading / Internal Title",
     },
+    showPageHero: {
+      type: "radio",
+      label: "Automatic Page Hero Header",
+      options: [
+        { label: "Show Hero Header", value: true },
+        { label: "Hide Hero Header", value: false },
+      ],
+    },
+    heroEyebrow: {
+      type: "text",
+      label: "Hero Eyebrow Badge (Optional)",
+    },
+    heroDescription: {
+      type: "textarea",
+      label: "Hero Description (Optional, falls back to Meta Description)",
+    },
+    heroImage: {
+      type: "text",
+      label: "Hero Background Image URL (Optional)",
+    },
     seoTitle: {
       type: "text",
       label: "SEO Title (<title> Tag)",

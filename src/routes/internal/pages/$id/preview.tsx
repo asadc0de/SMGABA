@@ -2,6 +2,7 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Render } from "@puckeditor/core/rsc";
 import { puckRenderConfig } from "@/cms/render.config";
+import { type CmsRootProps } from "@/cms/root";
 import { getCmsPageDraftPreview, publishCmsPage, type CmsPage } from "@/lib/cms.server";
 import { type CmsSiteSettings } from "@/lib/cms-settings";
 import { verifyAdminPassword } from "@/lib/webinar-redirects";
@@ -293,9 +294,49 @@ function CmsDraftPreviewRoute() {
 
       <Header settings={settings} />
 
-      <main className="flex-1 pt-28 sm:pt-36 pb-16">
-        <Render config={puckRenderConfig} data={page.data || { content: [], root: {} }} />
-      </main>
+      {(() => {
+        const rootProps = page.data?.root?.props as CmsRootProps | undefined;
+        const showPageHero = Boolean(rootProps?.showPageHero);
+        const firstBlock = page.data?.content?.[0];
+        const hasFirstBlockHero = firstBlock?.type === "Hero";
+        const hasHero = showPageHero || hasFirstBlockHero;
+
+        let preparedData = page.data || { content: [], root: {} };
+        if (showPageHero && firstBlock?.type === "Heading" && (firstBlock.props as any)?.level === "h1") {
+          preparedData = {
+            ...preparedData,
+            content: [
+              {
+                ...firstBlock,
+                props: {
+                  ...firstBlock.props,
+                  level: "h2",
+                },
+              },
+              ...(preparedData.content || []).slice(1),
+            ],
+          };
+        }
+
+        if (hasFirstBlockHero) {
+          preparedData = {
+            ...preparedData,
+            root: {
+              ...preparedData.root,
+              props: {
+                ...preparedData.root?.props,
+                _hasFirstBlockHero: true,
+              },
+            },
+          };
+        }
+
+        return (
+          <main className={`flex-1 overflow-x-clip ${hasHero ? "pb-16" : "pt-28 sm:pt-36 pb-16"}`}>
+            <Render config={puckRenderConfig} data={preparedData} />
+          </main>
+        );
+      })()}
 
       <Footer settings={settings} />
     </div>

@@ -147,11 +147,48 @@ function DynamicSlugPage() {
   }
 
   if (cmsPage) {
+    const rootProps = cmsPage.data?.root?.props as CmsRootProps | undefined;
+    const showPageHero = Boolean(rootProps?.showPageHero);
+    const firstBlock = cmsPage.data?.content?.[0];
+    const hasFirstBlockHero = firstBlock?.type === "Hero";
+    const hasHero = showPageHero || hasFirstBlockHero;
+
+    // Avoid a double H1: when the automatic hero is on, render a first-block Heading of level h1 as h2
+    let preparedData = cmsPage.data;
+    if (showPageHero && firstBlock?.type === "Heading" && (firstBlock.props as any)?.level === "h1") {
+      preparedData = {
+        ...cmsPage.data,
+        content: [
+          {
+            ...firstBlock,
+            props: {
+              ...firstBlock.props,
+              level: "h2",
+            },
+          },
+          ...(cmsPage.data.content || []).slice(1),
+        ],
+      };
+    }
+
+    if (hasFirstBlockHero) {
+      preparedData = {
+        ...preparedData,
+        root: {
+          ...preparedData.root,
+          props: {
+            ...preparedData.root?.props,
+            _hasFirstBlockHero: true,
+          },
+        },
+      };
+    }
+
     return (
       <div className="min-h-screen bg-background flex flex-col justify-between">
         <Header settings={settings} />
-        <main className="flex-1 pt-28 sm:pt-36 pb-16">
-          <Render config={puckRenderConfig} data={cmsPage.data} />
+        <main className={`flex-1 overflow-x-clip ${hasHero ? "pb-16" : "pt-28 sm:pt-36 pb-16"}`}>
+          <Render config={puckRenderConfig} data={preparedData} />
         </main>
         <Footer settings={settings} />
       </div>
