@@ -71,9 +71,11 @@ function BookAnAppointmentPage() {
                       </div>
                     </div>
 
-                    <div className="text-xs font-bold uppercase tracking-wider text-[#1b4e94] mb-1">
-                      {host.name} &bull; {host.title}
-                    </div>
+                    {Boolean(host.name && host.name.trim()) && (
+                      <div className="text-xs font-bold uppercase tracking-wider text-[#1b4e94] mb-1">
+                        {host.name}{host.title ? ` • ${host.title}` : ""}
+                      </div>
+                    )}
                     <h2 className="font-serif-hero text-2xl font-bold text-[#142340]">
                       {host.meetingTitle}
                     </h2>
