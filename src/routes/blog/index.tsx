@@ -29,8 +29,10 @@ function BlogIndexPage() {
 
   const categories = useMemo(() => getAllBlogCategories(), []);
 
+  const activePosts = useMemo(() => BLOG_POSTS.filter((p) => !p.archived), []);
+
   const filteredPosts = useMemo(() => {
-    return BLOG_POSTS.filter((post) => {
+    return activePosts.filter((post) => {
       const matchesCategory =
         activeCategory === "All" || post.category === activeCategory;
       const matchesSearch =
@@ -40,9 +42,9 @@ function BlogIndexPage() {
         post.category.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [activePosts, activeCategory, searchQuery]);
 
-  const featuredPost = BLOG_POSTS[0];
+  const featuredPost = activePosts[0];
 
   return (
     <div className="min-h-screen bg-background">

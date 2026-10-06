@@ -34,9 +34,9 @@ export function BlogPostView({ post }: BlogPostViewProps) {
     }
   };
 
-  // Find related posts
-  const relatedPosts = BLOG_POSTS.filter((p) => p.slug !== post.slug)
-    .filter((p) => p.category === post.category || true)
+  // Find related posts (excluding archived)
+  const relatedPosts = BLOG_POSTS.filter((p) => !p.archived && p.slug !== post.slug)
+    .sort((a, b) => (a.category === post.category ? -1 : 1))
     .slice(0, 3);
 
   return (
@@ -128,6 +128,13 @@ export function BlogPostView({ post }: BlogPostViewProps) {
 
         {/* Article Body Content */}
         <div className="mx-auto max-w-4xl px-6 lg:px-8 py-12 lg:py-16">
+          {post.archived && (
+            <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50/90 px-5 py-3.5 text-sm font-medium text-amber-900 shadow-xs flex items-center gap-3">
+              <span className="inline-flex size-2 rounded-full bg-amber-500 shrink-0" />
+              <span>This article is archived and may be out of date.</span>
+            </div>
+          )}
+
           <div className="grid gap-12 lg:grid-cols-12">
             {/* Main Content Body */}
             <article className="lg:col-span-12 space-y-6 text-foreground/90 text-base sm:text-lg leading-relaxed">

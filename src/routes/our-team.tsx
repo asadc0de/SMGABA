@@ -418,7 +418,7 @@ function OurTeamPage() {
         )}
 
         {/* =========================================================================
-            6. CULTURE & CLIENT POD PHILOSOPHY
+            6. CULTURE & DEDICATED ACCOUNTING TEAM PHILOSOPHY
            ========================================================================= */}
         <section className="py-20 sm:py-28 bg-[#142340] text-white">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -429,7 +429,7 @@ function OurTeamPage() {
                   No Generic Call Centers. Just Direct Access.
                 </h2>
                 <p className="mt-6 text-base text-blue-100/90 leading-relaxed">
-                  Every SMG client is paired with a dedicated client pod led by a designated partner and supervisory team who understand your chart of accounts, operational nuances, and strategic milestones.
+                  Every SMG client is paired with a dedicated accounting team led by a designated partner and supervisory team who understand your chart of accounts, operational nuances, and strategic milestones.
                 </p>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2">

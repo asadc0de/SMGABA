@@ -34,7 +34,7 @@ export const TIMELINE_ITEMS: TimelineItem[] = [
     dateLabel: "2022",
     isoDate: "2022",
     title: "St. Pete expansion",
-    description: "Office grows to 5,000 sq. ft.",
+    description: "Expanded regional office facilities.",
   },
   {
     dateLabel: "Aug 2025",
@@ -46,7 +46,7 @@ export const TIMELINE_ITEMS: TimelineItem[] = [
     dateLabel: "Mar 2026",
     isoDate: "2026-03",
     title: "HQ expansion",
-    description: "Islandia grows to 10,000 sq. ft.",
+    description: "Islandia headquarters expansion.",
   },
   {
     dateLabel: "Oct 2030",

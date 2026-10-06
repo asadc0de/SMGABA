@@ -1,37 +1,44 @@
 import { useEffect, useRef, useState } from "react";
 import { FIRM_STATS } from "@/data/firmStats";
 
-interface StatItem {
-  value: number;
-  suffix: string;
+type StatItem = {
   label: string;
-}
+} & (
+  | {
+      type: "counter";
+      value: number;
+      suffix: string;
+    }
+  | {
+      type: "text";
+      text: string;
+    }
+);
 
 const STATS: StatItem[] = [
   {
+    type: "counter",
     value: FIRM_STATS.professionals,
     suffix: "+",
     label: "Dedicated Professionals",
   },
   {
+    type: "counter",
     value: FIRM_STATS.clients,
     suffix: "+",
     label: "Clients Served",
   },
   {
+    type: "text",
+    text: FIRM_STATS.experienceText || "Decades",
+    label: FIRM_STATS.experienceLabel || "of Experience",
+  },
+  {
+    type: "counter",
     value: FIRM_STATS.offices,
     suffix: "",
     label: "Office Locations",
   },
-  ...(FIRM_STATS.yearsExperience !== null
-    ? [
-        {
-          value: FIRM_STATS.yearsExperience,
-          suffix: "+",
-          label: "Years Experience",
-        },
-      ]
-    : []),
 ];
 
 function Counter({ value, suffix, active }: { value: number; suffix: string; active: boolean }) {
@@ -128,7 +135,13 @@ export function Stats() {
               key={s.label}
               className="flex flex-col items-center gap-3 border-primary-foreground/15 text-center sm:not-last:border-r"
             >
-              <Counter value={s.value} suffix={s.suffix} active={active} />
+              {s.type === "counter" ? (
+                <Counter value={s.value} suffix={s.suffix} active={active} />
+              ) : (
+                <span className="font-display text-5xl font-extrabold tabular-nums text-navy-foreground md:text-6xl">
+                  {s.text}
+                </span>
+              )}
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-foreground/75">
                 {s.label}
               </p>

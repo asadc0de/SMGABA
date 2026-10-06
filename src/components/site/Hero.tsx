@@ -5,7 +5,7 @@ const HERO_IMAGE = "https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpa
 
 export function Hero() {
   return (
-    <section className="relative isolate min-h-[82vh] md:min-h-[88vh] flex items-center overflow-hidden">
+    <section className="relative isolate min-h-[62vh] md:min-h-[70vh] flex items-center overflow-hidden">
       {/* Background Magnolia Floral Wallpaper */}
       <img
         src={HERO_IMAGE}
@@ -29,12 +29,12 @@ export function Hero() {
       <div className="absolute inset-0 bg-navy/20 mix-blend-multiply" />
 
       {/* Content Container - Left Aligned matching Image 2 */}
-      <div className="relative mx-auto w-full max-w-7xl px-6 pt-36 pb-20 sm:pt-44 sm:pb-28 md:pt-48 md:pb-32 lg:px-10">
+      <div className="relative mx-auto w-full max-w-7xl px-6 pt-32 pb-16 sm:pt-36 sm:pb-20 md:pt-40 md:pb-24 lg:px-10">
         <div className="max-w-2xl text-left">
 
           {/* Main Headline */}
           <h1 className="font-serif-hero text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.25rem] lg:leading-[1.16] drop-shadow-sm">
-            Building Relationships with Passion, Care, &amp; Responsiveness
+            Accounting, Bookkeeping &amp; Advisory for Growing Businesses
           </h1>
 
           {/* Subheading */}

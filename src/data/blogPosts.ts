@@ -18,6 +18,7 @@ export interface BlogPost {
   image: string;
   readTime: string;
   excerpt: string;
+  archived?: boolean;
   blocks: ContentBlock[];
 }
 
@@ -1397,6 +1398,7 @@ export const BLOG_POSTS: BlogPost[] = [
     readTime: "2 min read",
     excerpt:
       "Understand your business reporting requirements under the Corporate Transparency Act. Learn about the key filing deadlines.",
+    archived: true,
     blocks: [
       {
         type: "p",
@@ -1434,6 +1436,7 @@ export const BLOG_POSTS: BlogPost[] = [
     readTime: "2 min read",
     excerpt:
       "As a reminder to those currently a part of the COVID-19 Economic Injury Disaster Loan (EIDL) program, all borrowers are required to submit regular principal and interest payments, beginning 30 months from the effective date of your loan.",
+    archived: true,
     blocks: [
       {
         type: "p",
@@ -2646,6 +2649,7 @@ export const BLOG_POSTS: BlogPost[] = [
     readTime: "2 min read",
     excerpt:
       "Please note, that it’s the client’s responsibility as the taxpayer to obtain W-9s from all vendors that provide services to recipients. This includes",
+    archived: true,
     blocks: [
       {
         type: "p",
@@ -4056,6 +4060,7 @@ export const BLOG_POSTS: BlogPost[] = [
     readTime: "2 min read",
     excerpt:
       "On Tuesday, March 30 the President signed into law an extension for PPP applications pushing the deadline to apply from March 31 to May 31.",
+    archived: true,
     blocks: [
       {
         type: "p",
@@ -5290,6 +5295,7 @@ export const BLOG_POSTS: BlogPost[] = [
     readTime: "2 min read",
     excerpt:
       "Get ready to file your 2022 taxes. Find your required documents, complete the tax questionnaire, and securely submit your files to SMG ABA.",
+    archived: true,
     blocks: [
       {
         type: "p",
@@ -6108,6 +6114,6 @@ export function getBlogPostBySlug(slug: string): BlogPost | undefined {
 }
 
 export function getAllBlogCategories(): string[] {
-  const categories = Array.from(new Set(BLOG_POSTS.map((p) => p.category)));
+  const categories = Array.from(new Set(BLOG_POSTS.filter((p) => !p.archived).map((p) => p.category)));
   return ["All", ...categories];
 }

@@ -35,7 +35,7 @@ export interface HeroProps extends BlockStyleProps {
 }
 
 export const defaultHeroProps: HeroProps = {
-  headline: "Elevate Your Financial Horizon with Strategic Precision",
+  headline: "Accounting, Bookkeeping & Advisory for Growing Businesses",
   subheadline:
     "Multidisciplinary accounting, fractional CFO advisory, and wealth management tailored for forward-thinking business owners across New York and Florida.",
   eyebrow: "Strategic Financial Leadership",
@@ -83,7 +83,7 @@ function getMinHeightClass(minHeight?: HeroProps["minHeight"]): string {
     case "compact":
       return "min-h-[360px] py-12 md:py-16 flex flex-col justify-center";
     case "screen":
-      return "min-h-[85vh] py-20 md:py-32 flex flex-col justify-center";
+      return "min-h-[70vh] py-16 md:py-24 flex flex-col justify-center";
     case "auto":
       return "py-12 md:py-20";
     case "medium":
