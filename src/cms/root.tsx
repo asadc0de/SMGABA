@@ -13,6 +13,10 @@ export interface CmsRootProps {
   heroEyebrow?: string;
   heroDescription?: string;
   heroImage?: string;
+  heroPrimaryCtaText?: string;
+  heroPrimaryCtaHref?: string;
+  heroSecondaryCtaText?: string;
+  heroSecondaryCtaHref?: string;
   _hasFirstBlockHero?: boolean;
   children?: React.ReactNode;
 }
@@ -46,6 +50,10 @@ export function CmsRoot({
   heroEyebrow,
   heroDescription,
   heroImage,
+  heroPrimaryCtaText,
+  heroPrimaryCtaHref,
+  heroSecondaryCtaText,
+  heroSecondaryCtaHref,
   _hasFirstBlockHero,
   children,
 }: CmsRootProps) {
@@ -112,6 +120,27 @@ export function CmsRoot({
                 <p className="mt-5 text-base sm:text-lg leading-relaxed text-blue-50/95 font-normal">
                   {resolvedDescription}
                 </p>
+              )}
+
+              {(heroPrimaryCtaText || heroSecondaryCtaText) && (
+                <div className="mt-8 flex flex-wrap items-center gap-4">
+                  {heroPrimaryCtaText && (
+                    <a
+                      href={heroPrimaryCtaHref || "/contact"}
+                      className="inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm font-semibold text-navy shadow-lg hover:bg-slate-100 transition-all"
+                    >
+                      {heroPrimaryCtaText}
+                    </a>
+                  )}
+                  {heroSecondaryCtaText && (
+                    <a
+                      href={heroSecondaryCtaHref || "/solutions"}
+                      className="inline-flex items-center justify-center rounded-full border border-white/40 bg-white/10 px-6 py-3 text-sm font-semibold text-white backdrop-blur-md hover:bg-white/20 transition-all"
+                    >
+                      {heroSecondaryCtaText}
+                    </a>
+                  )}
+                </div>
               )}
             </div>
           </div>

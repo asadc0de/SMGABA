@@ -73,7 +73,7 @@ export async function fetchAllEvents(): Promise<EventItem[]> {
   }
 
   // 3. Fetch from Supabase database if connected
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
   if (client) {
     try {
       const { data, error } = await client
@@ -108,7 +108,7 @@ export async function lookupEventById(rawId: string): Promise<EventItem | null> 
   const id = cleanSlug(rawId);
   if (!id) return null;
 
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
   if (client) {
     try {
       const { data, error } = await client
@@ -185,7 +185,7 @@ export async function upsertEventRecord(
     return { success: false, error: "Registration link is required." };
   }
 
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
   if (!client) {
     localFallbackEvents.set(id, mergedRecord);
     return {
@@ -219,7 +219,7 @@ export async function deleteEventRecord(
   const id = cleanSlug(rawId);
   if (!id) return { success: false, error: "Event ID is required." };
 
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
   if (!client) {
     localFallbackEvents.delete(id);
     return { success: true };
@@ -242,7 +242,7 @@ export async function uploadEventImage(
   contentType: string,
   base64Data: string
 ): Promise<{ success: boolean; url?: string; error?: string }> {
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
   if (!client) {
     return {
       success: false,

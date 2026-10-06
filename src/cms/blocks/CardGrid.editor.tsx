@@ -1,5 +1,6 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { CardGridRender, type CardGridProps, defaultCardGridProps } from "./CardGrid";
+import { createImagePickerField } from "../fields/ImagePicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
 
@@ -95,10 +96,10 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
             { label: "None", value: "" },
           ],
         },
-        imageUrl: {
-          type: "text",
-          label: "Custom Image URL (Overrides Icon)",
-        },
+        imageUrl: createImagePickerField({
+          label: "Custom Image (Overrides Icon)",
+          placeholder: "https://..., /assets/card.jpg, or pick from gallery",
+        }),
         ctaText: {
           type: "text",
           label: "CTA Link Label (Optional)",

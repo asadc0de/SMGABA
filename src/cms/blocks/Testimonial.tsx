@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  type BlockStyleProps,
-  buildStyleClasses,
-} from "../style";
+import { type BlockStyleProps, buildStyleClasses } from "../style";
 import { isValidImageUrl } from "./Image";
 import { Star, Quote } from "lucide-react";
 
@@ -13,21 +10,21 @@ export interface TestimonialProps extends BlockStyleProps {
   authorCompany?: string;
   avatarUrl?: string;
   rating?: "0" | "1" | "2" | "3" | "4" | "5";
-  layout?: "card" | "centered" | "split" | "quote-left";
-  theme?: "light" | "navy" | "subtle";
+  layout?: "card" | "centered" | "split" | "quote-left" | "site-card";
+  theme?: "light" | "navy" | "subtle" | "secondary";
   sizePercent?: number;
 }
 
 export const defaultTestimonialProps: TestimonialProps = {
   quote:
-    "SMG ABA transformed our entire financial operations. Their proactive tax strategy and fractional CFO forecasting gave us the exact clarity we needed to scale our multi-location enterprise.",
+    "Been working with SMG for years and it was one of the best business decisions we have ever made. The team is knowledgeable, hyper responsive and act as an extension of our company.",
   authorName: "Marcus Vance",
   authorRole: "Chief Executive Officer",
   authorCompany: "Vance Hospitality Group",
   avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
   rating: "5",
-  layout: "card",
-  theme: "navy",
+  layout: "site-card",
+  theme: "secondary",
   sizePercent: 100,
   marginTop: { base: "md", md: "lg", lg: "lg" },
   marginBottom: { base: "lg", md: "xl", lg: "xl" },
@@ -53,7 +50,7 @@ function renderStars(ratingStr?: string) {
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          className={`size-4.5 ${
+          className={`size-4 ${
             i < rating
               ? "fill-amber-400 text-amber-400"
               : "fill-slate-200 text-slate-300 dark:fill-slate-700 dark:text-slate-600"
@@ -72,8 +69,8 @@ export function TestimonialRender(props: TestimonialProps) {
     authorCompany,
     avatarUrl,
     rating = "5",
-    layout = "card",
-    theme = "navy",
+    layout = "site-card",
+    theme = "secondary",
     sizePercent = 100,
   } = props;
 
@@ -86,23 +83,75 @@ export function TestimonialRender(props: TestimonialProps) {
 
   // Theme styling tokens
   const isNavy = theme === "navy";
+  const isSecondary = theme === "secondary";
   const isSubtle = theme === "subtle";
 
   const containerThemeClass = isNavy
     ? "bg-[#0b172e] border-white/10 text-white shadow-2xl"
+    : isSecondary
+    ? "card-surface bg-white/95 border-slate-200/80 text-foreground shadow-sm"
     : isSubtle
     ? "bg-slate-50 border-slate-200 text-slate-800 shadow-sm"
     : "bg-white border-slate-200 text-slate-900 shadow-lg";
 
-  const quoteColorClass = isNavy ? "text-slate-100" : "text-slate-800";
+  const quoteColorClass = isNavy
+    ? "text-slate-100"
+    : isSecondary
+    ? "text-foreground/85"
+    : "text-slate-800";
   const authorColorClass = isNavy ? "text-white" : "text-navy";
   const roleColorClass = isNavy ? "text-slate-400" : "text-slate-500";
-  const quoteIconColorClass = isNavy ? "text-blue-400/30" : "text-navy/15";
+  const quoteIconColorClass = isNavy ? "text-blue-400/20" : "text-mist/50";
 
   const containerStyle: React.CSSProperties =
     typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
       ? { maxWidth: `${sizePercent}%`, margin: "0 auto" }
       : {};
+
+  // Render Layout: Site Signature Card (Matches site's home & about testimonials)
+  if (layout === "site-card") {
+    return (
+      <figure
+        style={containerStyle}
+        className={`card-surface relative overflow-hidden rounded-2xl border px-6 py-9 sm:px-10 sm:py-11 md:px-14 md:py-14 ${containerThemeClass} ${styleClasses}`}
+      >
+        <Quote className={`absolute -left-2 -top-2 size-24 ${quoteIconColorClass} pointer-events-none`} aria-hidden="true" />
+        
+        <div className="relative z-10">
+          {rating && rating !== "0" && (
+            <div className="mb-4">{renderStars(rating)}</div>
+          )}
+
+          <blockquote className={`text-balance text-lg leading-relaxed md:text-xl md:leading-relaxed font-sans ${quoteColorClass}`}>
+            “{quote}”
+          </blockquote>
+
+          <footer className="mt-7 flex items-center gap-4">
+            <span className="h-px w-10 bg-primary shrink-0" aria-hidden="true" />
+
+            {validAvatar && (
+              <img
+                src={validAvatar}
+                alt={authorName}
+                className="size-11 rounded-full object-cover border border-slate-200 shadow-xs shrink-0"
+              />
+            )}
+
+            <div>
+              <cite className={`font-display text-base font-semibold not-italic ${authorColorClass}`}>
+                {authorName}
+              </cite>
+              {(authorRole || authorCompany) && (
+                <div className={`text-xs ${roleColorClass} mt-0.5`}>
+                  {[authorRole, authorCompany].filter(Boolean).join(" · ")}
+                </div>
+              )}
+            </div>
+          </footer>
+        </div>
+      </figure>
+    );
+  }
 
   // Render Layout 1: Centered
   if (layout === "centered") {
@@ -220,7 +269,7 @@ export function TestimonialRender(props: TestimonialProps) {
     );
   }
 
-  // Default: Card Layout
+  // Default / Legacy Card Layout
   return (
     <figure style={containerStyle} className={`relative overflow-hidden rounded-3xl border p-7 sm:p-9 lg:p-10 ${containerThemeClass} ${styleClasses}`}>
       <div className="absolute top-6 right-6 opacity-40">

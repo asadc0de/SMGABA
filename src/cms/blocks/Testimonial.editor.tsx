@@ -1,5 +1,10 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import { TestimonialRender, type TestimonialProps, defaultTestimonialProps } from "./Testimonial";
+import {
+  TestimonialRender,
+  type TestimonialProps,
+  defaultTestimonialProps,
+} from "./Testimonial";
+import { createImagePickerField } from "../fields/ImagePicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
 
@@ -23,10 +28,10 @@ export const TestimonialBlock: ComponentConfig<TestimonialProps> = {
       type: "text",
       label: "Company / Organization (Optional)",
     },
-    avatarUrl: {
-      type: "text",
-      label: "Avatar Image URL (Optional)",
-    },
+    avatarUrl: createImagePickerField({
+      label: "Avatar / Author Photo (Upload, Gallery, or URL)",
+      placeholder: "https://..., /assets/author.jpg, or pick from library",
+    }),
     rating: {
       type: "select",
       label: "Star Rating",
@@ -41,7 +46,8 @@ export const TestimonialBlock: ComponentConfig<TestimonialProps> = {
       type: "select",
       label: "Layout Presentation",
       options: [
-        { label: "Card Container (Default)", value: "card" },
+        { label: "Site Signature Card (Default)", value: "site-card" },
+        { label: "Classic Card Container", value: "card" },
         { label: "Centered Minimal", value: "centered" },
         { label: "Split (2-Column)", value: "split" },
         { label: "Quote Left Accent", value: "quote-left" },
@@ -51,8 +57,9 @@ export const TestimonialBlock: ComponentConfig<TestimonialProps> = {
       type: "select",
       label: "Color Theme",
       options: [
+        { label: "Site Light Surface (Default)", value: "secondary" },
         { label: "Navy Brand (Dark)", value: "navy" },
-        { label: "Light Card (White)", value: "light" },
+        { label: "Pure White Card", value: "light" },
         { label: "Subtle Gray", value: "subtle" },
       ],
     },

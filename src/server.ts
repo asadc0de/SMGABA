@@ -1,3 +1,4 @@
+import "./lib/ws-polyfill"; // Polyfill WebSocket BEFORE anything else
 import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";

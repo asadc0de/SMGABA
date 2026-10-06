@@ -17,6 +17,7 @@ import {
 } from "@/lib/cms.server";
 import { isValidCanonicalUrl, type CmsRootProps } from "@/cms/root";
 import { isValidImageUrl } from "@/cms/blocks/Image";
+import { ImagePickerInput } from "@/cms/fields/ImagePicker";
 import { verifyAdminPassword } from "@/lib/webinar-redirects";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -832,45 +833,14 @@ function CmsPageEditorRoute() {
                 </div>
 
                 <div>
-                  <Label htmlFor="og-image" className="text-xs font-semibold text-slate-700">
+                  <Label className="text-xs font-semibold text-slate-700 mb-1.5 block">
                     Open Graph Image (1200x630 recommended)
                   </Label>
-                  <div className="mt-1 flex flex-col gap-2">
-                    <Input
-                      id="og-image"
-                      value={ogImage}
-                      onChange={(e) => setOgImage(e.target.value)}
-                      placeholder="https://... or upload image below"
-                      className="text-xs"
-                    />
-                    <div className="flex items-center gap-2">
-                      <label className="flex-1 cursor-pointer">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          disabled={isUploadingOg}
-                          onChange={handleOgFileUpload}
-                          className="hidden"
-                        />
-                        <span className="inline-flex items-center justify-center w-full rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50 transition-colors">
-                          <ImageIcon className="size-3.5 mr-1.5 text-slate-500" />
-                          {isUploadingOg ? "Uploading Image..." : "Upload Social Image to Supabase"}
-                        </span>
-                      </label>
-                      {ogImage && (
-                        <button
-                          type="button"
-                          onClick={() => setOgImage("")}
-                          className="px-2.5 py-1.5 text-xs text-slate-500 hover:text-destructive border border-slate-200 rounded-md bg-white"
-                        >
-                          Clear
-                        </button>
-                      )}
-                    </div>
-                    {ogUploadError && (
-                      <span className="text-xs text-destructive">{ogUploadError}</span>
-                    )}
-                  </div>
+                  <ImagePickerInput
+                    value={ogImage}
+                    onChange={setOgImage}
+                    placeholder="https://... or upload/pick social share image"
+                  />
                 </div>
 
                 {/* Social Card Preview */}

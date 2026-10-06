@@ -5,9 +5,11 @@ import { ButtonBlock } from "./blocks/Button.editor";
 import { SectionBlock } from "./blocks/Section.editor";
 import { ColumnsBlock } from "./blocks/Columns.editor";
 import { ImageBlock } from "./blocks/Image.editor";
+import { ImageGalleryBlock } from "./blocks/ImageGallery.editor";
 import { HeroBlock } from "./blocks/Hero.editor";
 import { CardGridBlock } from "./blocks/CardGrid.editor";
 import { TestimonialBlock } from "./blocks/Testimonial.editor";
+import { TestimonialSliderBlock } from "./blocks/TestimonialSlider.editor";
 import { AccordionBlock } from "./blocks/Accordion.editor";
 import { type CmsComponentProps, type CmsRootProps } from "./render.config";
 import { rootEditorConfig } from "./root.editor";
@@ -17,7 +19,10 @@ export { type CmsComponentProps, type CmsRootProps } from "./render.config";
 export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
   categories: {
     marketing: {
-      components: ["Hero", "CardGrid", "Testimonial", "Accordion"],
+      components: ["Hero", "CardGrid", "Testimonial", "TestimonialSlider", "Accordion"],
+    },
+    media: {
+      components: ["Image", "ImageGallery"],
     },
     layout: {
       components: ["Section", "Columns"],
@@ -28,14 +33,12 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     actions: {
       components: ["Button"],
     },
-    media: {
-      components: ["Image"],
-    },
   },
   components: {
     Hero: HeroBlock,
     CardGrid: CardGridBlock,
     Testimonial: TestimonialBlock,
+    TestimonialSlider: TestimonialSliderBlock,
     Accordion: AccordionBlock,
     Section: SectionBlock,
     Columns: ColumnsBlock,
@@ -43,10 +46,10 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     RichText: RichTextBlock,
     Button: ButtonBlock,
     Image: ImageBlock,
+    ImageGallery: ImageGalleryBlock,
   },
   root: rootEditorConfig,
 };
 
 export const puckConfig = puckEditorConfig;
 export default puckEditorConfig;
-

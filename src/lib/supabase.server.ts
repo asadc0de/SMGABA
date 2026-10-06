@@ -1,3 +1,4 @@
+import "./ws-polyfill"; // Must be first – polyfills globalThis.WebSocket for Node < 22
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 export interface WebinarRedirect {
@@ -92,10 +93,32 @@ export function getEnvVar(key: string): string {
 }
 
 /**
+ * Ensures globalThis.WebSocket is available on Node.js < 22.
+ * Uses dynamic import so it works in Vite SSR's ESM context.
+ */
+let wsPolyfilled = false;
+async function ensureWebSocket(): Promise<void> {
+  if (wsPolyfilled) return;
+  wsPolyfilled = true;
+  if (typeof globalThis.WebSocket !== "undefined") return;
+  try {
+    const ws = await import("ws");
+    const WsCtor = (ws as any).WebSocket || (ws as any).default || ws;
+    if (typeof WsCtor === "function") {
+      (globalThis as any).WebSocket = WsCtor;
+    }
+  } catch {
+    // ws not available
+  }
+}
+
+/**
  * Creates or returns the server-side Supabase client with the service role key.
  * This ensures full write permissions and bypasses RLS on the server.
+ * 
+ * Now async to allow dynamic import of the `ws` polyfill before Supabase init.
  */
-export function getSupabaseServerClient(): SupabaseClient | null {
+export async function getSupabaseServerClient(): Promise<SupabaseClient | null> {
   const supabaseUrl = getEnvVar("SUPABASE_URL");
   const supabaseServiceKey =
     getEnvVar("SUPABASE_SERVICE_ROLE_KEY") ||
@@ -105,12 +128,23 @@ export function getSupabaseServerClient(): SupabaseClient | null {
     return null;
   }
 
-  return createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-      persistSession: false,
-      autoRefreshToken: false,
-    },
-  });
+  // Polyfill WebSocket before Supabase Realtime tries to use it
+  await ensureWebSocket();
+
+  try {
+    return createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (!msg.includes("WebSocket")) {
+      console.error("[Supabase] Unexpected error creating client:", msg);
+    }
+    return null;
+  }
 }
 
 import { WEBINAR_REDIRECTS } from "../data/webinarRedirects";
@@ -187,7 +221,7 @@ export async function fetchAllWebinarRedirects(): Promise<WebinarRedirect[]> {
   }
 
   // 3. Fetch from Supabase database if connected
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
   if (client) {
     try {
       const { data, error } = await client
@@ -226,7 +260,7 @@ export async function lookupWebinarRedirect(rawSlug: string): Promise<string | n
   const slug = cleanSlug(rawSlug);
   if (!slug) return null;
 
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
 
   if (client) {
     try {
@@ -270,7 +304,7 @@ export async function upsertWebinarRedirectRecord(
     return { success: false, error: "Target URL is required." };
   }
 
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
 
   if (!client) {
     const record: WebinarRedirect = {
@@ -314,7 +348,7 @@ export async function deleteWebinarRedirectRecord(
   const slug = cleanSlug(rawSlug);
   if (!slug) return { success: false, error: "Slug is required." };
 
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
 
   if (!client) {
     localFallbackRedirects.delete(slug);

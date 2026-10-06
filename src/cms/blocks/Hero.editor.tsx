@@ -1,5 +1,6 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { HeroRender, type HeroProps, defaultHeroProps } from "./Hero";
+import { createImagePickerField } from "../fields/ImagePicker";
 import {
   createResponsiveSpaceField,
   createResponsiveAlignField,
@@ -31,10 +32,10 @@ export const HeroBlock: ComponentConfig<HeroProps> = {
       presets: [50, 65, 80, 90, 100],
       description: "Scale the hero content container width.",
     }),
-    backgroundImage: {
-      type: "text",
-      label: "Background Image URL",
-    },
+    backgroundImage: createImagePickerField({
+      label: "Background Image (Upload, Gallery, or URL)",
+      placeholder: "https://..., /assets/hero.jpg, or pick from gallery",
+    }),
     overlay: {
       type: "select",
       label: "Overlay Shade",

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast, Toaster } from "sonner";
+import { ImagePickerInput } from "@/cms/fields/ImagePicker";
 import {
   Lock,
   Unlock,
@@ -55,6 +56,10 @@ function NewCmsPageForm() {
   const [heroEyebrow, setHeroEyebrow] = useState<string>("");
   const [heroDescription, setHeroDescription] = useState<string>("");
   const [heroImage, setHeroImage] = useState<string>("");
+  const [heroPrimaryCtaText, setHeroPrimaryCtaText] = useState<string>("Contact Us");
+  const [heroPrimaryCtaHref, setHeroPrimaryCtaHref] = useState<string>("/contact");
+  const [heroSecondaryCtaText, setHeroSecondaryCtaText] = useState<string>("");
+  const [heroSecondaryCtaHref, setHeroSecondaryCtaHref] = useState<string>("/solutions");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // Auto-verify on mount
@@ -161,6 +166,10 @@ function NewCmsPageForm() {
                 heroEyebrow: heroEyebrow.trim() || undefined,
                 heroDescription: heroDescription.trim() || undefined,
                 heroImage: heroImage.trim() || undefined,
+                heroPrimaryCtaText: heroPrimaryCtaText.trim() || undefined,
+                heroPrimaryCtaHref: heroPrimaryCtaHref.trim() || undefined,
+                heroSecondaryCtaText: heroSecondaryCtaText.trim() || undefined,
+                heroSecondaryCtaHref: heroSecondaryCtaHref.trim() || undefined,
               },
             },
           },
@@ -412,17 +421,85 @@ function NewCmsPageForm() {
                     </div>
 
                     <div>
-                      <Label htmlFor="hero-image" className="text-xs font-semibold text-slate-700">
-                        Hero Background Image URL (Optional)
+                      <Label className="text-xs font-semibold text-slate-700 mb-1.5 block">
+                        Hero Background Image (Optional)
                       </Label>
-                      <Input
-                        id="hero-image"
-                        type="text"
+                      <ImagePickerInput
                         value={heroImage}
-                        onChange={(e) => setHeroImage(e.target.value)}
+                        onChange={setHeroImage}
                         placeholder="https://... (defaults to SMG wallpaper)"
-                        className="mt-1 text-xs"
                       />
+                    </div>
+
+                    <div className="pt-2 border-t border-slate-100">
+                      <span className="text-xs font-semibold text-navy block mb-2">
+                        Hero CTA Buttons (Optional)
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2">
+                          <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider">
+                            Primary CTA Button (Solid White)
+                          </span>
+                          <div>
+                            <Label htmlFor="hero-pri-label" className="text-[11px] text-slate-600">
+                              Button Label
+                            </Label>
+                            <Input
+                              id="hero-pri-label"
+                              type="text"
+                              value={heroPrimaryCtaText}
+                              onChange={(e) => setHeroPrimaryCtaText(e.target.value)}
+                              placeholder="e.g. Contact Us, Get Started"
+                              className="mt-0.5 text-xs bg-white"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="hero-pri-href" className="text-[11px] text-slate-600">
+                              Link URL
+                            </Label>
+                            <Input
+                              id="hero-pri-href"
+                              type="text"
+                              value={heroPrimaryCtaHref}
+                              onChange={(e) => setHeroPrimaryCtaHref(e.target.value)}
+                              placeholder="e.g. /contact or https://..."
+                              className="mt-0.5 text-xs bg-white"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2">
+                          <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider">
+                            Secondary CTA Button (Outlined Glass)
+                          </span>
+                          <div>
+                            <Label htmlFor="hero-sec-label" className="text-[11px] text-slate-600">
+                              Button Label (Optional)
+                            </Label>
+                            <Input
+                              id="hero-sec-label"
+                              type="text"
+                              value={heroSecondaryCtaText}
+                              onChange={(e) => setHeroSecondaryCtaText(e.target.value)}
+                              placeholder="e.g. Explore Solutions (or empty)"
+                              className="mt-0.5 text-xs bg-white"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="hero-sec-href" className="text-[11px] text-slate-600">
+                              Link URL
+                            </Label>
+                            <Input
+                              id="hero-sec-href"
+                              type="text"
+                              value={heroSecondaryCtaHref}
+                              onChange={(e) => setHeroSecondaryCtaHref(e.target.value)}
+                              placeholder="e.g. /solutions or https://..."
+                              className="mt-0.5 text-xs bg-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )}

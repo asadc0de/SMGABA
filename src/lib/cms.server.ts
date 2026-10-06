@@ -272,7 +272,7 @@ export const getAllCmsPages = createServerFn({ method: "POST" })
         return { success: false, pages: [], error: "Unauthorized: Invalid admin password." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
 
       if (!client) {
         if (isDev) {
@@ -393,7 +393,7 @@ export const getCmsPageById = createServerFn({ method: "POST" })
         return { success: false, error: "Page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
 
       if (!client) {
         if (isDev) {
@@ -454,7 +454,7 @@ async function recordVersionSnapshot(
 ): Promise<void> {
   if (!pageId || !data) return;
   const now = new Date().toISOString();
-  const client = getSupabaseServerClient();
+  const client = await getSupabaseServerClient();
 
   if (isDev && !client) {
     const pageVersions = localFallbackVersions.get(pageId) || [];
@@ -587,7 +587,7 @@ export const saveCmsPage = createServerFn({ method: "POST" })
       }
 
       const now = new Date().toISOString();
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
 
       if (!client) {
         if (isDev) {
@@ -719,7 +719,7 @@ export const duplicateCmsPage = createServerFn({ method: "POST" })
         return { success: false, error: "Source page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
       let sourcePage: CmsPage | null = null;
 
       if (!client) {
@@ -869,7 +869,7 @@ export const unpublishCmsPage = createServerFn({ method: "POST" })
         return { success: false, error: "Page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
       const now = new Date().toISOString();
 
       if (!client && isDev) {
@@ -934,7 +934,7 @@ export const publishCmsPage = createServerFn({ method: "POST" })
         return { success: false, error: "Page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
       const now = new Date().toISOString();
 
       if (!client && isDev) {
@@ -1018,7 +1018,7 @@ export const deleteCmsPage = createServerFn({ method: "POST" })
         return { success: false, error: "Page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
 
       if (!client) {
         if (isDev) {
@@ -1086,7 +1086,7 @@ export const getCmsPageVersions = createServerFn({ method: "POST" })
         return { success: false, versions: [], error: "Page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
 
       if (!client && isDev) {
         const versions = localFallbackVersions.get(id) || [];
@@ -1153,7 +1153,7 @@ export const restoreCmsPageVersion = createServerFn({ method: "POST" })
         return { success: false, error: "Page ID and Version ID are required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
       let targetVersion: CmsPageVersion | null = null;
 
       if (!client && isDev) {
@@ -1271,7 +1271,7 @@ export const getCmsPageDraftPreview = createServerFn({ method: "POST" })
         return { success: false, error: "Page ID is required." };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
       let page: CmsPage | null = null;
 
       if (!client && isDev) {
@@ -1325,7 +1325,7 @@ export const lookupPublishedCmsPage = createServerFn({ method: "GET" })
         return { page: cached.page, error: null };
       }
 
-      const client = getSupabaseServerClient();
+      const client = await getSupabaseServerClient();
 
       if (!client) {
         if (isDev) {
@@ -1402,7 +1402,7 @@ export const uploadCmsImage = createServerFn({ method: "POST" })
       return { success: false, error: "No image file data provided." };
     }
 
-    const client = getSupabaseServerClient();
+    const client = await getSupabaseServerClient();
     if (!client) {
       if (isDev) {
         return {
@@ -1442,6 +1442,61 @@ export const uploadCmsImage = createServerFn({ method: "POST" })
     }
   });
 
+/**
+ * Server function to list existing CMS images from Supabase Storage (Admin only).
+ */
+export const listCmsImages = createServerFn({ method: "POST" })
+  .validator(
+    (data: unknown): {
+      adminPassword?: string;
+    } => {
+      const d = (data && typeof data === "object" ? data : {}) as Record<string, unknown>;
+      return {
+        adminPassword: typeof d.adminPassword === "string" ? d.adminPassword : "",
+      };
+    },
+  )
+  .handler(async ({ data: payload }) => {
+    const expectedPassword = getEnvVar("INTERNAL_ADMIN_PASSWORD");
+    const inputPassword = extractAdminPassword(payload.adminPassword);
+
+    if (!isAuthorized(inputPassword, expectedPassword)) {
+      return { success: false, error: "Unauthorized: Invalid admin password.", images: [] };
+    }
+
+    const client = await getSupabaseServerClient();
+    const bucketName = "event-images";
+    const images: Array<{ name: string; url: string; size?: number; createdAt?: string }> = [];
+
+    if (client) {
+      try {
+        const { data: files, error } = await client.storage
+          .from(bucketName)
+          .list("cms", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+
+        if (!error && Array.isArray(files)) {
+          for (const f of files) {
+            if (f.name && !f.name.startsWith(".")) {
+              const { data: urlData } = client.storage
+                .from(bucketName)
+                .getPublicUrl(`cms/${f.name}`);
+              images.push({
+                name: f.name,
+                url: urlData.publicUrl,
+                size: (f as any).metadata?.size,
+                createdAt: f.created_at,
+              });
+            }
+          }
+        }
+      } catch (err: any) {
+        console.error("[Supabase Storage] List images exception:", err?.message);
+      }
+    }
+
+    return { success: true, images };
+  });
+
 // In-memory cache for site settings
 let cachedSiteSettings: { settings: CmsSiteSettings; cachedAt: number } | null = null;
 const SETTINGS_CACHE_TTL_MS = 45 * 1000;
@@ -1461,7 +1516,7 @@ export const getCmsSiteSettings = createServerFn({ method: "GET" })
       return { settings: cachedSiteSettings.settings, error: null };
     }
 
-    const client = getSupabaseServerClient();
+    const client = await getSupabaseServerClient();
     if (!client) {
       return { settings: DEFAULT_SITE_SETTINGS, error: null };
     }
@@ -1529,7 +1584,7 @@ export const saveCmsSiteSettings = createServerFn({ method: "POST" })
       return { success: false, error: validation.error || "Invalid settings payload." };
     }
 
-    const client = getSupabaseServerClient();
+    const client = await getSupabaseServerClient();
     if (!client) {
       if (isDev) {
         cachedSiteSettings = { settings: payload.settings, cachedAt: Date.now() };
