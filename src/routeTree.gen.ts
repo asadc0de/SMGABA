@@ -35,6 +35,7 @@ import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as InternalRedirectsRouteImport } from './routes/internal/redirects'
 import { Route as InternalSettingsRouteImport } from './routes/internal/settings'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
@@ -180,6 +181,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InternalRedirectsRoute = InternalRedirectsRouteImport.update({
+  id: '/internal/redirects',
+  path: '/internal/redirects',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InternalSettingsRoute = InternalSettingsRouteImport.update({
   id: '/internal/settings',
   path: '/internal/settings',
@@ -279,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
@@ -321,6 +328,7 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
@@ -364,6 +372,7 @@ export interface FileRoutesById {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
@@ -408,6 +417,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
@@ -450,6 +460,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
@@ -492,6 +503,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
     | '/solutions/bookkeeping'
@@ -535,6 +547,7 @@ export interface RootRouteChildren {
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  InternalRedirectsRoute: typeof InternalRedirectsRoute
   InternalSettingsRoute: typeof InternalSettingsRoute
   InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
@@ -736,6 +749,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/internal/redirects': {
+      id: '/internal/redirects'
+      path: '/internal/redirects'
+      fullPath: '/internal/redirects'
+      preLoaderRoute: typeof InternalRedirectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/internal/settings': {
       id: '/internal/settings'
       path: '/internal/settings'
@@ -863,6 +883,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
   BlogSlugRoute: BlogSlugRoute,
+  InternalRedirectsRoute: InternalRedirectsRoute,
   InternalSettingsRoute: InternalSettingsRoute,
   InternalWebinarLinksRoute: InternalWebinarLinksRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,

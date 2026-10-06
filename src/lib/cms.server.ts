@@ -7,6 +7,8 @@ import { isValidButtonUrl } from "@/cms/blocks/Button";
 import { isValidImageUrl } from "@/cms/blocks/Image";
 import { isValidCanonicalUrl } from "@/cms/root";
 import { validateBlockStyle } from "@/cms/style";
+import { normalizeFromPath, normalizeToUrl } from "./cms-redirects-validator";
+import { invalidateRedirectCache } from "./redirects.server";
 import {
   type CmsSiteSettings,
   validateSiteSettings,
@@ -541,6 +543,56 @@ async function recordVersionSnapshot(
   }
 }
 
+async function handleSlugChangeAutoRedirect(
+  oldSlug: string,
+  newSlug: string,
+  client?: any
+): Promise<void> {
+  try {
+    const fromPath = normalizeFromPath(`/${oldSlug}`);
+    const toUrl = normalizeToUrl(`/${newSlug}`);
+    if (!fromPath || !toUrl || fromPath === toUrl) return;
+
+    if (client) {
+      // 1. If an existing redirect from toUrl exists pointing to fromPath, remove it to prevent a loop
+      await client.from("cms_redirects").delete().eq("from_path", toUrl);
+
+      // 2. Check if a redirect for fromPath already exists
+      const { data: existing } = await client
+        .from("cms_redirects")
+        .select("id")
+        .eq("from_path", fromPath)
+        .maybeSingle();
+
+      if (existing) {
+        await client
+          .from("cms_redirects")
+          .update({
+            to_url: toUrl,
+            status_code: 301,
+            enabled: true,
+            note: "Auto-generated from slug rename",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", existing.id);
+      } else {
+        await client.from("cms_redirects").insert({
+          id: crypto.randomUUID(),
+          from_path: fromPath,
+          to_url: toUrl,
+          status_code: 301,
+          enabled: true,
+          note: "Auto-generated from slug rename",
+          hits: 0,
+        });
+      }
+      invalidateRedirectCache();
+    }
+  } catch (err: any) {
+    console.warn("[CMS Auto-Redirect] Failed to record auto redirect on slug change:", err?.message);
+  }
+}
+
 /**
  * Server function to create or save a CMS page (Admin only - password gated).
  * Invalidates lookup cache ONLY after the DB write succeeds.
@@ -611,6 +663,9 @@ export const saveCmsPage = createServerFn({ method: "POST" })
           invalidateLookupCache(slug);
           if (oldSlug && oldSlug.toLowerCase() !== slug.toLowerCase()) {
             invalidateLookupCache(oldSlug);
+            if (record.status === "published") {
+              await handleSlugChangeAutoRedirect(oldSlug, slug, null);
+            }
           }
 
           await recordVersionSnapshot(
@@ -632,13 +687,15 @@ export const saveCmsPage = createServerFn({ method: "POST" })
 
       try {
         let oldSlug: string | undefined;
+        let wasPublished = false;
         if (parsed.id) {
           const { data: existingRecord } = await client
             .from("cms_pages")
-            .select("slug")
+            .select("slug, status")
             .eq("id", parsed.id)
             .maybeSingle();
           oldSlug = existingRecord?.slug;
+          wasPublished = existingRecord?.status === "published";
         }
 
         const payload: Record<string, unknown> = {
@@ -672,6 +729,9 @@ export const saveCmsPage = createServerFn({ method: "POST" })
         invalidateLookupCache(slug);
         if (oldSlug && oldSlug.toLowerCase() !== slug.toLowerCase()) {
           invalidateLookupCache(oldSlug);
+          if (wasPublished || parsed.status === "published") {
+            await handleSlugChangeAutoRedirect(oldSlug, slug, client);
+          }
         }
 
         const savedPage = result.data as CmsPage;

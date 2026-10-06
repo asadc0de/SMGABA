@@ -331,6 +331,12 @@ function CmsPagesListPage() {
                 Refresh
               </Button>
               <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
+                <Link to="/internal/redirects">
+                  <ArrowUpDown className="size-3.5" />
+                  Redirects
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
                 <Link to="/internal/settings">
                   <Settings className="size-3.5" />
                   Site Settings &amp; Nav

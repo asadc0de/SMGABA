@@ -3,6 +3,7 @@ import { getBlogPostBySlug, type BlogPost } from "@/data/blogPosts";
 import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
 import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 import { resolveWebinarSlug } from "@/lib/webinar-redirects";
+import { resolveCmsRedirect } from "@/lib/redirects.server";
 import { lookupPublishedCmsPage, getCmsSiteSettings, type CmsPage } from "@/lib/cms.server";
 import { type CmsSiteSettings } from "@/lib/cms-settings";
 import { type CmsRootProps, isValidCanonicalUrl } from "@/cms/root";
@@ -35,6 +36,24 @@ export const Route = createFileRoute("/$slug")({
     // 4. Check static webinar redirect fallback
     if (WEBINAR_REDIRECTS && WEBINAR_REDIRECTS[params.slug]) {
       throw redirect({ href: WEBINAR_REDIRECTS[params.slug], statusCode: 301 });
+    }
+
+    // 5. Check dynamic CMS 301/302/307/308 redirects from Supabase
+    try {
+      const cmsRedirect = await resolveCmsRedirect({ data: `/${params.slug}` });
+      if (cmsRedirect?.target) {
+        const code = (cmsRedirect.statusCode as 301 | 302 | 307 | 308) || 301;
+        if (cmsRedirect.target.startsWith("http://") || cmsRedirect.target.startsWith("https://")) {
+          throw redirect({ href: cmsRedirect.target, statusCode: code });
+        } else {
+          throw redirect({ to: cmsRedirect.target, statusCode: code });
+        }
+      }
+    } catch (err) {
+      if (isRedirect(err)) {
+        throw err;
+      }
+      console.warn(`[cms-redirect] lookup skipped for "${params.slug}":`, err);
     }
 
     // 5. Check dynamic webinar redirect from Supabase

@@ -328,6 +328,11 @@ function CmsSettingsManagerRoute() {
                 CMS Pages
               </Link>
             </Button>
+            <Button asChild variant="ghost" size="sm" className="gap-1 text-slate-600 hover:text-navy">
+              <Link to="/internal/redirects">
+                Redirects
+              </Link>
+            </Button>
             <div className="h-4 w-px bg-slate-200 hidden sm:block" />
             <div className="flex items-center gap-2">
               <div className="size-8 rounded-lg bg-navy/10 flex items-center justify-center text-navy">
