@@ -18,7 +18,7 @@ export const ImageBlock: ComponentConfig<ImageBlockProps> = {
     widthPercent: 100,
     aspectRatio: "auto",
     objectFit: "cover",
-    rounded: "lg",
+    rounded: "2xl",
     align: { base: "left" },
     marginTop: { base: "md" },
     marginBottom: { base: "md" },

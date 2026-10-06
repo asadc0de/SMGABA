@@ -116,7 +116,7 @@ export function ImageRender({
   widthPercent,
   aspectRatio = "auto",
   objectFit = "cover",
-  rounded = "lg",
+  rounded = "2xl",
   linkUrl,
   align,
   marginTop,
@@ -137,7 +137,7 @@ export function ImageRender({
     },
     {
       isFlexAlign: true,
-      defaultMarginTop: "md",
+      defaultMarginTop: "none",
       defaultMarginBottom: "md",
       defaultAlign: "left",
     },
@@ -148,7 +148,7 @@ export function ImageRender({
   if (!isValidSrc) {
     return (
       <div className={`flex w-full ${styleClasses}`}>
-        <div className="flex flex-col items-center justify-center w-full min-h-[160px] bg-slate-100 border-2 border-dashed border-slate-300 rounded-xl p-6 text-slate-400">
+        <div className="flex flex-col items-center justify-center w-full min-h-[160px] bg-slate-100 border-2 border-dashed border-slate-300 rounded-2xl p-6 text-slate-400">
           <svg className="size-10 mb-2 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
@@ -162,7 +162,7 @@ export function ImageRender({
   const widthCls = hasPercent ? "w-full" : (WIDTH_CLASSES[width] || "w-full");
   const aspectCls = ASPECT_CLASSES[aspectRatio] || "";
   const fitCls = FIT_CLASSES[objectFit] || "object-cover";
-  const roundedCls = ROUNDED_CLASSES[rounded] || "rounded-lg";
+  const roundedCls = ROUNDED_CLASSES[rounded] || "rounded-2xl";
 
   const containerInlineStyle: React.CSSProperties | undefined = hasPercent
     ? { width: `${widthPercent}%`, maxWidth: `${widthPercent}%` }
@@ -173,7 +173,7 @@ export function ImageRender({
       src={src.trim()}
       alt={alt || "Image"}
       loading="lazy"
-      className={`${widthCls} ${aspectCls} ${fitCls} ${roundedCls} max-w-full h-auto shadow-xs transition-all duration-200`}
+      className={`${widthCls} ${aspectCls} ${fitCls} ${roundedCls} max-w-full h-auto shadow-md transition-all duration-200`}
     />
   );
 

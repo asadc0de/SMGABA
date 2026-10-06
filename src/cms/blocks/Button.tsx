@@ -122,7 +122,7 @@ export function ButtonRender({
         size="default"
         asChild
         style={customStyle}
-        className="rounded-full shadow-sm transition-transform"
+        className="rounded-full shadow-sm font-semibold tracking-wide transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       >
         <a
           href={safeUrl}

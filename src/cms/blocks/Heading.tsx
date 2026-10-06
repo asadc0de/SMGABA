@@ -35,7 +35,7 @@ export function HeadingRender({
       paddingBottom,
     },
     {
-      defaultMarginTop: "md",
+      defaultMarginTop: "none",
       defaultMarginBottom: "md",
       defaultAlign: "left",
     },
@@ -47,10 +47,10 @@ export function HeadingRender({
       ? {
           fontSize:
             level === "h1"
-              ? `clamp(1.75rem, ${2.5 * scale}vw + 1rem, ${3.25 * scale}rem)`
+              ? `clamp(2rem, ${3 * scale}vw + 1rem, ${3.75 * scale}rem)`
               : level === "h2"
-                ? `clamp(1.5rem, ${2 * scale}vw + 0.75rem, ${2.5 * scale}rem)`
-                : `clamp(1.15rem, ${1.5 * scale}vw + 0.5rem, ${1.75 * scale}rem)`,
+                ? `clamp(1.75rem, ${2.25 * scale}vw + 0.85rem, ${2.75 * scale}rem)`
+                : `clamp(1.25rem, ${1.5 * scale}vw + 0.65rem, ${1.85 * scale}rem)`,
           lineHeight: 1.15,
         }
       : {};
@@ -60,7 +60,7 @@ export function HeadingRender({
       <div className={`w-full ${styleClasses}`}>
         <h1
           style={customStyle}
-          className="font-serif-hero text-3xl md:text-5xl font-bold tracking-tight text-navy leading-tight"
+          className="font-serif-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-[1.12]"
         >
           {text}
         </h1>
@@ -73,7 +73,7 @@ export function HeadingRender({
       <div className={`w-full ${styleClasses}`}>
         <h3
           style={customStyle}
-          className="font-serif-hero text-xl md:text-2xl font-semibold text-navy tracking-tight"
+          className="font-serif-hero text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight leading-snug"
         >
           {text}
         </h3>
@@ -85,10 +85,12 @@ export function HeadingRender({
     <div className={`w-full ${styleClasses}`}>
       <h2
         style={customStyle}
-        className="font-serif-hero text-2xl md:text-4xl font-bold text-navy tracking-tight"
+        className="font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-[1.2]"
       >
         {text}
       </h2>
     </div>
   );
 }
+
+export default HeadingRender;

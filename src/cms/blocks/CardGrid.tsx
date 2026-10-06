@@ -145,38 +145,38 @@ function getCardStyleClasses(style?: CardGridProps["cardStyle"]): {
   switch (style) {
     case "navy-card":
       return {
-        card: "bg-[#0b172e] text-white rounded-2xl p-6 sm:p-7 border border-white/10 hover:border-blue-400/40 shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group",
-        title: "text-white font-bold font-serif-hero text-lg sm:text-xl",
+        card: "bg-[#0b172e] text-white rounded-2xl p-6 sm:p-8 border border-white/10 hover:border-blue-400/40 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group",
+        title: "text-white font-bold font-serif-hero text-lg sm:text-xl tracking-tight leading-snug",
         desc: "text-slate-300 text-sm leading-relaxed",
-        iconWrap: "bg-blue-500/15 text-blue-300 border border-blue-400/20",
+        iconWrap: "size-12 rounded-full bg-blue-500/20 text-blue-200 border border-blue-400/30 flex items-center justify-center shrink-0 shadow-2xs",
         badge: "bg-blue-500/20 text-blue-200 border border-blue-400/30",
         cta: "text-[#38bdf8] hover:text-white",
       };
     case "glass":
       return {
-        card: "bg-white/70 backdrop-blur-md rounded-2xl p-6 sm:p-7 border border-slate-200/80 shadow-md hover:shadow-xl transition-all duration-300 flex flex-col justify-between group",
-        title: "text-navy font-bold font-serif-hero text-lg sm:text-xl",
+        card: "bg-white/80 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group",
+        title: "text-navy font-bold font-serif-hero text-lg sm:text-xl tracking-tight leading-snug",
         desc: "text-slate-600 text-sm leading-relaxed",
-        iconWrap: "bg-navy/5 text-navy border border-navy/10",
+        iconWrap: "size-12 rounded-full bg-blue-50 text-navy border border-blue-100/80 flex items-center justify-center shrink-0 shadow-2xs",
         badge: "bg-navy/10 text-navy border border-navy/15",
         cta: "text-navy hover:text-primary",
       };
     case "bordered":
       return {
-        card: "bg-white rounded-2xl p-6 sm:p-7 border-2 border-slate-200 hover:border-navy transition-all duration-300 flex flex-col justify-between group",
-        title: "text-navy font-bold font-serif-hero text-lg sm:text-xl",
+        card: "bg-white rounded-2xl p-6 sm:p-8 border-2 border-slate-200 hover:border-navy shadow-xs hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group",
+        title: "text-navy font-bold font-serif-hero text-lg sm:text-xl tracking-tight leading-snug",
         desc: "text-slate-600 text-sm leading-relaxed",
-        iconWrap: "bg-slate-100 text-navy border border-slate-200",
+        iconWrap: "size-12 rounded-full bg-blue-50 text-navy border border-slate-200 group-hover:bg-navy group-hover:text-white transition-colors duration-300 flex items-center justify-center shrink-0 shadow-2xs",
         badge: "bg-slate-100 text-slate-700 border border-slate-200",
         cta: "text-navy hover:text-primary",
       };
     case "elevated":
     default:
       return {
-        card: "bg-white rounded-2xl p-6 sm:p-7 border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group",
-        title: "text-navy font-bold font-serif-hero text-lg sm:text-xl",
+        card: "bg-white rounded-2xl p-6 sm:p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between h-full group",
+        title: "text-navy font-bold font-serif-hero text-lg sm:text-xl tracking-tight leading-snug",
         desc: "text-slate-600 text-sm leading-relaxed",
-        iconWrap: "bg-navy/5 text-navy border border-navy/10 group-hover:bg-navy group-hover:text-white transition-colors duration-300",
+        iconWrap: "size-12 rounded-full bg-blue-50 text-navy border border-blue-100/80 group-hover:bg-navy group-hover:text-white transition-colors duration-300 flex items-center justify-center shrink-0 shadow-2xs",
         badge: "bg-blue-50 text-blue-700 border border-blue-200",
         cta: "text-navy hover:text-primary",
       };

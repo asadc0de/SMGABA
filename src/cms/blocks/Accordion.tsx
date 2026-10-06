@@ -93,13 +93,13 @@ export function AccordionRender(props: AccordionProps) {
           {title && title.trim() && (
             <div className="flex items-center justify-center gap-2">
               <HelpCircle className="size-5 text-primary shrink-0" aria-hidden="true" />
-              <h2 className={`font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight ${isNavy ? "text-white" : "text-navy"}`}>
+              <h2 className={`font-serif-hero text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${isNavy ? "text-white" : "text-navy"}`}>
                 {title}
               </h2>
             </div>
           )}
           {subtitle && subtitle.trim() && (
-            <p className={`text-sm sm:text-base leading-relaxed max-w-2xl mx-auto ${isNavy ? "text-slate-300" : "text-slate-600"}`}>
+            <p className={`text-base sm:text-lg leading-relaxed max-w-2xl mx-auto ${isNavy ? "text-slate-300" : "text-slate-600"}`}>
               {subtitle}
             </p>
           )}
@@ -161,18 +161,18 @@ function AccordionItemElement({
   const isSeparated = theme === "separated";
 
   const itemWrapperClass = isSeparated
-    ? "rounded-2xl border border-slate-200/80 bg-slate-50/60 p-1 px-4 sm:px-5 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50/90"
+    ? "rounded-2xl border border-slate-200/80 bg-slate-50/60 p-1 px-4 sm:px-5 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50/90 data-[state=open]:border-primary/40 data-[state=open]:bg-blue-50/20 data-[state=open]:shadow-xs"
     : isNavy
     ? "border-b border-white/10 last:border-0 px-2"
     : "border-b border-slate-200 last:border-0 px-2";
 
   const triggerTextClass = isNavy
-    ? "text-white font-semibold hover:text-blue-300"
-    : "text-navy font-bold font-serif-hero hover:text-primary";
+    ? "text-white font-semibold hover:text-blue-300 data-[state=open]:text-blue-300"
+    : "text-navy font-bold font-serif-hero hover:text-primary data-[state=open]:text-primary";
 
   const answerTextClass = isNavy
     ? "text-slate-300 text-sm leading-relaxed"
-    : "text-slate-600 text-sm leading-relaxed";
+    : "text-slate-600 text-sm sm:text-base leading-relaxed";
 
   return (
     <AccordionPrimitive.Item
@@ -181,7 +181,7 @@ function AccordionItemElement({
     >
       <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger
-          className={`flex flex-1 items-center justify-between py-4 text-left text-sm sm:text-base cursor-pointer transition-all duration-200 [&[data-state=open]>svg]:rotate-180 ${triggerTextClass}`}
+          className={`flex flex-1 items-center justify-between py-4 text-left text-sm sm:text-base cursor-pointer transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg [&[data-state=open]>svg]:rotate-180 ${triggerTextClass}`}
         >
           <span className="pr-4">{item.question}</span>
           <ChevronDown className="size-4 shrink-0 opacity-70 transition-transform duration-200" />
