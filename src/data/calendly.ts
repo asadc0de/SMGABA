@@ -3,8 +3,6 @@
  * Centralized configuration for appointment booking widgets & scheduling URLs.
  */
 
-import { CYNTHIA_CORTES_TITLE } from "@/data/teamMembers";
-
 export const BOOKING_ROUTE = "/bookanappointment";
 
 export const CALENDLY_DISCOVERY_URL =
@@ -18,12 +16,13 @@ export const CALENDLY_CONFIG = {
   primaryColor: "375896",
   scriptSrc: CALENDLY_SCRIPT_SRC,
   host: {
-    name: "",
+    name: "SMG Onboarding Team",
     title: "",
     meetingTitle: "SMG Discovery Call",
-    duration: "15-30 min", // TODO: confirm with client
-    location: "Web conferencing details provided upon confirmation.",
+    duration: "30 min",
+    location: "Microsoft Teams (link will be in your confirmation email).",
     description:
       "This will be a discovery call to learn more information about your accounting and tax needs, as well as for us to provide information about our team at SMG and how you can work with us.",
   },
 };
+
