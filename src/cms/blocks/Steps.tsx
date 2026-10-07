@@ -82,26 +82,27 @@ export const defaultStepsProps: StepsProps = {
   ],
 };
 
-export function StepsRender({
-  eyebrow = defaultStepsProps.eyebrow,
-  heading = defaultStepsProps.heading,
-  description = defaultStepsProps.description,
-  layout = "horizontal",
-  backgroundColor,
-  textColor,
-  borderColor,
-  advancedLayout,
-  sizeControls,
-  sameItemSize,
-  equalHeightCards,
-  items = defaultStepsProps.items,
-  sizePercent = 100,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: StepsProps) {
+export function StepsRender(props: StepsProps) {
+  const {
+    eyebrow = defaultStepsProps.eyebrow,
+    heading = defaultStepsProps.heading,
+    description = defaultStepsProps.description,
+    layout = "horizontal",
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
+    sizeControls,
+    sameItemSize,
+    equalHeightCards,
+    items = defaultStepsProps.items,
+    sizePercent = 100,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 

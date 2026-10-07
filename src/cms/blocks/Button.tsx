@@ -93,26 +93,28 @@ export function getButtonSizeClasses(size: ButtonSize = "md"): string {
   }
 }
 
-export function ButtonRender({
-  label = "Click Here",
-  url = "/contact",
-  variant = "primary",
-  size = "md",
-  sizePercent,
-  sizeControls,
-  typography,
-  styleControls,
-  animation,
-  backgroundColor,
-  textColor,
-  borderColor,
-  advancedLayout,
-  align,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-}: ButtonBlockProps) {
+export function ButtonRender(props: ButtonBlockProps) {
+  const {
+    label = "Click Here",
+    url = "/contact",
+    variant = "primary",
+    size = "md",
+    sizePercent,
+    fontSizePx,
+    sizeControls,
+    typography,
+    styleControls,
+    animation,
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
+    align,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 

@@ -81,22 +81,23 @@ function getPaddingVerticalClass(preset?: SectionPaddingVertical): string {
   }
 }
 
-export function SectionRender({
-  sizePercent = 100,
-  background = "none",
-  backgroundImage,
-  backgroundColor,
-  textColor,
-  borderColor,
-  overlayStrength = "medium",
-  paddingVertical,
-  advancedLayout,
-  align,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-}: SectionProps) {
+export function SectionRender(props: SectionProps) {
+  const {
+    sizePercent = 100,
+    background = "none",
+    backgroundImage,
+    backgroundColor,
+    textColor,
+    borderColor,
+    overlayStrength = "medium",
+    paddingVertical,
+    advancedLayout,
+    align,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 

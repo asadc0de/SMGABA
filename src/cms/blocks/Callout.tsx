@@ -94,22 +94,23 @@ function getVariantConfig(variant: CalloutVariant = "info") {
   }
 }
 
-export function CalloutRender({
-  variant = "info",
-  title = defaultCalloutProps.title,
-  text = defaultCalloutProps.text,
-  buttonLabel,
-  buttonHref,
-  sizePercent = 100,
-  backgroundColor,
-  textColor,
-  borderColor,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: CalloutProps) {
+export function CalloutRender(props: CalloutProps) {
+  const {
+    variant = "info",
+    title = defaultCalloutProps.title,
+    text = defaultCalloutProps.text,
+    buttonLabel,
+    buttonHref,
+    sizePercent = 100,
+    backgroundColor,
+    textColor,
+    borderColor,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 

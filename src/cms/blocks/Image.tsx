@@ -118,23 +118,24 @@ const ROUNDED_CLASSES: Record<ImageRounded, string> = {
   full: "rounded-full",
 };
 
-export function ImageRender({
-  src,
-  alt = "",
-  width = "full",
-  widthPercent,
-  aspectRatio = "auto",
-  objectFit = "cover",
-  rounded = "2xl",
-  linkUrl,
-  backgroundColor,
-  borderColor,
-  align,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-}: ImageBlockProps) {
+export function ImageRender(props: ImageBlockProps) {
+  const {
+    src,
+    alt = "",
+    width = "full",
+    widthPercent,
+    aspectRatio = "auto",
+    objectFit = "cover",
+    rounded = "2xl",
+    linkUrl,
+    backgroundColor,
+    borderColor,
+    align,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 

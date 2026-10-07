@@ -134,26 +134,27 @@ function AnimatedCounter({
   );
 }
 
-export function StatsRender({
-  heading,
-  description,
-  columns = "3",
-  theme = "navy",
-  backgroundColor,
-  textColor,
-  borderColor,
-  advancedLayout,
-  sizeControls,
-  sameItemSize,
-  equalHeightCards,
-  items = defaultStatsProps.items,
-  sizePercent = 100,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: StatsProps) {
+export function StatsRender(props: StatsProps) {
+  const {
+    heading,
+    description,
+    columns = "3",
+    theme = "navy",
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
+    sizeControls,
+    sameItemSize,
+    equalHeightCards,
+    items = defaultStatsProps.items,
+    sizePercent = 100,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const containerRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(false);
 

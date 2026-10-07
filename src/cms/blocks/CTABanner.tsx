@@ -68,25 +68,26 @@ export const defaultCTABannerProps: CTABannerProps = {
   paddingBottom: { base: "none" },
 };
 
-export function CTABannerRender({
-  eyebrow = defaultCTABannerProps.eyebrow,
-  heading = defaultCTABannerProps.heading,
-  description = defaultCTABannerProps.description,
-  primaryButton = defaultCTABannerProps.primaryButton,
-  secondaryButton = defaultCTABannerProps.secondaryButton,
-  theme = "navy",
-  alignment = "center",
-  layout = "card",
-  sizePercent = 100,
-  backgroundColor,
-  textColor,
-  borderColor,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: CTABannerProps) {
+export function CTABannerRender(props: CTABannerProps) {
+  const {
+    eyebrow = defaultCTABannerProps.eyebrow,
+    heading = defaultCTABannerProps.heading,
+    description = defaultCTABannerProps.description,
+    primaryButton = defaultCTABannerProps.primaryButton,
+    secondaryButton = defaultCTABannerProps.secondaryButton,
+    theme = "navy",
+    alignment = "center",
+    layout = "card",
+    sizePercent = 100,
+    backgroundColor,
+    textColor,
+    borderColor,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: alignment === "left" ? "left" : "center" };
 

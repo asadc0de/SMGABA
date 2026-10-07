@@ -141,26 +141,27 @@ export const defaultIconFeaturesProps: IconFeaturesProps = {
   ],
 };
 
-export function IconFeaturesRender({
-  heading,
-  subheading,
-  columns = "3",
-  style = "cards",
-  backgroundColor,
-  textColor,
-  borderColor,
-  advancedLayout,
-  sizeControls,
-  sameItemSize,
-  equalHeightCards,
-  items = defaultIconFeaturesProps.items,
-  sizePercent = 100,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: IconFeaturesProps) {
+export function IconFeaturesRender(props: IconFeaturesProps) {
+  const {
+    heading,
+    subheading,
+    columns = "3",
+    style = "cards",
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
+    sizeControls,
+    sameItemSize,
+    equalHeightCards,
+    items = defaultIconFeaturesProps.items,
+    sizePercent = 100,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 

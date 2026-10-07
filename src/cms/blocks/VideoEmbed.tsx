@@ -165,18 +165,19 @@ function useIsInPuckEditor(): boolean {
   return inEditor;
 }
 
-export function VideoEmbedRender({
-  url = defaultVideoEmbedProps.url,
-  title = defaultVideoEmbedProps.title,
-  aspectRatio = "16:9",
-  caption = defaultVideoEmbedProps.caption,
-  sizePercent = 100,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: VideoEmbedProps) {
+export function VideoEmbedRender(props: VideoEmbedProps) {
+  const {
+    url = defaultVideoEmbedProps.url,
+    title = defaultVideoEmbedProps.title,
+    aspectRatio = "16:9",
+    caption = defaultVideoEmbedProps.caption,
+    sizePercent = 100,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const isEditor = useIsInPuckEditor();
 
   const normalizedAlign: Responsive<Align> =

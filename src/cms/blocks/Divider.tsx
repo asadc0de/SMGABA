@@ -53,18 +53,19 @@ function getThicknessPx(thickness?: DividerThickness): number {
   }
 }
 
-export function DividerRender({
-  width = "100%",
-  thickness = "1px",
-  styleVariant = "solid",
-  color = "#e2e8f0",
-  sizePercent,
-  align,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-}: DividerProps) {
+export function DividerRender(props: DividerProps) {
+  const {
+    width = "100%",
+    thickness = "1px",
+    styleVariant = "solid",
+    color = "#e2e8f0",
+    sizePercent,
+    align,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+  } = props;
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "center" };
 
