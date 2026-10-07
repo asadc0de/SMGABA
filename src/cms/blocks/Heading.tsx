@@ -10,6 +10,7 @@ import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls"
 import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
 import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
 import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
 
 export interface HeadingProps extends BlockStyleProps {
   text: string;
@@ -20,29 +21,32 @@ export interface HeadingProps extends BlockStyleProps {
   typography?: TypographyConfig;
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
+  advancedLayout?: AdvancedLayoutConfig;
   textColor?: string;
   backgroundColor?: string;
   borderColor?: string;
 }
 
-export function HeadingRender({
-  text,
-  level = "h2",
-  sizePercent = 100,
-  fontSizePx,
-  sizeControls,
-  typography,
-  styleControls,
-  animation,
-  textColor,
-  backgroundColor,
-  borderColor,
-  align,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-}: HeadingProps) {
+export function HeadingRender(props: HeadingProps) {
+  const {
+    text,
+    level = "h2",
+    sizePercent = 100,
+    fontSizePx,
+    sizeControls,
+    typography,
+    styleControls,
+    animation,
+    advancedLayout,
+    textColor,
+    backgroundColor,
+    borderColor,
+    align,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+  } = props;
   // Backward compatibility: support string or Responsive<Align>
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
@@ -104,9 +108,13 @@ export function HeadingRender({
     ...animStyles,
   };
 
+  const isInline = advancedLayout?.display === "inline";
+  const advClasses = buildAdvancedLayoutClasses(advancedLayout);
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full";
+
   if (level === "h1") {
     return (
-      <div className={`w-full ${styleClasses} ${animClasses}`}>
+      <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
         <h1
           style={finalStyle}
           className="font-serif-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-[1.12]"
@@ -119,7 +127,7 @@ export function HeadingRender({
 
   if (level === "h3") {
     return (
-      <div className={`w-full ${styleClasses} ${animClasses}`}>
+      <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
         <h3
           style={finalStyle}
           className="font-serif-hero text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight leading-snug"
@@ -131,7 +139,7 @@ export function HeadingRender({
   }
 
   return (
-    <div className={`w-full ${styleClasses} ${animClasses}`}>
+    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
       <h2
         style={finalStyle}
         className="font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-[1.2]"

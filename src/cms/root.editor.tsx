@@ -75,10 +75,55 @@ export function CmsRootEditor(props: CmsRootProps) {
           transform: scale(0.95);
         }
 
-        /* Smooth DropZone highlight */
-        [data-puck-drop-zone] {
-          transition: background-color 0.2s ease, border-color 0.2s ease;
+        /* Smooth DropZone highlight and flex flow for inline elements */
+        [data-puck-drop-zone],
+        .puck-drop-zone {
+          display: flex !important;
+          flex-direction: row !important;
+          flex-wrap: wrap !important;
+          align-items: flex-start !important;
+          align-content: flex-start !important;
+          width: 100% !important;
         }
+
+        /* Default block components take full width */
+        [data-puck-component] {
+          width: 100%;
+          max-width: 100%;
+          box-sizing: border-box;
+        }
+
+        /* Inline Puck components shrink and sit side-by-side like real CSS */
+        [data-puck-component]:has([data-cms-display="inline"]),
+        [data-puck-component]:has([data-cms-inline="true"]),
+        [data-puck-component]:has(.cms-inline-element) {
+          display: inline-flex !important;
+          width: auto !important;
+          max-width: 100% !important;
+          vertical-align: top !important;
+          flex-grow: 0 !important;
+          flex-shrink: 0 !important;
+        }
+
+        /* Percentage and preset widths on Puck components */
+        [data-puck-component]:has([data-cms-width="20%"]) { width: 20% !important; }
+        [data-puck-component]:has([data-cms-width="25%"]) { width: 25% !important; }
+        [data-puck-component]:has([data-cms-width="30%"]) { width: 30% !important; }
+        [data-puck-component]:has([data-cms-width="33%"]) { width: 33.333% !important; }
+        [data-puck-component]:has([data-cms-width="35%"]) { width: 35% !important; }
+        [data-puck-component]:has([data-cms-width="40%"]) { width: 40% !important; }
+        [data-puck-component]:has([data-cms-width="45%"]) { width: 45% !important; }
+        [data-puck-component]:has([data-cms-width="50%"]) { width: 50% !important; }
+        [data-puck-component]:has([data-cms-width="55%"]) { width: 55% !important; }
+        [data-puck-component]:has([data-cms-width="60%"]) { width: 60% !important; }
+        [data-puck-component]:has([data-cms-width="65%"]) { width: 65% !important; }
+        [data-puck-component]:has([data-cms-width="66%"]) { width: 66.666% !important; }
+        [data-puck-component]:has([data-cms-width="70%"]) { width: 70% !important; }
+        [data-puck-component]:has([data-cms-width="75%"]) { width: 75% !important; }
+        [data-puck-component]:has([data-cms-width="80%"]) { width: 80% !important; }
+        [data-puck-component]:has([data-cms-width="85%"]) { width: 85% !important; }
+        [data-puck-component]:has([data-cms-width="90%"]) { width: 90% !important; }
+        [data-puck-component]:has([data-cms-width="auto"]) { width: max-content !important; max-width: 100% !important; }
       `}</style>
 
       <CmsRoot {...props}>

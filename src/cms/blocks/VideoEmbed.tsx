@@ -10,6 +10,7 @@ import { Video, AlertTriangle, ExternalLink, Play } from "lucide-react";
 import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
 import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
 import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
 
 export type VideoAspectRatio = "16:9" | "4:3";
 
@@ -22,6 +23,7 @@ export interface VideoEmbedProps extends BlockStyleProps {
   sizeControls?: SizeControlConfig;
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
+  advancedLayout?: AdvancedLayoutConfig;
 }
 
 export const defaultVideoEmbedProps: VideoEmbedProps = {
@@ -215,8 +217,12 @@ export function VideoEmbedRender(props: VideoEmbedProps) {
 
   const aspectClass = aspectRatio === "4:3" ? "aspect-4/3" : "aspect-video";
 
+  const isInline = props.advancedLayout?.display === "inline";
+  const advClasses = buildAdvancedLayoutClasses(props.advancedLayout);
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full";
+
   return (
-    <div className={`w-full ${styleClasses}`}>
+    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses}`}>
       <div style={containerStyle} className={`w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 ${animationClasses}`}>
         {!valid ? (
           <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center text-xs sm:text-sm text-destructive shadow-xs">

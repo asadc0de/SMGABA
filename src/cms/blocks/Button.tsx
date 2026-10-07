@@ -177,11 +177,17 @@ export function ButtonRender(props: ButtonBlockProps) {
   const isValid = isValidButtonUrl(url);
   const variantClass = getButtonVariantClasses(variant);
   const sizeClass = getButtonSizeClasses(size);
+  const isInline = advancedLayout?.display !== "block";
   const advClasses = buildAdvancedLayoutClasses(advancedLayout);
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element" : "flex w-full";
 
   if (!isValid) {
     return (
-      <div className={cn(advClasses || `flex w-full ${styleClasses}`, animClasses)}>
+      <div
+        data-cms-inline={isInline ? "true" : undefined}
+        data-cms-display={advancedLayout?.display || "inline"}
+        className={cn(wrapperDisplayClass, advClasses, styleClasses, animClasses)}
+      >
         <span
           style={combinedButtonStyle}
           className={cn(
@@ -201,7 +207,11 @@ export function ButtonRender(props: ButtonBlockProps) {
   const isExternal = safeUrl.startsWith("http://") || safeUrl.startsWith("https://");
 
   return (
-    <div className={cn(advClasses || `flex w-full ${styleClasses}`, animClasses)}>
+    <div
+      data-cms-inline={isInline ? "true" : undefined}
+      data-cms-display={advancedLayout?.display || "inline"}
+      className={cn(wrapperDisplayClass, advClasses, styleClasses, animClasses)}
+    >
       <a
         href={safeUrl}
         target={isExternal ? "_blank" : undefined}

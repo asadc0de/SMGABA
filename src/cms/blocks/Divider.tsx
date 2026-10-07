@@ -8,6 +8,7 @@ import {
 
 import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
 import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
 
 export type DividerThickness = "1px" | "2px" | "3px" | "4px" | "6px" | "8px";
 export type DividerStyle = "solid" | "dashed" | "dotted" | "gradient";
@@ -21,6 +22,7 @@ export interface DividerProps extends BlockStyleProps {
   sizePercent?: number;
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
+  advancedLayout?: AdvancedLayoutConfig;
 }
 
 export const defaultDividerProps: DividerProps = {
@@ -118,8 +120,12 @@ export function DividerRender(props: DividerProps) {
     ...animStyles,
   };
 
+  const isInline = props.advancedLayout?.display === "inline";
+  const advClasses = buildAdvancedLayoutClasses(props.advancedLayout);
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full flex";
+
   return (
-    <div className={`w-full flex ${styleClasses} ${animClasses}`}>
+    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
       <hr
         style={lineStyle}
         className={`my-0 border-0 transition-all duration-150 ${animClasses}`}

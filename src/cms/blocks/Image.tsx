@@ -10,6 +10,7 @@ import { isValidButtonUrl } from "./Button";
 import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
 import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
 import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
 
 export type ImageWidth = "full" | "auto" | "3/4" | "1/2" | "1/3" | "1/4";
 export type ImageAspectRatio = "auto" | "16/9" | "4/3" | "1/1" | "3/2" | "21/9";
@@ -24,6 +25,7 @@ export interface ImageBlockProps extends BlockStyleProps {
   sizeControls?: SizeControlConfig;
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
+  advancedLayout?: AdvancedLayoutConfig;
   aspectRatio?: ImageAspectRatio;
   objectFit?: ImageObjectFit;
   rounded?: ImageRounded;
@@ -207,9 +209,47 @@ export function ImageRender(props: ImageBlockProps) {
   const safeLink = linkUrl && isValidButtonUrl(linkUrl) ? linkUrl.trim() : null;
   const isExternal = safeLink && (safeLink.startsWith("http://") || safeLink.startsWith("https://"));
 
+  const isInline = props.advancedLayout?.display === "inline";
+  const advClasses = buildAdvancedLayoutClasses(props.advancedLayout);
+
+  let widthAttr: string | undefined = undefined;
+  if (hasPercent && widthPercent < 100) {
+    widthAttr = `${widthPercent}%`;
+  } else if (width === "1/2") {
+    widthAttr = "50%";
+  } else if (width === "1/3") {
+    widthAttr = "33%";
+  } else if (width === "1/4") {
+    widthAttr = "25%";
+  } else if (width === "3/4") {
+    widthAttr = "75%";
+  } else if (width === "auto" || isInline) {
+    widthAttr = "auto";
+  }
+
+  const isShrunk = Boolean(isInline || (hasPercent && widthPercent < 100) || (width && width !== "full"));
+  const wrapperDisplayClass = isInline || isShrunk
+    ? "inline-flex items-center align-middle cms-inline-element"
+    : "flex w-full";
+
+  const outerWrapperStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(hasPercent ? { width: `${widthPercent}%`, maxWidth: `${widthPercent}%` } : {}),
+    ...(width === "1/2" ? { width: "50%", maxWidth: "50%" } : {}),
+    ...(width === "1/3" ? { width: "33.333%", maxWidth: "33.333%" } : {}),
+    ...(width === "1/4" ? { width: "25%", maxWidth: "25%" } : {}),
+    ...(width === "3/4" ? { width: "75%", maxWidth: "75%" } : {}),
+  };
+
   return (
-    <div className={`flex w-full ${styleClasses} ${animClasses}`}>
-      <div style={containerInlineStyle} className="max-w-full transition-all duration-200">
+    <div
+      data-cms-inline={isShrunk ? "true" : undefined}
+      data-cms-display={props.advancedLayout?.display || (isShrunk ? "inline" : "block")}
+      data-cms-width={widthAttr}
+      style={outerWrapperStyle}
+      className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}
+    >
+      <div className="w-full max-w-full transition-all duration-200">
         {safeLink ? (
           <a
             href={safeLink}

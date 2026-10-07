@@ -5,11 +5,13 @@ import { createSizeSliderField } from "../fields/SizeSlider";
 import { createSizeControlsField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 
 export const VideoEmbedBlock: ComponentConfig<VideoEmbedProps> = {
   label: "Video Player",
   defaultProps: defaultVideoEmbedProps,
   fields: {
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     url: {
       type: "text",
       label: "Video URL (YouTube, youtu.be, or Vimeo)",

@@ -10,6 +10,7 @@ import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls"
 import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
 import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
 import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
 
 export interface RichTextProps extends BlockStyleProps {
   content: string;
@@ -19,6 +20,7 @@ export interface RichTextProps extends BlockStyleProps {
   typography?: TypographyConfig;
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
+  advancedLayout?: AdvancedLayoutConfig;
   textColor?: string;
   backgroundColor?: string;
   borderColor?: string;
@@ -145,23 +147,25 @@ function renderStructuredContent(content: string): React.ReactNode {
   return nodes;
 }
 
-export function RichTextRender({
-  content,
-  sizePercent = 100,
-  fontSizePx,
-  sizeControls,
-  typography,
-  styleControls,
-  animation,
-  textColor,
-  backgroundColor,
-  borderColor,
-  align,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-}: RichTextProps) {
+export function RichTextRender(props: RichTextProps) {
+  const {
+    content,
+    sizePercent = 100,
+    fontSizePx,
+    sizeControls,
+    typography,
+    styleControls,
+    animation,
+    advancedLayout,
+    textColor,
+    backgroundColor,
+    borderColor,
+    align,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+  } = props;
   // Backward compatibility: support string or Responsive<Align>
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
@@ -211,9 +215,30 @@ export function RichTextRender({
     ...animStyles,
   };
 
+  const isInline = advancedLayout?.display === "inline";
+  const advClasses = buildAdvancedLayoutClasses(advancedLayout);
+
+  let widthAttr: string | undefined = undefined;
+  if (sizeControls?.widthType === "%" && typeof sizeControls.widthValue === "number") {
+    widthAttr = `${sizeControls.widthValue}%`;
+  } else if (sizeControls?.widthType === "auto" || isInline) {
+    widthAttr = "auto";
+  }
+
+  const isShrunk = Boolean(isInline || (sizeControls?.widthType && sizeControls.widthType !== "full"));
+  const wrapperDisplayClass = isInline || isShrunk
+    ? "inline-flex items-center align-middle cms-inline-element"
+    : "w-full";
+
   return (
-    <div className={`w-full ${styleClasses} ${animClasses}`}>
-      <div style={customStyle} className="max-w-3xl leading-relaxed text-slate-600">
+    <div
+      data-cms-inline={isShrunk ? "true" : undefined}
+      data-cms-display={advancedLayout?.display || (isShrunk ? "inline" : "block")}
+      data-cms-width={widthAttr}
+      style={computedSizeStyles}
+      className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}
+    >
+      <div style={customStyle} className="w-full max-w-3xl leading-relaxed text-slate-600">
         {renderStructuredContent(content)}
       </div>
     </div>

@@ -149,7 +149,7 @@ export function CmsRoot({
 
       {/* Page Content Container - max-w-6xl matching Section blocks */}
       <div
-        className={`w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 ${
+        className={`w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 cms-content-flow ${
           hasHero ? "pb-8" : "py-8"
         }`}
       >

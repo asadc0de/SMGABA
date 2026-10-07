@@ -19,6 +19,7 @@ import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls"
 import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
 import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
 import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
 
 export type CalloutVariant = "info" | "success" | "warning" | "important";
 
@@ -34,6 +35,7 @@ export interface CalloutProps extends BlockStyleProps {
   bodyTypography?: TypographyConfig;
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
+  advancedLayout?: AdvancedLayoutConfig;
   backgroundColor?: string;
   textColor?: string;
   borderColor?: string;
@@ -153,8 +155,12 @@ export function CalloutRender(props: CalloutProps) {
     ...animStyles,
   };
 
+  const isInline = props.advancedLayout?.display === "inline";
+  const advClasses = buildAdvancedLayoutClasses(props.advancedLayout);
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full";
+
   return (
-    <div className={`w-full ${styleClasses} ${animClasses}`}>
+    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
       <div style={containerStyle} className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
           style={customCardStyle}

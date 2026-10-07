@@ -11,6 +11,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createTypographyField, createFontSizePixelField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 
 export const HeadingBlock: ComponentConfig<HeadingProps> = {
   label: "Heading",
@@ -29,6 +30,7 @@ export const HeadingBlock: ComponentConfig<HeadingProps> = {
       type: "text",
       label: "Heading Text",
     },
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     level: {
       type: "select",
       label: "Heading Level",

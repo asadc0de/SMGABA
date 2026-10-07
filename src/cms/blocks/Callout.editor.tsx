@@ -8,11 +8,13 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 
 export const CalloutBlock: ComponentConfig<CalloutProps> = {
   label: "Notice Box",
   defaultProps: defaultCalloutProps,
   fields: {
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     styleControls: createStyleControlsField({
       label: "Style & Appearance (Background, Shadow, Borders)",
     }),

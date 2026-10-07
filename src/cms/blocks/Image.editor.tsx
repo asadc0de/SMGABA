@@ -8,6 +8,7 @@ import { createColorPickerField } from "../fields/ColorPicker";
 import { createSizeControlsField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 
 export const ImageBlock: ComponentConfig<ImageBlockProps> = {
   label: "Image",
@@ -34,6 +35,7 @@ export const ImageBlock: ComponentConfig<ImageBlockProps> = {
       type: "text",
       label: "Image Description (Alt Text for Accessibility)",
     },
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     styleControls: createStyleControlsField({
       label: "Style & Appearance (Borders, Shadows, Radius, Spacing)",
     }),

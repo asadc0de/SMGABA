@@ -7,11 +7,13 @@ import {
 } from "../fields/ResponsiveSelect";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 
 export const DividerBlock: ComponentConfig<DividerProps> = {
   label: "Thin Line",
   defaultProps: defaultDividerProps,
   fields: {
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     styleControls: createStyleControlsField({
       label: "Style & Appearance (Colors, Shadows, Borders)",
     }),
