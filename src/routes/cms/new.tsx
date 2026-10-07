@@ -42,8 +42,13 @@ function NewCmsPageForm() {
   const navigate = useNavigate();
 
   // Auth State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [adminPassword, setAdminPassword] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [adminPassword, setAdminPassword] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(AUTH_STORAGE_KEY) || "";
+    }
+    return "";
+  });
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>("");
@@ -240,76 +245,8 @@ function NewCmsPageForm() {
           </Button>
         </div>
 
-        {/* Authentication Box */}
-        {!isAuthenticated ? (
-          <div className="mt-8 max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-            <div className="size-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mx-auto mb-4">
-              <Lock className="size-6" />
-            </div>
-            <h2 className="text-xl font-bold text-center text-navy">Admin Access Required</h2>
-            <p className="text-xs text-center text-slate-500 mt-1 mb-6">
-              Enter your internal admin password to create new CMS pages.
-            </p>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                verifyPassword(passwordInput);
-              }}
-              className="space-y-4"
-            >
-              <div>
-                <Label htmlFor="admin-pw" className="text-xs font-medium text-slate-700">
-                  Password
-                </Label>
-                <div className="relative mt-1">
-                  <Input
-                    id="admin-pw"
-                    type={showPassword ? "text" : "password"}
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    placeholder="Enter admin password..."
-                    className="pr-10"
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
-                </div>
-                {authError && (
-                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
-                    <AlertCircle className="size-3.5" />
-                    {authError}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isVerifying}
-                className="w-full bg-navy text-white hover:bg-navy/90 rounded-full"
-              >
-                {isVerifying ? (
-                  <>
-                    <RefreshCw className="size-4 mr-2 animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  <>
-                    <Unlock className="size-4 mr-2" />
-                    Unlock
-                  </>
-                )}
-              </Button>
-            </form>
-          </div>
-        ) : (
-          /* Page Creation Form with Template Picker */
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 space-y-8">
+        {/* Page Creation Form with Template Picker */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 space-y-8">
             <div className="border-b border-slate-100 pb-6">
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
                 <LayoutTemplate className="size-3.5 text-primary" />
@@ -625,7 +562,6 @@ function NewCmsPageForm() {
               </div>
             </form>
           </div>
-        )}
       </main>
 
       <Footer />

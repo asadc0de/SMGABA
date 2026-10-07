@@ -62,8 +62,13 @@ function AllLinksPage() {
   const navigate = useNavigate();
 
   // Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [adminPassword, setAdminPassword] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [adminPassword, setAdminPassword] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(AUTH_STORAGE_KEY) || "";
+    }
+    return "";
+  });
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>("");
@@ -219,96 +224,8 @@ function AllLinksPage() {
       <Header />
 
       <main className="flex-1 py-28 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
-        {/* =================================================================== */}
-        {/* VIEW 1: PASSWORD GATE (WHEN LOCKED)                                */}
-        {/* =================================================================== */}
-        {!isAuthenticated ? (
-          <div className="max-w-md mx-auto my-12">
-            <div className="card-surface p-8 sm:p-10 text-center border-border/80 shadow-lg">
-              <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-navy/10 text-navy mb-5 shadow-xs">
-                <Lock className="size-7 stroke-[2]" />
-              </div>
-
-              <h1 className="font-serif-hero text-2xl sm:text-3xl font-bold text-navy tracking-tight">
-                Webinar Links Portal
-              </h1>
-              <p className="text-sm text-muted-foreground mt-2 leading-relaxed">
-                This link directory is restricted. Please enter the internal administrator password to continue.
-              </p>
-
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  verifyPassword(passwordInput);
-                }}
-                className="mt-6 space-y-4 text-left"
-              >
-                <div>
-                  <Label htmlFor="admin-pass" className="text-xs font-semibold text-navy">
-                    Admin Password
-                  </Label>
-                  <div className="relative mt-1.5">
-                    <Input
-                      id="admin-pass"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="webinar admin password"
-                      value={passwordInput}
-                      onChange={(e) => {
-                        setPasswordInput(e.target.value);
-                        if (authError) setAuthError("");
-                      }}
-                      className="rounded-xl pr-10 focus-visible:ring-primary font-mono text-sm"
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-md text-muted-foreground hover:text-navy transition-colors focus:outline-none focus:ring-1 focus:ring-primary"
-                      aria-label={showPassword ? "Hide password" : "Show password"}
-                      title={showPassword ? "Hide password" : "Show password"}
-                    >
-                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                {authError && (
-                  <div className="flex items-start gap-2 p-3 rounded-xl bg-destructive/10 text-destructive text-xs leading-tight">
-                    <AlertCircle className="size-4 shrink-0 mt-0.5" />
-                    <span>{authError}</span>
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={isVerifying}
-                  className="w-full rounded-xl bg-navy text-white hover:bg-navy/90 font-semibold py-5 transition-transform active:scale-[0.99]"
-                >
-                  {isVerifying ? (
-                    <>
-                      <RefreshCw className="mr-2 size-4 animate-spin" /> Verifying...
-                    </>
-                  ) : (
-                    <>
-                      <Unlock className="mr-2 size-4" /> Unlock Link Directory
-                    </>
-                  )}
-                </Button>
-              </form>
-
-              <div className="mt-6 pt-5 border-t border-border/60 text-[11.5px] text-muted-foreground flex items-center justify-center gap-1.5">
-                <ShieldAlert className="size-3.5" />
-                <span>
-                  Gated via <code className="font-mono text-navy font-bold">INTERNAL_ADMIN_PASSWORD</code>
-                </span>
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* =================================================================== */
-          /* VIEW 2: PAGINATED LINKS DIRECTORY (MINIMAL DESIGN)                 */
-          /* =================================================================== */
-          <div className="space-y-6">
+        {/* Directory View */}
+        <div className="space-y-6">
             {/* Top Bar Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b border-border/70">
               <div>
@@ -628,7 +545,6 @@ function AllLinksPage() {
               </Button>
             </div>
           </div>
-        )}
       </main>
 
       <Footer />

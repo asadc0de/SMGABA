@@ -68,8 +68,13 @@ const AUTH_STORAGE_KEY = "smg_tools_admin_pw";
 type StatusCodeFilter = "all" | "301" | "302" | "307" | "308";
 
 function CmsRedirectsAdminPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [adminPassword, setAdminPassword] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [adminPassword, setAdminPassword] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(AUTH_STORAGE_KEY) || "";
+    }
+    return "";
+  });
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>("");
@@ -109,14 +114,10 @@ function CmsRedirectsAdminPage() {
 
   const [, startTransition] = useTransition();
 
-  // Auto-verify on mount if stored in sessionStorage
+  // Load redirects directly on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem(AUTH_STORAGE_KEY);
-      if (stored) {
-        verifyPassword(stored, false, true);
-      }
-    }
+    const pwd = typeof window !== "undefined" ? sessionStorage.getItem(AUTH_STORAGE_KEY) || "" : "";
+    fetchRedirects(pwd);
   }, []);
 
   async function verifyPassword(pwd: string, showToast = true, isAutoCheck = false) {
@@ -409,121 +410,42 @@ function CmsRedirectsAdminPage() {
             </p>
           </div>
 
-          {isAuthenticated && (
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fetchRedirects(adminPassword)}
-                disabled={isLoading}
-                className="gap-1.5 h-8 text-xs"
-              >
-                <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
-                Refresh
-              </Button>
-              <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
-                <Link to="/cms">
-                  <FileText className="size-3.5" />
-                  CMS Pages
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
-                <Link to="/internal/settings">
-                  <Settings className="size-3.5" />
-                  Site Settings &amp; Nav
-                </Link>
-              </Button>
-              <Button
-                onClick={handleOpenCreateModal}
-                size="sm"
-                className="bg-navy text-white hover:bg-navy/90 gap-1.5 rounded-full h-8 text-xs font-semibold"
-              >
-                <PlusCircle className="size-3.5" />
-                Add Redirect
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleLogout}
-                className="text-slate-500 hover:text-slate-800 text-xs h-8"
-              >
-                <Lock className="size-3.5 mr-1" />
-                Lock
-              </Button>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => fetchRedirects(adminPassword)}
+              disabled={isLoading}
+              className="gap-1.5 h-8 text-xs"
+            >
+              <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
+              Refresh
+            </Button>
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
+              <Link to="/cms">
+                <FileText className="size-3.5" />
+                CMS Pages
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
+              <Link to="/internal/settings">
+                <Settings className="size-3.5" />
+                Site Settings &amp; Nav
+              </Link>
+            </Button>
+            <Button
+              onClick={handleOpenCreateModal}
+              size="sm"
+              className="bg-navy text-white hover:bg-navy/90 gap-1.5 rounded-full h-8 text-xs font-semibold"
+            >
+              <PlusCircle className="size-3.5" />
+              Add Redirect
+            </Button>
+          </div>
         </div>
 
-        {/* Authentication Modal / Box */}
-        {!isAuthenticated ? (
-          <div className="mt-12 max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-            <div className="size-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mx-auto mb-4">
-              <Lock className="size-6" />
-            </div>
-            <h2 className="text-xl font-bold text-center text-navy">Admin Access Required</h2>
-            <p className="text-xs text-center text-slate-500 mt-1 mb-6">
-              Enter your internal admin password to manage site redirects.
-            </p>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                verifyPassword(passwordInput);
-              }}
-              className="space-y-4"
-            >
-              <div>
-                <Label htmlFor="admin-pw" className="text-xs font-medium text-slate-700">
-                  Password
-                </Label>
-                <div className="relative mt-1">
-                  <Input
-                    id="admin-pw"
-                    type={showPassword ? "text" : "password"}
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    placeholder="Enter admin password..."
-                    className="pr-10"
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
-                </div>
-                {authError && (
-                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
-                    <AlertCircle className="size-3.5" />
-                    {authError}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isVerifying}
-                className="w-full bg-navy text-white hover:bg-navy/90 rounded-full"
-              >
-                {isVerifying ? (
-                  <>
-                    <RefreshCw className="size-4 mr-2 animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  <>
-                    <Unlock className="size-4 mr-2" />
-                    Unlock Dashboard
-                  </>
-                )}
-              </Button>
-            </form>
-          </div>
-        ) : (
-          /* Redirects Content Area */
-          <div className="mt-6 space-y-4">
+        {/* Redirects Content Area */}
+        <div className="mt-6 space-y-4">
             {/* Quick Metrics & Search/Filter Bar */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-xs">
               <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
@@ -709,7 +631,6 @@ function CmsRedirectsAdminPage() {
               )}
             </div>
           </div>
-        )}
 
         {/* Add / Edit Modal */}
         <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>

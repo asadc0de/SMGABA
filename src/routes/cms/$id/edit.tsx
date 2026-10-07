@@ -692,8 +692,8 @@ function CmsPageEditorRoute() {
   const { id } = useParams({ from: "/cms/$id/edit" });
   const navigate = useNavigate();
 
-  // Auth State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // Auth State (Bypassed)
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
   const [adminPassword, setAdminPassword] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -770,14 +770,9 @@ function CmsPageEditorRoute() {
   // Keep a reference to latest editor data
   const currentDataRef = useRef<Data>({ content: [], root: {} });
 
-  // Auto-verify on mount
+  // Direct load on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem(AUTH_STORAGE_KEY);
-      if (stored) {
-        verifyPassword(stored, false, true);
-      }
-    }
+    loadPage("");
   }, [id]);
 
   // Periodic updater for relative time string
@@ -1174,75 +1169,7 @@ function CmsPageEditorRoute() {
     <div className="min-h-screen bg-slate-100 flex flex-col justify-between">
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col">
-        {!isAuthenticated ? (
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-              <div className="size-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mx-auto mb-4">
-                <Lock className="size-6" />
-              </div>
-              <h2 className="text-xl font-bold text-center text-navy">Admin Access Required</h2>
-              <p className="text-xs text-center text-slate-500 mt-1 mb-6">
-                Enter your internal admin password to edit this page.
-              </p>
-
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  verifyPassword(passwordInput);
-                }}
-                className="space-y-4"
-              >
-                <div>
-                  <Label htmlFor="admin-pw" className="text-xs font-medium text-slate-700">
-                    Password
-                  </Label>
-                  <div className="relative mt-1">
-                    <Input
-                      id="admin-pw"
-                      type={showPassword ? "text" : "password"}
-                      value={passwordInput}
-                      onChange={(e) => setPasswordInput(e.target.value)}
-                      placeholder="Enter admin password..."
-                      className="pr-10"
-                      autoFocus
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                    >
-                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-                  {authError && (
-                    <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
-                      <AlertCircle className="size-3.5" />
-                      {authError}
-                    </p>
-                  )}
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isVerifying}
-                  className="w-full bg-navy text-white hover:bg-navy/90 rounded-full"
-                >
-                  {isVerifying ? (
-                    <>
-                      <RefreshCw className="size-4 mr-2 animate-spin" />
-                      Verifying...
-                    </>
-                  ) : (
-                    <>
-                      <Unlock className="size-4 mr-2" />
-                      Unlock Editor
-                    </>
-                  )}
-                </Button>
-              </form>
-            </div>
-          </div>
-        ) : isLoadingPage || !page ? (
+        {isLoadingPage || !page ? (
           <div className="flex-1 flex items-center justify-center p-12">
             <div className="flex flex-col items-center gap-3">
               <RefreshCw className="size-8 text-navy animate-spin" />

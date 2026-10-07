@@ -54,8 +54,13 @@ const AUTH_STORAGE_KEY = "smg_tools_admin_pw";
 
 function CmsSettingsManagerRoute() {
   // Auth State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [adminPassword, setAdminPassword] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [adminPassword, setAdminPassword] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem(AUTH_STORAGE_KEY) || "";
+    }
+    return "";
+  });
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>("");
@@ -71,14 +76,9 @@ function CmsSettingsManagerRoute() {
   const [isUploadingHeaderLogo, setIsUploadingHeaderLogo] = useState<boolean>(false);
   const [isUploadingFooterLogo, setIsUploadingFooterLogo] = useState<boolean>(false);
 
-  // Auto-verify on mount
+  // Load settings directly on mount
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const stored = sessionStorage.getItem(AUTH_STORAGE_KEY);
-      if (stored) {
-        verifyPassword(stored, false, true);
-      }
-    }
+    loadSettings();
   }, []);
 
   async function verifyPassword(pwd: string, showToast = true, isAutoCheck = false) {
@@ -371,74 +371,7 @@ function CmsSettingsManagerRoute() {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
-        {!isAuthenticated ? (
-          <div className="max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-slate-200 p-8 my-12">
-            <div className="size-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mx-auto mb-4">
-              <Lock className="size-6" />
-            </div>
-            <h2 className="text-xl font-bold text-center text-navy">Admin Access Required</h2>
-            <p className="text-xs text-center text-slate-500 mt-1 mb-6">
-              Enter your internal admin password to manage site settings.
-            </p>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                verifyPassword(passwordInput);
-              }}
-              className="space-y-4"
-            >
-              <div>
-                <Label htmlFor="admin-pw" className="text-xs font-medium text-slate-700">
-                  Password
-                </Label>
-                <div className="relative mt-1">
-                  <Input
-                    id="admin-pw"
-                    type={showPassword ? "text" : "password"}
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    placeholder="Enter admin password..."
-                    className="pr-10 text-xs"
-                    autoFocus
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  >
-                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                  </button>
-                </div>
-                {authError && (
-                  <p className="text-xs text-destructive mt-1.5 flex items-center gap-1">
-                    <AlertCircle className="size-3.5" />
-                    {authError}
-                  </p>
-                )}
-              </div>
-
-              <Button
-                type="submit"
-                disabled={isVerifying}
-                className="w-full bg-navy text-white hover:bg-navy/90 rounded-full"
-              >
-                {isVerifying ? (
-                  <>
-                    <RefreshCw className="size-4 mr-2 animate-spin" />
-                    Verifying...
-                  </>
-                ) : (
-                  <>
-                    <Unlock className="size-4 mr-2" />
-                    Unlock Settings
-                  </>
-                )}
-              </Button>
-            </form>
-          </div>
-        ) : (
-          <div className="space-y-6">
+        <div className="space-y-6">
             {/* Tabs Navigation */}
             <div className="flex border-b border-slate-200 bg-white rounded-xl p-1 shadow-xs">
               <button
@@ -1097,7 +1030,6 @@ function CmsSettingsManagerRoute() {
               </div>
             )}
           </div>
-        )}
       </main>
     </div>
   );
