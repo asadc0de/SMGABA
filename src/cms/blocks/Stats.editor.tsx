@@ -2,9 +2,15 @@ import type { ComponentConfig } from "@puckeditor/core";
 import { StatsRender, type StatsProps, defaultStatsProps } from "./Stats";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSizeControlsField, createToggleField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 export const StatsBlock: ComponentConfig<StatsProps> = {
-  label: "Stats & Milestones",
+  label: "Stats",
   defaultProps: defaultStatsProps,
   fields: {
     heading: {
@@ -15,6 +21,20 @@ export const StatsBlock: ComponentConfig<StatsProps> = {
       type: "textarea",
       label: "Description (Optional)",
     },
+    numberTypography: createTypographyField({
+      label: "Stat Numbers Typography",
+    }),
+    labelTypography: createTypographyField({
+      label: "Stat Subtitle Labels Typography",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (Cards/Container)",
+      showApplyToChildren: true,
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Entrance & Stagger)",
+      showStaggerToggle: true,
+    }),
     columns: {
       type: "select",
       label: "Grid Columns (Desktop)",
@@ -26,16 +46,41 @@ export const StatsBlock: ComponentConfig<StatsProps> = {
     },
     theme: {
       type: "select",
-      label: "Visual Theme",
+      label: "Visual Theme Preset",
       options: [
         { label: "Navy Dark Brand (#0f2142)", value: "navy" },
         { label: "Light Slate Card", value: "light" },
       ],
     },
+    backgroundColor: createColorPickerField({
+      label: "Custom Container Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Text Color",
+    }),
+    borderColor: createColorPickerField({
+      label: "Border Color",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Container Dimensions (Width & Height)",
+      showMultiItemControls: true,
+      showEqualHeightToggle: true,
+    }),
+    sameItemSize: createToggleField({
+      label: "Apply same size to all items",
+      description: "Force all stat items to have equal width and height.",
+    }),
+    equalHeightCards: createToggleField({
+      label: "Equal height cards",
+      description: "Ensure all stats items stretch to equal matching height.",
+      defaultValue: true,
+    }),
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "grid" }),
     items: {
       type: "array",
       label: "Stat Items",
-      getItemSummary: (item) => `${item?.value || "0"} ${item?.label || ""}`,
+      min: 1,
+      getItemSummary: (item, idx) => item?.label ? `${item.prefix || ""}${item.value || "0"}${item.suffix || ""} - ${item.label}` : `Stat #${(idx ?? 0) + 1}`,
       arrayFields: {
         value: {
           type: "text",
@@ -75,3 +120,5 @@ export const StatsBlock: ComponentConfig<StatsProps> = {
   },
   render: StatsRender,
 };
+
+export default StatsBlock;

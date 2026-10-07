@@ -5,11 +5,17 @@ import {
   defaultTestimonialSliderProps,
 } from "./TestimonialSlider";
 import { createImagePickerField } from "../fields/ImagePicker";
+import { createLinkPickerField } from "../fields/LinkPicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
 
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
+
 export const TestimonialSliderBlock: ComponentConfig<TestimonialSliderProps> = {
-  label: "Testimonial Slider / Carousel",
+  label: "Testimonial Carousel",
   defaultProps: defaultTestimonialSliderProps,
   fields: {
     eyebrow: {
@@ -26,7 +32,7 @@ export const TestimonialSliderBlock: ComponentConfig<TestimonialSliderProps> = {
     },
     theme: {
       type: "select",
-      label: "Container Theme & Surface",
+      label: "Container Theme Preset",
       options: [
         { label: "Site Warm Gray (Default)", value: "secondary" },
         { label: "Navy Dark Brand", value: "navy" },
@@ -34,6 +40,15 @@ export const TestimonialSliderBlock: ComponentConfig<TestimonialSliderProps> = {
         { label: "Transparent / Seamless", value: "transparent" },
       ],
     },
+    backgroundColor: createColorPickerField({
+      label: "Custom Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Custom Text Color",
+    }),
+    borderColor: createColorPickerField({
+      label: "Custom Border Color",
+    }),
     autoplay: {
       type: "radio",
       label: "Autoplay Slideshow",
@@ -78,25 +93,29 @@ export const TestimonialSliderBlock: ComponentConfig<TestimonialSliderProps> = {
     },
     ctaText: {
       type: "text",
-      label: "Bottom CTA Button Label (Optional)",
+      label: "Bottom Button Text (Optional)",
     },
-    ctaHref: {
-      type: "text",
-      label: "Bottom CTA Button Link (/path or https://...)",
-    },
+    ctaHref: createLinkPickerField({
+      label: "Bottom Button Link",
+      placeholder: "Select page or enter link",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Carousel Dimensions (Width & Height)",
+    }),
     sizePercent: createSizeSliderField({
-      label: "Slider Container Width / Scale",
+      label: "Container Width Scale (%)",
       min: 50,
       max: 100,
       step: 5,
       defaultValue: 100,
       presets: [50, 65, 80, 90, 100],
-      description: "Scale the maximum width of the testimonial slider.",
+      description: "Scale the maximum width of the testimonial carousel.",
     }),
     testimonials: {
       type: "array",
       label: "Testimonials List",
-      getItemSummary: (item) => item?.authorName || item?.quote?.slice(0, 30) || "Testimonial",
+      min: 1,
+      getItemSummary: (item, idx) => item?.authorName ? `${item.authorName} (${item.authorCompany || item.authorRole || "Client"})` : `Testimonial #${(idx ?? 0) + 1}`,
       arrayFields: {
         quote: {
           type: "textarea",
@@ -137,6 +156,12 @@ export const TestimonialSliderBlock: ComponentConfig<TestimonialSliderProps> = {
         rating: "5",
       },
     },
+    styleControls: createStyleControlsField({
+      label: "Block Styles & Background",
+    }),
+    animation: createAnimationControlsField({
+      label: "Animation & Motion",
+    }),
     marginTop: createResponsiveSpaceField("Margin Top", "md"),
     marginBottom: createResponsiveSpaceField("Margin Bottom", "xl"),
     paddingTop: createResponsiveSpaceField("Padding Top", "none"),

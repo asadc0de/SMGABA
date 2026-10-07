@@ -7,6 +7,10 @@ import {
 } from "../style";
 import { isValidButtonUrl } from "./Button";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export type ImageWidth = "full" | "auto" | "3/4" | "1/2" | "1/3" | "1/4";
 export type ImageAspectRatio = "auto" | "16/9" | "4/3" | "1/1" | "3/2" | "21/9";
 export type ImageObjectFit = "cover" | "contain" | "fill";
@@ -17,10 +21,15 @@ export interface ImageBlockProps extends BlockStyleProps {
   alt: string;
   width?: ImageWidth;
   widthPercent?: number;
+  sizeControls?: SizeControlConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
   aspectRatio?: ImageAspectRatio;
   objectFit?: ImageObjectFit;
   rounded?: ImageRounded;
   linkUrl?: string;
+  backgroundColor?: string;
+  borderColor?: string;
 }
 
 /**
@@ -118,6 +127,8 @@ export function ImageRender({
   objectFit = "cover",
   rounded = "2xl",
   linkUrl,
+  backgroundColor,
+  borderColor,
   align,
   marginTop,
   marginBottom,
@@ -164,16 +175,31 @@ export function ImageRender({
   const fitCls = FIT_CLASSES[objectFit] || "object-cover";
   const roundedCls = ROUNDED_CLASSES[rounded] || "rounded-2xl";
 
-  const containerInlineStyle: React.CSSProperties | undefined = hasPercent
-    ? { width: `${widthPercent}%`, maxWidth: `${widthPercent}%` }
-    : undefined;
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const animStyles = buildAnimationStyles(props.animation);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customImgStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1, borderStyle: "solid" } : {}),
+    ...elementStyle,
+    ...animStyles,
+  };
+
+  const computedSizeStyles = buildSizeStyles(props.sizeControls);
+
+  const containerInlineStyle: React.CSSProperties | undefined = {
+    ...computedSizeStyles,
+    ...(hasPercent ? { width: `${widthPercent}%`, maxWidth: `${widthPercent}%` } : {}),
+  };
 
   const imgElement = (
     <img
       src={src.trim()}
       alt={alt || "Image"}
       loading="lazy"
-      className={`${widthCls} ${aspectCls} ${fitCls} ${roundedCls} max-w-full h-auto shadow-md transition-all duration-200`}
+      style={customImgStyle}
+      className={`${widthCls} ${aspectCls} ${fitCls} ${roundedCls} max-w-full h-auto shadow-md transition-all duration-200 ${animClasses}`}
     />
   );
 
@@ -181,7 +207,7 @@ export function ImageRender({
   const isExternal = safeLink && (safeLink.startsWith("http://") || safeLink.startsWith("https://"));
 
   return (
-    <div className={`flex w-full ${styleClasses}`}>
+    <div className={`flex w-full ${styleClasses} ${animClasses}`}>
       <div style={containerInlineStyle} className="max-w-full transition-all duration-200">
         {safeLink ? (
           <a

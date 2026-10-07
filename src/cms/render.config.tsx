@@ -18,6 +18,7 @@ import { StepsRender, type StepsProps } from "./blocks/Steps";
 import { CalendlyBookingRender, type CalendlyBookingProps } from "./blocks/CalendlyBooking";
 import { VideoEmbedRender, type VideoEmbedProps } from "./blocks/VideoEmbed";
 import { SpacerRender, type SpacerProps } from "./blocks/Spacer";
+import { DividerRender, type DividerProps } from "./blocks/Divider";
 import { CalloutRender, type CalloutProps } from "./blocks/Callout";
 import { CmsRoot, type CmsRootProps } from "./root";
 
@@ -25,6 +26,7 @@ export type CmsComponentProps = {
   Heading: HeadingProps;
   RichText: RichTextProps;
   Button: ButtonBlockProps;
+  Divider: DividerProps;
   Section: SectionProps;
   Columns: ColumnsProps;
   Image: ImageBlockProps;
@@ -60,6 +62,7 @@ export const puckRenderConfig: Config<CmsComponentProps, CmsRootProps> = {
     CalendlyBooking: { render: CalendlyBookingRender },
     VideoEmbed: { render: VideoEmbedRender },
     Spacer: { render: SpacerRender },
+    Divider: { render: DividerRender },
     Callout: { render: CalloutRender },
     Section: { render: SectionRender },
     Columns: { render: ColumnsRender },

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   type BlockStyleProps,
@@ -8,11 +7,29 @@ import {
   buildStyleClasses,
 } from "../style";
 
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
+export type ButtonVariant = "primary" | "gradient" | "secondary" | "outline" | "white";
+export type ButtonSize = "sm" | "md" | "lg";
+
 export interface ButtonBlockProps extends BlockStyleProps {
   label: string;
   url: string;
-  variant: "primary" | "secondary";
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  typography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  advancedLayout?: AdvancedLayoutConfig;
 }
 
 export function isValidButtonUrl(rawUrl: string): boolean {
@@ -37,6 +54,7 @@ export function isValidButtonUrl(rawUrl: string): boolean {
     lower.startsWith("https://") ||
     lower.startsWith("http://") ||
     (lower.startsWith("/") && !lower.startsWith("//")) ||
+    lower.startsWith("#") ||
     lower.startsWith("mailto:") ||
     lower.startsWith("tel:")
   ) {
@@ -46,18 +64,54 @@ export function isValidButtonUrl(rawUrl: string): boolean {
   return false;
 }
 
+export function getButtonVariantClasses(variant: ButtonVariant = "primary"): string {
+  switch (variant) {
+    case "gradient":
+      return "bg-gradient-to-r from-[#1e40af] to-[#2563eb] text-white hover:from-[#1d4ed8] hover:to-[#3b82f6] shadow-md";
+    case "secondary":
+      return "bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200 shadow-2xs";
+    case "outline":
+      return "border-2 border-[#0f2142] text-[#0f2142] hover:bg-[#0f2142] hover:text-white";
+    case "white":
+      return "bg-white text-[#0f2142] hover:bg-slate-100 shadow-md border border-slate-200/80";
+    case "primary":
+    default:
+      return "bg-[#0f2142] text-white hover:bg-[#1b4e94] shadow-md";
+  }
+}
+
+export function getButtonSizeClasses(size: ButtonSize = "md"): string {
+  switch (size) {
+    case "sm":
+      return "px-4 py-1.5 text-xs font-semibold";
+    case "lg":
+      return "px-8 py-3.5 text-base font-bold";
+    case "md":
+    default:
+      return "px-6 py-2.5 text-sm font-semibold";
+  }
+}
+
 export function ButtonRender({
-  label,
-  url,
+  label = "Click Here",
+  url = "/contact",
   variant = "primary",
-  sizePercent = 100,
+  size = "md",
+  sizePercent,
+  sizeControls,
+  typography,
+  styleControls,
+  animation,
+  backgroundColor,
+  textColor,
+  borderColor,
+  advancedLayout,
   align,
   marginTop,
   marginBottom,
   paddingTop,
   paddingBottom,
 }: ButtonBlockProps) {
-  // Backward compatibility: support string or Responsive<Align>
   const normalizedAlign: Responsive<Align> =
     typeof align === "string" ? { base: align } : align || { base: "left" };
 
@@ -77,11 +131,11 @@ export function ButtonRender({
     },
   );
 
-  const scale = typeof sizePercent === "number" && sizePercent > 0 ? sizePercent / 100 : 1;
-  const customStyle: React.CSSProperties =
-    scale !== 1
+  // Backward compatibility for sizePercent if explicitly passed
+  const customScaleStyle: React.CSSProperties =
+    typeof sizePercent === "number" && sizePercent !== 100 && sizePercent > 0
       ? {
-          transform: `scale(${scale})`,
+          transform: `scale(${sizePercent / 100})`,
           transformOrigin:
             normalizedAlign.base === "center"
               ? "center center"
@@ -91,22 +145,45 @@ export function ButtonRender({
         }
       : {};
 
+  const computedSizeStyles = buildSizeStyles(sizeControls);
+  const typographyStyles = buildTypographyStyles(typography);
+  const elementStyle = buildElementStyleObject(styleControls);
+  const animStyles = buildAnimationStyles(animation);
+  const animClasses = buildAnimationClasses(animation);
+
+  const customColorStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+  };
+
+  const combinedButtonStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...customScaleStyle,
+    ...customColorStyle,
+    ...typographyStyles,
+    ...elementStyle,
+    ...animStyles,
+  };
+
   const isValid = isValidButtonUrl(url);
+  const variantClass = getButtonVariantClasses(variant);
+  const sizeClass = getButtonSizeClasses(size);
+  const advClasses = buildAdvancedLayoutClasses(advancedLayout);
 
   if (!isValid) {
     return (
-      <div className={`flex w-full ${styleClasses}`}>
+      <div className={cn(advClasses || `flex w-full ${styleClasses}`, animClasses)}>
         <span
-          style={customStyle}
+          style={combinedButtonStyle}
           className={cn(
-            buttonVariants({
-              variant: variant === "secondary" ? "secondary" : "default",
-              size: "default",
-            }),
-            "rounded-full opacity-60 cursor-not-allowed select-none",
+            "inline-flex items-center justify-center rounded-full opacity-60 cursor-not-allowed select-none transition-all",
+            variantClass,
+            sizeClass
           )}
+          title="Invalid or empty link"
         >
-          {label}
+          {label || "Button"}
         </span>
       </div>
     );
@@ -116,23 +193,22 @@ export function ButtonRender({
   const isExternal = safeUrl.startsWith("http://") || safeUrl.startsWith("https://");
 
   return (
-    <div className={`flex w-full ${styleClasses}`}>
-      <Button
-        variant={variant === "secondary" ? "secondary" : "default"}
-        size="default"
-        asChild
-        style={customStyle}
-        className="rounded-full shadow-sm font-semibold tracking-wide transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+    <div className={cn(advClasses || `flex w-full ${styleClasses}`, animClasses)}>
+      <a
+        href={safeUrl}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        style={combinedButtonStyle}
+        className={cn(
+          "inline-flex items-center justify-center rounded-full tracking-wide transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+          variantClass,
+          sizeClass
+        )}
       >
-        <a
-          href={safeUrl}
-          target={isExternal ? "_blank" : undefined}
-          rel={isExternal ? "noopener noreferrer" : undefined}
-        >
-          {label}
-        </a>
-      </Button>
+        {label || "Button"}
+      </a>
     </div>
   );
 }
 
+export default ButtonRender;

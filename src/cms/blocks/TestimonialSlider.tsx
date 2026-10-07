@@ -5,6 +5,10 @@ import { ArrowLeft, ArrowRight, Quote, Star, MessageSquare } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export interface TestimonialSlideItem {
   quote: string;
   authorName: string;
@@ -19,6 +23,11 @@ export interface TestimonialSliderProps extends BlockStyleProps {
   heading?: string;
   subheading?: string;
   theme?: "secondary" | "navy" | "light" | "transparent";
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
   autoplay?: boolean;
   autoplayInterval?: "5" | "7" | "9" | "12";
   showDots?: boolean;
@@ -27,6 +36,7 @@ export interface TestimonialSliderProps extends BlockStyleProps {
   ctaText?: string;
   ctaHref?: string;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
   testimonials?: TestimonialSlideItem[];
 }
 
@@ -117,6 +127,9 @@ export function TestimonialSliderRender(props: TestimonialSliderProps) {
     heading,
     subheading,
     theme = "secondary",
+    backgroundColor,
+    textColor,
+    borderColor,
     autoplay = true,
     autoplayInterval = "9",
     showDots = true,
@@ -189,17 +202,29 @@ export function TestimonialSliderRender(props: TestimonialSliderProps) {
   const roleColorClass = isNavy ? "text-slate-400" : "text-slate-500";
   const quoteIconColorClass = isNavy ? "text-blue-400/20" : "text-mist/50";
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%`, margin: "0 auto" }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const animStyles = buildAnimationStyles(props.animation);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customContainerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+    ...elementStyle,
+    ...animStyles,
+  };
 
   return (
     <section
-      style={containerStyle}
+      style={customContainerStyle}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className={`relative w-full rounded-3xl border p-6 sm:p-10 lg:p-12 transition-colors ${containerThemeClass} ${styleClasses}`}
+      className={`relative w-full rounded-3xl border p-6 sm:p-10 lg:p-12 transition-colors ${containerThemeClass} ${styleClasses} ${animClasses}`}
     >
       <div className="mx-auto max-w-5xl">
         {/* Section Header */}

@@ -6,6 +6,12 @@ import {
 } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
 
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
+
 export const HeadingBlock: ComponentConfig<HeadingProps> = {
   label: "Heading",
   defaultProps: {
@@ -32,8 +38,29 @@ export const HeadingBlock: ComponentConfig<HeadingProps> = {
         { label: "H3 - Subheading", value: "h3" },
       ],
     },
+    typography: createTypographyField({
+      label: "Heading Typography & Text Formatting",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (Background, Shadow, Borders)",
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Scroll & Hover)",
+    }),
+    textColor: createColorPickerField({
+      label: "Heading Text Color",
+    }),
+    backgroundColor: createColorPickerField({
+      label: "Background Highlight Color (Optional)",
+    }),
+    borderColor: createColorPickerField({
+      label: "Border Color (Optional)",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Heading Box Dimensions (W/H)",
+    }),
     sizePercent: createSizeSliderField({
-      label: "Heading Size / Scale",
+      label: "Heading Font Size Scale (%)",
       min: 50,
       max: 200,
       step: 5,
@@ -49,3 +76,5 @@ export const HeadingBlock: ComponentConfig<HeadingProps> = {
   },
   render: HeadingRender,
 };
+
+export default HeadingBlock;

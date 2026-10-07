@@ -6,8 +6,12 @@ import {
 } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
 
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+
 export const RichTextBlock: ComponentConfig<RichTextProps> = {
-  label: "Rich Text",
+  label: "Text",
   defaultProps: {
     content:
       "Craft compelling stories and share information with your audience. This section supports multiple paragraphs and responsive typography.",
@@ -23,8 +27,23 @@ export const RichTextBlock: ComponentConfig<RichTextProps> = {
       type: "textarea",
       label: "Text Content",
     },
+    typography: createTypographyField({
+      label: "Text Typography & Formatting",
+    }),
+    textColor: createColorPickerField({
+      label: "Text Color",
+    }),
+    backgroundColor: createColorPickerField({
+      label: "Background Color (Optional)",
+    }),
+    borderColor: createColorPickerField({
+      label: "Border Color (Optional)",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Text Block Dimensions (W/H)",
+    }),
     sizePercent: createSizeSliderField({
-      label: "Text Size / Scale",
+      label: "Text Font Size Scale (%)",
       min: 60,
       max: 160,
       step: 5,
@@ -40,4 +59,6 @@ export const RichTextBlock: ComponentConfig<RichTextProps> = {
   },
   render: RichTextRender,
 };
+
+export default RichTextBlock;
 

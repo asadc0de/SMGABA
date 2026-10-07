@@ -423,7 +423,7 @@ function CmsRedirectsAdminPage() {
                 Refresh
               </Button>
               <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
-                <Link to="/internal/pages">
+                <Link to="/cms">
                   <FileText className="size-3.5" />
                   CMS Pages
                 </Link>

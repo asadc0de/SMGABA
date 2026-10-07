@@ -2,9 +2,15 @@ import type { ComponentConfig } from "@puckeditor/core";
 import { AccordionRender, type AccordionProps, defaultAccordionProps } from "./Accordion";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSizeControlsField, createToggleField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 export const AccordionBlock: ComponentConfig<AccordionProps> = {
-  label: "FAQ / Accordion",
+  label: "FAQ Accordion",
   defaultProps: defaultAccordionProps,
   fields: {
     title: {
@@ -15,6 +21,20 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
       type: "textarea",
       label: "FAQ Subtitle / Intro (Optional)",
     },
+    questionTypography: createTypographyField({
+      label: "Question Text Typography",
+    }),
+    answerTypography: createTypographyField({
+      label: "Answer Text Typography",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (FAQ Cards/Container)",
+      showApplyToChildren: true,
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Entrance & Stagger)",
+      showStaggerToggle: true,
+    }),
     type: {
       type: "select",
       label: "Accordion Expansion Mode",
@@ -33,8 +53,25 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
         { label: "Navy Dark Brand", value: "navy" },
       ],
     },
+    backgroundColor: createColorPickerField({
+      label: "Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Text Color",
+    }),
+    borderColor: createColorPickerField({
+      label: "Border Color",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Accordion Dimensions (Width & Height)",
+      showMultiItemControls: true,
+    }),
+    sameItemSize: createToggleField({
+      label: "Apply same size to all items",
+      description: "Force all FAQ rows to share uniform styling and sizing.",
+    }),
     sizePercent: createSizeSliderField({
-      label: "Accordion Container Width",
+      label: "Accordion Container Width Scale (%)",
       min: 40,
       max: 100,
       step: 5,
@@ -42,10 +79,12 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
       presets: [50, 65, 80, 90, 100],
       description: "Scale the maximum container width of the accordion.",
     }),
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     items: {
       type: "array",
       label: "Questions & Answers",
-      getItemSummary: (item) => item?.question || "New Question",
+      min: 1,
+      getItemSummary: (item, idx) => item?.question ? `Q: ${item.question}` : `Question #${(idx ?? 0) + 1}`,
       arrayFields: {
         question: {
           type: "text",

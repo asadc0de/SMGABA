@@ -29,6 +29,7 @@ export const STATIC_ROUTE_SLUGS: readonly string[] = [
   "testimonials",
   "solutions",
   "blog",
+  "cms",
   "internal",
   "tools",
   "api",

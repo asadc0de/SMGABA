@@ -12,6 +12,20 @@ export interface AccordionItemData {
   answer: string;
 }
 
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import {
+  buildElementStyleObject,
+  buildElementCardStyleObject,
+  type StyleControlConfig,
+} from "../fields/StyleControls";
+import {
+  buildAnimationClasses,
+  buildAnimationStyles,
+  type AnimationConfig,
+} from "../fields/AnimationControls";
+
 export interface AccordionProps extends BlockStyleProps {
   title?: string;
   subtitle?: string;
@@ -19,6 +33,16 @@ export interface AccordionProps extends BlockStyleProps {
   collapsible?: boolean;
   theme?: "bordered" | "separated" | "card" | "navy";
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  sameItemSize?: boolean;
+  questionTypography?: TypographyConfig;
+  answerTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  advancedLayout?: AdvancedLayoutConfig;
   items: AccordionItemData[];
 }
 
@@ -69,6 +93,10 @@ export function AccordionRender(props: AccordionProps) {
     collapsible = true,
     theme = "separated",
     sizePercent = 100,
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
     items = [],
   } = props;
 
@@ -80,26 +108,45 @@ export function AccordionRender(props: AccordionProps) {
   const isCard = theme === "card";
   const isSeparated = theme === "separated";
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%`, margin: "0 auto" }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const childCardStyle = buildElementCardStyleObject(props.styleControls);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+    ...(!props.styleControls?.applyStyleToChildren ? elementStyle : {}),
+  };
+
+  const layoutClasses = buildAdvancedLayoutClasses(advancedLayout);
 
   return (
-    <section style={containerStyle} className={`w-full max-w-4xl mx-auto ${styleClasses}`}>
+    <section style={containerStyle} className={`w-full max-w-4xl mx-auto ${styleClasses} ${animClasses}`}>
       {/* Optional Header */}
       {(title || subtitle) && (
         <div className="mb-8 text-center space-y-2.5 px-4">
           {title && title.trim() && (
             <div className="flex items-center justify-center gap-2">
               <HelpCircle className="size-5 text-primary shrink-0" aria-hidden="true" />
-              <h2 className={`font-serif-hero text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${isNavy ? "text-white" : "text-navy"}`}>
+              <h2
+                style={textColor ? { color: textColor } : {}}
+                className={`font-serif-hero text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight ${isNavy ? "text-white" : "text-navy"}`}
+              >
                 {title}
               </h2>
             </div>
           )}
           {subtitle && subtitle.trim() && (
-            <p className={`text-base sm:text-lg leading-relaxed max-w-2xl mx-auto ${isNavy ? "text-slate-300" : "text-slate-600"}`}>
+            <p
+              style={textColor ? { color: textColor, opacity: 0.85 } : {}}
+              className={`text-base sm:text-lg leading-relaxed max-w-2xl mx-auto ${isNavy ? "text-slate-300" : "text-slate-600"}`}
+            >
               {subtitle}
             </p>
           )}
@@ -109,11 +156,12 @@ export function AccordionRender(props: AccordionProps) {
       {/* Accordion Container */}
       <div
         className={
-          isCard
+          layoutClasses ||
+          (isCard
             ? "bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm"
             : isNavy
             ? "bg-[#0b172e] rounded-2xl p-6 sm:p-8 border border-white/10 text-white shadow-xl"
-            : ""
+            : "")
         }
       >
         {type === "multiple" ? (
@@ -124,6 +172,11 @@ export function AccordionRender(props: AccordionProps) {
                 item={item}
                 index={idx}
                 theme={theme}
+                textColor={textColor}
+                borderColor={borderColor}
+                childCardStyle={childCardStyle}
+                animStyles={buildAnimationStyles(props.animation, idx)}
+                animClasses={animClasses}
               />
             ))}
           </AccordionPrimitive.Root>
@@ -139,6 +192,13 @@ export function AccordionRender(props: AccordionProps) {
                 item={item}
                 index={idx}
                 theme={theme}
+                textColor={textColor}
+                borderColor={borderColor}
+                childCardStyle={childCardStyle}
+                animStyles={buildAnimationStyles(props.animation, idx)}
+                animClasses={animClasses}
+                questionTypography={props.questionTypography}
+                answerTypography={props.answerTypography}
               />
             ))}
           </AccordionPrimitive.Root>
@@ -152,10 +212,24 @@ function AccordionItemElement({
   item,
   index,
   theme,
+  textColor,
+  borderColor,
+  childCardStyle,
+  animStyles,
+  animClasses,
+  questionTypography,
+  answerTypography,
 }: {
   item: AccordionItemData;
   index: number;
   theme: AccordionProps["theme"];
+  textColor?: string;
+  borderColor?: string;
+  childCardStyle?: React.CSSProperties;
+  animStyles?: React.CSSProperties;
+  animClasses?: string;
+  questionTypography?: TypographyConfig;
+  answerTypography?: TypographyConfig;
 }) {
   const isNavy = theme === "navy";
   const isSeparated = theme === "separated";
@@ -174,13 +248,29 @@ function AccordionItemElement({
     ? "text-slate-300 text-sm leading-relaxed"
     : "text-slate-600 text-sm sm:text-base leading-relaxed";
 
+  const customItemStyle: React.CSSProperties = {
+    ...(borderColor ? { borderColor } : {}),
+    ...childCardStyle,
+    ...animStyles,
+  };
+  const customTriggerStyle: React.CSSProperties = {
+    ...(textColor ? { color: textColor } : {}),
+    ...buildTypographyStyles(questionTypography),
+  };
+  const customAnswerStyle: React.CSSProperties = {
+    ...(textColor ? { color: textColor, opacity: 0.85 } : {}),
+    ...buildTypographyStyles(answerTypography),
+  };
+
   return (
     <AccordionPrimitive.Item
       value={item.id || `item-${index}`}
-      className={itemWrapperClass}
+      className={`${itemWrapperClass} ${animClasses || ""}`}
+      style={customItemStyle}
     >
       <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger
+          style={customTriggerStyle}
           className={`flex flex-1 items-center justify-between py-4 text-left text-sm sm:text-base cursor-pointer transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg [&[data-state=open]>svg]:rotate-180 ${triggerTextClass}`}
         >
           <span className="pr-4">{item.question}</span>
@@ -189,7 +279,7 @@ function AccordionItemElement({
       </AccordionPrimitive.Header>
 
       <AccordionPrimitive.Content className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-        <div className={`pb-4 pt-1 ${answerTextClass}`}>
+        <div style={customAnswerStyle} className={`pb-4 pt-1 ${answerTextClass}`}>
           {item.answer}
         </div>
       </AccordionPrimitive.Content>

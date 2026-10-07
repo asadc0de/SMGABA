@@ -1,4 +1,5 @@
 import * as React from "react";
+import { DropZone } from "@puckeditor/core";
 import {
   type BlockStyleProps,
   type Responsive,
@@ -14,6 +15,11 @@ import {
   ArrowRight,
 } from "lucide-react";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export type CalloutVariant = "info" | "success" | "warning" | "important";
 
 export interface CalloutProps extends BlockStyleProps {
@@ -23,6 +29,14 @@ export interface CalloutProps extends BlockStyleProps {
   buttonLabel?: string;
   buttonHref?: string;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  titleTypography?: TypographyConfig;
+  bodyTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
 }
 
 export const defaultCalloutProps: CalloutProps = {
@@ -87,6 +101,9 @@ export function CalloutRender({
   buttonLabel,
   buttonHref,
   sizePercent = 100,
+  backgroundColor,
+  textColor,
+  borderColor,
   marginTop,
   marginBottom,
   paddingTop,
@@ -110,21 +127,37 @@ export function CalloutRender({
     },
   );
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
 
   const config = getVariantConfig(variant);
   const IconComponent = config.icon;
 
   const hasButton = Boolean(buttonLabel && buttonHref && isValidButtonUrl(buttonHref));
 
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const animStyles = buildAnimationStyles(props.animation);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customCardStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderLeftColor: borderColor } : {}),
+    ...elementStyle,
+    ...animStyles,
+  };
+
   return (
-    <div className={`w-full ${styleClasses}`}>
+    <div className={`w-full ${styleClasses} ${animClasses}`}>
       <div style={containerStyle} className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start gap-4 sm:gap-5 ${config.wrapperClasses}`}
+          style={customCardStyle}
+          className={`rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start gap-4 sm:gap-5 ${config.wrapperClasses} ${animClasses}`}
         >
           {/* Icon */}
           <div
@@ -136,11 +169,17 @@ export function CalloutRender({
           {/* Content Area */}
           <div className="flex-1 min-w-0">
             {title && (
-              <h4 className={`font-serif-hero text-base sm:text-lg font-bold tracking-tight mb-1.5 ${config.titleClasses}`}>
+              <h4
+                style={buildTypographyStyles(props.titleTypography)}
+                className={`font-serif-hero text-base sm:text-lg font-bold tracking-tight mb-1.5 ${config.titleClasses}`}
+              >
                 {title}
               </h4>
             )}
-            <p className={`text-sm sm:text-base leading-relaxed whitespace-pre-line ${config.textClasses}`}>
+            <p
+              style={buildTypographyStyles(props.bodyTypography)}
+              className={`text-sm sm:text-base leading-relaxed whitespace-pre-line ${config.textClasses}`}
+            >
               {text}
             </p>
 
@@ -166,6 +205,13 @@ export function CalloutRender({
                 </a>
               </div>
             )}
+
+            {/* Nested DropZone for extra elements inside Callout */}
+            <DropZone
+              zone="callout-extra"
+              minEmptyHeight={0}
+              className="w-full flex flex-col gap-3 mt-2"
+            />
           </div>
         </div>
       </div>

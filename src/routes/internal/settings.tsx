@@ -323,7 +323,7 @@ function CmsSettingsManagerRoute() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-7xl mx-auto w-full">
           <div className="flex items-center gap-3">
             <Button asChild variant="ghost" size="sm" className="gap-1 text-slate-600 hover:text-navy">
-              <Link to="/internal/pages">
+              <Link to="/cms">
                 <ArrowLeft className="size-4" />
                 CMS Pages
               </Link>

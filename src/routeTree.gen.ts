@@ -35,6 +35,8 @@ import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as CmsIndexRouteImport } from './routes/cms/index'
+import { Route as CmsNewRouteImport } from './routes/cms/new'
 import { Route as InternalRedirectsRouteImport } from './routes/internal/redirects'
 import { Route as InternalSettingsRouteImport } from './routes/internal/settings'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
@@ -46,6 +48,8 @@ import { Route as SolutionsWealthManagementRouteImport } from './routes/solution
 import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
+import { Route as CmsIdEditRouteImport } from './routes/cms/$id/edit'
+import { Route as CmsIdPreviewRouteImport } from './routes/cms/$id/preview'
 import { Route as InternalPagesIndexRouteImport } from './routes/internal/pages/index'
 import { Route as InternalPagesNewRouteImport } from './routes/internal/pages/new'
 import { Route as InternalPagesIdEditRouteImport } from './routes/internal/pages/$id/edit'
@@ -181,6 +185,16 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CmsIndexRoute = CmsIndexRouteImport.update({
+  id: '/cms/',
+  path: '/cms/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CmsNewRoute = CmsNewRouteImport.update({
+  id: '/cms/new',
+  path: '/cms/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InternalRedirectsRoute = InternalRedirectsRouteImport.update({
   id: '/internal/redirects',
   path: '/internal/redirects',
@@ -238,6 +252,16 @@ const ToolsRedirectionsRoute = ToolsRedirectionsRouteImport.update({
   path: '/tools/redirections',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CmsIdEditRoute = CmsIdEditRouteImport.update({
+  id: '/cms/$id/edit',
+  path: '/cms/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CmsIdPreviewRoute = CmsIdPreviewRouteImport.update({
+  id: '/cms/$id/preview',
+  path: '/cms/$id/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InternalPagesIndexRoute = InternalPagesIndexRouteImport.update({
   id: '/internal/pages/',
   path: '/internal/pages/',
@@ -285,6 +309,7 @@ export interface FileRoutesByFullPath {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/cms/new': typeof CmsNewRoute
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
@@ -296,7 +321,10 @@ export interface FileRoutesByFullPath {
   '/tools/links': typeof ToolsLinksRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
+  '/cms/': typeof CmsIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
+  '/cms/$id/edit': typeof CmsIdEditRoute
+  '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages/': typeof InternalPagesIndexRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
@@ -328,6 +356,7 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/cms/new': typeof CmsNewRoute
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
@@ -339,7 +368,10 @@ export interface FileRoutesByTo {
   '/tools/links': typeof ToolsLinksRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog': typeof BlogIndexRoute
+  '/cms': typeof CmsIndexRoute
   '/solutions': typeof SolutionsIndexRoute
+  '/cms/$id/edit': typeof CmsIdEditRoute
+  '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages': typeof InternalPagesIndexRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
@@ -372,6 +404,7 @@ export interface FileRoutesById {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/cms/new': typeof CmsNewRoute
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
@@ -383,7 +416,10 @@ export interface FileRoutesById {
   '/tools/links': typeof ToolsLinksRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
+  '/cms/': typeof CmsIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
+  '/cms/$id/edit': typeof CmsIdEditRoute
+  '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages/': typeof InternalPagesIndexRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
@@ -417,6 +453,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/cms/new'
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
@@ -428,7 +465,10 @@ export interface FileRouteTypes {
     | '/tools/links'
     | '/tools/redirections'
     | '/blog/'
+    | '/cms/'
     | '/solutions/'
+    | '/cms/$id/edit'
+    | '/cms/$id/preview'
     | '/internal/pages/new'
     | '/internal/pages/'
     | '/internal/pages/$id/edit'
@@ -460,6 +500,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/cms/new'
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
@@ -471,7 +512,10 @@ export interface FileRouteTypes {
     | '/tools/links'
     | '/tools/redirections'
     | '/blog'
+    | '/cms'
     | '/solutions'
+    | '/cms/$id/edit'
+    | '/cms/$id/preview'
     | '/internal/pages/new'
     | '/internal/pages'
     | '/internal/pages/$id/edit'
@@ -503,6 +547,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/blog/$slug'
+    | '/cms/new'
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
@@ -514,7 +559,10 @@ export interface FileRouteTypes {
     | '/tools/links'
     | '/tools/redirections'
     | '/blog/'
+    | '/cms/'
     | '/solutions/'
+    | '/cms/$id/edit'
+    | '/cms/$id/preview'
     | '/internal/pages/new'
     | '/internal/pages/'
     | '/internal/pages/$id/edit'
@@ -547,6 +595,7 @@ export interface RootRouteChildren {
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  CmsNewRoute: typeof CmsNewRoute
   InternalRedirectsRoute: typeof InternalRedirectsRoute
   InternalSettingsRoute: typeof InternalSettingsRoute
   InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
@@ -558,7 +607,10 @@ export interface RootRouteChildren {
   ToolsLinksRoute: typeof ToolsLinksRoute
   ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
   BlogIndexRoute: typeof BlogIndexRoute
+  CmsIndexRoute: typeof CmsIndexRoute
   SolutionsIndexRoute: typeof SolutionsIndexRoute
+  CmsIdEditRoute: typeof CmsIdEditRoute
+  CmsIdPreviewRoute: typeof CmsIdPreviewRoute
   InternalPagesNewRoute: typeof InternalPagesNewRoute
   InternalPagesIndexRoute: typeof InternalPagesIndexRoute
   InternalPagesIdEditRoute: typeof InternalPagesIdEditRoute
@@ -749,6 +801,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cms/': {
+      id: '/cms/'
+      path: '/cms'
+      fullPath: '/cms/'
+      preLoaderRoute: typeof CmsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cms/new': {
+      id: '/cms/new'
+      path: '/cms/new'
+      fullPath: '/cms/new'
+      preLoaderRoute: typeof CmsNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/internal/redirects': {
       id: '/internal/redirects'
       path: '/internal/redirects'
@@ -826,6 +892,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRedirectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/cms/$id/edit': {
+      id: '/cms/$id/edit'
+      path: '/cms/$id/edit'
+      fullPath: '/cms/$id/edit'
+      preLoaderRoute: typeof CmsIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cms/$id/preview': {
+      id: '/cms/$id/preview'
+      path: '/cms/$id/preview'
+      fullPath: '/cms/$id/preview'
+      preLoaderRoute: typeof CmsIdPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/internal/pages/': {
       id: '/internal/pages/'
       path: '/internal/pages'
@@ -883,6 +963,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
   BlogSlugRoute: BlogSlugRoute,
+  CmsNewRoute: CmsNewRoute,
   InternalRedirectsRoute: InternalRedirectsRoute,
   InternalSettingsRoute: InternalSettingsRoute,
   InternalWebinarLinksRoute: InternalWebinarLinksRoute,
@@ -894,7 +975,10 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsLinksRoute: ToolsLinksRoute,
   ToolsRedirectionsRoute: ToolsRedirectionsRoute,
   BlogIndexRoute: BlogIndexRoute,
+  CmsIndexRoute: CmsIndexRoute,
   SolutionsIndexRoute: SolutionsIndexRoute,
+  CmsIdEditRoute: CmsIdEditRoute,
+  CmsIdPreviewRoute: CmsIdPreviewRoute,
   InternalPagesNewRoute: InternalPagesNewRoute,
   InternalPagesIndexRoute: InternalPagesIndexRoute,
   InternalPagesIdEditRoute: InternalPagesIdEditRoute,

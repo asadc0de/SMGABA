@@ -1,4 +1,5 @@
 import React from "react";
+import { DropZone } from "@puckeditor/core";
 import {
   type BlockStyleProps,
   type Responsive,
@@ -11,11 +12,23 @@ import { isValidButtonUrl } from "./Button";
 import { isValidImageUrl } from "./Image";
 import { ArrowRight } from "lucide-react";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export interface HeroProps extends BlockStyleProps {
   headline: string;
   subheadline?: string;
   eyebrow?: string;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  headlineTypography?: TypographyConfig;
+  bodyTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
   primaryCta?: {
     enabled?: boolean;
     label?: string;
@@ -148,7 +161,7 @@ function useIsInPuckEditor(): boolean {
       document.querySelector("[data-puck-drop-zone]") ||
       document.querySelector("[data-puck-component]") ||
       document.querySelector(".puck") ||
-      (window.self !== window.top && window.top?.location?.pathname?.includes("/internal/pages/"))
+      (window.self !== window.top && (window.top?.location?.pathname?.includes("/cms/") || window.top?.location?.pathname?.includes("/internal/pages/")))
     );
     if (isEditor) {
       setInEditor(true);
@@ -163,6 +176,8 @@ export function HeroRender(props: HeroProps) {
     subheadline,
     eyebrow,
     sizePercent = 100,
+    backgroundColor,
+    textColor,
     primaryCta,
     secondaryCta,
     backgroundImage,
@@ -187,17 +202,30 @@ export function HeroRender(props: HeroProps) {
     (typeof align === "object" && (align.base === "center" || align.lg === "center"));
 
   const contentScale = typeof sizePercent === "number" && sizePercent > 0 ? sizePercent / 100 : 1;
-  const contentContainerStyle: React.CSSProperties =
-    contentScale !== 1
-      ? { maxWidth: `${Math.min(100, Math.max(30, contentScale * 100))}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls);
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const animStyles = buildAnimationStyles(props.animation);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const contentContainerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(contentScale !== 1 ? { maxWidth: `${Math.min(100, Math.max(30, contentScale * 100))}%` } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...animStyles,
+  };
 
   const fullBleedClass = isEditor
     ? "relative w-full"
     : "relative w-screen left-1/2 -translate-x-1/2";
 
   return (
-    <section className={`${fullBleedClass} overflow-hidden text-white ${styleClasses}`}>
+    <section
+      style={{
+        ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+        ...elementStyle,
+      }}
+      className={`${fullBleedClass} overflow-hidden text-white ${styleClasses} ${animClasses}`}
+    >
       {/* Background photographic image or fallback */}
       {validBgImage ? (
         <div
@@ -206,7 +234,11 @@ export function HeroRender(props: HeroProps) {
           aria-hidden="true"
         />
       ) : (
-        <div className="absolute inset-0 bg-[#122344]" aria-hidden="true" />
+        <div
+          className="absolute inset-0"
+          style={{ backgroundColor: backgroundColor || "#122344" }}
+          aria-hidden="true"
+        />
       )}
 
       {/* Background Overlay */}
@@ -251,14 +283,20 @@ export function HeroRender(props: HeroProps) {
 
           {/* Main Headline */}
           {headline && headline.trim() && (
-            <h1 className="font-serif-hero text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white drop-shadow-sm leading-[1.12]">
+            <h1
+              style={buildTypographyStyles(props.headlineTypography)}
+              className="font-serif-hero text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white drop-shadow-sm leading-[1.12]"
+            >
               {headline}
             </h1>
           )}
 
           {/* Subheadline Description */}
           {subheadline && subheadline.trim() && (
-            <p className="text-base sm:text-lg leading-relaxed text-blue-50/95 font-normal">
+            <p
+              style={buildTypographyStyles(props.bodyTypography)}
+              className="text-base sm:text-lg leading-relaxed text-blue-50/95 font-normal"
+            >
               {subheadline}
             </p>
           )}
@@ -315,6 +353,13 @@ export function HeroRender(props: HeroProps) {
               )}
             </div>
           )}
+
+          {/* Nested DropZone for additional elements inside Hero (e.g. Buttons, text, badges) */}
+          <DropZone
+            zone="hero-extra"
+            minEmptyHeight={0}
+            className="w-full flex flex-col gap-3 mt-2"
+          />
         </div>
       </div>
     </section>

@@ -3,6 +3,11 @@ import { type BlockStyleProps, buildStyleClasses } from "../style";
 import { isValidImageUrl } from "./Image";
 import { Star, Quote } from "lucide-react";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export interface TestimonialProps extends BlockStyleProps {
   quote: string;
   authorName: string;
@@ -12,7 +17,15 @@ export interface TestimonialProps extends BlockStyleProps {
   rating?: "0" | "1" | "2" | "3" | "4" | "5";
   layout?: "card" | "centered" | "split" | "quote-left" | "site-card";
   theme?: "light" | "navy" | "subtle" | "secondary";
+  quoteTypography?: TypographyConfig;
+  authorTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
 }
 
 export const defaultTestimonialProps: TestimonialProps = {
@@ -71,6 +84,9 @@ export function TestimonialRender(props: TestimonialProps) {
     rating = "5",
     layout = "site-card",
     theme = "secondary",
+    backgroundColor,
+    textColor,
+    borderColor,
     sizePercent = 100,
   } = props;
 
@@ -103,17 +119,32 @@ export function TestimonialRender(props: TestimonialProps) {
   const roleColorClass = isNavy ? "text-slate-400" : "text-slate-500";
   const quoteIconColorClass = isNavy ? "text-blue-400/20" : "text-mist/50";
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%`, margin: "0 auto" }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const animStyles = buildAnimationStyles(props.animation);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+    ...elementStyle,
+    ...animStyles,
+  };
+
+  const quoteTypographyStyles = buildTypographyStyles(props.quoteTypography);
+  const authorTypographyStyles = buildTypographyStyles(props.authorTypography);
 
   // Render Layout: Site Signature Card (Matches site's home & about testimonials)
   if (layout === "site-card") {
     return (
       <figure
         style={containerStyle}
-        className={`card-surface relative overflow-hidden rounded-2xl border px-6 py-9 sm:px-10 sm:py-11 md:px-14 md:py-14 ${containerThemeClass} ${styleClasses}`}
+        className={`card-surface relative overflow-hidden rounded-2xl border px-6 py-9 sm:px-10 sm:py-11 md:px-14 md:py-14 ${containerThemeClass} ${styleClasses} ${animClasses}`}
       >
         <Quote className={`absolute -left-2 -top-2 size-24 ${quoteIconColorClass} pointer-events-none`} aria-hidden="true" />
         
@@ -122,7 +153,10 @@ export function TestimonialRender(props: TestimonialProps) {
             <div className="mb-4">{renderStars(rating)}</div>
           )}
 
-          <blockquote className={`text-balance text-lg leading-relaxed md:text-xl md:leading-relaxed font-sans ${quoteColorClass}`}>
+          <blockquote
+            style={quoteTypographyStyles}
+            className={`text-balance text-lg leading-relaxed md:text-xl md:leading-relaxed font-sans ${quoteColorClass}`}
+          >
             “{quote}”
           </blockquote>
 
@@ -138,7 +172,10 @@ export function TestimonialRender(props: TestimonialProps) {
             )}
 
             <div>
-              <cite className={`font-display text-base font-semibold not-italic ${authorColorClass}`}>
+              <cite
+                style={authorTypographyStyles}
+                className={`font-display text-base font-semibold not-italic ${authorColorClass}`}
+              >
                 {authorName}
               </cite>
               {(authorRole || authorCompany) && (
@@ -156,7 +193,7 @@ export function TestimonialRender(props: TestimonialProps) {
   // Render Layout 1: Centered
   if (layout === "centered") {
     return (
-      <figure style={containerStyle} className={`mx-auto max-w-4xl text-center px-4 py-8 ${styleClasses}`}>
+      <figure style={containerStyle} className={`mx-auto max-w-4xl text-center px-4 py-8 ${styleClasses} ${animClasses}`}>
         {renderStars(rating) && (
           <div className="flex justify-center mb-6">{renderStars(rating)}</div>
         )}
@@ -196,7 +233,7 @@ export function TestimonialRender(props: TestimonialProps) {
   // Render Layout 2: Split (2 Columns)
   if (layout === "split") {
     return (
-      <figure style={containerStyle} className={`rounded-3xl border p-8 sm:p-10 lg:p-12 ${containerThemeClass} ${styleClasses}`}>
+      <figure style={containerStyle} className={`rounded-3xl border p-8 sm:p-10 lg:p-12 ${containerThemeClass} ${styleClasses} ${animClasses}`}>
         <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
           <div className="lg:col-span-4 space-y-4 border-b lg:border-b-0 lg:border-r border-white/10 pb-6 lg:pb-0 lg:pr-8">
             {renderStars(rating)}
@@ -236,7 +273,7 @@ export function TestimonialRender(props: TestimonialProps) {
   // Render Layout 3: Quote Left / Accent Border
   if (layout === "quote-left") {
     return (
-      <figure style={containerStyle} className={`relative border-l-4 border-primary pl-6 sm:pl-8 py-4 ${styleClasses}`}>
+      <figure style={containerStyle} className={`relative border-l-4 border-primary pl-6 sm:pl-8 py-4 ${styleClasses} ${animClasses}`}>
         {renderStars(rating) && <div className="mb-4">{renderStars(rating)}</div>}
 
         <blockquote className={`font-serif-hero text-xl sm:text-2xl md:text-3xl italic leading-relaxed ${quoteColorClass}`}>
@@ -269,37 +306,46 @@ export function TestimonialRender(props: TestimonialProps) {
     );
   }
 
-  // Default / Legacy Card Layout
+  // Render Layout: Design B (Elevated Card with Shadow, Quote Icon, Author Attribution)
   return (
-    <figure style={containerStyle} className={`relative overflow-hidden rounded-3xl border p-7 sm:p-9 lg:p-10 ${containerThemeClass} ${styleClasses}`}>
-      <div className="absolute top-6 right-6 opacity-40">
-        <Quote className={`size-12 sm:size-16 ${quoteIconColorClass}`} aria-hidden="true" />
+    <figure
+      style={containerStyle}
+      className={`relative overflow-hidden rounded-2xl sm:rounded-3xl border p-6 sm:p-9 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 ${containerThemeClass} ${styleClasses} ${animClasses}`}
+    >
+      {/* Top Row: Star Rating & Decorative Quote Icon */}
+      <div className="flex items-center justify-between gap-3 mb-6 relative z-10">
+        <div>
+          {renderStars(rating)}
+        </div>
+        <div className={`size-10 sm:size-12 rounded-full ${isNavy ? "bg-blue-500/20 text-blue-200 border border-blue-400/30" : "bg-blue-50 text-navy border border-blue-100/80"} flex items-center justify-center shrink-0 shadow-2xs`}>
+          <Quote className="size-5 sm:size-6" aria-hidden="true" />
+        </div>
       </div>
 
       <div className="relative z-10 space-y-6">
-        {renderStars(rating)}
-
-        <blockquote className={`font-serif-hero text-lg sm:text-xl md:text-2xl italic leading-relaxed ${quoteColorClass}`}>
+        {/* Main Quote Content */}
+        <blockquote className={`font-serif-hero text-lg sm:text-xl md:text-2xl leading-relaxed italic ${quoteColorClass}`}>
           “{quote}”
         </blockquote>
 
-        <figcaption className="flex items-center gap-4 pt-2 border-t border-white/10">
+        {/* Author Attribution Footer */}
+        <figcaption className="flex items-center gap-3.5 pt-5 border-t border-slate-200/40">
           {validAvatar ? (
             <img
               src={validAvatar}
               alt={authorName}
-              className="size-13 rounded-full object-cover border-2 border-white/20 shadow-sm shrink-0"
+              className="size-12 sm:size-13 rounded-full object-cover border-2 border-white/60 shadow-sm shrink-0"
             />
           ) : (
-            <div className="flex size-13 items-center justify-center rounded-full bg-blue-500/20 text-blue-300 font-bold text-base border border-blue-400/30 shrink-0">
+            <div className={`flex size-12 sm:size-13 items-center justify-center rounded-full font-bold text-sm sm:text-base shrink-0 shadow-2xs ${isNavy ? "bg-blue-500/20 text-blue-300 border border-blue-400/30" : "bg-navy text-white border border-navy"}`}>
               {initials}
             </div>
           )}
 
-          <div>
-            <div className={`font-bold text-base ${authorColorClass}`}>{authorName}</div>
+          <div className="min-w-0">
+            <div className={`font-bold text-sm sm:text-base truncate ${authorColorClass}`}>{authorName}</div>
             {(authorRole || authorCompany) && (
-              <div className={`text-xs sm:text-sm font-medium ${roleColorClass}`}>
+              <div className={`text-xs sm:text-sm truncate ${roleColorClass} mt-0.5`}>
                 {[authorRole, authorCompany].filter(Boolean).join(" · ")}
               </div>
             )}

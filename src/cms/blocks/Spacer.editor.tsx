@@ -1,14 +1,22 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { SpacerRender, type SpacerProps, defaultSpacerProps } from "./Spacer";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 export const SpacerBlock: ComponentConfig<SpacerProps> = {
   label: "Spacer & Divider",
   defaultProps: defaultSpacerProps,
   fields: {
+    sizeControls: createSizeControlsField({
+      label: "Spacer Dimensions (Width & Height)",
+      defaultWidthType: "full",
+      defaultHeightType: "px",
+    }),
     size: {
       type: "select",
-      label: "Vertical Spacing Height",
+      label: "Vertical Spacing Height Preset",
       options: [
         { label: "Extra Small (8px)", value: "xs" },
         { label: "Small (16px)", value: "sm" },
@@ -46,6 +54,12 @@ export const SpacerBlock: ComponentConfig<SpacerProps> = {
         { label: "Short Accent (Centered 160px)", value: "short" },
       ],
     },
+    styleControls: createStyleControlsField({
+      label: "Block Styles & Background",
+    }),
+    animation: createAnimationControlsField({
+      label: "Animation & Motion",
+    }),
   },
   render: SpacerRender,
 };

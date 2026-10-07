@@ -7,6 +7,20 @@ import {
   buildStyleClasses,
 } from "../style";
 
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import {
+  buildElementStyleObject,
+  buildElementCardStyleObject,
+  type StyleControlConfig,
+} from "../fields/StyleControls";
+import {
+  buildAnimationClasses,
+  buildAnimationStyles,
+  type AnimationConfig,
+} from "../fields/AnimationControls";
+
 export interface StatItem {
   value: string;
   prefix?: string;
@@ -22,6 +36,17 @@ export interface StatsProps extends BlockStyleProps {
   description?: string;
   columns?: StatsColumns;
   theme?: StatsTheme;
+  numberTypography?: TypographyConfig;
+  labelTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  advancedLayout?: AdvancedLayoutConfig;
+  sizeControls?: SizeControlConfig;
+  sameItemSize?: boolean;
+  equalHeightCards?: boolean;
   items: StatItem[];
   sizePercent?: number;
 }
@@ -114,6 +139,13 @@ export function StatsRender({
   description,
   columns = "3",
   theme = "navy",
+  backgroundColor,
+  textColor,
+  borderColor,
+  advancedLayout,
+  sizeControls,
+  sameItemSize,
+  equalHeightCards,
   items = defaultStatsProps.items,
   sizePercent = 100,
   marginTop,
@@ -171,10 +203,13 @@ export function StatsRender({
     },
   );
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(sizeControls, sizePercent);
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
 
   const isDark = theme === "navy";
 
@@ -187,15 +222,34 @@ export function StatsRender({
 
   const safeItems = Array.isArray(items) && items.length > 0 ? items : defaultStatsProps.items;
 
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const childCardStyle = buildElementCardStyleObject(props.styleControls);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customCardStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+    ...(!props.styleControls?.applyStyleToChildren ? elementStyle : {}),
+  };
+
+  const layoutClasses = buildAdvancedLayoutClasses(advancedLayout);
+  const isEqualHeight =
+    equalHeightCards !== undefined
+      ? Boolean(equalHeightCards)
+      : sizeControls?.equalHeightCards !== false;
+  const isSameSize = Boolean(sameItemSize || sizeControls?.sameItemSize);
+
   return (
-    <div ref={containerRef} className={`w-full ${styleClasses}`}>
+    <div ref={containerRef} className={`w-full ${styleClasses} ${animClasses}`}>
       <div style={containerStyle} className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
+          style={customCardStyle}
           className={`rounded-3xl p-7 sm:p-10 md:p-12 transition-all ${
             isDark
               ? "bg-[#0f2142] text-white border border-[#1e3a8a]/40 shadow-xl"
               : "bg-[#f8fafc] text-[#142340] border border-slate-200/90 shadow-sm"
-          }`}
+          } ${animClasses}`}
         >
           {/* Optional Heading & Description */}
           {(heading || description) && (
@@ -222,7 +276,12 @@ export function StatsRender({
           )}
 
           {/* Stats Grid */}
-          <div className={`grid gap-8 sm:gap-6 ${gridColsClass}`}>
+          <div
+            className={
+              layoutClasses ||
+              `grid gap-8 sm:gap-6 ${gridColsClass} ${isEqualHeight ? "items-stretch" : "items-center"}`
+            }
+          >
             {safeItems.map((stat, idx) => {
               const rawStr = String(stat?.value ?? "").trim();
               const numericDigits = rawStr.replace(/[^0-9]/g, "");
@@ -236,30 +295,46 @@ export function StatsRender({
                 if (nonDigits) extractedSuffix = nonDigits;
               }
 
+              const itemAnimStyles = buildAnimationStyles(props.animation, idx);
+
+              const itemCustomStyle: React.CSSProperties = {
+                ...(isSameSize ? { flex: "1 1 0px", width: "100%" } : {}),
+                ...(isEqualHeight ? { height: "100%" } : {}),
+                ...childCardStyle,
+                ...itemAnimStyles,
+              };
+
               return (
                 <div
                   key={`${idx}-${stat.label}`}
+                  style={itemCustomStyle}
                   className={`flex flex-col items-center justify-center text-center p-3 sm:p-4 rounded-2xl ${
                     isDark
                       ? "sm:not-last:border-r sm:not-last:border-white/15"
                       : "sm:not-last:border-r sm:not-last:border-slate-200"
-                  }`}
+                  } ${isEqualHeight ? "h-full" : ""} ${animClasses}`}
                 >
                   {isNumeric ? (
-                    <AnimatedCounter
-                      targetNumber={numericValue}
-                      prefix={stat?.prefix}
-                      suffix={extractedSuffix}
-                      active={active}
-                    />
+                    <div style={buildTypographyStyles(props.numberTypography)}>
+                      <AnimatedCounter
+                        targetNumber={numericValue}
+                        prefix={stat?.prefix}
+                        suffix={extractedSuffix}
+                        active={active}
+                      />
+                    </div>
                   ) : (
-                    <span className="font-serif-hero text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight">
+                    <span
+                      style={buildTypographyStyles(props.numberTypography)}
+                      className="font-serif-hero text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight"
+                    >
                       {stat?.prefix && <span className="mr-0.5">{stat.prefix}</span>}
                       {rawStr}
                       {stat?.suffix && <span className="ml-0.5">{stat.suffix}</span>}
                     </span>
                   )}
                   <p
+                    style={buildTypographyStyles(props.labelTypography)}
                     className={`mt-2 text-xs sm:text-sm font-bold uppercase tracking-[0.16em] ${
                       isDark ? "text-blue-200" : "text-[#1b4e94]"
                     }`}

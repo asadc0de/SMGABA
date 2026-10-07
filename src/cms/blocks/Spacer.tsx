@@ -1,4 +1,7 @@
 import * as React from "react";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
 
 export type SpacerSize = "xs" | "sm" | "md" | "lg" | "xl" | "custom";
 export type SpacerDivider = "none" | "line" | "dotted" | "gradient";
@@ -7,6 +10,9 @@ export type SpacerDividerWidth = "full" | "container" | "short";
 export interface SpacerProps {
   size?: SpacerSize;
   customPx?: number;
+  sizeControls?: SizeControlConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
   divider?: SpacerDivider;
   dividerWidth?: SpacerDividerWidth;
 }
@@ -35,7 +41,7 @@ function useIsInPuckEditor(): boolean {
       document.querySelector("[data-puck-drop-zone]") ||
       document.querySelector("[data-puck-component]") ||
       document.querySelector(".puck") ||
-      (window.self !== window.top && window.top?.location?.pathname?.includes("/internal/pages/"))
+      (window.self !== window.top && (window.top?.location?.pathname?.includes("/cms/") || window.top?.location?.pathname?.includes("/internal/pages/")))
     );
     if (isEditor) {
       setInEditor(true);
@@ -44,16 +50,24 @@ function useIsInPuckEditor(): boolean {
   return inEditor;
 }
 
-export function SpacerRender({
-  size = "md",
-  customPx = 40,
-  divider = "none",
-  dividerWidth = "container",
-}: SpacerProps) {
+export function SpacerRender(props: SpacerProps) {
+  const {
+    size = "md",
+    customPx = 40,
+    divider = "none",
+    dividerWidth = "container",
+  } = props;
   const isEditor = useIsInPuckEditor();
 
+  const computedSizeStyles = buildSizeStyles(props.sizeControls);
+  const elementCustomStyles = buildElementStyleObject(props.styleControls);
+  const animationClasses = buildAnimationClasses(props.animation);
+  const animationStyles = buildAnimationStyles(props.animation);
+
   const heightPx =
-    size === "custom"
+    props.sizeControls?.heightType === "px" && typeof props.sizeControls.heightValue === "number" && props.sizeControls.heightValue > 0
+      ? props.sizeControls.heightValue
+      : size === "custom"
       ? Math.max(8, Math.min(240, Number(customPx) || 40))
       : SIZE_MAP[size] || 32;
 
@@ -66,9 +80,9 @@ export function SpacerRender({
 
   return (
     <div
-      style={{ height: `${heightPx}px` }}
+      style={{ height: `${heightPx}px`, ...computedSizeStyles, ...elementCustomStyles, ...animationStyles }}
       aria-hidden="true"
-      className={`w-full flex items-center justify-center relative ${
+      className={`w-full flex items-center justify-center relative ${animationClasses} ${
         isEditor && divider === "none"
           ? "border-y border-dashed border-slate-200/60 hover:border-blue-300 transition-colors"
           : ""

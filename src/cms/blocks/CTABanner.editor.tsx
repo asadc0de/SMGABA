@@ -1,36 +1,63 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { CTABannerRender, type CTABannerProps, defaultCTABannerProps } from "./CTABanner";
+import { createLinkPickerField } from "../fields/LinkPicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
-  label: "CTA Banner",
+  label: "Call to Action Strip",
   defaultProps: defaultCTABannerProps,
   fields: {
     eyebrow: {
       type: "text",
-      label: "Eyebrow Pill (Optional)",
+      label: "Eyebrow Badge (Optional)",
     },
     heading: {
       type: "text",
       label: "Main Heading",
     },
+    headlineTypography: createTypographyField({
+      label: "Main Heading Typography",
+    }),
     description: {
       type: "textarea",
       label: "Description (Optional)",
     },
+    bodyTypography: createTypographyField({
+      label: "Description Typography",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (Background, Shadow, Borders)",
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Scroll & Hover)",
+    }),
     theme: {
       type: "select",
-      label: "Visual Theme",
+      label: "Color Theme Preset",
       options: [
         { label: "Navy Dark Brand (#0f2142)", value: "navy" },
         { label: "Light Slate Card", value: "light" },
         { label: "Blue Gradient Brand", value: "blue-gradient" },
       ],
     },
+    backgroundColor: createColorPickerField({
+      label: "Custom Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Custom Text Color",
+    }),
+    borderColor: createColorPickerField({
+      label: "Custom Border Color",
+    }),
     alignment: {
       type: "select",
-      label: "Content Alignment",
+      label: "Text Alignment",
       options: [
         { label: "Centered (Default)", value: "center" },
         { label: "Left Aligned", value: "left" },
@@ -38,18 +65,21 @@ export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
     },
     layout: {
       type: "select",
-      label: "Card Format",
+      label: "Container Shape",
       options: [
-        { label: "Rounded 3XL Card (Default)", value: "card" },
-        { label: "Full Width Band", value: "full-width" },
+        { label: "Rounded Card Box (Default)", value: "card" },
+        { label: "Full Width Strip", value: "full-width" },
       ],
     },
     primaryButton: {
       type: "object",
       label: "Primary Button",
       objectFields: {
-        label: { type: "text", label: "Button Label" },
-        href: { type: "text", label: "Button URL (/bookanappointment, https://...)" },
+        label: { type: "text", label: "Button Text" },
+        href: createLinkPickerField({
+          label: "Destination Link",
+          placeholder: "Select page or enter link",
+        }),
       },
     },
     secondaryButton: {
@@ -58,16 +88,22 @@ export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
       objectFields: {
         enabled: {
           type: "radio",
-          label: "Enable Button",
+          label: "Show Secondary Button",
           options: [
-            { label: "Enabled", value: true },
-            { label: "Disabled", value: false },
+            { label: "Yes, show button", value: true },
+            { label: "Hide button", value: false },
           ],
         },
-        label: { type: "text", label: "Button Label" },
-        href: { type: "text", label: "Button URL (/contact, https://...)" },
+        label: { type: "text", label: "Button Text" },
+        href: createLinkPickerField({
+          label: "Destination Link",
+          placeholder: "Select page or enter link",
+        }),
       },
     },
+    sizeControls: createSizeControlsField({
+      label: "Banner Box Dimensions (W/H)",
+    }),
     sizePercent: createSizeSliderField({
       label: "Container Width",
       min: 50,
@@ -83,3 +119,5 @@ export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
   },
   render: CTABannerRender,
 };
+
+export default CTABannerBlock;

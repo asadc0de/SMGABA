@@ -18,6 +18,7 @@ import { StepsBlock } from "./blocks/Steps.editor";
 import { CalendlyBookingBlock } from "./blocks/CalendlyBooking.editor";
 import { VideoEmbedBlock } from "./blocks/VideoEmbed.editor";
 import { SpacerBlock } from "./blocks/Spacer.editor";
+import { DividerBlock } from "./blocks/Divider.editor";
 import { CalloutBlock } from "./blocks/Callout.editor";
 import { type CmsComponentProps, type CmsRootProps } from "./render.config";
 import { rootEditorConfig } from "./root.editor";
@@ -26,53 +27,52 @@ export { type CmsComponentProps, type CmsRootProps } from "./render.config";
 
 export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
   categories: {
-    marketing: {
+    basics: {
+      title: "Basics",
+      components: ["Heading", "RichText", "Image", "Button", "Spacer", "Divider"],
+    },
+    sections: {
+      title: "Sections",
       components: [
         "Hero",
         "CardGrid",
-        "Testimonial",
-        "TestimonialSlider",
+        "ImageGallery",
         "Accordion",
         "CTABanner",
         "Stats",
         "IconFeatures",
         "Steps",
+        "Testimonial",
+        "TestimonialSlider",
       ],
     },
-    media: {
-      components: ["Image", "ImageGallery", "VideoEmbed", "CalendlyBooking"],
-    },
-    layout: {
-      components: ["Section", "Columns", "Spacer"],
-    },
-    typography: {
-      components: ["Heading", "RichText", "Callout"],
-    },
-    actions: {
-      components: ["Button"],
+    advanced: {
+      title: "Advanced",
+      components: ["Columns", "Section", "VideoEmbed", "CalendlyBooking", "Callout"],
     },
   },
   components: {
+    Heading: HeadingBlock,
+    RichText: RichTextBlock,
+    Image: ImageBlock,
+    Button: ButtonBlock,
+    Spacer: SpacerBlock,
+    Divider: DividerBlock,
     Hero: HeroBlock,
     CardGrid: CardGridBlock,
-    Testimonial: TestimonialBlock,
-    TestimonialSlider: TestimonialSliderBlock,
+    ImageGallery: ImageGalleryBlock,
     Accordion: AccordionBlock,
     CTABanner: CTABannerBlock,
     Stats: StatsBlock,
     IconFeatures: IconFeaturesBlock,
     Steps: StepsBlock,
-    Section: SectionBlock,
+    Testimonial: TestimonialBlock,
+    TestimonialSlider: TestimonialSliderBlock,
     Columns: ColumnsBlock,
-    Spacer: SpacerBlock,
-    Heading: HeadingBlock,
-    RichText: RichTextBlock,
-    Callout: CalloutBlock,
-    Button: ButtonBlock,
-    Image: ImageBlock,
-    ImageGallery: ImageGalleryBlock,
+    Section: SectionBlock,
     VideoEmbed: VideoEmbedBlock,
     CalendlyBooking: CalendlyBookingBlock,
+    Callout: CalloutBlock,
   },
   root: rootEditorConfig,
 };

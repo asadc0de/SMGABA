@@ -7,6 +7,10 @@ import {
 } from "../style";
 import { Video, AlertTriangle, ExternalLink, Play } from "lucide-react";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export type VideoAspectRatio = "16:9" | "4:3";
 
 export interface VideoEmbedProps extends BlockStyleProps {
@@ -15,6 +19,9 @@ export interface VideoEmbedProps extends BlockStyleProps {
   aspectRatio?: VideoAspectRatio;
   caption?: string;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
 }
 
 export const defaultVideoEmbedProps: VideoEmbedProps = {
@@ -149,7 +156,7 @@ function useIsInPuckEditor(): boolean {
       document.querySelector("[data-puck-drop-zone]") ||
       document.querySelector("[data-puck-component]") ||
       document.querySelector(".puck") ||
-      (window.self !== window.top && window.top?.location?.pathname?.includes("/internal/pages/"))
+      (window.self !== window.top && (window.top?.location?.pathname?.includes("/cms/") || window.top?.location?.pathname?.includes("/internal/pages/")))
     );
     if (isEditor) {
       setInEditor(true);
@@ -189,10 +196,19 @@ export function VideoEmbedRender({
     },
   );
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const elementCustomStyles = buildElementStyleObject(props.styleControls);
+  const animationClasses = buildAnimationClasses(props.animation);
+  const animationStyles = buildAnimationStyles(props.animation);
+
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...elementCustomStyles,
+    ...animationStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
 
   const { embedUrl, provider, valid, error } = parseVideoEmbedUrl(url);
 
@@ -200,7 +216,7 @@ export function VideoEmbedRender({
 
   return (
     <div className={`w-full ${styleClasses}`}>
-      <div style={containerStyle} className="w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div style={containerStyle} className={`w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 ${animationClasses}`}>
         {!valid ? (
           <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center text-xs sm:text-sm text-destructive shadow-xs">
             <AlertTriangle className="size-8 mx-auto mb-2 text-destructive" />

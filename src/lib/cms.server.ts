@@ -207,7 +207,7 @@ export function validatePuckUrlsAndStyles(puckData: unknown): { valid: boolean; 
         if (!isValidButtonUrl(val)) {
           return {
             valid: false,
-            error: `Invalid URL "${val}" in property "${key}". Only https://, http://, / (relative), mailto:, and tel: are allowed. Protocol-relative ("//...") and javascript URLs are rejected.`,
+            error: `Invalid URL "${val}" in property "${key}". Only https://, http://, / (relative), # (anchor), mailto:, and tel: are allowed. Protocol-relative ("//...") and javascript URLs are rejected.`,
           };
         }
       }
@@ -1691,5 +1691,36 @@ export const saveCmsSiteSettings = createServerFn({ method: "POST" })
       return { success: false, error: err.message || "Failed to save site settings." };
     }
   });
+
+/**
+ * Lightweight server function to fetch list of CMS pages (slugs and titles)
+ * for use in LinkPicker and site navigation dropdowns.
+ */
+export const getCmsPagesList = createServerFn({ method: "GET" })
+  .handler(async (): Promise<{ pages: Array<{ id: string; slug: string; title: string; status: "draft" | "published" }> }> => {
+    const client = await getSupabaseServerClient();
+    if (!client) {
+      if (isDev) {
+        const pages = Array.from(localFallbackPages.values())
+          .filter((p) => !p.slug.startsWith("__"))
+          .map(({ id, slug, title, status }) => ({ id, slug, title, status }));
+        return { pages };
+      }
+      return { pages: [] };
+    }
+
+    try {
+      const { data: records } = await client
+        .from("cms_pages")
+        .select("id, slug, title, status")
+        .not("slug", "like", "__%")
+        .order("title", { ascending: true });
+
+      return { pages: (records || []) as Array<{ id: string; slug: string; title: string; status: "draft" | "published" }> };
+    } catch {
+      return { pages: [] };
+    }
+  });
+
 
 

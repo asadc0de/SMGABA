@@ -36,6 +36,20 @@ export interface CardItem {
   ctaHref?: string;
 }
 
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import {
+  buildElementStyleObject,
+  buildElementCardStyleObject,
+  type StyleControlConfig,
+} from "../fields/StyleControls";
+import {
+  buildAnimationClasses,
+  buildAnimationStyles,
+  type AnimationConfig,
+} from "../fields/AnimationControls";
+
 export interface CardGridProps extends BlockStyleProps {
   heading?: string;
   subheading?: string;
@@ -43,6 +57,17 @@ export interface CardGridProps extends BlockStyleProps {
   gap?: "sm" | "md" | "lg";
   cardStyle?: "elevated" | "bordered" | "navy-card" | "glass";
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  titleTypography?: TypographyConfig;
+  bodyTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  sameItemSize?: boolean;
+  equalHeightCards?: boolean;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  advancedLayout?: AdvancedLayoutConfig;
   items: CardItem[];
 }
 
@@ -191,6 +216,15 @@ export function CardGridRender(props: CardGridProps) {
     gap = "md",
     cardStyle = "elevated",
     sizePercent = 100,
+    sizeControls,
+    sameItemSize,
+    equalHeightCards,
+    styleControls,
+    animation,
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
     items = [],
   } = props;
 
@@ -202,13 +236,38 @@ export function CardGridRender(props: CardGridProps) {
   const gapClass = getGapClass(gap);
   const styleTokens = getCardStyleClasses(cardStyle);
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%`, margin: "0 auto" }
-      : {};
+  const customSectionStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+  };
+
+  const computedSizeStyles = buildSizeStyles(sizeControls, sizePercent);
+  const elementStyle = buildElementStyleObject(styleControls);
+  const childCardStyle = buildElementCardStyleObject(styleControls);
+  const animClasses = buildAnimationClasses(animation);
+
+  const isCentered = !sizeControls?.widthType || sizeControls.widthType === "percent" || sizeControls.widthType === "px";
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(!styleControls?.applyStyleToChildren ? elementStyle : {}),
+    ...(isCentered && computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
+
+  const titleTypographyStyles = buildTypographyStyles(props.titleTypography);
+  const bodyTypographyStyles = buildTypographyStyles(props.bodyTypography);
+
+  const layoutClasses = buildAdvancedLayoutClasses(advancedLayout);
+  const isEqualHeight =
+    equalHeightCards !== undefined
+      ? Boolean(equalHeightCards)
+      : sizeControls?.equalHeightCards !== false;
+  const isSameSize = Boolean(sameItemSize || sizeControls?.sameItemSize);
 
   return (
-    <section className={`w-full ${styleClasses}`}>
+    <section className={`w-full ${styleClasses} ${animClasses}`} style={customSectionStyle}>
       {/* Optional Header Section */}
       {(heading || subheading) && (
         <div className="mb-10 text-center max-w-3xl mx-auto px-4 space-y-3">
@@ -226,14 +285,32 @@ export function CardGridRender(props: CardGridProps) {
       )}
 
       {/* Grid Container */}
-      <div style={containerStyle} className={`grid ${colsClass} ${gapClass}`}>
+      <div
+        style={containerStyle}
+        className={
+          layoutClasses ||
+          `grid ${colsClass} ${gapClass} ${isEqualHeight ? "items-stretch" : "items-start"}`
+        }
+      >
         {items.map((card, idx) => {
           const IconComponent = card.icon ? ICON_MAP[card.icon] : null;
           const validImg = card.imageUrl && isValidImageUrl(card.imageUrl) ? card.imageUrl : undefined;
           const validLink = card.ctaHref && isValidButtonUrl(card.ctaHref) ? card.ctaHref : undefined;
+          const itemAnimStyles = buildAnimationStyles(animation, idx);
+
+          const cardCustomStyle: React.CSSProperties = {
+            ...(isSameSize ? { flex: "1 1 0px", width: "100%" } : {}),
+            ...(isEqualHeight ? { height: "100%" } : {}),
+            ...childCardStyle,
+            ...itemAnimStyles,
+          };
 
           return (
-            <div key={card.id || idx} className={styleTokens.card}>
+            <div
+              key={card.id || idx}
+              className={`${styleTokens.card} ${animClasses} ${isEqualHeight ? "h-full flex flex-col justify-between" : ""}`}
+              style={cardCustomStyle}
+            >
               <div className="space-y-4">
                 {/* Top Row: Icon/Image + Badge */}
                 <div className="flex items-center justify-between gap-3">
@@ -265,14 +342,14 @@ export function CardGridRender(props: CardGridProps) {
 
                 {/* Card Title */}
                 {card.title && card.title.trim() && (
-                  <h3 className={styleTokens.title}>
+                  <h3 className={styleTokens.title} style={titleTypographyStyles}>
                     {card.title}
                   </h3>
                 )}
 
                 {/* Card Description */}
                 {card.description && card.description.trim() && (
-                  <p className={styleTokens.desc}>
+                  <p className={styleTokens.desc} style={bodyTypographyStyles}>
                     {card.description}
                   </p>
                 )}

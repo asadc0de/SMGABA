@@ -120,13 +120,14 @@ export function validateRedirectInput(
 
   // Reject system and admin paths
   if (
+    normalizedFrom.startsWith("/cms") ||
     normalizedFrom.startsWith("/internal") ||
     normalizedFrom.startsWith("/tools") ||
     normalizedFrom.startsWith("/api")
   ) {
     return {
       valid: false,
-      error: "Redirects cannot start with /internal, /tools, or /api paths.",
+      error: "Redirects cannot start with /cms, /internal, /tools, or /api paths.",
     };
   }
 

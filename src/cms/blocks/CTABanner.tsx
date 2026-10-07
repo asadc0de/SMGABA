@@ -8,6 +8,11 @@ import {
 import { isValidButtonUrl } from "./Button";
 import { ArrowRight, Sparkles } from "lucide-react";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export type CTABannerTheme = "navy" | "light" | "blue-gradient";
 export type CTABannerLayout = "card" | "full-width";
 export type CTABannerAlign = "left" | "center";
@@ -16,6 +21,10 @@ export interface CTABannerProps extends BlockStyleProps {
   eyebrow?: string;
   heading: string;
   description?: string;
+  headlineTypography?: TypographyConfig;
+  bodyTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
   primaryButton: {
     label: string;
     href: string;
@@ -29,6 +38,10 @@ export interface CTABannerProps extends BlockStyleProps {
   alignment?: CTABannerAlign;
   layout?: CTABannerLayout;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
 }
 
 export const defaultCTABannerProps: CTABannerProps = {
@@ -65,6 +78,9 @@ export function CTABannerRender({
   alignment = "center",
   layout = "card",
   sizePercent = 100,
+  backgroundColor,
+  textColor,
+  borderColor,
   marginTop,
   marginBottom,
   paddingTop,
@@ -88,10 +104,13 @@ export function CTABannerRender({
     },
   );
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
 
   const isDark = theme === "navy" || theme === "blue-gradient";
   const isCentered = alignment === "center";
@@ -104,6 +123,18 @@ export function CTABannerRender({
   } else {
     themeClasses = "bg-[#f8fafc] text-[#142340] border border-slate-200/90 shadow-sm";
   }
+
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const animStyles = buildAnimationStyles(props.animation);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customCardStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+    ...elementStyle,
+    ...animStyles,
+  };
 
   const primaryValid = primaryButton?.href ? isValidButtonUrl(primaryButton.href) : false;
   const secondaryValid =
@@ -120,10 +151,11 @@ export function CTABannerRender({
     : "border border-slate-300 text-slate-700 hover:bg-slate-100 focus-visible:ring-slate-400";
 
   return (
-    <div className={`w-full ${styleClasses}`}>
+    <div className={`w-full ${styleClasses} ${animClasses}`}>
       <div style={containerStyle} className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div
-          className={`relative overflow-hidden ${themeClasses} ${
+          style={customCardStyle}
+          className={`relative overflow-hidden ${themeClasses} ${animClasses} ${
             layout === "card"
               ? "rounded-3xl p-7 sm:p-10 md:p-14"
               : "rounded-none py-10 sm:py-14 px-4 sm:px-8"
@@ -159,6 +191,7 @@ export function CTABannerRender({
 
           {/* Heading */}
           <h2
+            style={buildTypographyStyles(props.headlineTypography)}
             className={`font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.18] max-w-3xl ${
               isDark ? "text-white" : "text-[#142340]"
             }`}
@@ -169,6 +202,7 @@ export function CTABannerRender({
           {/* Description */}
           {description && (
             <p
+              style={buildTypographyStyles(props.bodyTypography)}
               className={`mt-3 sm:mt-4 text-base sm:text-lg leading-relaxed max-w-2xl ${
                 isDark ? "text-slate-200" : "text-slate-600"
               }`}

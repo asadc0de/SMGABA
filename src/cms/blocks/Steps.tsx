@@ -12,6 +12,20 @@ export interface StepItem {
   text: string;
 }
 
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import {
+  buildElementStyleObject,
+  buildElementCardStyleObject,
+  type StyleControlConfig,
+} from "../fields/StyleControls";
+import {
+  buildAnimationClasses,
+  buildAnimationStyles,
+  type AnimationConfig,
+} from "../fields/AnimationControls";
+
 export type StepsLayout = "horizontal" | "vertical" | "timeline";
 
 export interface StepsProps extends BlockStyleProps {
@@ -19,6 +33,17 @@ export interface StepsProps extends BlockStyleProps {
   heading?: string;
   description?: string;
   layout?: StepsLayout;
+  titleTypography?: TypographyConfig;
+  bodyTypography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  advancedLayout?: AdvancedLayoutConfig;
+  sizeControls?: SizeControlConfig;
+  sameItemSize?: boolean;
+  equalHeightCards?: boolean;
   items: StepItem[];
   sizePercent?: number;
 }
@@ -62,6 +87,13 @@ export function StepsRender({
   heading = defaultStepsProps.heading,
   description = defaultStepsProps.description,
   layout = "horizontal",
+  backgroundColor,
+  textColor,
+  borderColor,
+  advancedLayout,
+  sizeControls,
+  sameItemSize,
+  equalHeightCards,
   items = defaultStepsProps.items,
   sizePercent = 100,
   marginTop,
@@ -87,15 +119,46 @@ export function StepsRender({
     },
   );
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(sizeControls, sizePercent);
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
 
   const safeItems = Array.isArray(items) && items.length > 0 ? items : defaultStepsProps.items;
+  const advClasses = buildAdvancedLayoutClasses(advancedLayout);
+
+  const isEqualHeight =
+    equalHeightCards !== undefined
+      ? Boolean(equalHeightCards)
+      : sizeControls?.equalHeightCards !== false;
+  const isSameSize = Boolean(sameItemSize || sizeControls?.sameItemSize);
+
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const childCardStyle = buildElementCardStyleObject(props.styleControls);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customCardStyle: React.CSSProperties = {
+    ...(backgroundColor ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor } : {}),
+    ...(isSameSize ? { flex: "1 1 0px", width: "100%" } : {}),
+    ...(isEqualHeight ? { height: "100%" } : {}),
+    ...childCardStyle,
+  };
+  const customHeadingStyle: React.CSSProperties = {
+    ...(textColor ? { color: textColor } : {}),
+    ...buildTypographyStyles(props.titleTypography),
+  };
+  const customSubtextStyle: React.CSSProperties = {
+    ...(textColor ? { color: textColor, opacity: 0.85 } : {}),
+    ...buildTypographyStyles(props.bodyTypography),
+  };
 
   return (
-    <div className={`w-full ${styleClasses}`}>
+    <div className={`w-full ${styleClasses} ${animClasses}`} style={!props.styleControls?.applyStyleToChildren ? elementStyle : {}}>
       <div style={containerStyle} className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {(eyebrow || heading || description) && (
@@ -124,26 +187,37 @@ export function StepsRender({
         {layout === "horizontal" && (
           <div className="relative">
             {/* Desktop horizontal connector bar */}
-            <div
-              className="hidden md:block absolute top-6 left-12 right-12 h-0.5 bg-gradient-to-r from-[#1b4e94]/20 via-[#1b4e94] to-[#1b4e94]/20"
-              aria-hidden="true"
-            />
+            {!advClasses && (
+              <div
+                className="hidden md:block absolute top-6 left-12 right-12 h-0.5 bg-gradient-to-r from-[#1b4e94]/20 via-[#1b4e94] to-[#1b4e94]/20"
+                aria-hidden="true"
+              />
+            )}
 
-            <div className={`grid gap-8 md:gap-6 ${
-              safeItems.length === 2
-                ? "md:grid-cols-2"
-                : safeItems.length === 3
-                  ? "md:grid-cols-3"
-                  : safeItems.length === 4
-                    ? "md:grid-cols-4"
-                    : "md:grid-cols-3 lg:grid-cols-5"
-            }`}>
+            <div
+              className={
+                advClasses ||
+                `grid gap-8 md:gap-6 ${
+                  safeItems.length === 2
+                    ? "md:grid-cols-2"
+                    : safeItems.length === 3
+                      ? "md:grid-cols-3"
+                      : safeItems.length === 4
+                        ? "md:grid-cols-4"
+                        : "md:grid-cols-3 lg:grid-cols-5"
+                } ${isEqualHeight ? "items-stretch" : "items-start"}`
+              }
+            >
               {safeItems.map((step, idx) => {
                 const stepNumStr = step.stepNumber || String(idx + 1).padStart(2, "0");
+                const itemAnimStyles = buildAnimationStyles(props.animation, idx);
                 return (
                   <div
                     key={`${idx}-${step.title}`}
-                    className="relative flex flex-col items-center text-center group"
+                    className={`relative flex flex-col items-center text-center group ${
+                      isSameSize ? "flex-1 w-full" : ""
+                    } ${isEqualHeight ? "h-full" : ""} ${animClasses}`}
+                    style={itemAnimStyles}
                   >
                     {/* Badge */}
                     <div className="relative z-10 flex size-12 items-center justify-center rounded-2xl bg-[#1b4e94] text-white font-mono text-base font-bold shadow-md ring-4 ring-white transition-transform duration-300 group-hover:scale-110 group-hover:bg-[#0f2142]">
@@ -151,11 +225,22 @@ export function StepsRender({
                     </div>
 
                     {/* Step Card Content */}
-                    <div className="mt-5 w-full rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs flex-1 flex flex-col transition-all duration-300 group-hover:shadow-md group-hover:border-blue-300">
-                      <h3 className="font-serif-hero text-base sm:text-lg font-bold text-[#142340] tracking-tight group-hover:text-[#1b4e94] transition-colors">
+                    <div
+                      style={customCardStyle}
+                      className={`mt-5 w-full rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-xs flex-1 flex flex-col transition-all duration-300 group-hover:shadow-md group-hover:border-blue-300 ${
+                        isEqualHeight ? "h-full justify-between" : ""
+                      }`}
+                    >
+                      <h3
+                        style={customHeadingStyle}
+                        className="font-serif-hero text-base sm:text-lg font-bold text-[#142340] tracking-tight group-hover:text-[#1b4e94] transition-colors"
+                      >
                         {step.title}
                       </h3>
-                      <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed flex-1">
+                      <p
+                        style={customSubtextStyle}
+                        className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed flex-1"
+                      >
                         {step.text}
                       </p>
                     </div>
@@ -179,10 +264,12 @@ export function StepsRender({
 
             {safeItems.map((step, idx) => {
               const stepNumStr = step.stepNumber || String(idx + 1).padStart(2, "0");
+              const itemAnimStyles = buildAnimationStyles(props.animation, idx);
               return (
                 <div
                   key={`${idx}-${step.title}`}
-                  className="relative group flex items-start"
+                  className={`relative group flex items-start ${animClasses}`}
+                  style={itemAnimStyles}
                 >
                   {/* Step Dot Badge perched on timeline */}
                   <div className="absolute -left-8 sm:-left-12 top-2 flex size-8 sm:size-9 items-center justify-center rounded-xl bg-[#1b4e94] text-white font-mono text-xs sm:text-sm font-bold shadow-md ring-4 ring-white transition-all duration-300 group-hover:scale-110 group-hover:bg-[#0f2142]">
@@ -190,11 +277,20 @@ export function StepsRender({
                   </div>
 
                   {/* Card Content */}
-                  <div className="w-full rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-xs transition-all duration-300 group-hover:shadow-md group-hover:border-blue-300">
-                    <h3 className="font-serif-hero text-base sm:text-lg font-bold text-[#142340] tracking-tight group-hover:text-[#1b4e94] transition-colors">
+                  <div
+                    style={customCardStyle}
+                    className="w-full rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-7 shadow-xs transition-all duration-300 group-hover:shadow-md group-hover:border-blue-300"
+                  >
+                    <h3
+                      style={customHeadingStyle}
+                      className="font-serif-hero text-base sm:text-lg font-bold text-[#142340] tracking-tight group-hover:text-[#1b4e94] transition-colors"
+                    >
                       {step.title}
                     </h3>
-                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                    <p
+                      style={customSubtextStyle}
+                      className="mt-2 text-sm text-slate-600 leading-relaxed"
+                    >
                       {step.text}
                     </p>
                   </div>

@@ -6,16 +6,35 @@ import {
   buildStyleClasses,
 } from "../style";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildTypographyStyles, type TypographyConfig } from "../fields/TextFormatting";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export interface HeadingProps extends BlockStyleProps {
   text: string;
   level: "h1" | "h2" | "h3";
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  typography?: TypographyConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  textColor?: string;
+  backgroundColor?: string;
+  borderColor?: string;
 }
 
 export function HeadingRender({
   text,
   level = "h2",
   sizePercent = 100,
+  sizeControls,
+  typography,
+  styleControls,
+  animation,
+  textColor,
+  backgroundColor,
+  borderColor,
   align,
   marginTop,
   marginBottom,
@@ -42,7 +61,7 @@ export function HeadingRender({
   );
 
   const scale = typeof sizePercent === "number" && sizePercent > 0 ? sizePercent / 100 : 1;
-  const customStyle: React.CSSProperties =
+  const customScaleStyle: React.CSSProperties =
     scale !== 1
       ? {
           fontSize:
@@ -55,11 +74,34 @@ export function HeadingRender({
         }
       : {};
 
+  const customColorStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent"
+      ? { backgroundColor, padding: "0.5rem 1rem", borderRadius: "0.5rem" }
+      : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1, borderStyle: "solid" } : {}),
+  };
+
+  const computedSizeStyles = buildSizeStyles(sizeControls);
+  const typographyStyles = buildTypographyStyles(typography);
+  const elementStyle = buildElementStyleObject(styleControls);
+  const animStyles = buildAnimationStyles(animation);
+  const animClasses = buildAnimationClasses(animation);
+
+  const finalStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...customScaleStyle,
+    ...customColorStyle,
+    ...typographyStyles,
+    ...elementStyle,
+    ...animStyles,
+  };
+
   if (level === "h1") {
     return (
-      <div className={`w-full ${styleClasses}`}>
+      <div className={`w-full ${styleClasses} ${animClasses}`}>
         <h1
-          style={customStyle}
+          style={finalStyle}
           className="font-serif-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-[1.12]"
         >
           {text}
@@ -70,9 +112,9 @@ export function HeadingRender({
 
   if (level === "h3") {
     return (
-      <div className={`w-full ${styleClasses}`}>
+      <div className={`w-full ${styleClasses} ${animClasses}`}>
         <h3
-          style={customStyle}
+          style={finalStyle}
           className="font-serif-hero text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight leading-snug"
         >
           {text}
@@ -82,9 +124,9 @@ export function HeadingRender({
   }
 
   return (
-    <div className={`w-full ${styleClasses}`}>
+    <div className={`w-full ${styleClasses} ${animClasses}`}>
       <h2
-        style={customStyle}
+        style={finalStyle}
         className="font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-[1.2]"
       >
         {text}

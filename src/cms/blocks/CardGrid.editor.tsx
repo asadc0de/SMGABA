@@ -1,11 +1,18 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { CardGridRender, type CardGridProps, defaultCardGridProps } from "./CardGrid";
 import { createImagePickerField } from "../fields/ImagePicker";
+import { createLinkPickerField } from "../fields/LinkPicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSizeControlsField, createToggleField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 export const CardGridBlock: ComponentConfig<CardGridProps> = {
-  label: "Feature / Card Grid",
+  label: "Cards Grid",
   defaultProps: defaultCardGridProps,
   fields: {
     heading: {
@@ -16,9 +23,23 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
       type: "textarea",
       label: "Section Subheading (Optional)",
     },
+    titleTypography: createTypographyField({
+      label: "Card Titles Typography",
+    }),
+    bodyTypography: createTypographyField({
+      label: "Card Descriptions Typography",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (Cards/Section)",
+      showApplyToChildren: true,
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Entrance & Stagger)",
+      showStaggerToggle: true,
+    }),
     columns: {
       type: "select",
-      label: "Grid Columns (Desktop)",
+      label: "Columns (Desktop)",
       options: [
         { label: "2 Columns", value: "2" },
         { label: "3 Columns (Default)", value: "3" },
@@ -44,8 +65,31 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
         { label: "Glassmorphism Frosted", value: "glass" },
       ],
     },
+    backgroundColor: createColorPickerField({
+      label: "Section Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Text Color",
+    }),
+    borderColor: createColorPickerField({
+      label: "Border Color",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Container Dimensions (Width & Height)",
+      showMultiItemControls: true,
+      showEqualHeightToggle: true,
+    }),
+    sameItemSize: createToggleField({
+      label: "Apply same size to all items",
+      description: "Force all cards in this grid to have identical width and height.",
+    }),
+    equalHeightCards: createToggleField({
+      label: "Equal height cards",
+      description: "Ensure all cards in a row stretch to the same matching height.",
+      defaultValue: true,
+    }),
     sizePercent: createSizeSliderField({
-      label: "Grid Container Width / Scale",
+      label: "Grid Container Width Scale (%)",
       min: 50,
       max: 100,
       step: 5,
@@ -53,10 +97,12 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
       presets: [50, 65, 80, 90, 100],
       description: "Scale the maximum width of the card grid container.",
     }),
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "grid" }),
     items: {
       type: "array",
-      label: "Card Items",
-      getItemSummary: (item) => item?.title || "New Card",
+      label: "Cards List",
+      min: 1,
+      getItemSummary: (item, idx) => item?.title ? `${item.title} (${item.eyebrow || "Card"})` : `Card #${(idx ?? 0) + 1}`,
       arrayFields: {
         title: {
           type: "text",
@@ -78,36 +124,36 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
           type: "select",
           label: "Icon",
           options: [
-            { label: "Trending Up / Growth", value: "TrendingUp" },
-            { label: "Shield / Security", value: "Shield" },
-            { label: "Briefcase / Business", value: "Briefcase" },
-            { label: "Calculator / Accounting", value: "Calculator" },
-            { label: "Building / Corporate", value: "Building" },
-            { label: "Users / Team", value: "Users" },
-            { label: "Zap / Speed", value: "Zap" },
-            { label: "Award / Quality", value: "Award" },
-            { label: "Check Circle / Success", value: "CheckCircle" },
-            { label: "File Text / Report", value: "FileText" },
-            { label: "Pie Chart / Wealth", value: "PieChart" },
-            { label: "Bar Chart / FP&A", value: "BarChart3" },
-            { label: "Dollar / Finance", value: "DollarSign" },
-            { label: "Scale / Legal", value: "Scale" },
-            { label: "Compass / Strategy", value: "Compass" },
+            { label: "Trending Up (Growth)", value: "TrendingUp" },
+            { label: "Shield (Security)", value: "Shield" },
+            { label: "Briefcase (Business)", value: "Briefcase" },
+            { label: "Calculator (Accounting)", value: "Calculator" },
+            { label: "Building (Corporate)", value: "Building" },
+            { label: "Users (Team)", value: "Users" },
+            { label: "Zap (Speed)", value: "Zap" },
+            { label: "Award (Quality)", value: "Award" },
+            { label: "Check Circle (Success)", value: "CheckCircle" },
+            { label: "File Text (Report)", value: "FileText" },
+            { label: "Pie Chart (Wealth)", value: "PieChart" },
+            { label: "Bar Chart (FP&A)", value: "BarChart3" },
+            { label: "Dollar (Finance)", value: "DollarSign" },
+            { label: "Scale (Legal)", value: "Scale" },
+            { label: "Compass (Strategy)", value: "Compass" },
             { label: "None", value: "" },
           ],
         },
         imageUrl: createImagePickerField({
-          label: "Custom Image (Overrides Icon)",
+          label: "Custom Image (Optional)",
           placeholder: "https://..., /assets/card.jpg, or pick from gallery",
         }),
         ctaText: {
           type: "text",
-          label: "CTA Link Label (Optional)",
+          label: "Link Button Text (Optional)",
         },
-        ctaHref: {
-          type: "text",
-          label: "CTA Link URL (/path or https://...)",
-        },
+        ctaHref: createLinkPickerField({
+          label: "Link Destination",
+          placeholder: "Select page or enter link",
+        }),
       },
       defaultItemProps: {
         title: "New Advisory Capability",

@@ -1,30 +1,58 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { HeroRender, type HeroProps, defaultHeroProps } from "./Hero";
 import { createImagePickerField } from "../fields/ImagePicker";
+import { createLinkPickerField } from "../fields/LinkPicker";
 import {
   createResponsiveSpaceField,
   createResponsiveAlignField,
 } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
 
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
+
 export const HeroBlock: ComponentConfig<HeroProps> = {
-  label: "Hero / Banner",
+  label: "Top Banner",
   defaultProps: defaultHeroProps,
   fields: {
     headline: {
       type: "textarea",
-      label: "Headline",
+      label: "Main Headline",
     },
     subheadline: {
       type: "textarea",
       label: "Subheadline / Description",
     },
+    headlineTypography: createTypographyField({
+      label: "Main Headline Typography",
+    }),
+    bodyTypography: createTypographyField({
+      label: "Subheadline Typography",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (Background, Shadow, Borders)",
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Entrance Effects)",
+    }),
     eyebrow: {
       type: "text",
       label: "Eyebrow Badge (Optional)",
     },
+    backgroundColor: createColorPickerField({
+      label: "Banner Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Banner Text Color",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Hero Box Dimensions (W/H)",
+    }),
     sizePercent: createSizeSliderField({
-      label: "Hero Content Width / Scale",
+      label: "Banner Content Width Scale (%)",
       min: 50,
       max: 100,
       step: 5,
@@ -38,9 +66,9 @@ export const HeroBlock: ComponentConfig<HeroProps> = {
     }),
     overlay: {
       type: "select",
-      label: "Overlay Shade",
+      label: "Background Dark Tint",
       options: [
-        { label: "Site Style (SMG Brand)", value: "site" },
+        { label: "Site Style (SMG Brand Gradient)", value: "site" },
         { label: "Navy Glass (Brand Default)", value: "navy" },
         { label: "Dark Subtle (40%)", value: "dark-subtle" },
         { label: "Dark Heavy (75%)", value: "dark-heavy" },
@@ -50,39 +78,39 @@ export const HeroBlock: ComponentConfig<HeroProps> = {
     },
     minHeight: {
       type: "select",
-      label: "Section Height",
+      label: "Banner Height",
       options: [
-        { label: "Medium (Subpage Hero Default)", value: "medium" },
-        { label: "Full Viewport (75vh)", value: "screen" },
+        { label: "Medium (Standard Default)", value: "medium" },
+        { label: "Full Screen (75vh)", value: "screen" },
         { label: "Compact (360px)", value: "compact" },
-        { label: "Auto (Content Height)", value: "auto" },
+        { label: "Auto (Fits Content)", value: "auto" },
       ],
     },
     primaryCta: {
       type: "object",
-      label: "Primary CTA Button",
+      label: "Primary Button",
       objectFields: {
         enabled: {
           type: "radio",
-          label: "Enable Primary Button",
+          label: "Show Primary Button",
           options: [
-            { label: "Enabled", value: true },
-            { label: "Disabled", value: false },
+            { label: "Yes, show button", value: true },
+            { label: "Hide button", value: false },
           ],
         },
         label: {
           type: "text",
-          label: "Button Label",
+          label: "Button Text",
         },
-        href: {
-          type: "text",
-          label: "Link URL (/path or https://...)",
-        },
+        href: createLinkPickerField({
+          label: "Button Link",
+          placeholder: "Select page or enter link",
+        }),
         variant: {
           type: "select",
           label: "Button Style",
           options: [
-            { label: "Solid White Pill (Site Style)", value: "white" },
+            { label: "Solid White Pill", value: "white" },
             { label: "Outlined White Glass", value: "outline" },
             { label: "Primary Blue", value: "primary" },
             { label: "Sky Secondary", value: "secondary" },
@@ -92,29 +120,29 @@ export const HeroBlock: ComponentConfig<HeroProps> = {
     },
     secondaryCta: {
       type: "object",
-      label: "Secondary CTA Button",
+      label: "Secondary Button",
       objectFields: {
         enabled: {
           type: "radio",
-          label: "Enable Secondary Button",
+          label: "Show Secondary Button",
           options: [
-            { label: "Enabled", value: true },
-            { label: "Disabled", value: false },
+            { label: "Yes, show button", value: true },
+            { label: "Hide button", value: false },
           ],
         },
         label: {
           type: "text",
-          label: "Button Label",
+          label: "Button Text",
         },
-        href: {
-          type: "text",
-          label: "Link URL (/path or https://...)",
-        },
+        href: createLinkPickerField({
+          label: "Button Link",
+          placeholder: "Select page or enter link",
+        }),
         variant: {
           type: "select",
           label: "Button Style",
           options: [
-            { label: "Outlined White Glass (Site Style)", value: "outline" },
+            { label: "Outlined White Glass", value: "outline" },
             { label: "Solid White Pill", value: "white" },
             { label: "Primary Blue", value: "primary" },
             { label: "Sky Secondary", value: "secondary" },
@@ -122,7 +150,7 @@ export const HeroBlock: ComponentConfig<HeroProps> = {
         },
       },
     },
-    align: createResponsiveAlignField("Content Alignment", "left"),
+    align: createResponsiveAlignField("Text Alignment", "left"),
     marginTop: createResponsiveSpaceField("Margin Top", "none"),
     marginBottom: createResponsiveSpaceField("Margin Bottom", "none"),
     paddingTop: createResponsiveSpaceField("Padding Top", "none"),

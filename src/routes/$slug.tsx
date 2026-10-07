@@ -19,7 +19,7 @@ import { ArrowLeft, BookOpen } from "lucide-react";
 export const Route = createFileRoute("/$slug")({
   beforeLoad: async ({ params }) => {
     // 1. Skip static assets, favicon, system paths
-    if (params.slug.includes(".") || params.slug === "internal" || params.slug === "tools") {
+    if (params.slug.includes(".") || params.slug === "internal" || params.slug === "tools" || params.slug === "cms") {
       return;
     }
 

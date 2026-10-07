@@ -11,6 +11,19 @@ import {
   ImageIcon,
 } from "lucide-react";
 
+import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields/AdvancedLayout";
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import {
+  buildElementStyleObject,
+  buildElementCardStyleObject,
+  type StyleControlConfig,
+} from "../fields/StyleControls";
+import {
+  buildAnimationClasses,
+  buildAnimationStyles,
+  type AnimationConfig,
+} from "../fields/AnimationControls";
+
 export interface GalleryItem {
   url: string;
   alt?: string;
@@ -31,6 +44,15 @@ export interface ImageGalleryProps extends BlockStyleProps {
   showCaptions?: boolean;
   hoverEffect?: "zoom" | "lift" | "shine" | "none";
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
+  sameItemSize?: boolean;
+  equalHeightCards?: boolean;
+  backgroundColor?: string;
+  textColor?: string;
+  borderColor?: string;
+  advancedLayout?: AdvancedLayoutConfig;
   items?: GalleryItem[];
 }
 
@@ -133,6 +155,13 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
     showCaptions = true,
     hoverEffect = "zoom",
     sizePercent = 100,
+    sizeControls,
+    sameItemSize,
+    equalHeightCards,
+    backgroundColor,
+    textColor,
+    borderColor,
+    advancedLayout,
     items = [],
   } = props;
 
@@ -150,10 +179,27 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
   const gapCls = GAP_CLASSES[gap] || "gap-5";
   const colCls = COLUMN_CLASSES[columns] || COLUMN_CLASSES["3"];
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%`, margin: "0 auto" }
-      : {};
+  const elementStyle = buildElementStyleObject(props.styleControls);
+  const childCardStyle = buildElementCardStyleObject(props.styleControls);
+  const animClasses = buildAnimationClasses(props.animation);
+
+  const customSectionStyle: React.CSSProperties = {
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(textColor ? { color: textColor } : {}),
+    ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
+    ...(!props.styleControls?.applyStyleToChildren ? elementStyle : {}),
+  };
+
+  const computedSizeStyles = buildSizeStyles(sizeControls, sizePercent);
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+    ...customSectionStyle,
+  };
+
+  const layoutClasses = buildAdvancedLayoutClasses(advancedLayout);
 
   // Lightbox keyboard navigation
   const nextLightbox = useCallback(() => {
@@ -181,7 +227,7 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
     return (
       <div
         style={containerStyle}
-        className={`rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-10 text-center ${styleClasses}`}
+        className={`rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-10 text-center ${styleClasses} ${animClasses}`}
       >
         <ImageIcon className="mx-auto size-10 text-slate-300 mb-2" />
         <p className="text-sm font-medium text-slate-600">Image Gallery Block</p>
@@ -206,7 +252,7 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
       : "transition-shadow duration-300 hover:shadow-lg";
 
   return (
-    <section style={containerStyle} className={`w-full ${styleClasses}`}>
+    <section style={containerStyle} className={`w-full ${styleClasses} ${animClasses}`}>
       {(heading || subheading) && (
         <div className="mb-8 text-center max-w-3xl mx-auto">
           {heading && (
@@ -224,19 +270,22 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
 
       {/* Layout 1: Grid Layout */}
       {layout === "grid" && (
-        <div className={`grid ${colCls} ${gapCls}`}>
-          {validItems.map((item, idx) => (
-            <div
-              key={`${item.url}-${idx}`}
-              className={`group relative overflow-hidden bg-slate-100 border border-slate-200/80 ${roundedCls} ${hoverCardCls}`}
-            >
-              <div className={`w-full overflow-hidden ${aspectCls} relative flex items-center justify-center`}>
-                <img
-                  src={item.url}
-                  alt={item.alt || item.title || `Gallery image ${idx + 1}`}
-                  loading="lazy"
-                  className={`w-full h-full object-cover ${hoverImgCls}`}
-                />
+        <div className={layoutClasses || `grid ${colCls} ${gapCls}`}>
+          {validItems.map((item, idx) => {
+            const itemAnimStyles = buildAnimationStyles(props.animation, idx);
+            return (
+              <div
+                key={`${item.url}-${idx}`}
+                style={{ ...childCardStyle, ...itemAnimStyles }}
+                className={`group relative overflow-hidden bg-slate-100 border border-slate-200/80 ${roundedCls} ${hoverCardCls} ${animClasses}`}
+              >
+                <div className={`w-full overflow-hidden ${aspectCls} relative flex items-center justify-center`}>
+                  <img
+                    src={item.url}
+                    alt={item.alt || item.title || `Gallery image ${idx + 1}`}
+                    loading="lazy"
+                    className={`w-full h-full object-cover ${hoverImgCls}`}
+                  />
 
                 {/* Overlay trigger for lightbox or link */}
                 <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
@@ -277,84 +326,30 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
                 </div>
               )}
             </div>
-          ))}
+          );
+        })}
         </div>
       )}
 
       {/* Layout 2: Masonry Layout */}
       {layout === "masonry" && (
         <div className={`columns-1 sm:columns-2 lg:columns-${columns || "3"} ${gapCls} space-y-4`}>
-          {validItems.map((item, idx) => (
-            <div
-              key={`${item.url}-${idx}`}
-              className={`group relative break-inside-avoid overflow-hidden bg-slate-100 border border-slate-200/80 mb-4 ${roundedCls} ${hoverCardCls}`}
-            >
-              <div className="relative overflow-hidden">
-                <img
-                  src={item.url}
-                  alt={item.alt || item.title || `Gallery image ${idx + 1}`}
-                  loading="lazy"
-                  className={`w-full h-auto object-cover ${hoverImgCls}`}
-                />
-
-                <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-                  {enableLightbox && (
-                    <button
-                      type="button"
-                      aria-label="Enlarge image"
-                      onClick={() => setLightboxIndex(idx)}
-                      className="p-2.5 rounded-full bg-white/90 text-navy hover:bg-white hover:scale-110 transition-transform shadow-md cursor-pointer"
-                    >
-                      <Maximize2 className="size-4" />
-                    </button>
-                  )}
-                  {item.linkUrl && (
-                    <a
-                      href={item.linkUrl}
-                      aria-label="Visit link"
-                      className="p-2.5 rounded-full bg-white/90 text-navy hover:bg-white hover:scale-110 transition-transform shadow-md"
-                    >
-                      <ExternalLink className="size-4" />
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {showCaptions && (item.title || item.caption) && (
-                <div className="p-3 bg-white border-t border-slate-100">
-                  {item.title && (
-                    <h4 className="text-xs sm:text-sm font-semibold text-navy truncate">
-                      {item.title}
-                    </h4>
-                  )}
-                  {item.caption && (
-                    <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-2">
-                      {item.caption}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Layout 3: Carousel / Horizontal Scroll */}
-      {layout === "carousel" && (
-        <div className="relative">
-          <div className="flex overflow-x-auto gap-4 pb-4 pt-1 snap-x no-scrollbar">
-            {validItems.map((item, idx) => (
+          {validItems.map((item, idx) => {
+            const itemAnimStyles = buildAnimationStyles(props.animation, idx);
+            return (
               <div
                 key={`${item.url}-${idx}`}
-                className={`group shrink-0 w-72 sm:w-80 snap-start overflow-hidden bg-slate-100 border border-slate-200/80 ${roundedCls} ${hoverCardCls}`}
+                style={{ ...childCardStyle, ...itemAnimStyles }}
+                className={`group relative break-inside-avoid overflow-hidden bg-slate-100 border border-slate-200/80 mb-4 ${roundedCls} ${hoverCardCls} ${animClasses}`}
               >
-                <div className={`w-full overflow-hidden ${aspectCls} relative`}>
+                <div className="relative overflow-hidden">
                   <img
                     src={item.url}
                     alt={item.alt || item.title || `Gallery image ${idx + 1}`}
                     loading="lazy"
-                    className={`w-full h-full object-cover ${hoverImgCls}`}
+                    className={`w-full h-auto object-cover ${hoverImgCls}`}
                   />
+
                   <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
                     {enableLightbox && (
                       <button
@@ -377,6 +372,7 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
                     )}
                   </div>
                 </div>
+
                 {showCaptions && (item.title || item.caption) && (
                   <div className="p-3 bg-white border-t border-slate-100">
                     {item.title && (
@@ -385,14 +381,76 @@ export function ImageGalleryRender(props: ImageGalleryProps) {
                       </h4>
                     )}
                     {item.caption && (
-                      <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                      <p className="text-[11px] text-slate-500 mt-0.5 line-clamp-2">
                         {item.caption}
                       </p>
                     )}
                   </div>
                 )}
               </div>
-            ))}
+            );
+          })}
+        </div>
+      )}
+
+      {/* Layout 3: Carousel / Horizontal Scroll */}
+      {layout === "carousel" && (
+        <div className="relative">
+          <div className="flex overflow-x-auto gap-4 pb-4 pt-1 snap-x no-scrollbar">
+            {validItems.map((item, idx) => {
+              const itemAnimStyles = buildAnimationStyles(props.animation, idx);
+              return (
+                <div
+                  key={`${item.url}-${idx}`}
+                  style={{ ...childCardStyle, ...itemAnimStyles }}
+                  className={`group shrink-0 w-72 sm:w-80 snap-start overflow-hidden bg-slate-100 border border-slate-200/80 ${roundedCls} ${hoverCardCls} ${animClasses}`}
+                >
+                  <div className={`w-full overflow-hidden ${aspectCls} relative`}>
+                    <img
+                      src={item.url}
+                      alt={item.alt || item.title || `Gallery image ${idx + 1}`}
+                      loading="lazy"
+                      className={`w-full h-full object-cover ${hoverImgCls}`}
+                    />
+                    <div className="absolute inset-0 bg-navy/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+                      {enableLightbox && (
+                        <button
+                          type="button"
+                          aria-label="Enlarge image"
+                          onClick={() => setLightboxIndex(idx)}
+                          className="p-2.5 rounded-full bg-white/90 text-navy hover:bg-white hover:scale-110 transition-transform shadow-md cursor-pointer"
+                        >
+                          <Maximize2 className="size-4" />
+                        </button>
+                      )}
+                      {item.linkUrl && (
+                        <a
+                          href={item.linkUrl}
+                          aria-label="Visit link"
+                          className="p-2.5 rounded-full bg-white/90 text-navy hover:bg-white hover:scale-110 transition-transform shadow-md"
+                        >
+                          <ExternalLink className="size-4" />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  {showCaptions && (item.title || item.caption) && (
+                    <div className="p-3 bg-white border-t border-slate-100">
+                      {item.title && (
+                        <h4 className="text-xs sm:text-sm font-semibold text-navy truncate">
+                          {item.title}
+                        </h4>
+                      )}
+                      {item.caption && (
+                        <p className="text-[11px] text-slate-500 mt-0.5 truncate">
+                          {item.caption}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

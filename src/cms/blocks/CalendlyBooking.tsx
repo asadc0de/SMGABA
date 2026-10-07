@@ -9,12 +9,19 @@ import { CALENDLY_DISCOVERY_URL } from "@/data/calendly";
 import { CalendlyWidget } from "@/components/site/CalendlyWidget";
 import { Calendar, AlertTriangle, CheckCircle2, Clock } from "lucide-react";
 
+import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
+import { buildElementStyleObject, type StyleControlConfig } from "../fields/StyleControls";
+import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } from "../fields/AnimationControls";
+
 export interface CalendlyBookingProps extends BlockStyleProps {
   heading?: string;
   description?: string;
   url?: string;
   height?: string;
   sizePercent?: number;
+  sizeControls?: SizeControlConfig;
+  styleControls?: StyleControlConfig;
+  animation?: AnimationConfig;
 }
 
 export const defaultCalendlyBookingProps: CalendlyBookingProps = {
@@ -43,7 +50,7 @@ function useIsInPuckEditor(): boolean {
       document.querySelector("[data-puck-drop-zone]") ||
       document.querySelector("[data-puck-component]") ||
       document.querySelector(".puck") ||
-      (window.self !== window.top && window.top?.location?.pathname?.includes("/internal/pages/"))
+      (window.self !== window.top && (window.top?.location?.pathname?.includes("/cms/") || window.top?.location?.pathname?.includes("/internal/pages/")))
     );
     if (isEditor) {
       setInEditor(true);
@@ -52,18 +59,19 @@ function useIsInPuckEditor(): boolean {
   return inEditor;
 }
 
-export function CalendlyBookingRender({
-  heading = defaultCalendlyBookingProps.heading,
-  description = defaultCalendlyBookingProps.description,
-  url = defaultCalendlyBookingProps.url,
-  height = "700px",
-  sizePercent = 100,
-  marginTop,
-  marginBottom,
-  paddingTop,
-  paddingBottom,
-  align,
-}: CalendlyBookingProps) {
+export function CalendlyBookingRender(props: CalendlyBookingProps) {
+  const {
+    heading = defaultCalendlyBookingProps.heading,
+    description = defaultCalendlyBookingProps.description,
+    url = defaultCalendlyBookingProps.url,
+    height = "700px",
+    sizePercent = 100,
+    marginTop,
+    marginBottom,
+    paddingTop,
+    paddingBottom,
+    align,
+  } = props;
   const isEditor = useIsInPuckEditor();
 
   const normalizedAlign: Responsive<Align> =
@@ -83,17 +91,26 @@ export function CalendlyBookingRender({
     },
   );
 
-  const containerStyle: React.CSSProperties =
-    typeof sizePercent === "number" && sizePercent < 100 && sizePercent >= 20
-      ? { maxWidth: `${sizePercent}%` }
-      : {};
+  const computedSizeStyles = buildSizeStyles(props.sizeControls, sizePercent);
+  const elementCustomStyles = buildElementStyleObject(props.styleControls);
+  const animationClasses = buildAnimationClasses(props.animation);
+  const animationStyles = buildAnimationStyles(props.animation);
+
+  const containerStyle: React.CSSProperties = {
+    ...computedSizeStyles,
+    ...elementCustomStyles,
+    ...animationStyles,
+    ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
+      ? { margin: "0 auto" }
+      : {}),
+  };
 
   const isValidUrl = isValidCalendlyUrl(url);
   const effectiveUrl = isValidUrl ? (url?.trim() || CALENDLY_DISCOVERY_URL) : CALENDLY_DISCOVERY_URL;
 
   return (
     <div className={`w-full ${styleClasses}`}>
-      <div style={containerStyle} className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div style={containerStyle} className={`w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 ${animationClasses}`}>
         {/* Header */}
         {(heading || description) && (
           <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">

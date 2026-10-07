@@ -1,7 +1,14 @@
 import type { ComponentConfig } from "@puckeditor/core";
 import { IconFeaturesRender, type IconFeaturesProps, defaultIconFeaturesProps } from "./IconFeatures";
+import { createLinkPickerField } from "../fields/LinkPicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createColorPickerField } from "../fields/ColorPicker";
+import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSizeControlsField, createToggleField } from "../fields/SizeControls";
+import { createTypographyField } from "../fields/TextFormatting";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 const ICON_OPTIONS = [
   { label: "Shield (Security & Protection)", value: "Shield" },
@@ -9,15 +16,15 @@ const ICON_OPTIONS = [
   { label: "Calculator (Accounting & Math)", value: "Calculator" },
   { label: "Users (Team & Advisory)", value: "Users" },
   { label: "File Text (Reporting & Tax)", value: "FileText" },
-  { label: "Building 2 (Corporate & Entity)", value: "Building2" },
+  { label: "Building (Corporate & Entity)", value: "Building2" },
   { label: "Briefcase (Business & Executive)", value: "Briefcase" },
   { label: "Clock (Efficiency & Timeliness)", value: "Clock" },
-  { label: "Check Circle 2 (Success & Verification)", value: "CheckCircle2" },
+  { label: "Check Circle (Success & Verification)", value: "CheckCircle2" },
   { label: "Star (Excellence & Ratings)", value: "Star" },
   { label: "Heart (Care & Dedication)", value: "Heart" },
   { label: "Globe (Global & Multi-State)", value: "Globe" },
   { label: "Lock (Privacy & Compliance)", value: "Lock" },
-  { label: "Bar Chart 3 (FP&A & Analytics)", value: "BarChart3" },
+  { label: "Bar Chart (FP&A & Analytics)", value: "BarChart3" },
   { label: "Landmark (Banking & Wealth)", value: "Landmark" },
   { label: "Handshake (Partnership & Trust)", value: "Handshake" },
   { label: "Lightbulb (Innovation & Insights)", value: "Lightbulb" },
@@ -31,7 +38,7 @@ const ICON_OPTIONS = [
 ];
 
 export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
-  label: "Icon Features Grid",
+  label: "Feature List",
   defaultProps: defaultIconFeaturesProps,
   fields: {
     heading: {
@@ -42,9 +49,23 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
       type: "textarea",
       label: "Subheading (Optional)",
     },
+    titleTypography: createTypographyField({
+      label: "Features Title Typography",
+    }),
+    bodyTypography: createTypographyField({
+      label: "Features Text Typography",
+    }),
+    styleControls: createStyleControlsField({
+      label: "Style & Appearance (Cards/Section)",
+      showApplyToChildren: true,
+    }),
+    animation: createAnimationControlsField({
+      label: "Micro Animations (Entrance & Stagger)",
+      showStaggerToggle: true,
+    }),
     columns: {
       type: "select",
-      label: "Grid Columns (Desktop)",
+      label: "Columns (Desktop)",
       options: [
         { label: "2 Columns", value: "2" },
         { label: "3 Columns (Default)", value: "3" },
@@ -53,17 +74,51 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
     },
     style: {
       type: "select",
-      label: "Visual Card Style",
+      label: "Card Style",
       options: [
         { label: "White Elevated Cards (Default)", value: "cards" },
         { label: "Plain Minimal (Border-Free)", value: "plain" },
         { label: "Centered Alignment", value: "centered" },
       ],
     },
+    backgroundColor: createColorPickerField({
+      label: "Section Background Color",
+    }),
+    textColor: createColorPickerField({
+      label: "Text Color",
+    }),
+    borderColor: createColorPickerField({
+      label: "Border Color",
+    }),
+    sizeControls: createSizeControlsField({
+      label: "Container Dimensions (Width & Height)",
+      showMultiItemControls: true,
+      showEqualHeightToggle: true,
+    }),
+    sameItemSize: createToggleField({
+      label: "Apply same size to all items",
+      description: "Force all feature items to have equal width and height.",
+    }),
+    equalHeightCards: createToggleField({
+      label: "Equal height cards",
+      description: "Ensure all feature cards stretch to equal matching height.",
+      defaultValue: true,
+    }),
+    sizePercent: createSizeSliderField({
+      label: "Container Width Scale (%)",
+      min: 50,
+      max: 100,
+      step: 5,
+      defaultValue: 100,
+      presets: [50, 65, 80, 90, 100],
+      description: "Scale the maximum width of the feature grid.",
+    }),
+    advancedLayout: createAdvancedLayoutField({ defaultDisplay: "grid" }),
     items: {
       type: "array",
-      label: "Feature Items",
-      getItemSummary: (item) => item?.title || "New Feature",
+      label: "Features List",
+      min: 1,
+      getItemSummary: (item, idx) => item?.title || `Feature #${(idx ?? 0) + 1}`,
       arrayFields: {
         icon: {
           type: "select",
@@ -80,12 +135,12 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
         },
         linkLabel: {
           type: "text",
-          label: "Link Label (Optional)",
+          label: "Link Text (Optional)",
         },
-        linkHref: {
-          type: "text",
-          label: "Link URL (/solutions, https://...)",
-        },
+        linkHref: createLinkPickerField({
+          label: "Link Destination",
+          placeholder: "Select page or enter link",
+        }),
       },
       defaultItemProps: {
         icon: "TrendingUp",
@@ -110,3 +165,5 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
   },
   render: IconFeaturesRender,
 };
+
+export default IconFeaturesBlock;

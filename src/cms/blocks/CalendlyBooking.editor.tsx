@@ -2,9 +2,12 @@ import type { ComponentConfig } from "@puckeditor/core";
 import { CalendlyBookingRender, type CalendlyBookingProps, defaultCalendlyBookingProps } from "./CalendlyBooking";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
+import { createSizeControlsField } from "../fields/SizeControls";
+import { createStyleControlsField } from "../fields/StyleControls";
+import { createAnimationControlsField } from "../fields/AnimationControls";
 
 export const CalendlyBookingBlock: ComponentConfig<CalendlyBookingProps> = {
-  label: "Calendly Booking Embed",
+  label: "Calendly Calendar",
   defaultProps: defaultCalendlyBookingProps,
   fields: {
     heading: {
@@ -29,13 +32,22 @@ export const CalendlyBookingBlock: ComponentConfig<CalendlyBookingProps> = {
         { label: "Extra Tall (900px)", value: "900px" },
       ],
     },
+    sizeControls: createSizeControlsField({
+      label: "Calendly Box Dimensions (W/H)",
+    }),
     sizePercent: createSizeSliderField({
-      label: "Container Width",
+      label: "Container Width Scale (%)",
       min: 50,
       max: 100,
       step: 5,
       defaultValue: 100,
       presets: [60, 75, 90, 100],
+    }),
+    styleControls: createStyleControlsField({
+      label: "Block Styles & Background",
+    }),
+    animation: createAnimationControlsField({
+      label: "Animation & Motion",
     }),
     marginTop: createResponsiveSpaceField("Margin Top", "md"),
     marginBottom: createResponsiveSpaceField("Margin Bottom", "md"),
