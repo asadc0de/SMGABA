@@ -6,6 +6,7 @@ import { CmsRoot, isValidCanonicalUrl, type CmsRootProps } from "./root";
 import { createImagePickerField } from "./fields/ImagePicker";
 import { createLinkPickerField } from "./fields/LinkPicker";
 import { defaultSectionProps } from "./blocks/Section";
+import { CmsCanvasContextMenu } from "./editor-context-menu";
 
 export function CmsRootEditor(props: CmsRootProps) {
   const { dispatch, appState } = usePuck();
@@ -143,6 +144,9 @@ export function CmsRootEditor(props: CmsRootProps) {
           <span>+ Add Blank Section Beneath</span>
         </button>
       </div>
+
+      {/* Right-Click Context Menu & Quick Property Manager */}
+      <CmsCanvasContextMenu />
     </div>
   );
 }

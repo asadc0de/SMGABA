@@ -134,6 +134,8 @@ export function CustomComponentOverlay({
 
   return (
     <div
+      data-puck-component-id={componentId}
+      data-puck-component-type={componentType}
       className={`relative w-full h-full pointer-events-none transition-colors duration-150 ${
         isSelected
           ? "bg-blue-500/[0.04]"
