@@ -17,25 +17,89 @@ interface LandingPageLayoutProps {
 
 export function LandingPageLayout({ data }: LandingPageLayoutProps) {
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     businessName: "",
     contactInfo: "",
     bestTime: "Morning",
     notes: "",
+    website: "", // Honeypot field
   });
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (typeof window !== "undefined" && window.dataLayer) {
-      window.dataLayer.push({
-        event: "generate_lead",
-        form_name: "industry_consultation",
-        industry: data.slug,
-        contact_preferred_time: formData.bestTime,
-      });
+    setErrorMessage(null);
+
+    const contact = formData.contactInfo.trim();
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+    const email = isEmail ? contact : "";
+    const phone = !isEmail ? contact : "";
+
+    if (!isEmail && (!formData.website || formData.website.trim() === "")) {
+      setErrorMessage("Please enter a valid email address so our team can reach you.");
+      return;
     }
-    setSubmitted(true);
+
+    if (!formData.name.trim()) {
+      setErrorMessage("Please enter your name.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      if (typeof window !== "undefined" && window.dataLayer) {
+        window.dataLayer.push({
+          event: "generate_lead",
+          form_name: "industry_consultation",
+          industry: data.slug,
+          contact_preferred_time: formData.bestTime,
+        });
+      }
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: email || contact,
+          phone: phone || undefined,
+          companyName: formData.businessName.trim() || undefined,
+          message:
+            formData.notes.trim() ||
+            `Consultation inquiry for ${data.title} industry. Best time to contact: ${formData.bestTime}`,
+          source: `industry-${data.slug}`,
+          website: formData.website,
+          bestTime: formData.bestTime,
+        }),
+      });
+
+      const response = await res.json().catch(() => ({}));
+
+      if (res.ok && response.success !== false) {
+        setSubmitted(true);
+        setFormData({
+          name: "",
+          businessName: "",
+          contactInfo: "",
+          bestTime: "Morning",
+          notes: "",
+          website: "",
+        });
+      } else {
+        setErrorMessage(
+          response.error || "Failed to submit consultation request. Please try again or give us a call.",
+        );
+      }
+    } catch {
+      setErrorMessage("A network error occurred. Please check your connection and try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -165,6 +229,36 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                 onSubmit={handleSubmit}
                 className="space-y-4"
               >
+                {/* Honeypot field (hidden from real users) */}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "-9999px",
+                    top: "-9999px",
+                    width: "1px",
+                    height: "1px",
+                    overflow: "hidden",
+                  }}
+                  aria-hidden="true"
+                >
+                  <label htmlFor={`${data.slug}-website-hp`}>Leave this field blank</label>
+                  <input
+                    id={`${data.slug}-website-hp`}
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  />
+                </div>
+
+                {errorMessage && (
+                  <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-xs text-red-200 text-center">
+                    {errorMessage}
+                  </div>
+                )}
+
                 <div>
                   <label htmlFor={`${data.slug}-name`} className="sr-only">
                     Your Name
@@ -240,11 +334,12 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                 <div className="pt-4 text-center">
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     data-track-cta="submit-consultation"
                     data-industry={data.slug}
-                    className="inline-flex items-center justify-center rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95 cursor-pointer"
+                    className="inline-flex items-center justify-center rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    SCHEDULE CONSULTATION
+                    {isSubmitting ? "Submitting..." : "SCHEDULE CONSULTATION"}
                   </button>
                 </div>
               </form>

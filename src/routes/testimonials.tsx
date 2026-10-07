@@ -4,6 +4,8 @@ import {
   Star,
   Quote,
   CheckCircle2,
+  AlertCircle,
+  Loader2,
   Sparkles,
   Send,
   Building2,
@@ -334,11 +336,72 @@ const ALL_TESTIMONIALS: TestimonialItem[] = [
 function TestimonialsPage() {
   const [filter, setFilter] = useState<"all" | "hospitality" | "real-estate" | "business">("all");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    emailOrPhone: "",
+    timePreference: "Morning",
+    comments: "",
+    website: "", // honeypot
+  });
 
   const filteredTestimonials =
     filter === "all"
       ? ALL_TESTIMONIALS
       : ALL_TESTIMONIALS.filter((t) => t.category === filter);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const emailMatch = formData.emailOrPhone.includes("@") ? formData.emailOrPhone : "";
+      const phoneMatch = !formData.emailOrPhone.includes("@") ? formData.emailOrPhone : "";
+      const messageBody = [
+        formData.company ? `Company: ${formData.company}` : "",
+        `Best Time to Contact: ${formData.timePreference}`,
+        formData.comments ? `Comments: ${formData.comments}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n\n");
+
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: emailMatch || (formData.emailOrPhone.includes("@") ? formData.emailOrPhone : "inquiry@smgaba.com"),
+          phone: phoneMatch,
+          message: messageBody || "Let's Talk consultation request from Testimonials page",
+          website: formData.website,
+          source: "testimonials",
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Failed to submit message. Please try again.");
+      }
+
+      setSubmitted(true);
+      setFormData({
+        name: "",
+        company: "",
+        emailOrPhone: "",
+        timePreference: "Morning",
+        comments: "",
+        website: "",
+      });
+    } catch (err: any) {
+      console.error("Testimonials form submit error:", err);
+      setErrorMessage(err.message || "An unexpected error occurred. Please try again or call us directly.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
@@ -493,17 +556,32 @@ function TestimonialsPage() {
                 </p>
               </div>
             ) : (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  setSubmitted(true);
-                }}
-                className="space-y-4"
-              >
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot field (hidden from real users) */}
+                <div style={{ display: "none", opacity: 0, position: "absolute", left: "-9999px" }} aria-hidden="true">
+                  <input
+                    type="text"
+                    name="website"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={formData.website}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
+                  />
+                </div>
+
+                {errorMessage && (
+                  <div className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-200">
+                    <AlertCircle className="size-4 shrink-0 text-red-400" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
                 <div>
                   <input
                     type="text"
                     required
+                    value={formData.name}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                     placeholder="Your Name *"
                     className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
@@ -512,6 +590,8 @@ function TestimonialsPage() {
                 <div>
                   <input
                     type="text"
+                    value={formData.company}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, company: e.target.value }))}
                     placeholder="Company Name"
                     className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
@@ -521,6 +601,8 @@ function TestimonialsPage() {
                   <input
                     type="text"
                     required
+                    value={formData.emailOrPhone}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, emailOrPhone: e.target.value }))}
                     placeholder="Email or Phone Number *"
                     className="h-12 w-full rounded-xl border border-white/20 bg-white/10 px-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
@@ -530,7 +612,11 @@ function TestimonialsPage() {
                   <label className="block text-xs font-semibold uppercase tracking-wider text-blue-200/90 mb-1.5">
                     Best Time to Contact
                   </label>
-                  <select className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none">
+                  <select
+                    value={formData.timePreference}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, timePreference: e.target.value }))}
+                    className="h-12 w-full rounded-xl border border-white/20 bg-[#142340] px-4 text-sm text-white focus:border-white focus:outline-none"
+                  >
                     <option value="Morning">Morning (8:30am – 12:00pm)</option>
                     <option value="Afternoon">Afternoon (12:00pm – 5:00pm)</option>
                     <option value="Evening">Evening (5:00pm – 7:00pm)</option>
@@ -540,6 +626,8 @@ function TestimonialsPage() {
                 <div>
                   <textarea
                     rows={4}
+                    value={formData.comments}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, comments: e.target.value }))}
                     placeholder="Comments"
                     className="w-full rounded-xl border border-white/20 bg-white/10 p-4 text-sm text-white placeholder:text-white/60 focus:border-white focus:bg-white/15 focus:outline-none transition"
                   />
@@ -564,9 +652,17 @@ function TestimonialsPage() {
                 <div className="pt-4 text-center">
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95"
+                    disabled={isSubmitting}
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
-                    SEND
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" />
+                        SENDING...
+                      </>
+                    ) : (
+                      "SEND"
+                    )}
                   </button>
                 </div>
               </form>

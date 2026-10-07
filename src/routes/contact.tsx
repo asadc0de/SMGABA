@@ -121,22 +121,35 @@ function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await submitNoCrmLead({
-        data: {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           name: formData.name.trim(),
           email: email,
           phone: formData.phone.trim() || undefined,
-          source: "Contact Page Form",
+          source: "main",
           message: formData.message.trim(),
-          customFields: {
-            "Office Preference": formData.officePreference,
-          },
           website: formData.website,
-        },
+          officePreference: formData.officePreference,
+        }),
       });
 
-      if (response.success) {
+      const response = await res.json().catch(() => ({}));
+
+      if (res.ok && response.success !== false) {
         setSubmitted(true);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          officePreference: "General Inquiry",
+          message: "",
+          agreed: false,
+          website: "",
+        });
       } else {
         setErrorMessage(
           response.error || "Failed to submit your inquiry. Please try again or give us a call.",

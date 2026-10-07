@@ -167,24 +167,40 @@ function SolutionsIndexPage() {
     setIsSubmitting(true);
 
     try {
-      const response = await submitNoCrmLead({
-        data: {
-          name: formData.name,
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name.trim(),
           email: email || contact,
           phone: phone || undefined,
-          companyName: formData.companyName || undefined,
-          source: "Solutions Form",
-          message: formData.comments || undefined,
-          customFields: {
-            "Best Time to Contact": formData.bestTime,
-            "Solutions Needed": formData.solutionsNeeded,
-          },
+          companyName: formData.companyName.trim() || undefined,
+          source: "solutions",
+          message:
+            formData.comments.trim() ||
+            `Interested in: ${formData.solutionsNeeded}. Best time to contact: ${formData.bestTime}`,
           website: formData.website,
-        },
+          bestTime: formData.bestTime,
+          solutionsNeeded: formData.solutionsNeeded,
+        }),
       });
 
-      if (response.success) {
+      const response = await res.json().catch(() => ({}));
+
+      if (res.ok && response.success !== false) {
         setSubmitted(true);
+        setFormData({
+          name: "",
+          companyName: "",
+          contactInfo: "",
+          bestTime: "Morning",
+          solutionsNeeded: "Bookkeeping",
+          comments: "",
+          agreed: false,
+          website: "",
+        });
       } else {
         setErrorMessage(
           response.error || "Failed to submit your inquiry. Please try again or give us a call.",
