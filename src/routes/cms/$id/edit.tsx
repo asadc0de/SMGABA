@@ -1841,5 +1841,3 @@ function CmsPageEditorRoute() {
     </div>
   );
 }
-
-export default CmsPageEditorRoute;
