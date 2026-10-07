@@ -22,6 +22,7 @@ export interface ButtonBlockProps extends BlockStyleProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   sizePercent?: number;
+  fontSizePx?: number;
   sizeControls?: SizeControlConfig;
   typography?: TypographyConfig;
   styleControls?: StyleControlConfig;
@@ -147,6 +148,10 @@ export function ButtonRender({
 
   const computedSizeStyles = buildSizeStyles(sizeControls);
   const typographyStyles = buildTypographyStyles(typography);
+  const explicitFontSizeStyle: React.CSSProperties =
+    typeof props.fontSizePx === "number" && props.fontSizePx > 0
+      ? { fontSize: `${props.fontSizePx}px` }
+      : {};
   const elementStyle = buildElementStyleObject(styleControls);
   const animStyles = buildAnimationStyles(animation);
   const animClasses = buildAnimationClasses(animation);
@@ -162,6 +167,7 @@ export function ButtonRender({
     ...customScaleStyle,
     ...customColorStyle,
     ...typographyStyles,
+    ...explicitFontSizeStyle,
     ...elementStyle,
     ...animStyles,
   };

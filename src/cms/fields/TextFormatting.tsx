@@ -17,6 +17,7 @@ import {
 export interface TypographyConfig {
   fontFamily?: "sans" | "serif" | "outfit" | "poppins" | "mono" | "inherit";
   fontSize?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "custom";
+  fontSizeMode?: "preset" | "pixel";
   customFontSizePx?: number;
   fontWeight?: "normal" | "medium" | "semibold" | "bold" | "extrabold";
   italic?: boolean;
@@ -111,13 +112,15 @@ export function buildTypographyStyles(config?: TypographyConfig): React.CSSPrope
     styles.fontFamily = FONT_FAMILY_MAP[config.fontFamily]?.css || undefined;
   }
 
-  // Font size
-  if (config.fontSize) {
-    if (config.fontSize === "custom" && typeof config.customFontSizePx === "number" && config.customFontSizePx > 0) {
-      styles.fontSize = `${config.customFontSizePx}px`;
-    } else if (config.fontSize in FONT_SIZE_MAP) {
-      styles.fontSize = FONT_SIZE_MAP[config.fontSize as keyof typeof FONT_SIZE_MAP];
-    }
+  // Font size: supports explicit pixel values or presets
+  if (
+    typeof config.customFontSizePx === "number" &&
+    config.customFontSizePx > 0 &&
+    (config.fontSize === "custom" || config.fontSizeMode === "pixel" || !config.fontSize)
+  ) {
+    styles.fontSize = `${config.customFontSizePx}px`;
+  } else if (config.fontSize && config.fontSize !== "custom" && config.fontSize in FONT_SIZE_MAP) {
+    styles.fontSize = FONT_SIZE_MAP[config.fontSize as keyof typeof FONT_SIZE_MAP];
   }
 
   // Font weight
@@ -174,6 +177,7 @@ export function TextFormattingInput({
   const [showAdvanced, setShowAdvanced] = React.useState(false);
 
   const cfg: TypographyConfig = value || {};
+  const isPixelMode = cfg.fontSizeMode === "pixel" || cfg.fontSize === "custom";
 
   const update = (patch: Partial<TypographyConfig>) => {
     onChange({ ...cfg, ...patch });
@@ -182,6 +186,7 @@ export function TextFormattingInput({
   const hasCustomizations =
     Boolean(cfg.fontFamily && cfg.fontFamily !== "inherit") ||
     Boolean(cfg.fontSize) ||
+    Boolean(typeof cfg.customFontSizePx === "number" && cfg.customFontSizePx > 0) ||
     Boolean(cfg.fontWeight) ||
     Boolean(cfg.italic) ||
     Boolean(cfg.underline) ||
@@ -189,6 +194,12 @@ export function TextFormattingInput({
     Boolean(cfg.letterSpacing) ||
     Boolean(cfg.textAlign) ||
     Boolean(cfg.textTransform && cfg.textTransform !== "none");
+
+  const currentSizeSummary = isPixelMode
+    ? `${cfg.customFontSizePx || 16}px`
+    : cfg.fontSize && cfg.fontSize !== "custom"
+      ? cfg.fontSize.toUpperCase()
+      : null;
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white shadow-2xs overflow-hidden transition-all duration-150">
@@ -202,9 +213,9 @@ export function TextFormattingInput({
         <div className="flex items-center gap-2">
           <Type className="size-4 text-navy" />
           <span className="text-xs font-bold text-navy">{label}</span>
-          {hasCustomizations && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
-              Customized
+          {currentSizeSummary && (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 font-mono">
+              {currentSizeSummary}
             </span>
           )}
         </div>
@@ -240,71 +251,208 @@ export function TextFormattingInput({
             </select>
           </div>
 
-          {/* 2. Font Size (Presets & Custom) */}
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-[11px] font-semibold text-slate-700">
-                Font Size
+          {/* 2. Font Size (Presets vs Exact Pixels) */}
+          <div className="space-y-2 p-2.5 bg-slate-50/80 rounded-xl border border-slate-200/80">
+            <div className="flex items-center justify-between">
+              <label className="text-[11px] font-bold text-navy flex items-center gap-1">
+                <span>Font Size</span>
+                {isPixelMode && typeof cfg.customFontSizePx === "number" && (
+                  <span className="text-[10px] font-mono font-bold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-200">
+                    {cfg.customFontSizePx}px
+                  </span>
+                )}
               </label>
-              {cfg.fontSize === "custom" && (
-                <span className="text-[10px] font-mono text-slate-500">
-                  {cfg.customFontSizePx || 16}px
-                </span>
-              )}
-            </div>
-            <div className="grid grid-cols-5 gap-1">
-              {[
-                { label: "XS", value: "xs" },
-                { label: "SM", value: "sm" },
-                { label: "Base", value: "base" },
-                { label: "LG", value: "lg" },
-                { label: "XL", value: "xl" },
-                { label: "2XL", value: "2xl" },
-                { label: "3XL", value: "3xl" },
-                { label: "4XL", value: "4xl" },
-                { label: "5XL", value: "5xl" },
-                { label: "Custom", value: "custom" },
-              ].map((s) => {
-                const isSelected = (cfg.fontSize || "base") === s.value;
-                return (
-                  <button
-                    key={s.value}
-                    type="button"
-                    disabled={readOnly}
-                    onClick={() => update({ fontSize: s.value as any })}
-                    className={`py-1 rounded-md text-[11px] font-medium border transition-all ${
-                      isSelected
-                        ? "bg-navy text-white border-navy shadow-xs font-bold"
-                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                    }`}
-                  >
-                    {s.label}
-                  </button>
-                );
-              })}
+
+              {/* Sizing Mode Switcher */}
+              <div className="flex items-center bg-white p-0.5 rounded-lg border border-slate-200 shadow-2xs">
+                <button
+                  type="button"
+                  disabled={readOnly}
+                  onClick={() => {
+                    update({
+                      fontSizeMode: "preset",
+                      fontSize: cfg.fontSize === "custom" ? "base" : cfg.fontSize || "base",
+                    });
+                  }}
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${
+                    !isPixelMode
+                      ? "bg-navy text-white shadow-2xs font-bold"
+                      : "text-slate-600 hover:text-navy"
+                  }`}
+                >
+                  Presets
+                </button>
+                <button
+                  type="button"
+                  disabled={readOnly}
+                  onClick={() => {
+                    const fallbackPx =
+                      cfg.customFontSizePx ||
+                      (cfg.fontSize === "xs"
+                        ? 12
+                        : cfg.fontSize === "sm"
+                        ? 14
+                        : cfg.fontSize === "base"
+                        ? 16
+                        : cfg.fontSize === "lg"
+                        ? 18
+                        : cfg.fontSize === "xl"
+                        ? 20
+                        : cfg.fontSize === "2xl"
+                        ? 24
+                        : cfg.fontSize === "3xl"
+                        ? 30
+                        : cfg.fontSize === "4xl"
+                        ? 36
+                        : cfg.fontSize === "5xl"
+                        ? 48
+                        : cfg.fontSize === "6xl"
+                        ? 60
+                        : 16);
+                    update({
+                      fontSizeMode: "pixel",
+                      fontSize: "custom",
+                      customFontSizePx: fallbackPx,
+                    });
+                  }}
+                  className={`px-2 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${
+                    isPixelMode
+                      ? "bg-navy text-white shadow-2xs font-bold"
+                      : "text-slate-600 hover:text-navy"
+                  }`}
+                >
+                  Exact (px)
+                </button>
+              </div>
             </div>
 
-            {cfg.fontSize === "custom" && (
-              <div className="mt-2 flex items-center gap-2">
-                <input
-                  type="range"
-                  min="10"
-                  max="80"
-                  step="1"
-                  value={cfg.customFontSizePx || 16}
-                  onChange={(e) => update({ customFontSizePx: Number(e.target.value) })}
-                  className="flex-1 accent-navy cursor-pointer h-1.5 bg-slate-200 rounded-lg"
-                />
-                <div className="flex items-center gap-1 shrink-0">
+            {/* Mode 1: Preset T-Shirt Sizes */}
+            {!isPixelMode && (
+              <div className="space-y-1.5">
+                <div className="grid grid-cols-5 gap-1">
+                  {[
+                    { label: "XS (12px)", value: "xs" },
+                    { label: "SM (14px)", value: "sm" },
+                    { label: "Base (16px)", value: "base" },
+                    { label: "LG (18px)", value: "lg" },
+                    { label: "XL (20px)", value: "xl" },
+                    { label: "2XL (24px)", value: "2xl" },
+                    { label: "3XL (30px)", value: "3xl" },
+                    { label: "4XL (36px)", value: "4xl" },
+                    { label: "5XL (48px)", value: "5xl" },
+                    { label: "6XL (60px)", value: "6xl" },
+                  ].map((s) => {
+                    const isSelected = (cfg.fontSize || "base") === s.value;
+                    return (
+                      <button
+                        key={s.value}
+                        type="button"
+                        disabled={readOnly}
+                        onClick={() => update({ fontSize: s.value as any, fontSizeMode: "preset" })}
+                        className={`py-1 rounded-md text-[10px] font-medium border transition-all cursor-pointer ${
+                          isSelected
+                            ? "bg-navy text-white border-navy shadow-xs font-bold"
+                            : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
+                        }`}
+                        title={s.label}
+                      >
+                        {s.value.toUpperCase()}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Mode 2: Exact Custom Pixel Size (px) */}
+            {isPixelMode && (
+              <div className="space-y-2 pt-1">
+                {/* Numeric Input with Steppers */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center bg-white rounded-lg border border-slate-300 shadow-2xs overflow-hidden">
+                    <button
+                      type="button"
+                      disabled={readOnly || (cfg.customFontSizePx || 16) <= 8}
+                      onClick={() => {
+                        const cur = cfg.customFontSizePx || 16;
+                        update({ fontSize: "custom", fontSizeMode: "pixel", customFontSizePx: Math.max(8, cur - 1) });
+                      }}
+                      className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 hover:text-navy font-bold text-xs cursor-pointer select-none"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      min="8"
+                      max="180"
+                      step="1"
+                      disabled={readOnly}
+                      value={cfg.customFontSizePx || 16}
+                      onChange={(e) => {
+                        const val = Math.max(8, Math.min(180, Number(e.target.value) || 16));
+                        update({ fontSize: "custom", fontSizeMode: "pixel", customFontSizePx: val });
+                      }}
+                      className="w-16 py-1 text-xs font-mono font-bold text-center text-navy outline-none border-x border-slate-200"
+                    />
+                    <button
+                      type="button"
+                      disabled={readOnly || (cfg.customFontSizePx || 16) >= 180}
+                      onClick={() => {
+                        const cur = cfg.customFontSizePx || 16;
+                        update({ fontSize: "custom", fontSizeMode: "pixel", customFontSizePx: Math.min(180, cur + 1) });
+                      }}
+                      className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 hover:text-navy font-bold text-xs cursor-pointer select-none"
+                    >
+                      +
+                    </button>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-slate-500">px</span>
+
+                  {/* Range Slider */}
                   <input
-                    type="number"
+                    type="range"
                     min="8"
-                    max="120"
+                    max="100"
+                    step="1"
+                    disabled={readOnly}
                     value={cfg.customFontSizePx || 16}
-                    onChange={(e) => update({ customFontSizePx: Number(e.target.value) })}
-                    className="w-14 rounded-md border border-slate-300 px-1.5 py-1 text-xs text-center text-slate-800"
+                    onChange={(e) =>
+                      update({
+                        fontSize: "custom",
+                        fontSizeMode: "pixel",
+                        customFontSizePx: Number(e.target.value),
+                      })
+                    }
+                    className="flex-1 accent-navy cursor-pointer h-1.5 bg-slate-200 rounded-lg"
                   />
-                  <span className="text-[11px] text-slate-500 font-mono">px</span>
+                </div>
+
+                {/* Quick Pixel Chips */}
+                <div className="flex items-center gap-1 flex-wrap pt-0.5">
+                  {[12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72].map((px) => {
+                    const isChipSelected = cfg.customFontSizePx === px;
+                    return (
+                      <button
+                        key={px}
+                        type="button"
+                        disabled={readOnly}
+                        onClick={() =>
+                          update({
+                            fontSize: "custom",
+                            fontSizeMode: "pixel",
+                            customFontSizePx: px,
+                          })
+                        }
+                        className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                          isChipSelected
+                            ? "bg-navy text-white shadow-2xs font-bold"
+                            : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-navy"
+                        }`}
+                      >
+                        {px}px
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -531,6 +679,135 @@ export function createTypographyField(options: {
         label={options.label}
       />
     ),
+  };
+}
+
+/**
+ * Creates a standalone Puck custom field for explicit Font Size in pixels
+ */
+export function createFontSizePixelField(options: {
+  label?: string;
+  description?: string;
+  min?: number;
+  max?: number;
+  step?: number;
+  defaultValue?: number;
+} = {}): CustomField<number | undefined> {
+  const {
+    label = "Explicit Font Size (px)",
+    description = "Set explicit font size in exact pixels.",
+    min = 8,
+    max = 140,
+    step = 1,
+    defaultValue,
+  } = options;
+
+  return {
+    type: "custom",
+    label,
+    render: ({ value, onChange, readOnly }) => {
+      const currentVal = typeof value === "number" && value > 0 ? value : defaultValue;
+      return (
+        <div className="flex flex-col gap-2 w-full bg-slate-50 p-3 rounded-lg border border-slate-200">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+            <span>{label}</span>
+            <div className="flex items-center gap-1.5">
+              {currentVal ? (
+                <span className="px-2 py-0.5 rounded-full bg-navy text-white font-mono text-[11px] font-bold shadow-2xs">
+                  {currentVal}px
+                </span>
+              ) : (
+                <span className="text-[11px] text-slate-400">Auto / Inherit</span>
+              )}
+              {currentVal && !readOnly && (
+                <button
+                  type="button"
+                  onClick={() => onChange(undefined)}
+                  className="text-[10px] text-slate-400 hover:text-red-600 underline cursor-pointer ml-1"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+
+          {description && (
+            <p className="text-[11px] text-slate-500 leading-tight -mt-0.5">{description}</p>
+          )}
+
+          <div className="flex items-center gap-2">
+            <div className="flex items-center bg-white rounded-lg border border-slate-300 shadow-2xs overflow-hidden">
+              <button
+                type="button"
+                disabled={readOnly || !currentVal || currentVal <= min}
+                onClick={() => {
+                  const cur = currentVal || min;
+                  onChange(Math.max(min, cur - 1));
+                }}
+                className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 hover:text-navy font-bold text-xs cursor-pointer select-none"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                min={min}
+                max={max}
+                step={step}
+                disabled={readOnly}
+                value={currentVal || ""}
+                placeholder="Auto"
+                onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : undefined;
+                  onChange(val !== undefined ? Math.max(min, Math.min(max, val)) : undefined);
+                }}
+                className="w-16 py-1 text-xs font-mono font-bold text-center text-navy outline-none border-x border-slate-200"
+              />
+              <button
+                type="button"
+                disabled={readOnly || (Boolean(currentVal) && (currentVal ?? 0) >= max)}
+                onClick={() => {
+                  const cur = currentVal || min;
+                  onChange(Math.min(max, cur + 1));
+                }}
+                className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 hover:text-navy font-bold text-xs cursor-pointer select-none"
+              >
+                +
+              </button>
+            </div>
+            <span className="text-xs font-mono font-bold text-slate-500">px</span>
+
+            <input
+              type="range"
+              min={min}
+              max={max}
+              step={step}
+              disabled={readOnly}
+              value={currentVal || min}
+              onChange={(e) => onChange(Number(e.target.value))}
+              className="flex-1 accent-navy cursor-pointer h-1.5 bg-slate-200 rounded-lg"
+            />
+          </div>
+
+          <div className="flex items-center gap-1 flex-wrap pt-0.5">
+            {[12, 14, 16, 18, 20, 24, 28, 32, 36, 40, 48, 56, 64, 72].map((px) => (
+              <button
+                key={px}
+                type="button"
+                disabled={readOnly}
+                onClick={() => onChange(px)}
+                className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                  currentVal === px
+                    ? "bg-navy text-white shadow-2xs font-bold"
+                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-navy"
+                }`}
+              >
+                {px}px
+              </button>
+            ))}
+          </div>
+        </div>
+      );
+    },
   };
 }
 

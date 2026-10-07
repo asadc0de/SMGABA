@@ -8,7 +8,7 @@ import { createSizeSliderField } from "../fields/SizeSlider";
 
 import { createColorPickerField } from "../fields/ColorPicker";
 import { createSizeControlsField } from "../fields/SizeControls";
-import { createTypographyField } from "../fields/TextFormatting";
+import { createTypographyField, createFontSizePixelField } from "../fields/TextFormatting";
 
 export const RichTextBlock: ComponentConfig<RichTextProps> = {
   label: "Text",
@@ -27,6 +27,12 @@ export const RichTextBlock: ComponentConfig<RichTextProps> = {
       type: "textarea",
       label: "Text Content",
     },
+    fontSizePx: createFontSizePixelField({
+      label: "Explicit Font Size (px)",
+      description: "Set direct paragraph text size in pixels (e.g. 16px, 18px, 20px).",
+      min: 10,
+      max: 48,
+    }),
     typography: createTypographyField({
       label: "Text Typography & Formatting",
     }),

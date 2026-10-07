@@ -14,6 +14,7 @@ import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } fro
 export interface RichTextProps extends BlockStyleProps {
   content: string;
   sizePercent?: number;
+  fontSizePx?: number;
   sizeControls?: SizeControlConfig;
   typography?: TypographyConfig;
   styleControls?: StyleControlConfig;
@@ -147,6 +148,7 @@ function renderStructuredContent(content: string): React.ReactNode {
 export function RichTextRender({
   content,
   sizePercent = 100,
+  fontSizePx,
   sizeControls,
   typography,
   styleControls,
@@ -182,6 +184,10 @@ export function RichTextRender({
   const scale = typeof sizePercent === "number" && sizePercent > 0 ? sizePercent / 100 : 1;
   const computedSizeStyles = buildSizeStyles(sizeControls);
   const typographyStyles = buildTypographyStyles(typography);
+  const explicitFontSizeStyle: React.CSSProperties =
+    typeof fontSizePx === "number" && fontSizePx > 0
+      ? { fontSize: `${fontSizePx}px` }
+      : {};
   const elementStyle = buildElementStyleObject(styleControls);
   const animStyles = buildAnimationStyles(animation);
   const animClasses = buildAnimationClasses(animation);
@@ -200,6 +206,7 @@ export function RichTextRender({
     ...(textColor ? { color: textColor } : {}),
     ...(borderColor ? { borderColor, borderWidth: 1, borderStyle: "solid" } : {}),
     ...typographyStyles,
+    ...explicitFontSizeStyle,
     ...elementStyle,
     ...animStyles,
   };

@@ -8,7 +8,7 @@ import { createSizeSliderField } from "../fields/SizeSlider";
 
 import { createColorPickerField } from "../fields/ColorPicker";
 import { createSizeControlsField } from "../fields/SizeControls";
-import { createTypographyField } from "../fields/TextFormatting";
+import { createTypographyField, createFontSizePixelField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 
@@ -38,6 +38,12 @@ export const HeadingBlock: ComponentConfig<HeadingProps> = {
         { label: "H3 - Subheading", value: "h3" },
       ],
     },
+    fontSizePx: createFontSizePixelField({
+      label: "Explicit Font Size (px)",
+      description: "Set direct pixel font size (e.g. 36px, 48px, 64px).",
+      min: 12,
+      max: 120,
+    }),
     typography: createTypographyField({
       label: "Heading Typography & Text Formatting",
     }),

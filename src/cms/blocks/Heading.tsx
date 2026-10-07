@@ -15,6 +15,7 @@ export interface HeadingProps extends BlockStyleProps {
   text: string;
   level: "h1" | "h2" | "h3";
   sizePercent?: number;
+  fontSizePx?: number;
   sizeControls?: SizeControlConfig;
   typography?: TypographyConfig;
   styleControls?: StyleControlConfig;
@@ -28,6 +29,7 @@ export function HeadingRender({
   text,
   level = "h2",
   sizePercent = 100,
+  fontSizePx,
   sizeControls,
   typography,
   styleControls,
@@ -84,6 +86,10 @@ export function HeadingRender({
 
   const computedSizeStyles = buildSizeStyles(sizeControls);
   const typographyStyles = buildTypographyStyles(typography);
+  const explicitFontSizeStyle: React.CSSProperties =
+    typeof fontSizePx === "number" && fontSizePx > 0
+      ? { fontSize: `${fontSizePx}px` }
+      : {};
   const elementStyle = buildElementStyleObject(styleControls);
   const animStyles = buildAnimationStyles(animation);
   const animClasses = buildAnimationClasses(animation);
@@ -93,6 +99,7 @@ export function HeadingRender({
     ...customScaleStyle,
     ...customColorStyle,
     ...typographyStyles,
+    ...explicitFontSizeStyle,
     ...elementStyle,
     ...animStyles,
   };

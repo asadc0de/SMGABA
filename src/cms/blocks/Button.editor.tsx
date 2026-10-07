@@ -25,7 +25,7 @@ const BUTTON_SIZES: { id: ButtonSize; label: string; desc: string }[] = [
 import { createColorPickerField } from "../fields/ColorPicker";
 import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 import { createSizeControlsField } from "../fields/SizeControls";
-import { createTypographyField } from "../fields/TextFormatting";
+import { createTypographyField, createFontSizePixelField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 
@@ -47,6 +47,12 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
       type: "text",
       label: "Button Label",
     },
+    fontSizePx: createFontSizePixelField({
+      label: "Explicit Button Font Size (px)",
+      description: "Set explicit font size in pixels (e.g. 14px, 16px, 18px).",
+      min: 10,
+      max: 36,
+    }),
     typography: createTypographyField({
       label: "Button Label Typography",
     }),
