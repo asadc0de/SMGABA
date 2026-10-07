@@ -1,15 +1,41 @@
 import * as React from "react";
-import { usePuck } from "@puckeditor/core";
+import {
+  Heading as HeadingIcon,
+  AlignLeft,
+  Image as ImageIcon,
+  RectangleHorizontal,
+  MoveVertical,
+  Minus,
+  LayoutTemplate,
+  LayoutGrid,
+  Images,
+  ListCollapse,
+  Megaphone,
+  BarChart3,
+  CheckCircle2,
+  ListOrdered,
+  Quote,
+  SlidersHorizontal,
+  Columns2,
+  Layers,
+  Video,
+  Calendar,
+  AlertCircle,
+  Box,
+} from "lucide-react";
 
 export const BLOCK_LABEL_MAP: Record<string, string> = {
-  Button: "Button",
-  Hero: "Top Banner",
+  Heading: "Heading",
   RichText: "Text",
   Image: "Image",
-  CTABanner: "Call to Action Strip",
+  Button: "Button",
+  Spacer: "Spacer",
+  Divider: "Thin Line",
+  Hero: "Top Banner",
   CardGrid: "Cards Grid",
   ImageGallery: "Photo Gallery",
   Accordion: "FAQ Accordion",
+  CTABanner: "Call to Action Strip",
   Stats: "Stats",
   IconFeatures: "Feature List",
   Steps: "Process Steps",
@@ -17,12 +43,39 @@ export const BLOCK_LABEL_MAP: Record<string, string> = {
   TestimonialSlider: "Testimonial Carousel",
   Columns: "Columns Layout",
   Section: "Container Section",
-  Spacer: "Spacer",
-  Divider: "Thin Line",
   VideoEmbed: "Video Player",
   CalendlyBooking: "Calendly Calendar",
   Callout: "Notice Box",
 };
+
+export const BLOCK_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  Heading: HeadingIcon,
+  RichText: AlignLeft,
+  Image: ImageIcon,
+  Button: RectangleHorizontal,
+  Spacer: MoveVertical,
+  Divider: Minus,
+  Hero: LayoutTemplate,
+  CardGrid: LayoutGrid,
+  ImageGallery: Images,
+  Accordion: ListCollapse,
+  CTABanner: Megaphone,
+  Stats: BarChart3,
+  IconFeatures: CheckCircle2,
+  Steps: ListOrdered,
+  Testimonial: Quote,
+  TestimonialSlider: SlidersHorizontal,
+  Columns: Columns2,
+  Section: Layers,
+  VideoEmbed: Video,
+  CalendlyBooking: Calendar,
+  Callout: AlertCircle,
+};
+
+export function getBlockIcon(rawType?: string): React.ComponentType<{ className?: string }> {
+  if (!rawType) return Box;
+  return BLOCK_ICON_MAP[rawType] || Box;
+}
 
 export function getFriendlyBlockName(rawType?: string): string {
   if (!rawType) return "Element";
@@ -43,12 +96,13 @@ export function CustomActionBar({
   parentAction?: React.ReactNode;
 }) {
   const friendlyLabel = getFriendlyBlockName(label);
+  const Icon = getBlockIcon(label);
 
   return (
     <div className="flex items-center gap-1.5 bg-[#0f2142] text-white px-2.5 py-1 rounded-full shadow-2xl border border-white/20 text-xs select-none pointer-events-auto backdrop-blur-md transition-all duration-150 scale-100 hover:scale-105 z-50">
       {parentAction}
       <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white/10 text-[11px] font-bold uppercase tracking-wider text-slate-100">
-        <span className="size-2 rounded-full bg-emerald-400" />
+        <Icon className="size-3 text-emerald-400 shrink-0" />
         <span>{friendlyLabel}</span>
       </div>
       <div className="h-3.5 w-px bg-white/20 mx-0.5" />
@@ -76,6 +130,7 @@ export function CustomComponentOverlay({
   children?: React.ReactNode;
 }) {
   const friendlyName = getFriendlyBlockName(componentType);
+  const Icon = getBlockIcon(componentType);
 
   return (
     <div
@@ -96,9 +151,9 @@ export function CustomComponentOverlay({
               : "bg-blue-600 text-white shadow-blue-600/20"
           }`}
         >
-          <span
-            className={`size-1.5 rounded-full ${
-              isSelected ? "bg-emerald-400 animate-pulse" : "bg-white"
+          <Icon
+            className={`size-3 shrink-0 ${
+              isSelected ? "text-emerald-400" : "text-white"
             }`}
           />
           <span>{friendlyName}</span>

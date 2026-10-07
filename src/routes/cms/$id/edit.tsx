@@ -22,9 +22,7 @@ import { AddToNavigationDialog } from "@/components/cms/AddToNavigationDialog";
 import { isValidCanonicalUrl, type CmsRootProps } from "@/cms/root";
 import { isValidImageUrl } from "@/cms/blocks/Image";
 import { ImagePickerInput } from "@/cms/fields/ImagePicker";
-import { createLinkPickerField } from "@/cms/fields/LinkPicker";
-import { CustomActionBar, CustomComponentOverlay } from "@/cms/editor-overlay";
-import { verifyAdminPassword } from "@/lib/webinar-redirects";
+import { CustomActionBar, CustomComponentOverlay, getBlockIcon, getFriendlyBlockName } from "@/cms/editor-overlay";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -204,13 +202,13 @@ function runPrePublishCheck(data?: Data): SafetyIssue[] {
 }
 
 /**
- * Custom Drawer Wrapper with Real-time Block Search Filter
+ * Custom Drawer Wrapper with Real-time Block Search Filter and 2-Column Grid Layout
  */
 function CustomDrawerWrapper({ children }: { children?: React.ReactNode }) {
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <div className="flex flex-col h-full w-full">
+    <div className="flex flex-col h-full w-full bg-white">
       {/* Search Filter Box */}
       <div className="p-3 border-b border-slate-200 bg-white sticky top-0 z-10 shadow-2xs">
         <div className="relative flex items-center">
@@ -219,14 +217,14 @@ function CustomDrawerWrapper({ children }: { children?: React.ReactNode }) {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search blocks (e.g. Button, Text, FAQ)..."
+            placeholder="Search blocks (e.g. Button, Text, Image)..."
             className="w-full pl-8 pr-7 py-1.5 text-xs rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-navy focus:ring-1 focus:ring-navy outline-none transition-all placeholder:text-slate-400"
           />
           {searchTerm && (
             <button
               type="button"
               onClick={() => setSearchTerm("")}
-              className="absolute right-2.5 text-slate-400 hover:text-slate-600 text-xs font-bold"
+              className="absolute right-2.5 text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer"
             >
               ✕
             </button>
@@ -234,17 +232,110 @@ function CustomDrawerWrapper({ children }: { children?: React.ReactNode }) {
         </div>
       </div>
 
-      <div className={`flex-1 overflow-y-auto ${searchTerm ? "puck-drawer-searching" : ""}`}>
+      <div className={`flex-1 overflow-y-auto px-2.5 py-2 ${searchTerm ? "puck-drawer-searching" : ""}`}>
         {children}
       </div>
 
-      {searchTerm && (
-        <style>{`
-          .puck-drawer-searching [data-puck-component-item]:not([data-block-title*="${searchTerm.toLowerCase()}"]):not([data-block-name*="${searchTerm.toLowerCase()}"]) {
-            display: none !important;
-          }
-        `}</style>
-      )}
+      {/* 2-Column Grid Layout & Sleek Block Cards Styling */}
+      <style>{`
+        /* 2 in 1 line (2-column grid layout for drawer items) */
+        [class*="_Drawer_"],
+        [class*="ComponentList-content"] > div,
+        [class*="ComponentList-content"] > ul {
+          display: grid !important;
+          grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+          gap: 6px !important;
+          padding: 4px 0 8px 0 !important;
+        }
+
+        /* Category section spacing */
+        [class*="_ComponentList_"] {
+          margin-bottom: 8px !important;
+        }
+
+        [class*="_ComponentList-title_"] {
+          font-size: 10.5px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.05em !important;
+          color: #64748b !important;
+          padding: 6px 4px !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          text-transform: uppercase !important;
+          border-radius: 6px !important;
+        }
+
+        [class*="_ComponentList-title_"]:hover {
+          color: #0f2142 !important;
+          background-color: #f1f5f9 !important;
+        }
+
+        /* Each item card container */
+        [data-puck-component-item] {
+          min-width: 0 !important;
+          width: 100% !important;
+          position: relative !important;
+        }
+
+        /* Puck draggable card */
+        [data-puck-component-item] [class*="_DrawerItem-draggable_"] {
+          padding: 8px 6px 8px 30px !important;
+          min-height: 42px !important;
+          border-radius: 8px !important;
+          border: 1px solid #e2e8f0 !important;
+          background-color: #ffffff !important;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+          transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          position: relative !important;
+          cursor: grab !important;
+        }
+
+        [data-puck-component-item]:hover [class*="_DrawerItem-draggable_"] {
+          border-color: #93c5fd !important;
+          background-color: #f8fafc !important;
+          box-shadow: 0 2px 5px -1px rgba(37, 99, 235, 0.12) !important;
+          transform: translateY(-1px) !important;
+        }
+
+        /* Block label text inside card */
+        [data-puck-component-item] [class*="_DrawerItem-name_"] {
+          font-size: 11px !important;
+          font-weight: 600 !important;
+          color: #1e293b !important;
+          line-height: 1.2 !important;
+          overflow: hidden !important;
+          text-overflow: ellipsis !important;
+          white-space: nowrap !important;
+          padding-right: 2px !important;
+          flex: 1 !important;
+        }
+
+        [data-puck-component-item]:hover [class*="_DrawerItem-name_"] {
+          color: #0f2142 !important;
+        }
+
+        /* Drag grip handle */
+        [data-puck-component-item] [class*="_DrawerItem-draggable_"] svg {
+          opacity: 0.4 !important;
+          flex-shrink: 0 !important;
+          width: 11px !important;
+          height: 11px !important;
+        }
+
+        [data-puck-component-item]:hover [class*="_DrawerItem-draggable_"] svg {
+          opacity: 0.85 !important;
+          color: #2563eb !important;
+        }
+
+        /* Search filtering */
+        .puck-drawer-searching [data-puck-component-item]:not([data-block-title*="${searchTerm.toLowerCase()}"]):not([data-block-name*="${searchTerm.toLowerCase()}"]) {
+          display: none !important;
+        }
+      `}</style>
     </div>
   );
 }
@@ -523,58 +614,58 @@ function UnifiedEditorHeader({
 
         {/* Save Draft Button */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={onSaveDraft}
           disabled={isSaving || isPublishing}
-          className="gap-1 text-xs rounded-full border-slate-300 h-8 font-medium px-3 text-slate-700 hover:text-navy"
+          className="gap-1.5 text-xs rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-navy h-8 font-medium px-3 shadow-2xs transition-colors"
         >
-          <Save className={`size-3.5 ${isSaving ? "animate-spin text-navy" : ""}`} />
+          <Save className={`size-3.5 ${isSaving ? "animate-spin text-navy" : "text-slate-600"}`} />
           <span>{isSaving ? "Saving..." : "Save Draft"}</span>
         </Button>
 
         {/* Page Settings & SEO Button */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={onOpenSeo}
-          className="gap-1 text-xs rounded-full border-slate-300 text-slate-700 hover:text-navy h-8 px-2.5"
+          className="gap-1.5 text-xs rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-navy h-8 px-2.5 shadow-2xs transition-colors"
           title="Page Settings & SEO"
         >
-          <Settings className="size-3.5" />
+          <Settings className="size-3.5 text-slate-600" />
           <span className="hidden lg:inline">Settings</span>
         </Button>
 
         {/* Preview Button */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={onOpenPreview}
-          className="gap-1 text-xs rounded-full border-slate-300 text-slate-700 hover:text-navy h-8 px-2.5 hidden sm:inline-flex"
+          className="gap-1.5 text-xs rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-navy h-8 px-2.5 shadow-2xs hidden sm:inline-flex transition-colors"
           title="Preview Page"
         >
-          <Eye className="size-3.5" />
+          <Eye className="size-3.5 text-slate-600" />
           <span className="hidden lg:inline">Preview</span>
         </Button>
 
         {/* Revisions Button */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={onOpenVersions}
-          className="gap-1 text-xs rounded-full border-slate-300 text-slate-700 hover:text-navy h-8 px-2.5 hidden sm:inline-flex"
+          className="gap-1 text-xs rounded-full border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 hover:text-navy h-8 px-2.5 shadow-2xs hidden sm:inline-flex transition-colors"
           title="Revision History"
         >
-          <History className="size-3.5" />
+          <History className="size-3.5 text-slate-600" />
         </Button>
 
         {/* Add to Navigation - published pages only */}
         {page.status === "published" && (
           <Button
-            variant="outline"
+            variant="ghost"
             size="sm"
             onClick={onAddToNav}
-            className="gap-1 text-xs rounded-full border-blue-200 text-blue-700 hover:bg-blue-50 h-8 px-2.5 hidden md:inline-flex"
+            className="gap-1.5 text-xs rounded-full border border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-900 h-8 px-2.5 shadow-2xs hidden md:inline-flex transition-colors"
             title="Add to Navigation"
           >
             <Menu className="size-3.5" />
@@ -1190,15 +1281,26 @@ function CmsPageEditorRoute() {
                 drawer: ({ children }) => (
                   <CustomDrawerWrapper>{children}</CustomDrawerWrapper>
                 ),
-                drawerItem: ({ name, children }) => (
-                  <div
-                    data-puck-component-item=""
-                    data-block-title={name.toLowerCase()}
-                    data-block-name={name.toLowerCase()}
-                  >
-                    {children}
-                  </div>
-                ),
+                drawerItem: ({ name, children }) => {
+                  const Icon = getBlockIcon(name);
+                  const friendlyName = getFriendlyBlockName(name);
+
+                  return (
+                    <div
+                      data-puck-component-item=""
+                      data-block-title={`${name} ${friendlyName}`.toLowerCase()}
+                      data-block-name={name.toLowerCase()}
+                      className="puck-custom-drawer-item group relative w-full min-w-0"
+                    >
+                      <div className="relative w-full">
+                        {children}
+                        <div className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 group-hover:text-blue-600 size-4 flex items-center justify-center transition-colors">
+                          <Icon className="size-3.5 shrink-0" />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                },
                 actionBar: ({ label, children, parentAction }) => (
                   <CustomActionBar label={label} parentAction={parentAction}>
                     {children}
