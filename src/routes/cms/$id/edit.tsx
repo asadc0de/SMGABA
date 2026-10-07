@@ -35,7 +35,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
 import { useEditorMode } from "@/cms/editor-mode";
 import {
   Lock,
@@ -94,7 +94,7 @@ const editorViewports = [
   { width: 1280, height: "auto" as const, label: "Desktop", icon: "Monitor" as const },
 ];
 
-export interface SafetyIssue {
+interface SafetyIssue {
   type: "error" | "warning";
   blockType: string;
   blockTitle: string;
