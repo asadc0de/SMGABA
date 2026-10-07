@@ -344,7 +344,6 @@ function TestimonialsPage() {
     emailOrPhone: "",
     timePreference: "Morning",
     comments: "",
-    website: "", // honeypot
   });
 
   const filteredTestimonials =
@@ -376,7 +375,6 @@ function TestimonialsPage() {
           email: emailMatch || (formData.emailOrPhone.includes("@") ? formData.emailOrPhone : "inquiry@smgaba.com"),
           phone: phoneMatch,
           message: messageBody || "Let's Talk consultation request from Testimonials page",
-          website: formData.website,
           source: "testimonials",
         }),
       });
@@ -393,7 +391,6 @@ function TestimonialsPage() {
         emailOrPhone: "",
         timePreference: "Morning",
         comments: "",
-        website: "",
       });
     } catch (err: any) {
       console.error("Testimonials form submit error:", err);
@@ -557,18 +554,6 @@ function TestimonialsPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Honeypot field (hidden from real users) */}
-                <div style={{ display: "none", opacity: 0, position: "absolute", left: "-9999px" }} aria-hidden="true">
-                  <input
-                    type="text"
-                    name="website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={formData.website}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
-                  />
-                </div>
-
                 {errorMessage && (
                   <div className="flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-200">
                     <AlertCircle className="size-4 shrink-0 text-red-400" />

@@ -88,7 +88,6 @@ function ContactPage() {
     officePreference: "General Inquiry",
     message: "",
     agreed: false,
-    website: "", // Spam honeypot field
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -98,7 +97,7 @@ function ContactPage() {
     const email = formData.email.trim();
     const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-    if (!isEmailValid && (!formData.website || formData.website.trim() === "")) {
+    if (!isEmailValid) {
       setErrorMessage("Please provide a valid email address so our team can reach you.");
       return;
     }
@@ -132,7 +131,6 @@ function ContactPage() {
           phone: formData.phone.trim() || undefined,
           source: "main",
           message: formData.message.trim(),
-          website: formData.website,
           officePreference: formData.officePreference,
         }),
       });
@@ -148,7 +146,6 @@ function ContactPage() {
           officePreference: "General Inquiry",
           message: "",
           agreed: false,
-          website: "",
         });
       } else {
         setErrorMessage(
@@ -257,30 +254,6 @@ function ContactPage() {
                       aria-describedby={errorMessage ? "contact-form-error" : undefined}
                       className="space-y-5"
                     >
-                      {/* Honeypot field for bot spam prevention (positioned off-screen) */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: "-9999px",
-                          top: "-9999px",
-                          width: "1px",
-                          height: "1px",
-                          overflow: "hidden",
-                        }}
-                        aria-hidden="true"
-                      >
-                        <label htmlFor="contact-website-hp">Leave this field blank</label>
-                        <input
-                          id="contact-website-hp"
-                          type="text"
-                          name="website"
-                          tabIndex={-1}
-                          autoComplete="off"
-                          value={formData.website}
-                          onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                        />
-                      </div>
-
                       {/* Name field */}
                       <div>
                         <label

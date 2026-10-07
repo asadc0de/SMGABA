@@ -326,20 +326,7 @@ export async function processContactSubmission(
     };
   }
 
-  // 2. HONEYPOT SPAM PROTECTION
-  // If the hidden 'website' field is populated by a spam bot, silently return OK without dispatching
-  if (payload.website && payload.website.trim().length > 0) {
-    console.warn(
-      `[Contact Honeypot Triggered] Silently dropped spam submission from IP: ${clientIp}`,
-    );
-    return {
-      success: true,
-      message: "Thank you for reaching out! We will contact you shortly.",
-      status: 200,
-    };
-  }
-
-  // 3. SERVER-SIDE VALIDATION
+  // 2. SERVER-SIDE VALIDATION
   const trimmedName = (payload.name || "").trim();
   const trimmedEmail = (payload.email || "").trim();
   const trimmedMessage = (payload.message || "").trim();

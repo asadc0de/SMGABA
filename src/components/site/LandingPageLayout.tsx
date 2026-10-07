@@ -25,7 +25,6 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
     contactInfo: "",
     bestTime: "Morning",
     notes: "",
-    website: "", // Honeypot field
   });
 
   const handleSubmit = async (e: FormEvent) => {
@@ -37,7 +36,7 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
     const email = isEmail ? contact : "";
     const phone = !isEmail ? contact : "";
 
-    if (!isEmail && (!formData.website || formData.website.trim() === "")) {
+    if (!isEmail) {
       setErrorMessage("Please enter a valid email address so our team can reach you.");
       return;
     }
@@ -73,7 +72,6 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
             formData.notes.trim() ||
             `Consultation inquiry for ${data.title} industry. Best time to contact: ${formData.bestTime}`,
           source: `industry-${data.slug}`,
-          website: formData.website,
           bestTime: formData.bestTime,
         }),
       });
@@ -88,7 +86,6 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
           contactInfo: "",
           bestTime: "Morning",
           notes: "",
-          website: "",
         });
       } else {
         setErrorMessage(
@@ -229,30 +226,6 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                 onSubmit={handleSubmit}
                 className="space-y-4"
               >
-                {/* Honeypot field (hidden from real users) */}
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "-9999px",
-                    top: "-9999px",
-                    width: "1px",
-                    height: "1px",
-                    overflow: "hidden",
-                  }}
-                  aria-hidden="true"
-                >
-                  <label htmlFor={`${data.slug}-website-hp`}>Leave this field blank</label>
-                  <input
-                    id={`${data.slug}-website-hp`}
-                    type="text"
-                    name="website"
-                    tabIndex={-1}
-                    autoComplete="off"
-                    value={formData.website}
-                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                  />
-                </div>
-
                 {errorMessage && (
                   <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-xs text-red-200 text-center">
                     {errorMessage}
