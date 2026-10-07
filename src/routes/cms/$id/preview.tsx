@@ -11,7 +11,7 @@ import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   Lock,
   Unlock,
@@ -147,7 +147,6 @@ function CmsDraftPreviewRoute() {
     return (
       <div className="min-h-screen bg-slate-100 flex flex-col justify-between">
         <Header />
-        <Toaster position="top-right" richColors />
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
             <div className="size-12 rounded-full bg-navy/5 text-navy flex items-center justify-center mx-auto mb-4">
@@ -233,8 +232,6 @@ function CmsDraftPreviewRoute() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between relative">
-      <Toaster position="top-right" richColors />
-
       {/* Sticky Top Preview Mode Banner */}
       <div className="sticky top-0 z-[60] bg-amber-600 text-white px-4 py-2.5 shadow-md flex items-center justify-between gap-4 text-xs font-medium">
         <div className="flex items-center gap-2.5">

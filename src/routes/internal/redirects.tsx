@@ -30,7 +30,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   Lock,
   Unlock,
@@ -392,7 +392,6 @@ function CmsRedirectsAdminPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
       <Header />
-      <Toaster position="top-right" richColors />
 
       <main className="flex-1 pt-28 sm:pt-36 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
         {/* Header Section */}

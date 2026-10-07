@@ -17,7 +17,7 @@ import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   Lock,
   Unlock,
@@ -316,8 +316,6 @@ function CmsSettingsManagerRoute() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col justify-between">
-      <Toaster position="top-right" richColors />
-
       {/* Top Navigation Bar */}
       <header className="sticky top-0 z-50 bg-white border-b border-slate-200 px-4 sm:px-6 py-3 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-7xl mx-auto w-full">

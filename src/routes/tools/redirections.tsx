@@ -12,7 +12,7 @@ import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import {
   Lock,
   Unlock,
@@ -239,7 +239,6 @@ function CreateRedirectPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between selection:bg-primary/20">
-      <Toaster position="top-right" richColors />
       <Header />
 
       <main className="flex-1 py-28 sm:py-32 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">

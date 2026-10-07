@@ -35,7 +35,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { useEditorMode } from "@/cms/editor-mode";
 import {
   Lock,
@@ -1081,8 +1081,6 @@ function CmsPageEditorRoute() {
 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col justify-between">
-      <Toaster position="top-right" richColors />
-
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col">
         {!isAuthenticated ? (

@@ -9,7 +9,7 @@ import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { ImagePickerInput } from "@/cms/fields/ImagePicker";
 import {
   Lock,
@@ -229,7 +229,6 @@ function NewCmsPageForm() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
       <Header />
-      <Toaster position="top-right" richColors />
 
       <main className="flex-1 pt-28 sm:pt-36 pb-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full">
         <div className="mb-6">
