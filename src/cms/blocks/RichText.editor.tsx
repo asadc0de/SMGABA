@@ -11,6 +11,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createTypographyField, createFontSizePixelField } from "../fields/TextFormatting";
 
 export const RichTextBlock: ComponentConfig<RichTextProps> = {
   label: "Text",
