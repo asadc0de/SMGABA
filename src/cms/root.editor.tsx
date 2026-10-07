@@ -41,24 +41,24 @@ export function CmsRootEditor(props: CmsRootProps) {
           --puck-color-interactive: #0f2142;
         }
 
-        /* Hover outline on any element inside canvas */
+        /* Clean single-line outline on hover */
         [data-puck-component] {
-          transition: outline 0.15s ease, box-shadow 0.15s ease;
+          transition: outline 0.12s ease;
           position: relative;
         }
 
         [data-puck-component]:hover:not([data-puck-selected="true"]):not(.puck-component--selected) {
-          outline: 2px dashed #3b82f6 !important;
-          outline-offset: 2px !important;
+          outline: 1.5px dashed #2563eb !important;
+          outline-offset: -1px !important;
           cursor: pointer;
         }
 
-        /* Selected element outline */
+        /* Clean single-line outline on selection */
         [data-puck-selected="true"],
         .puck-component--selected {
-          outline: 2.5px solid #2563eb !important;
-          outline-offset: 2.5px !important;
-          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2) !important;
+          outline: 2px solid #2563eb !important;
+          outline-offset: -1px !important;
+          box-shadow: none !important;
         }
 
         /* Puck overlay action buttons */

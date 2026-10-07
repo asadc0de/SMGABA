@@ -18,6 +18,7 @@ import {
   Globe,
   RefreshCw,
   AlertCircle,
+  Eye,
   EyeOff,
   Edit,
   ExternalLink,

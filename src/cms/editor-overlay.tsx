@@ -79,11 +79,11 @@ export function CustomComponentOverlay({
 
   return (
     <div
-      className={`relative w-full h-full transition-all duration-150 pointer-events-none ${
+      className={`relative w-full h-full pointer-events-none transition-colors duration-150 ${
         isSelected
-          ? "ring-[2.5px] ring-[#2563eb] ring-offset-2 bg-blue-500/[0.04]"
+          ? "bg-blue-500/[0.04]"
           : hover
-          ? "ring-2 ring-dashed ring-blue-500 ring-offset-1 bg-blue-400/[0.03]"
+          ? "bg-blue-400/[0.02]"
           : ""
       }`}
     >
