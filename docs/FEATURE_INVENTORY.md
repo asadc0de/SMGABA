@@ -3,7 +3,7 @@
 ```yaml
 Version: v1.0
 Date: 2026-10-09
-Based on code: 18afd2e
+Based on code: ebc61f0
 Status: Draft
 ```
 
