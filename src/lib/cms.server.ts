@@ -212,20 +212,37 @@ export function validatePuckUrlsAndStyles(puckData: unknown): { valid: boolean; 
   return walk(puckData);
 }
 
-function formatDbError(error: { message?: string; code?: string } | null | undefined): string {
+function formatDbError(error: { message?: string; code?: string; details?: string } | null | undefined): string {
   if (!error) return "An unexpected database error occurred.";
   const msg = error.message || "";
+  const code = error.code || "";
+  const details = error.details || "";
+
+  // 1. Duplicate unique key constraint violation (e.g. slug already exists)
   if (
-    msg.includes("schema cache") ||
-    msg.includes("cms_pages") ||
-    error.code === "PGRST205" ||
-    error.code === "42P01"
+    code === "23505" ||
+    msg.includes("unique constraint") ||
+    msg.includes("duplicate key") ||
+    details.includes("already exists")
+  ) {
+    return "A page with this URL slug already exists. Please choose a different slug.";
+  }
+
+  // 2. Table or relation missing
+  if (
+    code === "42P01" ||
+    code === "PGRST205" ||
+    msg.includes("relation \"public.cms_pages\" does not exist") ||
+    msg.includes("relation \"cms_pages\" does not exist")
   ) {
     return "The 'cms_pages' table does not exist in Supabase yet. Please run the SQL migration in your Supabase SQL Editor (found in supabase/migrations/create_cms_pages_table.sql).";
   }
-  if (error.code === "23505") {
-    return "A page with this URL slug already exists. Please choose a different slug.";
+
+  // 3. Permission or RLS policy denial
+  if (code === "42501" || msg.includes("permission denied") || msg.includes("violates row-level security policy")) {
+    return "Database permission denied. Please ensure your SUPABASE_SERVICE_ROLE_KEY is correctly configured.";
   }
+
   return msg || "Database error occurred.";
 }
 
