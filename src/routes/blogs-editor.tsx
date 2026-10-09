@@ -46,6 +46,7 @@ import {
   deleteBlogPost,
   type ExtendedBlogPost,
 } from "@/lib/blogs.server";
+import { uploadCmsImage } from "@/lib/cms.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { type ContentBlock } from "@/data/blogPosts";
 import { Button } from "@/components/ui/button";
@@ -195,6 +196,78 @@ function BlogsEditorPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isCustomSlugUnlocked, setIsCustomSlugUnlocked] = useState(false);
   const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const [coverImageTab, setCoverImageTab] = useState<"upload" | "presets" | "url">("upload");
+  const [isCoverDraggingOver, setIsCoverDraggingOver] = useState(false);
+  const [customCoverUrl, setCustomCoverUrl] = useState("");
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
+  const settingsFileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleCoverFileUpload(file: File) {
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file (PNG, JPG, WebP, SVG, GIF).");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Image file size must be less than 10MB.");
+      return;
+    }
+
+    setIsUploadingCover(true);
+    const toastId = toast.loading(`Uploading "${file.name}" from your computer...`);
+
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64Data = (reader.result as string).split(",")[1];
+          const adminPw =
+            typeof window !== "undefined"
+              ? sessionStorage.getItem("smg_tools_admin_pw") || ""
+              : "";
+
+          const res = await uploadCmsImage({
+            data: {
+              fileName: file.name,
+              contentType: file.type,
+              base64Data,
+              adminPassword: adminPw,
+            },
+          });
+
+          if (res?.success && res.url) {
+            setCurrentPost((prev) => ({ ...prev, image: res.url }));
+            toast.dismiss(toastId);
+            toast.success("Cover image uploaded and updated!");
+            setIsImagePickerOpen(false);
+          } else {
+            // Offline/fallback to data URL so user is never blocked
+            const dataUrl = reader.result as string;
+            setCurrentPost((prev) => ({ ...prev, image: dataUrl }));
+            toast.dismiss(toastId);
+            toast.success("Cover image selected from your computer!");
+            setIsImagePickerOpen(false);
+          }
+        } catch (err: any) {
+          const dataUrl = reader.result as string;
+          setCurrentPost((prev) => ({ ...prev, image: dataUrl }));
+          toast.dismiss(toastId);
+          toast.success("Cover image selected from your computer!");
+          setIsImagePickerOpen(false);
+        } finally {
+          setIsUploadingCover(false);
+        }
+      };
+      reader.readAsDataURL(file);
+    } catch (err: any) {
+      toast.dismiss(toastId);
+      toast.error(err?.message || "Failed to read image file.");
+      setIsUploadingCover(false);
+    }
+  }
 
   // Derived stats
   const stats = useMemo(() => {
@@ -964,8 +1037,25 @@ function BlogsEditorPage() {
               <div className="max-w-4xl mx-auto space-y-6">
                 {/* Article Header Document Card */}
                 <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden p-6 sm:p-10 space-y-6">
-                  {/* Featured Cover Image Banner */}
-                  <div className="relative rounded-2xl overflow-hidden bg-slate-100 h-52 sm:h-64 border border-slate-200 group">
+                  {/* Featured Cover Image Banner with Drag & Drop & Upload from Computer */}
+                  <div
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      setIsCoverDraggingOver(true);
+                    }}
+                    onDragLeave={() => setIsCoverDraggingOver(false)}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      setIsCoverDraggingOver(false);
+                      const file = e.dataTransfer.files?.[0];
+                      if (file) handleCoverFileUpload(file);
+                    }}
+                    className={`relative rounded-2xl overflow-hidden bg-slate-100 h-52 sm:h-64 border transition-all duration-200 group ${
+                      isCoverDraggingOver
+                        ? "border-2 border-dashed border-primary ring-4 ring-primary/20 bg-blue-50/50"
+                        : "border-slate-200"
+                    }`}
+                  >
                     {currentPost.image ? (
                       <img
                         src={currentPost.image}
@@ -973,89 +1063,301 @@ function BlogsEditorPage() {
                         className="size-full object-cover"
                       />
                     ) : (
-                      <div className="size-full flex flex-col items-center justify-center text-slate-400 bg-slate-50">
-                        <ImageIcon className="size-10 mb-2 text-slate-300" />
-                        <span className="text-xs">No cover image selected</span>
+                      <div className="size-full flex flex-col items-center justify-center text-slate-400 bg-slate-50 p-6 text-center">
+                        <div className="size-12 rounded-full bg-slate-200/70 flex items-center justify-center mb-2 text-slate-400">
+                          <ImageIcon className="size-6" />
+                        </div>
+                        <span className="text-xs font-semibold text-slate-600">No cover image selected</span>
+                        <span className="text-[11px] text-slate-400 mt-0.5">
+                          Drag &amp; drop an image here or click below to select from your computer
+                        </span>
                       </div>
                     )}
 
-                    {/* Change Cover Button Overlay */}
-                    <div className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Button
-                        type="button"
-                        onClick={() => setIsImagePickerOpen(true)}
-                        size="sm"
-                        className="rounded-full bg-white text-navy hover:bg-slate-100 font-semibold shadow-lg text-xs gap-1.5"
-                      >
-                        <ImageIcon className="size-3.5 text-primary" /> Change Cover Photo
-                      </Button>
-                    </div>
+                    {/* Drag-over indicator banner */}
+                    {isCoverDraggingOver && (
+                      <div className="absolute inset-0 bg-blue-600/85 backdrop-blur-xs flex flex-col items-center justify-center text-white z-20 animate-in fade-in duration-150">
+                        <Upload className="size-10 mb-2 animate-bounce" />
+                        <p className="text-sm font-bold">Drop image here to set cover photo</p>
+                        <p className="text-xs opacity-90">PNG, JPG, WebP, SVG up to 10MB</p>
+                      </div>
+                    )}
 
-                    {/* Small always-visible button at bottom right */}
-                    <button
-                      type="button"
-                      onClick={() => setIsImagePickerOpen(true)}
-                      className="absolute bottom-3 right-3 rounded-full bg-white/95 text-navy font-semibold px-3 py-1.5 text-xs shadow-md border border-slate-200/80 flex items-center gap-1.5 hover:bg-white transition"
-                    >
-                      <ImageIcon className="size-3.5 text-primary" /> Cover Photo
-                    </button>
+                    {/* Hover Action Overlay */}
+                    {!isCoverDraggingOver && (
+                      <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-2 p-4">
+                        <Button
+                          type="button"
+                          onClick={() => coverFileInputRef.current?.click()}
+                          size="sm"
+                          className="rounded-full bg-white text-navy hover:bg-slate-100 font-semibold shadow-lg text-xs gap-1.5"
+                        >
+                          <Upload className="size-3.5 text-primary" /> Select from Computer
+                        </Button>
+                        <Button
+                          type="button"
+                          onClick={() => {
+                            setCustomCoverUrl(currentPost.image || "");
+                            setIsImagePickerOpen(true);
+                          }}
+                          size="sm"
+                          variant="secondary"
+                          className="rounded-full bg-white/95 text-slate-800 hover:bg-white font-semibold shadow-lg text-xs gap-1.5"
+                        >
+                          <Sparkles className="size-3.5 text-amber-500" /> Presets &amp; URL
+                        </Button>
+                        {currentPost.image && (
+                          <Button
+                            type="button"
+                            onClick={() => {
+                              setCurrentPost((prev) => ({ ...prev, image: "" }));
+                              toast.success("Cover image removed");
+                            }}
+                            size="sm"
+                            variant="destructive"
+                            className="rounded-full bg-red-600/90 text-white hover:bg-red-700 font-semibold shadow-lg text-xs gap-1.5"
+                          >
+                            <Trash2 className="size-3.5" /> Remove
+                          </Button>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Quick persistent button at bottom right */}
+                    <div className="absolute bottom-3 right-3 flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => coverFileInputRef.current?.click()}
+                        className="rounded-full bg-white/95 text-navy font-semibold px-3 py-1.5 text-xs shadow-md border border-slate-200/80 flex items-center gap-1.5 hover:bg-white transition hover:shadow-lg"
+                      >
+                        <Upload className="size-3.5 text-primary" /> Select from Computer
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCustomCoverUrl(currentPost.image || "");
+                          setIsImagePickerOpen(true);
+                        }}
+                        className="rounded-full bg-white/95 text-slate-700 font-semibold px-2.5 py-1.5 text-xs shadow-md border border-slate-200/80 flex items-center gap-1.5 hover:bg-white transition"
+                        title="Browse All Options"
+                      >
+                        <ImageIcon className="size-3.5 text-slate-600" /> Options
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Inline Image Picker Drawer (if open) */}
+                  {/* Hidden file input for native computer file selection */}
+                  <input
+                    ref={coverFileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,image/gif"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) handleCoverFileUpload(file);
+                      e.target.value = "";
+                    }}
+                  />
+
+                  {/* Tabbed Image Picker Drawer (if open) */}
                   {isImagePickerOpen && (
-                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4 animate-in fade-in duration-200">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold uppercase tracking-wider text-navy flex items-center gap-1.5">
-                          <Sparkles className="size-3.5 text-primary" /> Choose a Curated Photo or Enter URL
-                        </span>
+                    <div className="p-5 sm:p-6 bg-slate-50 rounded-3xl border border-slate-200 space-y-4 animate-in fade-in duration-200 shadow-sm">
+                      <div className="flex items-center justify-between pb-3 border-b border-slate-200/80">
+                        <div>
+                          <span className="text-xs font-bold uppercase tracking-wider text-navy flex items-center gap-1.5">
+                            <ImageIcon className="size-3.5 text-primary" /> Cover Photo Selector
+                          </span>
+                          <p className="text-[11px] text-slate-500 mt-0.5">
+                            Upload a photo from your computer, choose from curated stock images, or enter a web link.
+                          </p>
+                        </div>
                         <button
                           type="button"
                           onClick={() => setIsImagePickerOpen(false)}
-                          className="size-6 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500"
+                          className="size-7 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition"
                         >
-                          <X className="size-3.5" />
+                          <X className="size-4" />
                         </button>
                       </div>
 
-                      {/* Presets Grid */}
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
-                        {SAMPLE_IMAGES.map((img, i) => (
-                          <button
-                            key={i}
-                            type="button"
-                            onClick={() => {
-                              setCurrentPost((prev) => ({ ...prev, image: img.url }));
-                              setIsImagePickerOpen(false);
-                              toast.success("Cover image updated");
-                            }}
-                            className={`group relative h-16 rounded-xl overflow-hidden border transition ${
-                              currentPost.image === img.url
-                                ? "border-navy ring-2 ring-navy/30"
-                                : "border-slate-200 hover:border-navy/50"
-                            }`}
-                          >
-                            <img src={img.url} alt={img.label} className="size-full object-cover group-hover:scale-105 transition" />
-                          </button>
-                        ))}
+                      {/* Tab Navigation */}
+                      <div className="flex items-center gap-1.5 p-1 bg-slate-200/70 rounded-xl w-fit">
+                        <button
+                          type="button"
+                          onClick={() => setCoverImageTab("upload")}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                            coverImageTab === "upload"
+                              ? "bg-white text-navy shadow-xs"
+                              : "text-slate-600 hover:text-navy"
+                          }`}
+                        >
+                          <Upload className="size-3.5" /> From Computer
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCoverImageTab("presets")}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                            coverImageTab === "presets"
+                              ? "bg-white text-navy shadow-xs"
+                              : "text-slate-600 hover:text-navy"
+                          }`}
+                        >
+                          <Sparkles className="size-3.5" /> Curated Photos
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCoverImageTab("url")}
+                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+                            coverImageTab === "url"
+                              ? "bg-white text-navy shadow-xs"
+                              : "text-slate-600 hover:text-navy"
+                          }`}
+                        >
+                          <Globe className="size-3.5" /> Custom URL
+                        </button>
                       </div>
 
-                      {/* Custom URL Field */}
-                      <div className="flex items-center gap-2 pt-2 border-t border-slate-200/60">
-                        <Input
-                          type="url"
-                          placeholder="Paste any custom image URL (e.g. https://...)"
-                          value={currentPost.image}
-                          onChange={(e) => setCurrentPost((prev) => ({ ...prev, image: e.target.value }))}
-                          className="text-xs h-9 bg-white"
-                        />
-                        <Button
-                          type="button"
-                          size="sm"
-                          onClick={() => setIsImagePickerOpen(false)}
-                          className="rounded-full bg-navy text-white text-xs h-9 px-4 shrink-0"
-                        >
-                          Done
-                        </Button>
+                      {/* Tab 1: Upload from Computer */}
+                      {coverImageTab === "upload" && (
+                        <div className="space-y-3">
+                          <div
+                            onClick={() => coverFileInputRef.current?.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              const file = e.dataTransfer.files?.[0];
+                              if (file) handleCoverFileUpload(file);
+                            }}
+                            className="cursor-pointer border-2 border-dashed border-slate-300 hover:border-navy hover:bg-white transition rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center group bg-white/60"
+                          >
+                            {isUploadingCover ? (
+                              <div className="flex flex-col items-center gap-2">
+                                <Loader2 className="size-8 text-primary animate-spin" />
+                                <span className="text-xs font-semibold text-navy">Uploading image from computer...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="size-12 rounded-full bg-blue-50 text-primary flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all shadow-xs">
+                                  <Upload className="size-5" />
+                                </div>
+                                <span className="text-xs font-bold text-navy">
+                                  Click here to browse files or drag &amp; drop an image
+                                </span>
+                                <span className="text-[11px] text-slate-500 mt-1">
+                                  Supports PNG, JPG, JPEG, WebP, SVG, and GIF (up to 10MB)
+                                </span>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  className="mt-3.5 rounded-full bg-navy text-white hover:bg-navy/90 text-xs px-5 shadow-xs"
+                                >
+                                  Browse from Computer
+                                </Button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tab 2: Curated Photos Grid */}
+                      {coverImageTab === "presets" && (
+                        <div className="space-y-3">
+                          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                            {SAMPLE_IMAGES.map((img, i) => (
+                              <button
+                                key={i}
+                                type="button"
+                                onClick={() => {
+                                  setCurrentPost((prev) => ({ ...prev, image: img.url }));
+                                  setIsImagePickerOpen(false);
+                                  toast.success("Cover image updated");
+                                }}
+                                className={`group relative h-20 rounded-xl overflow-hidden border transition ${
+                                  currentPost.image === img.url
+                                    ? "border-navy ring-2 ring-navy/30"
+                                    : "border-slate-200 hover:border-navy/50"
+                                }`}
+                              >
+                                <img src={img.url} alt={img.label} className="size-full object-cover group-hover:scale-105 transition" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-1.5 opacity-0 group-hover:opacity-100 transition">
+                                  <span className="text-[9px] text-white font-medium line-clamp-1">{img.label}</span>
+                                </div>
+                                {currentPost.image === img.url && (
+                                  <div className="absolute top-1 right-1 bg-navy text-white rounded-full p-0.5 shadow">
+                                    <Check className="size-2.5" />
+                                  </div>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Tab 3: Custom URL Field */}
+                      {coverImageTab === "url" && (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Input
+                              type="url"
+                              placeholder="Paste any custom image URL (e.g. https://...)"
+                              value={customCoverUrl}
+                              onChange={(e) => setCustomCoverUrl(e.target.value)}
+                              className="text-xs h-9 bg-white flex-1"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => {
+                                if (customCoverUrl.trim()) {
+                                  setCurrentPost((prev) => ({ ...prev, image: customCoverUrl.trim() }));
+                                  toast.success("Cover image updated");
+                                  setIsImagePickerOpen(false);
+                                } else {
+                                  toast.error("Please enter a valid image URL.");
+                                }
+                              }}
+                              className="rounded-full bg-navy text-white text-xs h-9 px-4 shrink-0"
+                            >
+                              Apply URL
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Bottom action controls */}
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200/70 text-xs">
+                        <div>
+                          {currentPost.image ? (
+                            <span className="text-[11px] text-emerald-700 font-medium flex items-center gap-1">
+                              <Check className="size-3 text-emerald-600" /> Active cover image selected
+                            </span>
+                          ) : (
+                            <span className="text-[11px] text-slate-400">No cover image currently assigned</span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {currentPost.image && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setCurrentPost((prev) => ({ ...prev, image: "" }));
+                                toast.success("Cover image removed");
+                              }}
+                              className="text-xs text-red-600 hover:underline flex items-center gap-1 mr-2"
+                            >
+                              <Trash2 className="size-3" /> Remove Cover
+                            </button>
+                          )}
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => setIsImagePickerOpen(false)}
+                            className="rounded-full text-xs h-8 px-4"
+                          >
+                            Done
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -1393,7 +1695,102 @@ function BlogsEditorPage() {
                   )}
                 </div>
 
-                {/* 2. Author & Category Settings */}
+                {/* 2. Featured Cover Image Card */}
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
+                        <ImageIcon className="size-4 text-primary" /> Featured Article Cover Image
+                      </h3>
+                      <p className="text-xs text-slate-500 mt-1">
+                        Select an image from your computer to display at the top of the article and in blog card previews.
+                      </p>
+                    </div>
+                    {currentPost.image && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentPost((prev) => ({ ...prev, image: "" }));
+                          toast.success("Cover image removed");
+                        }}
+                        className="text-xs text-red-600 hover:underline flex items-center gap-1"
+                      >
+                        <Trash2 className="size-3" /> Remove Image
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                    {/* Cover Preview */}
+                    <div className="relative rounded-2xl overflow-hidden bg-slate-100 h-32 border border-slate-200 sm:col-span-1 group">
+                      {currentPost.image ? (
+                        <img
+                          src={currentPost.image}
+                          alt="Cover Preview"
+                          className="size-full object-cover"
+                        />
+                      ) : (
+                        <div className="size-full flex flex-col items-center justify-center text-slate-400 bg-slate-50 p-2 text-center">
+                          <ImageIcon className="size-6 mb-1 text-slate-300" />
+                          <span className="text-[10px]">No image selected</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Actions */}
+                    <div className="sm:col-span-2 space-y-2.5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Button
+                          type="button"
+                          onClick={() => settingsFileInputRef.current?.click()}
+                          size="sm"
+                          className="rounded-full bg-navy text-white hover:bg-navy/90 text-xs px-4 gap-1.5 shadow-xs"
+                        >
+                          <Upload className="size-3.5" /> Select from Computer
+                        </Button>
+                        <input
+                          ref={settingsFileInputRef}
+                          type="file"
+                          accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,image/gif"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleCoverFileUpload(file);
+                            e.target.value = "";
+                          }}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setEditorSubTab("write");
+                            setCoverImageTab("presets");
+                            setIsImagePickerOpen(true);
+                          }}
+                          className="rounded-full text-xs px-3.5 gap-1.5 border-slate-200"
+                        >
+                          <Sparkles className="size-3.5 text-amber-500" /> Stock Presets
+                        </Button>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-1">
+                        <Input
+                          type="url"
+                          placeholder="Or paste external image URL..."
+                          value={currentPost.image}
+                          onChange={(e) => setCurrentPost((prev) => ({ ...prev, image: e.target.value }))}
+                          className="h-8 text-xs bg-white border-slate-200"
+                        />
+                      </div>
+                      <p className="text-[11px] text-slate-400">
+                        Recommended size: 1200 &times; 630px JPG, PNG, or WebP.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Author & Category Settings */}
                 <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
                   <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
                     <User className="size-4 text-primary" /> Author &amp; Publication Details
