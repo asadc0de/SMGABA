@@ -40,6 +40,8 @@ import {
   X,
   Play,
   Film,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 
 export const Route = createFileRoute("/tools/events")({
@@ -62,6 +64,7 @@ export const Route = createFileRoute("/tools/events")({
 });
 
 const AUTH_STORAGE_KEY = "smg_tools_admin_pw";
+const ITEMS_PER_PAGE = 15;
 
 function cleanSlugId(text: string): string {
   return text
@@ -95,6 +98,12 @@ function EventsAdminPage() {
   // Filter & Search
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "upcoming" | "past">("all");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+
+  // Reset pagination when search query or status filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter]);
 
   // Form State
   const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -430,6 +439,23 @@ function EventsAdminPage() {
         (e.description && e.description.toLowerCase().includes(q))
     );
   }, [events, searchQuery, statusFilter, todayStr]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredEvents.length / ITEMS_PER_PAGE));
+
+  // Clamp current page if total pages decreases
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const paginatedEvents = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredEvents.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredEvents, currentPage]);
+
+  const startIndex = filteredEvents.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(currentPage * ITEMS_PER_PAGE, filteredEvents.length);
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between selection:bg-primary/20">
@@ -907,7 +933,7 @@ function EventsAdminPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/60">
-                        {filteredEvents.map((item) => {
+                        {paginatedEvents.map((item) => {
                           const isPast = item.event_date.slice(0, 10) < todayStr;
                           const hasRecording = Boolean(item.recording_link);
                           const isDeleting = deletingId === item.id;
@@ -1053,6 +1079,81 @@ function EventsAdminPage() {
                         })}
                       </tbody>
                     </table>
+                  </div>
+                )}
+
+                {/* Pagination Controls Bar */}
+                {filteredEvents.length > 0 && (
+                  <div className="border-t border-border/70 px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-secondary/20">
+                    <div className="text-xs text-muted-foreground font-medium">
+                      Showing <span className="font-bold text-navy">{startIndex}</span> to{" "}
+                      <span className="font-bold text-navy">{endIndex}</span> of{" "}
+                      <span className="font-bold text-navy">{filteredEvents.length}</span> {filteredEvents.length === 1 ? "event" : "events"}
+                      {events.length !== filteredEvents.length && (
+                        <span className="text-muted-foreground/70 ml-1">(filtered from {events.length} total)</span>
+                      )}
+                    </div>
+
+                    {totalPages > 1 && (
+                      <div className="flex items-center gap-1.5 self-center sm:self-auto">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          disabled={currentPage === 1}
+                          className="h-8 px-2.5 text-xs font-semibold rounded-xl text-navy hover:bg-secondary disabled:opacity-40 cursor-pointer"
+                        >
+                          <ChevronLeft className="size-3.5 mr-1" />
+                          <span>Previous</span>
+                        </Button>
+
+                        <div className="flex items-center gap-1">
+                          {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                            const isFirst = pageNum === 1;
+                            const isLast = pageNum === totalPages;
+                            const isNear = Math.abs(pageNum - currentPage) <= 1;
+
+                            if (!isFirst && !isLast && !isNear) {
+                              if (pageNum === 2 || pageNum === totalPages - 1) {
+                                return (
+                                  <span key={pageNum} className="px-1.5 text-xs text-muted-foreground select-none">
+                                    ...
+                                  </span>
+                                );
+                              }
+                              return null;
+                            }
+
+                            const isActive = pageNum === currentPage;
+                            return (
+                              <button
+                                key={pageNum}
+                                type="button"
+                                onClick={() => setCurrentPage(pageNum)}
+                                className={`size-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                  isActive
+                                    ? "bg-[#0f2142] text-white shadow-xs shadow-[#0f2142]/20 scale-105"
+                                    : "bg-secondary/60 text-muted-foreground hover:bg-secondary hover:text-navy border border-border/60"
+                                }`}
+                              >
+                                {pageNum}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          disabled={currentPage === totalPages}
+                          className="h-8 px-2.5 text-xs font-semibold rounded-xl text-navy hover:bg-secondary disabled:opacity-40 cursor-pointer"
+                        >
+                          <span>Next</span>
+                          <ChevronRight className="size-3.5 ml-1" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

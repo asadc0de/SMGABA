@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -10,6 +10,7 @@ import {
   Sparkles,
   Layers,
   ChevronRight,
+  ChevronLeft,
   ShieldCheck,
   AlertCircle,
 } from "lucide-react";
@@ -49,6 +50,8 @@ export const Route = createFileRoute("/events")({
   },
   component: EventsPage,
 });
+
+const EVENTS_PER_PAGE = 6;
 
 function formatEventDisplayDate(dateStr: string): string {
   try {
@@ -258,12 +261,153 @@ function EventCard({ event }: { event: EventItem }) {
   );
 }
 
+function PaginationControl({
+  currentPage,
+  totalPages,
+  onPageChange,
+  startIndex,
+  endIndex,
+  totalItems,
+  itemName = "session",
+  sectionId,
+}: {
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  startIndex: number;
+  endIndex: number;
+  totalItems: number;
+  itemName?: string;
+  sectionId?: string;
+}) {
+  if (totalItems <= EVENTS_PER_PAGE) return null;
+
+  const handlePageSelect = (page: number) => {
+    onPageChange(page);
+    if (sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      pages.push(1);
+      if (currentPage > 3) pages.push("...");
+      const start = Math.max(2, currentPage - 1);
+      const end = Math.min(totalPages - 1, currentPage + 1);
+      for (let i = start; i <= end; i++) pages.push(i);
+      if (currentPage < totalPages - 2) pages.push("...");
+      pages.push(totalPages);
+    }
+    return pages;
+  };
+
+  return (
+    <div className="mt-10 pt-6 border-t border-border/70 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="text-xs text-muted-foreground font-mono">
+        Showing <strong className="text-navy">{startIndex}–{endIndex}</strong> of{" "}
+        <strong className="text-navy">{totalItems}</strong> {itemName}{totalItems === 1 ? "" : "s"}
+      </div>
+
+      <div className="flex items-center gap-1.5 self-center sm:self-auto">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageSelect(currentPage - 1)}
+          disabled={currentPage <= 1}
+          className="h-8 px-2.5 text-xs font-semibold rounded-xl text-navy border-border/80 hover:bg-secondary disabled:opacity-40 cursor-pointer"
+        >
+          <ChevronLeft className="size-3.5 mr-1" />
+          <span>Previous</span>
+        </Button>
+
+        <div className="flex items-center gap-1">
+          {getPageNumbers().map((p, idx) =>
+            typeof p === "number" ? (
+              <Button
+                key={p}
+                variant={currentPage === p ? "default" : "outline"}
+                size="sm"
+                onClick={() => handlePageSelect(p)}
+                className={cn(
+                  "size-8 p-0 text-xs font-bold rounded-xl",
+                  currentPage === p
+                    ? "bg-navy text-white shadow-xs"
+                    : "border-border/80 text-navy hover:bg-secondary"
+                )}
+              >
+                {p}
+              </Button>
+            ) : (
+              <span key={`dots-${idx}`} className="px-1 text-xs text-muted-foreground font-bold">
+                ...
+              </span>
+            )
+          )}
+        </div>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => handlePageSelect(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+          className="h-8 px-2.5 text-xs font-semibold rounded-xl text-navy border-border/80 hover:bg-secondary disabled:opacity-40 cursor-pointer"
+        >
+          <span>Next</span>
+          <ChevronRight className="size-3.5 ml-1" />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 function EventsPage() {
   const loaderData = Route.useLoaderData();
   const allEvents = loaderData?.events || [];
 
   const upcomingEvents = useMemo(() => getUpcomingEvents(allEvents), [allEvents]);
   const pastEvents = useMemo(() => getPastEvents(allEvents), [allEvents]);
+
+  const [upcomingPage, setUpcomingPage] = useState(1);
+  const [pastPage, setPastPage] = useState(1);
+
+  const totalUpcomingPages = Math.max(1, Math.ceil(upcomingEvents.length / EVENTS_PER_PAGE));
+  const totalPastPages = Math.max(1, Math.ceil(pastEvents.length / EVENTS_PER_PAGE));
+
+  // Reset or clamp current page if total pages change
+  useEffect(() => {
+    if (upcomingPage > totalUpcomingPages) {
+      setUpcomingPage(totalUpcomingPages);
+    }
+  }, [totalUpcomingPages, upcomingPage]);
+
+  useEffect(() => {
+    if (pastPage > totalPastPages) {
+      setPastPage(totalPastPages);
+    }
+  }, [totalPastPages, pastPage]);
+
+  const paginatedUpcomingEvents = useMemo(() => {
+    const start = (upcomingPage - 1) * EVENTS_PER_PAGE;
+    return upcomingEvents.slice(start, start + EVENTS_PER_PAGE);
+  }, [upcomingEvents, upcomingPage]);
+
+  const paginatedPastEvents = useMemo(() => {
+    const start = (pastPage - 1) * EVENTS_PER_PAGE;
+    return pastEvents.slice(start, start + EVENTS_PER_PAGE);
+  }, [pastEvents, pastPage]);
+
+  const startUpcomingIndex = upcomingEvents.length === 0 ? 0 : (upcomingPage - 1) * EVENTS_PER_PAGE + 1;
+  const endUpcomingIndex = Math.min(upcomingPage * EVENTS_PER_PAGE, upcomingEvents.length);
+
+  const startPastIndex = pastEvents.length === 0 ? 0 : (pastPage - 1) * EVENTS_PER_PAGE + 1;
+  const endPastIndex = Math.min(pastPage * EVENTS_PER_PAGE, pastEvents.length);
 
   return (
     <div className="min-h-screen bg-background flex flex-col justify-between selection:bg-primary/20">
@@ -279,7 +423,7 @@ function EventsPage() {
         />
 
         {/* Section 1: Upcoming Webinars */}
-        <section className="py-16 sm:py-20 px-6 lg:px-12 max-w-7xl mx-auto w-full">
+        <section id="upcoming-webinars-section" className="py-16 sm:py-20 px-6 lg:px-12 max-w-7xl mx-auto w-full scroll-mt-24">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-border/70">
             <div>
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
@@ -295,8 +439,17 @@ function EventsPage() {
             </div>
 
             <div className="text-xs text-muted-foreground font-mono">
-              Showing <strong className="text-navy">{upcomingEvents.length}</strong> upcoming session
-              {upcomingEvents.length === 1 ? "" : "s"}
+              {upcomingEvents.length > EVENTS_PER_PAGE ? (
+                <>
+                  Showing <strong className="text-navy">{startUpcomingIndex}–{endUpcomingIndex}</strong> of{" "}
+                  <strong className="text-navy">{upcomingEvents.length}</strong> upcoming sessions
+                </>
+              ) : (
+                <>
+                  Showing <strong className="text-navy">{upcomingEvents.length}</strong> upcoming session
+                  {upcomingEvents.length === 1 ? "" : "s"}
+                </>
+              )}
             </div>
           </div>
 
@@ -309,16 +462,29 @@ function EventsPage() {
               </p>
             </div>
           ) : (
-            <div className="mt-10 flex flex-col gap-6">
-              {upcomingEvents.map((event) => (
-                <EventCard key={event.id} event={event} />
-              ))}
-            </div>
+            <>
+              <div className="mt-10 flex flex-col gap-6">
+                {paginatedUpcomingEvents.map((event) => (
+                  <EventCard key={event.id} event={event} />
+                ))}
+              </div>
+
+              <PaginationControl
+                currentPage={upcomingPage}
+                totalPages={totalUpcomingPages}
+                onPageChange={setUpcomingPage}
+                startIndex={startUpcomingIndex}
+                endIndex={endUpcomingIndex}
+                totalItems={upcomingEvents.length}
+                itemName="upcoming session"
+                sectionId="upcoming-webinars-section"
+              />
+            </>
           )}
         </section>
 
         {/* Section 2: On-Demand Recording Library */}
-        <section className="py-16 sm:py-20 bg-secondary/30 border-t border-border/70">
+        <section id="past-webinars-section" className="py-16 sm:py-20 bg-secondary/30 border-t border-border/70 scroll-mt-24">
           <div className="max-w-7xl mx-auto px-6 lg:px-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-8 border-b border-border/70">
               <div>
@@ -335,8 +501,17 @@ function EventsPage() {
               </div>
 
               <div className="text-xs text-muted-foreground font-mono">
-                Showing <strong className="text-navy">{pastEvents.length}</strong> past session
-                {pastEvents.length === 1 ? "" : "s"}
+                {pastEvents.length > EVENTS_PER_PAGE ? (
+                  <>
+                    Showing <strong className="text-navy">{startPastIndex}–{endPastIndex}</strong> of{" "}
+                    <strong className="text-navy">{pastEvents.length}</strong> past sessions
+                  </>
+                ) : (
+                  <>
+                    Showing <strong className="text-navy">{pastEvents.length}</strong> past session
+                    {pastEvents.length === 1 ? "" : "s"}
+                  </>
+                )}
               </div>
             </div>
 
@@ -349,11 +524,24 @@ function EventsPage() {
                 </p>
               </div>
             ) : (
-              <div className="mt-10 flex flex-col gap-6">
-                {pastEvents.map((event) => (
-                  <EventCard key={event.id} event={event} />
-                ))}
-              </div>
+              <>
+                <div className="mt-10 flex flex-col gap-6">
+                  {paginatedPastEvents.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))}
+                </div>
+
+                <PaginationControl
+                  currentPage={pastPage}
+                  totalPages={totalPastPages}
+                  onPageChange={setPastPage}
+                  startIndex={startPastIndex}
+                  endIndex={endPastIndex}
+                  totalItems={pastEvents.length}
+                  itemName="past session"
+                  sectionId="past-webinars-section"
+                />
+              </>
             )}
           </div>
         </section>
@@ -380,3 +568,4 @@ function EventsPage() {
     </div>
   );
 }
+

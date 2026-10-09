@@ -50,6 +50,9 @@ import {
   Filter,
   AlertTriangle,
   Menu,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
 } from "lucide-react";
 
 export const Route = createFileRoute("/cms/")({
@@ -59,29 +62,26 @@ export const Route = createFileRoute("/cms/")({
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
+  pendingComponent: CmsPagePending,
   component: CmsPagesListPage,
 });
 
 const AUTH_STORAGE_KEY = "smg_tools_admin_pw";
+const ITEMS_PER_PAGE = 15;
 
 type StatusFilter = "all" | "published" | "draft";
 type SortOption = "updated_desc" | "updated_asc" | "title_asc";
 
 function CmsPagesListPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-  const [adminPassword, setAdminPassword] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return sessionStorage.getItem(AUTH_STORAGE_KEY) || "";
-    }
-    return "";
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [adminPassword, setAdminPassword] = useState<string>("");
   const [passwordInput, setPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string>("");
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
 
   const [pages, setPages] = useState<CmsPage[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
   // Settings & Navigation link state
@@ -92,6 +92,7 @@ function CmsPagesListPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("updated_desc");
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   // Deletion Safeguard Modal State
   const [deleteTargetPage, setDeleteTargetPage] = useState<CmsPage | null>(null);
@@ -103,17 +104,30 @@ function CmsPagesListPage() {
 
   const [, startTransition] = useTransition();
 
-  // Load pages directly on mount
+  // Reset pagination to page 1 whenever filters or search query change
   useEffect(() => {
-    const pwd = typeof window !== "undefined" ? sessionStorage.getItem(AUTH_STORAGE_KEY) || "" : "";
-    fetchPages(pwd);
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, sortBy]);
+
+  // Load pages directly on mount using shared auth storage
+  useEffect(() => {
+    const pwd = typeof window !== "undefined"
+      ? sessionStorage.getItem(AUTH_STORAGE_KEY) || localStorage.getItem(AUTH_STORAGE_KEY) || ""
+      : "";
+
+    if (pwd) {
+      setAdminPassword(pwd);
+      setIsAuthenticated(true);
+      fetchPages(pwd);
+    } else {
+      setIsAuthenticated(false);
+      setIsLoading(false);
+    }
   }, []);
 
-  async function verifyPassword(pwd: string, showToast = true, isAutoCheck = false) {
+  async function verifyPassword(pwd: string, showToast = true) {
     if (!pwd.trim()) {
-      if (!isAutoCheck) {
-        setAuthError("Please enter the admin password.");
-      }
+      setAuthError("Please enter the admin password.");
       return;
     }
 
@@ -121,17 +135,18 @@ function CmsPagesListPage() {
     setAuthError("");
 
     try {
-      const res = await verifyAdminPassword({ data: pwd });
+      const res = await verifyAdminPassword({ data: pwd.trim() });
       if (res.authorized) {
         setIsAuthenticated(true);
-        setAdminPassword(pwd);
+        setAdminPassword(pwd.trim());
         if (typeof window !== "undefined") {
-          sessionStorage.setItem(AUTH_STORAGE_KEY, pwd);
+          sessionStorage.setItem(AUTH_STORAGE_KEY, pwd.trim());
+          localStorage.setItem(AUTH_STORAGE_KEY, pwd.trim());
         }
         if (showToast) {
           toast.success("Admin access granted");
         }
-        fetchPages(pwd);
+        fetchPages(pwd.trim());
       } else {
         setIsAuthenticated(false);
         setAuthError(res.error || "Incorrect password. Please try again.");
@@ -158,6 +173,9 @@ function CmsPagesListPage() {
       if (res.success) {
         setPages(res.pages);
       } else {
+        if (res.error?.toLowerCase().includes("unauthorized")) {
+          setIsAuthenticated(false);
+        }
         toast.error(res.error || "Failed to load CMS pages");
       }
 
@@ -180,6 +198,7 @@ function CmsPagesListPage() {
     setSiteSettings(null);
     if (typeof window !== "undefined") {
       sessionStorage.removeItem(AUTH_STORAGE_KEY);
+      localStorage.removeItem(AUTH_STORAGE_KEY);
     }
     toast.info("Logged out from admin tools");
   }
@@ -340,8 +359,103 @@ function CmsPagesListPage() {
     return result;
   }, [pages, statusFilter, searchQuery, sortBy]);
 
+  const totalPages = Math.max(1, Math.ceil(filteredPages.length / ITEMS_PER_PAGE));
+
+  // Clamp current page if count decreased
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
+  const paginatedPages = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredPages.slice(start, start + ITEMS_PER_PAGE);
+  }, [filteredPages, currentPage]);
+
+  const startIndex = filteredPages.length === 0 ? 0 : (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const endIndex = Math.min(currentPage * ITEMS_PER_PAGE, filteredPages.length);
+
   const publishedCount = useMemo(() => pages.filter((p) => p.status === "published").length, [pages]);
   const draftCount = useMemo(() => pages.filter((p) => p.status === "draft").length, [pages]);
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex flex-col bg-slate-50">
+        <Header />
+        <main className="flex-1 flex items-center justify-center px-4 py-16">
+          <div className="w-full max-w-md bg-white rounded-3xl p-8 border border-slate-200 shadow-xl shadow-slate-200/50 space-y-6 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex flex-col items-center text-center space-y-2.5">
+              <div className="size-14 rounded-2xl bg-[#0f2142] text-white flex items-center justify-center shadow-lg shadow-[#0f2142]/20">
+                <Lock className="size-7" />
+              </div>
+              <h1 className="text-2xl font-black text-[#0f2142] tracking-tight">
+                CMS Pages Admin
+              </h1>
+              <p className="text-xs text-slate-500 max-w-xs leading-relaxed">
+                Enter your administrator password to create, edit, duplicate, and publish custom visual landing pages.
+              </p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                verifyPassword(passwordInput, true);
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-1.5">
+                <Label htmlFor="cms-admin-pw" className="text-xs font-bold text-slate-700">
+                  Admin Password
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="cms-admin-pw"
+                    type={showPassword ? "text" : "password"}
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="Enter admin password..."
+                    className="pr-10 rounded-xl border-slate-200 focus:border-[#0f2142] focus:ring-[#0f2142]"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                </div>
+                {authError && (
+                  <p className="text-[11px] font-medium text-red-600 mt-1">
+                    {authError}
+                  </p>
+                )}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isVerifying}
+                className="w-full rounded-xl bg-[#0f2142] hover:bg-[#0f2142]/90 text-white font-bold h-11 text-xs uppercase tracking-wider transition-all shadow-md shadow-[#0f2142]/10 cursor-pointer"
+              >
+                {isVerifying ? "Verifying..." : "Unlock CMS Manager"}
+              </Button>
+            </form>
+
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+              <span className="flex items-center gap-1">
+                <ShieldCheck className="size-3.5 text-emerald-600" /> Secure Admin Access
+              </span>
+              <Link to="/dashboard" className="hover:text-blue-600 underline">
+                Back to Dashboard
+              </Link>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
@@ -490,10 +604,10 @@ function CmsPagesListPage() {
                   </select>
                 </div>
               </div>
-            </div>
-
-            {/* Table or Empty States */}
-            {pages.length === 0 && !isLoading ? (
+            </div>            {/* Table, Loading Skeleton, or Empty States */}
+            {isLoading ? (
+              <CmsTableSkeleton />
+            ) : pages.length === 0 ? (
               <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 p-8">
                 <FileText className="size-12 text-slate-300 mx-auto mb-3" />
                 <h3 className="text-lg font-semibold text-navy">No CMS Pages Yet</h3>
@@ -527,168 +641,243 @@ function CmsPagesListPage() {
                 </Button>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm text-slate-600">
-                    <thead className="bg-slate-50 text-[11px] uppercase font-semibold text-slate-500 border-b border-slate-200">
-                      <tr>
-                        <th className="px-5 py-3.5">Page Title</th>
-                        <th className="px-5 py-3.5">Slug / URL</th>
-                        <th className="px-5 py-3.5">Status</th>
-                        <th className="px-5 py-3.5">Last Updated</th>
-                        <th className="px-5 py-3.5 text-right">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {filteredPages.map((page) => (
-                        <tr key={page.id} className="hover:bg-slate-50/70 transition-colors">
-                          <td className="px-5 py-3.5 font-medium text-navy">
-                            <div className="flex items-center gap-2">
-                              <FileText className="size-4 text-slate-400 shrink-0" />
-                              <span className="font-semibold text-xs sm:text-sm">{page.title}</span>
-                            </div>
-                          </td>
-                          <td className="px-5 py-3.5 font-mono text-xs text-slate-500">
-                            /{page.slug}
-                          </td>
-                          <td className="px-5 py-3.5">
-                            {page.status === "published" ? (
-                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                <span className="size-1.5 rounded-full bg-emerald-500" />
-                                Published
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
-                                <span className="size-1.5 rounded-full bg-amber-500" />
-                                Draft
-                              </span>
-                            )}
-                          </td>
-                          <td className="px-5 py-3.5 text-xs text-slate-500">
-                            <div className="flex items-center gap-1.5 text-[11px]">
-                              <Calendar className="size-3.5 text-slate-400" />
-                              {new Date(page.updated_at).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })}
-                            </div>
-                          </td>
-                          <td className="px-5 py-3.5 text-right">
-                            <div className="flex items-center justify-end gap-1.5">
-                              {/* Preview Draft */}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                asChild
-                                className="h-7 px-2 text-xs text-slate-600 hover:text-navy"
-                                title="Preview Draft with full site layout"
-                              >
-                                <Link to="/cms/$id/preview" params={{ id: page.id }} target="_blank">
-                                  <Eye className="size-3.5 mr-1" />
-                                  Preview
-                                </Link>
-                              </Button>
-
-                              {/* Live URL if published */}
-                              {page.status === "published" && (
-                                <>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    asChild
-                                    className="h-7 px-2 text-xs text-emerald-700 hover:text-emerald-900"
-                                    title="View published page on main site"
-                                  >
-                                    <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
-                                      <ExternalLink className="size-3.5 mr-1" />
-                                      Live
-                                    </a>
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() => setAddToNavTargetPage(page)}
-                                    className="h-7 px-2 text-xs text-blue-700 hover:text-blue-900 hover:bg-blue-50"
-                                    title="Add page to Header or Footer navigation"
-                                  >
-                                    <Menu className="size-3.5 mr-1" />
-                                    Add to Nav
-                                  </Button>
-                                </>
+              <div className="space-y-4">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm text-slate-600">
+                      <thead className="bg-slate-50 text-[11px] uppercase font-semibold text-slate-500 border-b border-slate-200">
+                        <tr>
+                          <th className="px-5 py-3.5">Page Title</th>
+                          <th className="px-5 py-3.5">Slug / URL</th>
+                          <th className="px-5 py-3.5">Status</th>
+                          <th className="px-5 py-3.5">Last Updated</th>
+                          <th className="px-5 py-3.5 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {paginatedPages.map((page) => (
+                          <tr key={page.id} className="hover:bg-slate-50/70 transition-colors">
+                            <td className="px-5 py-3.5 font-medium text-navy">
+                              <div className="flex items-center gap-2">
+                                <FileText className="size-4 text-slate-400 shrink-0" />
+                                <span className="font-semibold text-xs sm:text-sm">{page.title}</span>
+                              </div>
+                            </td>
+                            <td className="px-5 py-3.5 font-mono text-xs text-slate-500">
+                              /{page.slug}
+                            </td>
+                            <td className="px-5 py-3.5">
+                              {page.status === "published" ? (
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                  <span className="size-1.5 rounded-full bg-emerald-500" />
+                                  Published
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                  <span className="size-1.5 rounded-full bg-amber-500" />
+                                  Draft
+                                </span>
                               )}
+                            </td>
+                            <td className="px-5 py-3.5 text-xs text-slate-500">
+                              <div className="flex items-center gap-1.5 text-[11px]">
+                                <Calendar className="size-3.5 text-slate-400" />
+                                {new Date(page.updated_at).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })}
+                              </div>
+                            </td>
+                            <td className="px-5 py-3.5 text-right">
+                              <div className="flex items-center justify-end gap-1.5">
+                                {/* Preview Draft */}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  asChild
+                                  className="h-7 px-2 text-xs text-slate-600 hover:text-navy"
+                                  title="Preview Draft with full site layout"
+                                >
+                                  <Link to="/cms/$id/preview" params={{ id: page.id }} target="_blank">
+                                    <Eye className="size-3.5 mr-1" />
+                                    Preview
+                                  </Link>
+                                </Button>
 
-                              {/* Quick Publish / Unpublish Toggle */}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleTogglePublish(page)}
-                                disabled={actionLoadingId === `pub-${page.id}`}
-                                className={`h-7 px-2 text-xs ${
-                                  page.status === "published"
-                                    ? "text-amber-700 hover:bg-amber-50"
-                                    : "text-emerald-700 hover:bg-emerald-50"
-                                }`}
-                                title={page.status === "published" ? "Unpublish page to draft" : "Publish page to live"}
-                              >
-                                {actionLoadingId === `pub-${page.id}` ? (
-                                  <RefreshCw className="size-3.5 animate-spin" />
-                                ) : page.status === "published" ? (
+                                {/* Live URL if published */}
+                                {page.status === "published" && (
                                   <>
-                                    <EyeOff className="size-3.5 mr-1" />
-                                    Unpublish
-                                  </>
-                                ) : (
-                                  <>
-                                    <Globe className="size-3.5 mr-1" />
-                                    Publish
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      asChild
+                                      className="h-7 px-2 text-xs text-emerald-700 hover:text-emerald-900"
+                                      title="View published page on main site"
+                                    >
+                                      <a href={`/${page.slug}`} target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink className="size-3.5 mr-1" />
+                                        Live
+                                      </a>
+                                    </Button>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setAddToNavTargetPage(page)}
+                                      className="h-7 px-2 text-xs text-blue-700 hover:text-blue-900 hover:bg-blue-50"
+                                      title="Add page to Header or Footer navigation"
+                                    >
+                                      <Menu className="size-3.5 mr-1" />
+                                      Add to Nav
+                                    </Button>
                                   </>
                                 )}
-                              </Button>
 
-                              {/* Duplicate Page */}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDuplicate(page)}
-                                disabled={actionLoadingId === `dup-${page.id}`}
-                                className="h-7 px-2 text-xs text-slate-600 hover:text-navy"
-                                title="Duplicate page with all blocks and settings"
-                              >
-                                <Copy className={`size-3.5 ${actionLoadingId === `dup-${page.id}` ? "animate-spin" : ""}`} />
-                              </Button>
+                                {/* Quick Publish / Unpublish Toggle */}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleTogglePublish(page)}
+                                  disabled={actionLoadingId === `pub-${page.id}`}
+                                  className={`h-7 px-2 text-xs ${
+                                    page.status === "published"
+                                      ? "text-amber-700 hover:bg-amber-50"
+                                      : "text-emerald-700 hover:bg-emerald-50"
+                                  }`}
+                                  title={page.status === "published" ? "Unpublish page to draft" : "Publish page to live"}
+                                >
+                                  {actionLoadingId === `pub-${page.id}` ? (
+                                    <RefreshCw className="size-3.5 animate-spin" />
+                                  ) : page.status === "published" ? (
+                                    <>
+                                      <EyeOff className="size-3.5 mr-1" />
+                                      Unpublish
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Globe className="size-3.5 mr-1" />
+                                      Publish
+                                    </>
+                                  )}
+                                </Button>
 
-                              {/* Edit Page */}
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                asChild
-                                className="h-7 px-2.5 text-xs text-navy hover:bg-navy hover:text-white rounded-full font-medium"
-                              >
-                                <Link to="/cms/$id/edit" params={{ id: page.id }}>
-                                  <Edit className="size-3.5 mr-1" />
-                                  Edit
-                                </Link>
-                              </Button>
+                                {/* Duplicate Page */}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDuplicate(page)}
+                                  disabled={actionLoadingId === `dup-${page.id}`}
+                                  className="h-7 px-2 text-slate-600 hover:text-navy"
+                                  title="Duplicate page with all blocks and settings"
+                                >
+                                  <Copy className={`size-3.5 ${actionLoadingId === `dup-${page.id}` ? "animate-spin" : ""}`} />
+                                </Button>
 
-                              {/* Delete Page */}
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setDeleteTargetPage(page)}
-                                className="h-7 px-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50"
-                                title="Delete page"
-                              >
-                                <Trash2 className="size-3.5" />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                                {/* Edit Page */}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  asChild
+                                  className="h-7 px-2.5 text-xs text-navy hover:bg-navy hover:text-white rounded-full font-medium"
+                                >
+                                  <Link to="/cms/$id/edit" params={{ id: page.id }}>
+                                    <Edit className="size-3.5 mr-1" />
+                                    Edit
+                                  </Link>
+                                </Button>
+
+                                {/* Delete Page */}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setDeleteTargetPage(page)}
+                                  className="h-7 px-2 text-rose-500 hover:text-rose-700 hover:bg-rose-50"
+                                  title="Delete page"
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Pagination Controls Bar */}
+                <div className="bg-white rounded-2xl border border-slate-200 px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                  <div className="text-xs text-slate-500 font-medium">
+                    Showing <span className="font-bold text-[#0f2142]">{startIndex}</span> to{" "}
+                    <span className="font-bold text-[#0f2142]">{endIndex}</span> of{" "}
+                    <span className="font-bold text-[#0f2142]">{filteredPages.length}</span> {filteredPages.length === 1 ? "page" : "pages"}
+                    {pages.length !== filteredPages.length && (
+                      <span className="text-slate-400 ml-1">(filtered from {pages.length} total)</span>
+                    )}
+                  </div>
+
+                  {totalPages > 1 && (
+                    <div className="flex items-center gap-1.5 self-center sm:self-auto">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="h-8 px-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:text-[#0f2142] hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
+                      >
+                        <ChevronLeft className="size-3.5 mr-1" />
+                        <span>Previous</span>
+                      </Button>
+
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
+                          const isFirst = pageNum === 1;
+                          const isLast = pageNum === totalPages;
+                          const isNear = Math.abs(pageNum - currentPage) <= 1;
+
+                          if (!isFirst && !isLast && !isNear) {
+                            if (pageNum === 2 || pageNum === totalPages - 1) {
+                              return (
+                                <span key={pageNum} className="px-1.5 text-xs text-slate-400 select-none">
+                                  ...
+                                </span>
+                              );
+                            }
+                            return null;
+                          }
+
+                          const isActive = pageNum === currentPage;
+                          return (
+                            <button
+                              key={pageNum}
+                              type="button"
+                              onClick={() => setCurrentPage(pageNum)}
+                              className={`size-8 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                isActive
+                                  ? "bg-[#0f2142] text-white shadow-xs shadow-[#0f2142]/20 scale-105"
+                                  : "bg-slate-50 text-slate-600 hover:bg-slate-100 hover:text-navy border border-slate-200/60"
+                              }`}
+                            >
+                              {pageNum}
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="h-8 px-2.5 text-xs font-semibold rounded-xl text-slate-700 hover:text-[#0f2142] hover:bg-slate-50 disabled:opacity-40 cursor-pointer"
+                      >
+                        <span>Next</span>
+                        <ChevronRight className="size-3.5 ml-1" />
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -835,6 +1024,93 @@ function CmsPagesListPage() {
         onSuccess={() => fetchPages(adminPassword)}
       />
 
+      <Footer />
+    </div>
+  );
+}
+
+export function CmsTableSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden animate-pulse">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm text-slate-600">
+          <thead className="bg-slate-50 text-[11px] uppercase font-semibold text-slate-500 border-b border-slate-200">
+            <tr>
+              <th className="px-5 py-3.5">Page Title</th>
+              <th className="px-5 py-3.5">Slug / URL</th>
+              <th className="px-5 py-3.5">Status</th>
+              <th className="px-5 py-3.5">Last Updated</th>
+              <th className="px-5 py-3.5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <tr key={i} className="hover:bg-slate-50/50">
+                <td className="px-5 py-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="size-4 rounded bg-slate-200 shrink-0" />
+                    <div className="h-4 w-40 sm:w-56 rounded-md bg-slate-200" />
+                  </div>
+                </td>
+                <td className="px-5 py-4">
+                  <div className="h-3.5 w-24 rounded bg-slate-100" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="h-5 w-18 rounded-full bg-slate-200" />
+                </td>
+                <td className="px-5 py-4">
+                  <div className="h-3.5 w-28 rounded bg-slate-100" />
+                </td>
+                <td className="px-5 py-4 text-right">
+                  <div className="flex items-center justify-end gap-1.5">
+                    <div className="h-7 w-16 rounded-md bg-slate-100" />
+                    <div className="h-7 w-16 rounded-md bg-slate-100" />
+                    <div className="h-7 w-14 rounded-full bg-slate-200" />
+                    <div className="h-7 w-7 rounded-md bg-slate-100" />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export function CmsPagePending() {
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
+      <Header />
+      <main className="flex-1 pt-28 sm:pt-36 pb-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full space-y-6">
+        {/* Header Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200 animate-pulse">
+          <div className="space-y-2">
+            <div className="h-4 w-28 rounded-full bg-slate-200" />
+            <div className="h-8 w-64 sm:w-80 rounded-xl bg-slate-200" />
+            <div className="h-4 w-72 sm:w-96 rounded bg-slate-100" />
+          </div>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <div className="h-8 w-24 rounded-md bg-slate-200" />
+            <div className="h-8 w-20 rounded-md bg-slate-200" />
+            <div className="h-8 w-24 rounded-md bg-slate-200" />
+            <div className="h-8 w-24 rounded-full bg-slate-300" />
+          </div>
+        </div>
+
+        {/* Filter Bar Skeleton */}
+        <div className="h-14 rounded-2xl bg-white border border-slate-200 shadow-xs animate-pulse p-3 flex items-center justify-between">
+          <div className="flex gap-2">
+            <div className="h-8 w-24 rounded-xl bg-slate-100" />
+            <div className="h-8 w-24 rounded-xl bg-slate-100" />
+            <div className="h-8 w-20 rounded-xl bg-slate-100" />
+          </div>
+          <div className="h-8 w-56 rounded-lg bg-slate-100" />
+        </div>
+
+        {/* Table Skeleton */}
+        <CmsTableSkeleton />
+      </main>
       <Footer />
     </div>
   );

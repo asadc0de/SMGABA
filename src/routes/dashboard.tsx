@@ -51,18 +51,17 @@ export const Route = createFileRoute("/dashboard")({
   }),
   loader: async () => {
     try {
-      const [cmsRes, blogsRes, redirectsRes, eventsRes] = await Promise.all([
-        getAllCmsPages().catch(() => ({ pages: [] })),
-        getAdminBlogs().catch(() => ({ posts: [] })),
+      const [blogsRes, redirectsRes, eventsRes] = await Promise.all([
+        getAdminBlogs().catch(() => ({ blogs: [] })),
         getWebinarRedirectsList().catch(() => ({ redirects: [], isConfigured: false })),
         getEventsAdminList().catch(() => ({ events: [], isConfigured: false })),
       ]);
 
       return {
-        cmsPages: cmsRes.pages || [],
-        blogs: blogsRes.posts || [],
-        redirects: redirectsRes.redirects || [],
-        events: eventsRes.events || [],
+        cmsPages: [],
+        blogs: blogsRes?.blogs || [],
+        redirects: redirectsRes?.redirects || [],
+        events: eventsRes?.events || [],
       };
     } catch (err) {
       console.error("Dashboard loader error:", err);
@@ -74,6 +73,7 @@ export const Route = createFileRoute("/dashboard")({
       };
     }
   },
+  pendingComponent: DashboardLoading,
   component: DashboardPage,
 });
 
@@ -103,7 +103,10 @@ function DashboardPage() {
 
   // Check saved admin password on mount
   useEffect(() => {
-    const saved = localStorage.getItem(AUTH_STORAGE_KEY);
+    const saved = typeof window !== "undefined"
+      ? localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY)
+      : null;
+
     if (saved) {
       setPassword(saved);
       verifyPassword(saved, false);
@@ -120,10 +123,14 @@ function DashboardPage() {
       const res = await verifyAdminPassword({ data: { password: pwdToVerify } });
       if (res?.authorized) {
         setIsAuthenticated(true);
-        localStorage.setItem(AUTH_STORAGE_KEY, pwdToVerify);
+        if (typeof window !== "undefined") {
+          localStorage.setItem(AUTH_STORAGE_KEY, pwdToVerify);
+          sessionStorage.setItem(AUTH_STORAGE_KEY, pwdToVerify);
+        }
         if (showToast) {
           toast.success("Access granted to Admin Dashboard");
         }
+        await refreshData(pwdToVerify);
       } else {
         setIsAuthenticated(false);
         setAuthError(res?.error || "Invalid administrator password");
@@ -149,28 +156,31 @@ function DashboardPage() {
   }
 
   function handleLogout() {
-    localStorage.removeItem(AUTH_STORAGE_KEY);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      sessionStorage.removeItem(AUTH_STORAGE_KEY);
+    }
     setIsAuthenticated(false);
     setPassword("");
+    setCmsPages([]);
     toast.info("Logged out of Admin Dashboard");
   }
 
-  async function refreshData() {
+  async function refreshData(pwdOverride?: string) {
+    const activePw = pwdOverride || password || (typeof window !== "undefined" ? localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY) || "" : "");
     setIsRefreshing(true);
     try {
       const [cmsRes, blogsRes, redirectsRes, eventsRes] = await Promise.all([
-        getAllCmsPages(),
-        getAdminBlogs(),
-        getWebinarRedirectsList(),
-        getEventsAdminList(),
+        getAllCmsPages({ data: { adminPassword: activePw } }).catch(() => ({ success: false, pages: [] })),
+        getAdminBlogs().catch(() => ({ blogs: [] })),
+        getWebinarRedirectsList().catch(() => ({ redirects: [], isConfigured: false })),
+        getEventsAdminList().catch(() => ({ events: [], isConfigured: false })),
       ]);
 
       if (cmsRes?.pages) setCmsPages(cmsRes.pages);
-      if (blogsRes?.posts) setBlogs(blogsRes.posts);
+      if (blogsRes?.blogs) setBlogs(blogsRes.blogs);
       if (redirectsRes?.redirects) setRedirects(redirectsRes.redirects);
       if (eventsRes?.events) setEvents(eventsRes.events);
-
-      toast.success("Dashboard data refreshed");
     } catch (err) {
       console.error("Refresh error:", err);
       toast.error("Failed to refresh dashboard data");
@@ -249,20 +259,7 @@ function DashboardPage() {
   }, [events, globalSearch]);
 
   if (isCheckingAuth) {
-    return (
-      <div className="min-h-screen flex flex-col bg-slate-50">
-        <Header />
-        <main className="flex-1 flex items-center justify-center p-6">
-          <div className="flex flex-col items-center gap-3 text-slate-500">
-            <RefreshCw className="size-6 animate-spin text-[#0f2142]" />
-            <p className="text-xs font-semibold tracking-wide uppercase">
-              Verifying Authorization...
-            </p>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
+    return <DashboardLoading />;
   }
 
   if (!isAuthenticated) {
@@ -951,6 +948,113 @@ function DashboardPage() {
       </main>
 
       <Footer />
+    </div>
+  );
+}
+
+export function DashboardLoading() {
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50/70 font-sans">
+      <Header />
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        <DashboardSkeleton />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-8 animate-pulse">
+      {/* Top Header Banner Skeleton */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="space-y-2.5 max-w-xl">
+            <div className="h-5 w-36 rounded-full bg-slate-200" />
+            <div className="h-8 w-64 sm:w-80 rounded-xl bg-slate-200" />
+            <div className="h-4 w-full sm:w-96 rounded-md bg-slate-100" />
+          </div>
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-24 rounded-full bg-slate-200" />
+            <div className="h-9 w-28 rounded-full bg-slate-200" />
+          </div>
+        </div>
+
+        {/* 4 Stats Cards Skeleton */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-6 border-t border-slate-100">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="h-3 w-16 rounded bg-slate-200" />
+                <div className="size-4 rounded bg-slate-200" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <div className="h-7 w-12 rounded-lg bg-slate-300" />
+                <div className="h-4 w-12 rounded bg-slate-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Module Application Cards Skeleton */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="h-4 w-32 rounded bg-slate-200" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {[1, 2].map((i) => (
+            <div key={i} className="bg-white rounded-3xl p-6 border border-slate-200/80 space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="size-12 rounded-2xl bg-slate-200" />
+                <div className="h-5 w-16 rounded-full bg-slate-100" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-6 w-48 rounded-lg bg-slate-200" />
+                <div className="h-3.5 w-full rounded bg-slate-100" />
+                <div className="h-3.5 w-4/5 rounded bg-slate-100" />
+              </div>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="h-8 w-32 rounded-full bg-slate-200" />
+                <div className="flex gap-2">
+                  <div className="h-8 w-20 rounded-full bg-slate-100" />
+                  <div className="h-8 w-20 rounded-full bg-slate-100" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Table / Content List Skeleton */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 space-y-4">
+        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+          <div className="flex gap-2">
+            {[1, 2, 3, 4, 5].map((t) => (
+              <div key={t} className="h-8 w-20 rounded-xl bg-slate-100" />
+            ))}
+          </div>
+          <div className="h-8 w-48 rounded-xl bg-slate-100" />
+        </div>
+        <div className="space-y-3 pt-2">
+          {[1, 2, 3, 4].map((r) => (
+            <div key={r} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="size-8 rounded-lg bg-slate-200" />
+                <div className="space-y-1.5">
+                  <div className="h-4 w-40 rounded bg-slate-200" />
+                  <div className="h-3 w-24 rounded bg-slate-100" />
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-6 w-16 rounded-full bg-slate-200" />
+                <div className="h-8 w-8 rounded-lg bg-slate-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
