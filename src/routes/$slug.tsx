@@ -117,7 +117,9 @@ export const Route = createFileRoute("/$slug")({
         meta.push({ property: "og:image", content: ogImage });
       }
 
-      const links: Array<{ rel: string; href: string }> = [];
+      const links: Array<{ rel: string; href: string; type?: string }> = [
+        { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      ];
       if (canonicalUrl && isValidCanonicalUrl(canonicalUrl)) {
         links.push({ rel: "canonical", href: canonicalUrl });
       }
