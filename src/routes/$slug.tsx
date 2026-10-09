@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, notFound, isRedirect } from "@tanstack/react-router";
-import { getUnifiedBlogPost } from "@/lib/blogs.server";
+import { getBlogPost } from "@/lib/blogs.server";
 import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
 import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 import { resolveWebinarSlug } from "@/lib/webinar-redirects";
@@ -136,7 +136,7 @@ export const Route = createFileRoute("/$slug")({
   },
   loader: async ({ params }): Promise<{ post: any | null; cmsPage: CmsPage | null; settings?: CmsSiteSettings }> => {
     // 1. Check unified blog posts (static + custom/scheduled)
-    const post = await getUnifiedBlogPost(params.slug);
+    const post = await getBlogPost({ data: params.slug });
     if (post) {
       return { post, cmsPage: null };
     }

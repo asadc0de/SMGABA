@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getUnifiedBlogPost } from "@/lib/blogs.server";
+import { getBlogPost } from "@/lib/blogs.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/blog/$slug")({
     };
   },
   loader: async ({ params }) => {
-    const post = await getUnifiedBlogPost(params.slug);
+    const post = await getBlogPost({ data: params.slug });
     return { post };
   },
   component: BlogSlugPage,

@@ -79,7 +79,7 @@ export function normalizeBlogSlug(raw: string): string {
 }
 
 /**
- * Checks if a scheduled post should be considered live.
+ * Checks if a scheduled post should be considered live for public view.
  */
 export function isBlogLive(post: ExtendedBlogPost): boolean {
   if (post.archived) return false;
@@ -96,7 +96,10 @@ export function isBlogLive(post: ExtendedBlogPost): boolean {
  * Fetches all dynamic blogs from Supabase or fallback.
  */
 async function fetchDynamicBlogs(): Promise<ExtendedBlogPost[]> {
-  const supabase = getSupabaseServerClient();
+  // Always ensure disk fallback is loaded into memory
+  await loadDiskFallbackBlogs();
+
+  const supabase = await getSupabaseServerClient();
   if (supabase) {
     try {
       const { data, error } = await supabase
@@ -127,8 +130,11 @@ async function fetchDynamicBlogs(): Promise<ExtendedBlogPost[]> {
           updatedAt: row.updated_at,
         }));
       }
-    } catch {
-      // fallback to memory/disk
+      if (error) {
+        console.warn("[blogs.server] Supabase fetch error (falling back to disk):", error.message);
+      }
+    } catch (err) {
+      console.warn("[blogs.server] Supabase fetch exception:", err);
     }
   }
 
@@ -286,10 +292,10 @@ export const saveBlogPost = createServerFn({ method: "POST" })
 
     // Save to local fallback store & disk immediately
     localFallbackBlogs.set(slug, record);
-    saveDiskFallbackBlogs();
+    await saveDiskFallbackBlogs();
 
     // Persist to Supabase if configured
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     if (supabase) {
       try {
         const payload = {
@@ -336,9 +342,9 @@ export const deleteBlogPost = createServerFn({ method: "POST" })
     if (!slug) return { success: false, error: "Invalid slug." };
 
     localFallbackBlogs.delete(slug);
-    saveDiskFallbackBlogs();
+    await saveDiskFallbackBlogs();
 
-    const supabase = getSupabaseServerClient();
+    const supabase = await getSupabaseServerClient();
     if (supabase) {
       try {
         await supabase.from("blog_posts").delete().eq("slug", slug);
