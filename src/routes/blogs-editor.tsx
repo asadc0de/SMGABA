@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BookOpen,
@@ -13,7 +13,6 @@ import {
   Copy,
   ExternalLink,
   CheckCircle2,
-  AlertCircle,
   Sparkles,
   ArrowUp,
   ArrowDown,
@@ -21,7 +20,6 @@ import {
   Heading,
   AlignLeft,
   List,
-  ListOrdered,
   Quote,
   Image as ImageIcon,
   Save,
@@ -30,15 +28,16 @@ import {
   CalendarClock,
   Filter,
   Check,
-  Share2,
   FileText,
   Lock,
   Unlock,
-  RefreshCw,
   Globe,
-  HelpCircle,
+  Settings,
+  X,
+  Upload,
   ChevronLeft,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 import {
   getAdminBlogs,
@@ -71,6 +70,8 @@ export const Route = createFileRoute("/blogs-editor")({
   component: BlogsEditorPage,
 });
 
+const POSTS_PER_PAGE = 18;
+
 const DEFAULT_AUTHORS = [
   "SMG Advisory Team",
   "Gregory Scotto",
@@ -91,27 +92,27 @@ const DEFAULT_CATEGORIES = [
 
 const SAMPLE_IMAGES = [
   {
-    label: "Accounting & Desk",
+    label: "Accounting & Financial Advisory",
     url: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    label: "Business Advisory",
+    label: "Executive Strategic Planning",
     url: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    label: "Finance & Charts",
+    label: "Financial Analytics & Charts",
     url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    label: "Hospitality & Dining",
+    label: "Hospitality & Restaurant Finance",
     url: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    label: "Corporate Office",
+    label: "Corporate Office & Real Estate",
     url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
   },
   {
-    label: "Tax Planning",
+    label: "Tax Planning & Compliance",
     url: "https://images.unsplash.com/photo-1586486855514-8c633cc6fd38?auto=format&fit=crop&w=1200&q=80",
   },
 ];
@@ -150,7 +151,7 @@ function createBlankPost(): ExtendedBlogPost {
       },
       {
         type: "h2",
-        text: "1. Key Industry Insights & Analysis",
+        text: "1. Key Industry Insights & Strategic Analysis",
       },
       {
         type: "p",
@@ -159,14 +160,14 @@ function createBlankPost(): ExtendedBlogPost {
       {
         type: "ul",
         items: [
-          "Strategic benefit or compliance consideration",
-          "Operational efficiency tip or cash flow checkpoint",
-          "Recommended cadence with your CFO advisor",
+          "Strategic compliance checkpoints and regulatory advantages",
+          "Cash flow optimization tips and outsourced CFO guidance",
+          "Quarterly tax mitigation planning cadence",
         ],
       },
       {
         type: "blockquote",
-        text: "Proactive financial management isn't just about reviewing past numbers—it's about anticipating upcoming market shifts and positioning your business for sustainable profitability.",
+        text: "Proactive financial advisory isn't just about reviewing historical numbers—it's about anticipating upcoming market shifts and positioning your business for sustainable profitability.",
       },
       {
         type: "h2",
@@ -174,18 +175,17 @@ function createBlankPost(): ExtendedBlogPost {
       },
       {
         type: "p",
-        text: "Summarize the takeaways and invite readers to schedule a consultation with the SMG advisory team.",
+        text: "Summarize the key takeaways and invite readers to schedule a consultation with the SMG Advisory Team.",
       },
     ],
   };
 }
 
-const POSTS_PER_PAGE = 18;
-
 function BlogsEditorPage() {
   const initialData = Route.useLoaderData();
   const [blogsList, setBlogsList] = useState<ExtendedBlogPost[]>(initialData?.blogs || []);
   const [activeTab, setActiveTab] = useState<"list" | "edit" | "preview">("list");
+  const [editorSubTab, setEditorSubTab] = useState<"write" | "settings">("write");
   const [currentPost, setCurrentPost] = useState<ExtendedBlogPost>(createBlankPost);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -193,6 +193,7 @@ function BlogsEditorPage() {
   const [listPage, setListPage] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [isCustomSlugUnlocked, setIsCustomSlugUnlocked] = useState(false);
+  const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
 
   // Derived stats
   const stats = useMemo(() => {
@@ -255,6 +256,7 @@ function BlogsEditorPage() {
   const handleStartNew = () => {
     setCurrentPost(createBlankPost());
     setIsCustomSlugUnlocked(false);
+    setEditorSubTab("write");
     setActiveTab("edit");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -263,6 +265,7 @@ function BlogsEditorPage() {
   const handleEditPost = (post: ExtendedBlogPost) => {
     setCurrentPost(JSON.parse(JSON.stringify(post)));
     setIsCustomSlugUnlocked(true);
+    setEditorSubTab("write");
     setActiveTab("edit");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -279,6 +282,7 @@ function BlogsEditorPage() {
     };
     setCurrentPost(duplicated);
     setIsCustomSlugUnlocked(true);
+    setEditorSubTab("write");
     setActiveTab("edit");
     toast.info("Created a duplicate draft. You can customize and save it.");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -323,21 +327,21 @@ function BlogsEditorPage() {
   // Content Block Management
   const handleAddBlock = (type: ContentBlock["type"]) => {
     const newBlock: ContentBlock =
-      type === "ul" || type === "ol"
-        ? { type, items: ["New bullet point item", "Second point item"] }
+      type === "ul"
+        ? { type, items: ["First actionable checkpoint", "Second key takeaway"] }
         : type === "blockquote"
-        ? { type, text: "Important callout quote or strategic takeaway for your clients." }
+        ? { type, text: "Highlight a pivotal takeaway, executive quote, or industry advisory principle here." }
         : type === "h2"
         ? { type, text: "New Section Heading" }
         : type === "h3"
         ? { type, text: "Sub-section Heading" }
-        : { type: "p", text: "Write your article paragraph content here. Explain the key financial and advisory concepts clearly." };
+        : { type: "p", text: "Write your article paragraph here. Explain the key financial concepts in clear, client-friendly terms." };
 
     setCurrentPost((prev) => ({
       ...prev,
       blocks: [...prev.blocks, newBlock],
     }));
-    toast.success(`Added ${type.toUpperCase()} block`);
+    toast.success(`Added ${type === "h2" ? "Heading" : type === "p" ? "Paragraph" : type === "ul" ? "Bullet List" : "Quote"} block`);
   };
 
   const handleUpdateBlock = (index: number, updated: Partial<ContentBlock>) => {
@@ -370,7 +374,7 @@ function BlogsEditorPage() {
   // Handler: Save Post
   const handleSave = async (forceStatus?: "published" | "scheduled" | "draft") => {
     if (!currentPost.title.trim()) {
-      toast.error("Please enter a blog post title.");
+      toast.error("Please enter an article title.");
       return;
     }
 
@@ -423,88 +427,55 @@ function BlogsEditorPage() {
       {/* Global Site Header */}
       <Header />
 
-      <main className="flex-1 pt-28 sm:pt-36 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
-        {/* Top Header Banner */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
-              <span className="inline-block size-2 rounded-full bg-primary" />
-              SMG Editorial &bull; Financial Advisory
-            </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-serif-hero text-navy">
-              Blog Studio &amp; Article Manager
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
-              Create, draft, and schedule future blog posts matching the exact SMG website design and typography.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            {activeTab !== "list" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setActiveTab("list")}
-                className="gap-1.5 rounded-full text-navy border-slate-200 hover:bg-slate-100 h-9 text-xs font-semibold"
-              >
-                <ArrowLeft className="size-3.5" /> Back to Articles
-              </Button>
-            )}
-
-            {activeTab === "edit" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setActiveTab("preview")}
-                className="gap-1.5 rounded-full bg-blue-50/80 text-blue-700 border-blue-200 hover:bg-blue-100 h-9 text-xs font-semibold"
-              >
-                <Eye className="size-3.5" /> Live Preview
-              </Button>
-            )}
-
-            {activeTab === "preview" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setActiveTab("edit")}
-                className="gap-1.5 rounded-full bg-blue-50/80 text-blue-700 border-blue-200 hover:bg-blue-100 h-9 text-xs font-semibold"
-              >
-                <Edit3 className="size-3.5" /> Back to Editor
-              </Button>
-            )}
-
-            {activeTab === "list" && (
-              <Button
-                onClick={handleStartNew}
-                size="sm"
-                className="rounded-full bg-navy text-white hover:bg-navy/90 gap-1.5 shadow-md shadow-navy/20 h-9 text-xs font-semibold"
-              >
-                <Plus className="size-4" /> New Article
-              </Button>
-            )}
-
-            <Button
-              asChild
-              variant="outline"
-              size="sm"
-              className="gap-1.5 rounded-full text-slate-700 border-slate-200 hover:bg-slate-100 h-9 text-xs"
-            >
-              <a href="/blog" target="_blank" rel="noreferrer">
-                <Globe className="size-3.5" /> View Public Blog
-                <ExternalLink className="size-3 text-slate-400" />
-              </a>
-            </Button>
-          </div>
-        </div>
-
-        {/* TAB 1: ARTICLES LIST DASHBOARD */}
+      <main className="flex-1 pt-28 sm:pt-34 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
+        {/* ========================================================================= */}
+        {/* VIEW 1: ARTICLES DASHBOARD LIST */}
+        {/* ========================================================================= */}
         {activeTab === "list" && (
-          <div className="mt-8 space-y-6">
+          <div className="space-y-6">
+            {/* Top Header Banner */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-200">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">
+                  <span className="inline-block size-2 rounded-full bg-primary" />
+                  SMG Editorial &bull; Article Studio
+                </div>
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-serif-hero text-navy">
+                  Blog &amp; Article Manager
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl">
+                  Create, draft, and schedule future articles for your website with zero complexity.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <Button
+                  onClick={handleStartNew}
+                  size="sm"
+                  className="rounded-full bg-navy text-white hover:bg-navy/90 gap-1.5 shadow-md shadow-navy/20 h-9 px-5 text-xs font-semibold"
+                >
+                  <Plus className="size-4" /> Create New Article
+                </Button>
+
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 rounded-full text-slate-700 border-slate-200 hover:bg-slate-100 h-9 text-xs"
+                >
+                  <a href="/blog" target="_blank" rel="noreferrer">
+                    <Globe className="size-3.5" /> View Public Blog
+                    <ExternalLink className="size-3 text-slate-400" />
+                  </a>
+                </Button>
+              </div>
+            </div>
+
             {/* Stats Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-navy/10 text-navy flex items-center justify-center shrink-0">
-                  <BookOpen className="size-6" />
+                <div className="size-11 rounded-xl bg-navy/10 text-navy flex items-center justify-center shrink-0">
+                  <BookOpen className="size-5" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold font-serif-hero text-navy">{stats.total}</div>
@@ -513,8 +484,8 @@ function BlogsEditorPage() {
               </div>
 
               <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="size-6" />
+                <div className="size-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="size-5" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold font-serif-hero text-emerald-700">{stats.published}</div>
@@ -523,8 +494,8 @@ function BlogsEditorPage() {
               </div>
 
               <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
-                  <CalendarClock className="size-6" />
+                <div className="size-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                  <CalendarClock className="size-5" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold font-serif-hero text-blue-700">{stats.scheduled}</div>
@@ -533,8 +504,8 @@ function BlogsEditorPage() {
               </div>
 
               <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs flex items-center gap-4">
-                <div className="size-12 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
-                  <FileText className="size-6" />
+                <div className="size-11 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                  <FileText className="size-5" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold font-serif-hero text-amber-700">{stats.drafts}</div>
@@ -646,7 +617,7 @@ function BlogsEditorPage() {
                 </div>
                 <h3 className="text-base font-bold font-serif-hero text-navy">No articles found</h3>
                 <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                  No articles matched your search or filter criteria. Try adjusting your filters or create a new blog.
+                  No articles matched your search. Click below to start creating a new post.
                 </p>
                 <Button
                   onClick={handleStartNew}
@@ -879,11 +850,14 @@ function BlogsEditorPage() {
           </div>
         )}
 
-        {/* TAB 2: ARTICLE EDITOR FORM */}
+        {/* ========================================================================= */}
+        {/* VIEW 2: ARTICLE CREATOR & CLEAN DOCUMENT WORKSPACE */}
+        {/* ========================================================================= */}
         {activeTab === "edit" && (
-          <div className="mt-8">
-            {/* Sticky Action Subheader */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 sticky top-20 z-40 backdrop-blur-md bg-white/95">
+          <div className="space-y-6">
+            {/* Top Workspace Bar */}
+            <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3 sticky top-20 z-40 backdrop-blur-md bg-white/95">
+              {/* Left Back & Title info */}
               <div className="flex items-center gap-3">
                 <Button
                   variant="ghost"
@@ -893,20 +867,48 @@ function BlogsEditorPage() {
                 >
                   <ArrowLeft className="size-3.5 mr-1" /> All Articles
                 </Button>
-                <div className="h-4 w-px bg-slate-200" />
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Editing: <span className="text-navy">{currentPost.title || "Untitled Article"}</span>
-                </span>
+                <div className="h-4 w-px bg-slate-200 hidden sm:block" />
+
+                {/* Sub-Tabs: Write vs Settings */}
+                <div className="flex items-center bg-slate-100 p-1 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => setEditorSubTab("write")}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                      editorSubTab === "write"
+                        ? "bg-white text-navy font-bold shadow-xs"
+                        : "text-slate-600 hover:text-navy"
+                    }`}
+                  >
+                    ✍️ Article Content
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setEditorSubTab("settings")}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                      editorSubTab === "settings"
+                        ? "bg-white text-navy font-bold shadow-xs"
+                        : "text-slate-600 hover:text-navy"
+                    }`}
+                  >
+                    <Settings className="size-3.5" />
+                    <span>Publish &amp; SEO</span>
+                    {currentPost.status === "scheduled" && (
+                      <span className="size-2 rounded-full bg-blue-600 animate-pulse" />
+                    )}
+                  </button>
+                </div>
               </div>
 
+              {/* Right: Actions */}
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setActiveTab("preview")}
-                  className="rounded-full gap-1.5 text-navy border-slate-200 hover:bg-slate-100 h-8 px-4 text-xs font-semibold"
+                  className="rounded-full gap-1.5 bg-blue-50/80 text-blue-700 border-blue-200 hover:bg-blue-100 h-8 px-3.5 text-xs font-semibold"
                 >
-                  <Eye className="size-3.5" /> Preview Article
+                  <Eye className="size-3.5" /> Live Preview
                 </Button>
 
                 <Button
@@ -914,7 +916,7 @@ function BlogsEditorPage() {
                   size="sm"
                   disabled={isSaving}
                   onClick={() => handleSave("draft")}
-                  className="rounded-full gap-1.5 text-slate-700 border-slate-200 hover:bg-slate-100 h-8 px-4 text-xs font-semibold"
+                  className="rounded-full gap-1.5 text-slate-700 border-slate-200 hover:bg-slate-100 h-8 px-3.5 text-xs font-semibold"
                 >
                   {isSaving ? <Loader2 className="size-3.5 animate-spin" /> : <Save className="size-3.5" />}
                   Save Draft
@@ -928,7 +930,7 @@ function BlogsEditorPage() {
                     className="rounded-full gap-1.5 bg-blue-700 text-white hover:bg-blue-800 h-8 px-4 text-xs font-semibold shadow-xs"
                   >
                     {isSaving ? <Loader2 className="size-3.5 animate-spin" /> : <CalendarClock className="size-3.5" />}
-                    Save Schedule
+                    Schedule Post
                   </Button>
                 ) : (
                   <Button
@@ -944,216 +946,260 @@ function BlogsEditorPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-              {/* Left Main Column: Content & Blocks */}
-              <div className="lg:col-span-8 space-y-6">
-                {/* Title & Core Details Card */}
-                <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs space-y-6">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Article Title *
-                    </label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. 5 Strategic Tax Planning Strategies for 2027"
-                      value={currentPost.title}
-                      onChange={(e) => handleTitleChange(e.target.value)}
-                      className="font-serif-hero text-xl sm:text-2xl font-bold text-navy h-14 rounded-xl border-slate-200 focus-visible:ring-navy"
-                    />
-                  </div>
+            {/* TAB CONTENT: 1. WRITE ARTICLE (CLEAN DOCUMENT CANVAS) */}
+            {editorSubTab === "write" && (
+              <div className="max-w-4xl mx-auto space-y-6">
+                {/* Article Header Document Card */}
+                <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs overflow-hidden p-6 sm:p-10 space-y-6">
+                  {/* Featured Cover Image Banner */}
+                  <div className="relative rounded-2xl overflow-hidden bg-slate-100 h-52 sm:h-64 border border-slate-200 group">
+                    {currentPost.image ? (
+                      <img
+                        src={currentPost.image}
+                        alt="Article Cover"
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      <div className="size-full flex flex-col items-center justify-center text-slate-400 bg-slate-50">
+                        <ImageIcon className="size-10 mb-2 text-slate-300" />
+                        <span className="text-xs">No cover image selected</span>
+                      </div>
+                    )}
 
-                  {/* Slug & URL preview */}
-                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 text-xs text-slate-600 flex-1">
-                      <Globe className="size-4 text-slate-400 shrink-0" />
-                      <span className="font-semibold text-slate-500">Live URL:</span>
-                      <span className="text-navy font-mono truncate">
-                        /blog/
-                        {isCustomSlugUnlocked ? (
-                          <input
-                            type="text"
-                            value={currentPost.slug}
-                            onChange={(e) =>
-                              setCurrentPost((prev) => ({
-                                ...prev,
-                                slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-"),
-                              }))
-                            }
-                            className="bg-white px-2 py-0.5 border border-slate-300 rounded font-mono text-xs text-navy focus:outline-none"
-                          />
-                        ) : (
-                          currentPost.slug || "your-slug-here"
-                        )}
-                      </span>
+                    {/* Change Cover Button Overlay */}
+                    <div className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Button
+                        type="button"
+                        onClick={() => setIsImagePickerOpen(true)}
+                        size="sm"
+                        className="rounded-full bg-white text-navy hover:bg-slate-100 font-semibold shadow-lg text-xs gap-1.5"
+                      >
+                        <ImageIcon className="size-3.5 text-primary" /> Change Cover Photo
+                      </Button>
                     </div>
 
+                    {/* Small always-visible button at bottom right */}
                     <button
                       type="button"
-                      onClick={() => setIsCustomSlugUnlocked(!isCustomSlugUnlocked)}
-                      className="text-[11px] font-semibold text-navy hover:underline flex items-center gap-1 shrink-0"
+                      onClick={() => setIsImagePickerOpen(true)}
+                      className="absolute bottom-3 right-3 rounded-full bg-white/95 text-navy font-semibold px-3 py-1.5 text-xs shadow-md border border-slate-200/80 flex items-center gap-1.5 hover:bg-white transition"
                     >
-                      {isCustomSlugUnlocked ? (
-                        <>
-                          <Lock className="size-3" /> Lock Slug
-                        </>
-                      ) : (
-                        <>
-                          <Unlock className="size-3" /> Custom Slug
-                        </>
-                      )}
+                      <ImageIcon className="size-3.5 text-primary" /> Cover Photo
                     </button>
                   </div>
 
-                  {/* Excerpt */}
+                  {/* Inline Image Picker Drawer (if open) */}
+                  {isImagePickerOpen && (
+                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-4 animate-in fade-in duration-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-navy flex items-center gap-1.5">
+                          <Sparkles className="size-3.5 text-primary" /> Choose a Curated Photo or Enter URL
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => setIsImagePickerOpen(false)}
+                          className="size-6 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500"
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      </div>
+
+                      {/* Presets Grid */}
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+                        {SAMPLE_IMAGES.map((img, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => {
+                              setCurrentPost((prev) => ({ ...prev, image: img.url }));
+                              setIsImagePickerOpen(false);
+                              toast.success("Cover image updated");
+                            }}
+                            className={`group relative h-16 rounded-xl overflow-hidden border transition ${
+                              currentPost.image === img.url
+                                ? "border-navy ring-2 ring-navy/30"
+                                : "border-slate-200 hover:border-navy/50"
+                            }`}
+                          >
+                            <img src={img.url} alt={img.label} className="size-full object-cover group-hover:scale-105 transition" />
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Custom URL Field */}
+                      <div className="flex items-center gap-2 pt-2 border-t border-slate-200/60">
+                        <Input
+                          type="url"
+                          placeholder="Paste any custom image URL (e.g. https://...)"
+                          value={currentPost.image}
+                          onChange={(e) => setCurrentPost((prev) => ({ ...prev, image: e.target.value }))}
+                          className="text-xs h-9 bg-white"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => setIsImagePickerOpen(false)}
+                          className="rounded-full bg-navy text-white text-xs h-9 px-4 shrink-0"
+                        >
+                          Done
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Category Pills & Read Time Bar */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">
+                        Category:
+                      </span>
+                      {DEFAULT_CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => setCurrentPost((prev) => ({ ...prev, category: cat }))}
+                          className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
+                            currentPost.category === cat
+                              ? "bg-navy text-white shadow-xs"
+                              : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-navy"
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <Clock className="size-3.5 text-primary" />
+                      <input
+                        type="text"
+                        value={currentPost.readTime}
+                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, readTime: e.target.value }))}
+                        className="w-20 bg-slate-50 border border-slate-200 rounded px-2 py-0.5 text-xs text-center font-medium text-slate-700 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Clean Big Article Title */}
                   <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
-                      Excerpt / Summary (Appears in article cards &amp; SEO)
-                    </label>
                     <textarea
-                      rows={3}
-                      placeholder="Write a compelling 2-sentence summary of what readers will learn..."
+                      rows={2}
+                      placeholder="Enter your article title here..."
+                      value={currentPost.title}
+                      onChange={(e) => handleTitleChange(e.target.value)}
+                      className="w-full font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-navy placeholder:text-slate-300 border-none outline-none focus:ring-0 bg-transparent resize-none leading-tight"
+                    />
+                  </div>
+
+                  {/* Subtitle / Excerpt Textarea */}
+                  <div>
+                    <textarea
+                      rows={2}
+                      placeholder="Write a clear 1-2 sentence introduction or summary for your readers..."
                       value={currentPost.excerpt}
                       onChange={(e) =>
-                        setCurrentPost((prev) => ({ ...prev, excerpt: e.target.value, metaDescription: e.target.value }))
+                        setCurrentPost((prev) => ({
+                          ...prev,
+                          excerpt: e.target.value,
+                          metaDescription: e.target.value,
+                        }))
                       }
-                      className="w-full p-3.5 text-xs sm:text-sm text-slate-800 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+                      className="w-full text-sm sm:text-base text-slate-600 placeholder:text-slate-300 border-none outline-none focus:ring-0 bg-transparent resize-none leading-relaxed border-t border-slate-100 pt-3"
                     />
                   </div>
                 </div>
 
-                {/* Structured Content Blocks Builder */}
-                <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-xs space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-                    <div>
-                      <h2 className="text-lg font-bold font-serif-hero text-navy flex items-center gap-2">
-                        <Layers className="size-4 text-primary" /> Content Blocks Builder
-                      </h2>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Build your article using standardized layout blocks identical to existing SMG blogs.
-                      </p>
-                    </div>
-
-                    {/* Quick Add Block Bar */}
-                    <div className="flex flex-wrap items-center gap-1.5">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("p")}
-                        className="rounded-full text-xs h-7 px-2.5 text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <AlignLeft className="size-3 mr-1" /> + Paragraph
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("h2")}
-                        className="rounded-full text-xs h-7 px-2.5 text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <Heading className="size-3 mr-1" /> + Heading
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("ul")}
-                        className="rounded-full text-xs h-7 px-2.5 text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <List className="size-3 mr-1" /> + Bullets
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("blockquote")}
-                        className="rounded-full text-xs h-7 px-2.5 text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <Quote className="size-3 mr-1" /> + Quote
-                      </Button>
-                    </div>
+                {/* Article Content Story Canvas */}
+                <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 sm:p-10 space-y-6">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                      Article Body
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      {currentPost.blocks.length} sections
+                    </span>
                   </div>
 
                   {/* Blocks List */}
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {currentPost.blocks.map((block, idx) => (
                       <div
                         key={idx}
-                        className="bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-200 hover:border-navy/30 transition duration-150 relative group"
+                        className="group relative rounded-2xl p-4 transition-all duration-150 border border-transparent hover:border-slate-200 hover:bg-slate-50/60"
                       >
-                        {/* Block Header Toolbar */}
-                        <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-200/60">
-                          <div className="flex items-center gap-2">
-                            <span className="rounded px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-navy/10 text-navy font-mono">
-                              Block {idx + 1}
-                            </span>
-                            <span className="text-xs font-semibold text-slate-700 uppercase tracking-wide">
-                              {block.type === "p" && "Paragraph"}
-                              {block.type === "h2" && "Section Heading (H2)"}
-                              {block.type === "h3" && "Subheading (H3)"}
-                              {block.type === "ul" && "Bullet List"}
-                              {block.type === "ol" && "Numbered List"}
-                              {block.type === "blockquote" && "Pull Quote / Callout"}
-                            </span>
-                          </div>
-
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              disabled={idx === 0}
-                              onClick={() => handleMoveBlock(idx, "up")}
-                              className="size-7 rounded border border-slate-200 bg-white text-slate-600 hover:text-navy hover:bg-slate-100 disabled:opacity-30 flex items-center justify-center transition"
-                            >
-                              <ArrowUp className="size-3" />
-                            </button>
-                            <button
-                              type="button"
-                              disabled={idx === currentPost.blocks.length - 1}
-                              onClick={() => handleMoveBlock(idx, "down")}
-                              className="size-7 rounded border border-slate-200 bg-white text-slate-600 hover:text-navy hover:bg-slate-100 disabled:opacity-30 flex items-center justify-center transition"
-                            >
-                              <ArrowDown className="size-3" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteBlock(idx)}
-                              className="size-7 rounded border border-slate-200 bg-white text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 flex items-center justify-center transition"
-                            >
-                              <Trash2 className="size-3" />
-                            </button>
-                          </div>
+                        {/* Hover Action Toolbar */}
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200 shadow-xs z-10">
+                          <button
+                            type="button"
+                            disabled={idx === 0}
+                            onClick={() => handleMoveBlock(idx, "up")}
+                            title="Move Up"
+                            className="size-6 rounded hover:bg-slate-100 text-slate-500 hover:text-navy disabled:opacity-25 flex items-center justify-center"
+                          >
+                            <ArrowUp className="size-3" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={idx === currentPost.blocks.length - 1}
+                            onClick={() => handleMoveBlock(idx, "down")}
+                            title="Move Down"
+                            className="size-6 rounded hover:bg-slate-100 text-slate-500 hover:text-navy disabled:opacity-25 flex items-center justify-center"
+                          >
+                            <ArrowDown className="size-3" />
+                          </button>
+                          <div className="h-3 w-px bg-slate-200" />
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteBlock(idx)}
+                            title="Delete Block"
+                            className="size-6 rounded hover:bg-red-50 text-slate-400 hover:text-red-600 flex items-center justify-center"
+                          >
+                            <Trash2 className="size-3" />
+                          </button>
                         </div>
 
-                        {/* Block Editor Content */}
-                        {block.type === "h2" || block.type === "h3" || block.type === "h4" ? (
-                          <Input
+                        {/* Block Type Badge */}
+                        <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                          {block.type === "h2" && "📌 Section Heading (H2)"}
+                          {block.type === "h3" && "📎 Subheading (H3)"}
+                          {block.type === "p" && "✍️ Paragraph"}
+                          {block.type === "ul" && "📋 Bullet Points"}
+                          {block.type === "blockquote" && "💬 Highlight Quote"}
+                        </div>
+
+                        {/* Block Editor Input */}
+                        {block.type === "h2" ? (
+                          <input
                             type="text"
-                            placeholder="Heading text..."
+                            placeholder="Section Heading..."
                             value={block.text || ""}
                             onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
-                            className="font-serif-hero text-lg font-bold text-navy bg-white border-slate-200"
+                            className="w-full font-serif-hero text-xl sm:text-2xl font-bold text-navy bg-transparent border-b border-transparent focus:border-navy focus:outline-none py-1"
+                          />
+                        ) : block.type === "h3" ? (
+                          <input
+                            type="text"
+                            placeholder="Subheading..."
+                            value={block.text || ""}
+                            onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
+                            className="w-full font-serif-hero text-lg sm:text-xl font-bold text-navy bg-transparent border-b border-transparent focus:border-navy focus:outline-none py-1"
                           />
                         ) : block.type === "blockquote" ? (
-                          <div className="space-y-2">
+                          <div className="pl-4 border-l-4 border-primary bg-blue-50/40 p-3 rounded-r-xl">
                             <textarea
-                              rows={3}
-                              placeholder="Quote or highlighted insight..."
+                              rows={2}
+                              placeholder="Type your quote or highlighted key insight..."
                               value={block.text || ""}
                               onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
-                              className="w-full p-3 text-xs sm:text-sm italic font-serif-hero text-navy bg-blue-50/40 rounded-lg border border-blue-200/80 focus:outline-none focus:ring-2 focus:ring-navy/20"
+                              className="w-full italic font-serif-hero text-base sm:text-lg text-navy bg-transparent border-none outline-none focus:ring-0 resize-none leading-relaxed"
                             />
-                            <p className="text-[11px] text-slate-400">
-                              This will render with a luxury sapphire highlight bar and italic styling.
-                            </p>
                           </div>
-                        ) : block.type === "ul" || block.type === "ol" ? (
+                        ) : block.type === "ul" ? (
                           <div className="space-y-2">
                             {(block.items || []).map((item, itemIdx) => (
                               <div key={itemIdx} className="flex items-center gap-2">
-                                <span className="size-5 rounded-full bg-navy/10 text-navy font-bold text-[10px] flex items-center justify-center shrink-0">
-                                  {block.type === "ol" ? itemIdx + 1 : "&bull;"}
-                                </span>
-                                <Input
+                                <span className="size-2 rounded-full bg-blue-600 shrink-0" />
+                                <input
                                   type="text"
                                   value={item}
                                   onChange={(e) => {
@@ -1161,7 +1207,7 @@ function BlogsEditorPage() {
                                     nextItems[itemIdx] = e.target.value;
                                     handleUpdateBlock(idx, { items: nextItems });
                                   }}
-                                  className="h-9 text-xs bg-white border-slate-200"
+                                  className="w-full text-xs sm:text-sm text-slate-800 bg-white border border-slate-200 rounded-lg px-3 py-1.5 focus:border-navy focus:outline-none"
                                 />
                                 <button
                                   type="button"
@@ -1169,170 +1215,157 @@ function BlogsEditorPage() {
                                     const nextItems = (block.items || []).filter((_, i) => i !== itemIdx);
                                     handleUpdateBlock(idx, { items: nextItems });
                                   }}
-                                  className="size-8 text-slate-400 hover:text-red-600 rounded flex items-center justify-center"
+                                  className="size-7 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center shrink-0"
                                 >
-                                  <Trash2 className="size-3" />
+                                  <X className="size-3.5" />
                                 </button>
                               </div>
                             ))}
 
-                            <Button
+                            <button
                               type="button"
-                              variant="ghost"
-                              size="sm"
                               onClick={() => {
-                                const nextItems = [...(block.items || []), "New list item"];
+                                const nextItems = [...(block.items || []), "New bullet point"];
                                 handleUpdateBlock(idx, { items: nextItems });
                               }}
-                              className="text-xs text-navy font-semibold h-7 hover:bg-white"
+                              className="text-xs font-semibold text-navy hover:underline mt-1 inline-flex items-center gap-1"
                             >
-                              + Add List Item
-                            </Button>
+                              <Plus className="size-3" /> Add bullet point
+                            </button>
                           </div>
                         ) : (
                           <textarea
-                            rows={4}
+                            rows={3}
                             placeholder="Write your paragraph content..."
                             value={block.text || ""}
                             onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
-                            className="w-full p-3 text-xs sm:text-sm text-slate-800 bg-white rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
+                            className="w-full text-sm sm:text-base text-slate-800 bg-transparent border-none outline-none focus:ring-0 resize-none leading-relaxed"
                           />
                         )}
                       </div>
                     ))}
                   </div>
 
-                  {/* Add Block Bottom Action */}
-                  <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-center gap-2">
-                    <span className="text-xs font-medium text-slate-500 mr-2">Insert next block:</span>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleAddBlock("p")}
-                      className="rounded-full text-xs h-8 px-3 text-slate-700 hover:bg-slate-100 border-slate-200"
-                    >
-                      <AlignLeft className="size-3.5 mr-1 text-primary" /> Paragraph
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleAddBlock("h2")}
-                      className="rounded-full text-xs h-8 px-3 text-slate-700 hover:bg-slate-100 border-slate-200"
-                    >
-                      <Heading className="size-3.5 mr-1 text-primary" /> Section Heading
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleAddBlock("ul")}
-                      className="rounded-full text-xs h-8 px-3 text-slate-700 hover:bg-slate-100 border-slate-200"
-                    >
-                      <List className="size-3.5 mr-1 text-primary" /> Bullet List
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleAddBlock("blockquote")}
-                      className="rounded-full text-xs h-8 px-3 text-slate-700 hover:bg-slate-100 border-slate-200"
-                    >
-                      <Quote className="size-3.5 mr-1 text-primary" /> Pull Quote
-                    </Button>
+                  {/* Clean Floating In-line Add Bar */}
+                  <div className="pt-6 border-t border-slate-100">
+                    <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex flex-wrap items-center justify-center gap-2">
+                      <span className="text-xs font-semibold text-slate-500 mr-2">
+                        + Add Section:
+                      </span>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddBlock("p")}
+                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
+                      >
+                        <AlignLeft className="size-3.5 mr-1 text-primary" /> Paragraph
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddBlock("h2")}
+                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
+                      >
+                        <Heading className="size-3.5 mr-1 text-primary" /> Section Heading
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddBlock("ul")}
+                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
+                      >
+                        <List className="size-3.5 mr-1 text-primary" /> Bullet List
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddBlock("blockquote")}
+                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
+                      >
+                        <Quote className="size-3.5 mr-1 text-primary" /> Quote Highlight
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
+            )}
 
-              {/* Right Sidebar: Publishing, Category, Author & Featured Image */}
-              <div className="lg:col-span-4 space-y-6">
-                {/* Release & Schedule Settings */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-5">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-navy flex items-center gap-2">
-                    <CalendarClock className="size-4 text-primary" /> Release &amp; Schedule
-                  </h3>
-
-                  {/* Status Mode Radio Options */}
-                  <div className="space-y-2">
-                    <label
-                      className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${
-                        currentPost.status === "published"
-                          ? "border-emerald-500 bg-emerald-50/50 text-emerald-950"
-                          : "border-slate-200 hover:bg-slate-50 text-slate-700"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="post_status"
-                        checked={currentPost.status === "published" || !currentPost.status}
-                        onChange={() => setCurrentPost((prev) => ({ ...prev, status: "published" }))}
-                        className="mt-0.5 text-emerald-600 focus:ring-emerald-500"
-                      />
-                      <div>
-                        <div className="text-xs font-bold flex items-center gap-1.5">
-                          <CheckCircle2 className="size-3.5 text-emerald-600" /> Publish Now (Live)
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
-                          Article will be live immediately on /blog for visitors.
-                        </p>
-                      </div>
-                    </label>
-
-                    <label
-                      className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${
-                        currentPost.status === "scheduled"
-                          ? "border-blue-500 bg-blue-50/50 text-blue-950"
-                          : "border-slate-200 hover:bg-slate-50 text-slate-700"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="post_status"
-                        checked={currentPost.status === "scheduled"}
-                        onChange={() => setCurrentPost((prev) => ({ ...prev, status: "scheduled" }))}
-                        className="mt-0.5 text-blue-600 focus:ring-blue-500"
-                      />
-                      <div>
-                        <div className="text-xs font-bold flex items-center gap-1.5 text-blue-900">
-                          <CalendarClock className="size-3.5 text-blue-600" /> Schedule for Future Date
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
-                          Automatically goes live when the chosen date/time arrives.
-                        </p>
-                      </div>
-                    </label>
-
-                    <label
-                      className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${
-                        currentPost.status === "draft"
-                          ? "border-amber-500 bg-amber-50/50 text-amber-950"
-                          : "border-slate-200 hover:bg-slate-50 text-slate-700"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="post_status"
-                        checked={currentPost.status === "draft"}
-                        onChange={() => setCurrentPost((prev) => ({ ...prev, status: "draft" }))}
-                        className="mt-0.5 text-amber-600 focus:ring-amber-500"
-                      />
-                      <div>
-                        <div className="text-xs font-bold flex items-center gap-1.5 text-amber-900">
-                          <FileText className="size-3.5 text-amber-600" /> Save as Draft
-                        </div>
-                        <p className="text-[11px] text-slate-500 mt-0.5">
-                          Private draft only visible within this Blog Studio.
-                        </p>
-                      </div>
-                    </label>
+            {/* TAB CONTENT: 2. PUBLISHING & SEO SETTINGS */}
+            {editorSubTab === "settings" && (
+              <div className="max-w-3xl mx-auto space-y-6">
+                {/* 1. Release Schedule Card */}
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-5">
+                  <div>
+                    <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
+                      <CalendarClock className="size-4 text-primary" /> When Should This Article Go Live?
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Choose immediate publication, future scheduled release, or save as draft.
+                    </p>
                   </div>
 
-                  {/* Future Schedule Date Picker (Shown when Scheduled) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {/* Option 1: Publish Now */}
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPost((prev) => ({ ...prev, status: "published" }))}
+                      className={`p-4 rounded-2xl border text-left transition ${
+                        currentPost.status === "published" || !currentPost.status
+                          ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <CheckCircle2 className="size-5 text-emerald-600 mb-2" />
+                      <div className="text-xs font-bold text-slate-900">Publish Immediately</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Live on /blog right away
+                      </div>
+                    </button>
+
+                    {/* Option 2: Future Schedule */}
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPost((prev) => ({ ...prev, status: "scheduled" }))}
+                      className={`p-4 rounded-2xl border text-left transition ${
+                        currentPost.status === "scheduled"
+                          ? "border-blue-600 bg-blue-50/60 ring-2 ring-blue-500/20"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <CalendarClock className="size-5 text-blue-600 mb-2" />
+                      <div className="text-xs font-bold text-slate-900">Future Schedule</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Auto-releases at chosen date
+                      </div>
+                    </button>
+
+                    {/* Option 3: Draft */}
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPost((prev) => ({ ...prev, status: "draft" }))}
+                      className={`p-4 rounded-2xl border text-left transition ${
+                        currentPost.status === "draft"
+                          ? "border-amber-600 bg-amber-50/60 ring-2 ring-amber-500/20"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <FileText className="size-5 text-amber-600 mb-2" />
+                      <div className="text-xs font-bold text-slate-900">Save as Draft</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Private in studio only
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Future Datetime Picker if Scheduled */}
                   {currentPost.status === "scheduled" && (
-                    <div className="p-4 bg-blue-50/80 rounded-xl border border-blue-200 space-y-2">
+                    <div className="p-4 bg-blue-50/80 rounded-2xl border border-blue-200 space-y-2">
                       <label className="block text-xs font-bold text-blue-950">
-                        Select Future Release Date &amp; Time
+                        Select Automatic Release Date &amp; Time:
                       </label>
                       <Input
                         type="datetime-local"
@@ -1340,184 +1373,141 @@ function BlogsEditorPage() {
                         onChange={(e) => setCurrentPost((prev) => ({ ...prev, publishDate: e.target.value }))}
                         className="h-10 text-xs bg-white border-blue-300 focus-visible:ring-blue-500 text-blue-950 font-medium"
                       />
-                      <p className="text-[10px] text-blue-700 leading-tight">
-                        &bull; Once this timestamp is reached, the post automatically appears on the public blog and RSS feeds without requiring manual publishing.
+                      <p className="text-[11px] text-blue-700">
+                        &bull; Once this date/time arrives, this article will automatically appear on the live blog and search feeds.
                       </p>
                     </div>
                   )}
-
-                  {/* Display Date */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Display Date Label
-                    </label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. Oct 15, 2026"
-                      value={currentPost.date}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, date: e.target.value }))}
-                      className="h-9 text-xs border-slate-200 bg-white"
-                    />
-                  </div>
                 </div>
 
-                {/* Article Metadata (Category, Author, Read Time) */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-navy flex items-center gap-2">
-                    <User className="size-4 text-primary" /> Article Metadata
+                {/* 2. Author & Category Settings */}
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+                  <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
+                    <User className="size-4 text-primary" /> Author &amp; Publication Details
                   </h3>
 
-                  {/* Category */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Category
-                    </label>
-                    <select
-                      value={currentPost.category}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, category: e.target.value }))}
-                      className="w-full h-9 px-3 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-navy/20"
-                    >
-                      {DEFAULT_CATEGORIES.map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Author Name
+                      </label>
+                      <select
+                        value={currentPost.author}
+                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, author: e.target.value }))}
+                        className="w-full h-10 px-3 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-navy/20"
+                      >
+                        {DEFAULT_AUTHORS.map((a) => (
+                          <option key={a} value={a}>
+                            {a}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
-                  {/* Author */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Author
-                    </label>
-                    <select
-                      value={currentPost.author}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, author: e.target.value }))}
-                      className="w-full h-9 px-3 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-navy/20"
-                    >
-                      {DEFAULT_AUTHORS.map((a) => (
-                        <option key={a} value={a}>
-                          {a}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Read Time */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Reading Time
-                    </label>
-                    <Input
-                      type="text"
-                      placeholder="e.g. 5 min read"
-                      value={currentPost.readTime}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, readTime: e.target.value }))}
-                      className="h-9 text-xs border-slate-200 bg-white"
-                    />
-                  </div>
-                </div>
-
-                {/* Featured Image */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-navy flex items-center gap-2">
-                    <ImageIcon className="size-4 text-primary" /> Featured Image
-                  </h3>
-
-                  {/* Preview Image */}
-                  <div className="relative h-36 w-full rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
-                    {currentPost.image ? (
-                      <img
-                        src={currentPost.image}
-                        alt="Featured Preview"
-                        className="size-full object-cover"
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Display Date Label
+                      </label>
+                      <Input
+                        type="text"
+                        value={currentPost.date}
+                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, date: e.target.value }))}
+                        className="h-10 text-xs bg-white border-slate-200"
                       />
-                    ) : (
-                      <div className="size-full flex items-center justify-center text-slate-400 text-xs">
-                        No image selected
-                      </div>
-                    )}
+                    </div>
                   </div>
+                </div>
 
-                  {/* Preset Image Options */}
-                  <div>
-                    <span className="block text-[11px] font-semibold text-slate-500 mb-2">
-                      Select a Curated Business Photo:
-                    </span>
-                    <div className="grid grid-cols-3 gap-2">
-                      {SAMPLE_IMAGES.map((img, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => setCurrentPost((prev) => ({ ...prev, image: img.url }))}
-                          className={`relative h-14 rounded-lg overflow-hidden border transition ${
-                            currentPost.image === img.url
-                              ? "border-navy ring-2 ring-navy/30"
-                              : "border-slate-200 hover:border-navy/50"
-                          }`}
-                        >
-                          <img src={img.url} alt={img.label} className="size-full object-cover" />
-                        </button>
-                      ))}
+                {/* 3. URL Slug Settings */}
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+                  <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
+                    <Globe className="size-4 text-primary" /> URL Web Address
+                  </h3>
+
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-slate-500 font-mono">https://smgaba.com/blog/</span>
+                    <Input
+                      type="text"
+                      disabled={!isCustomSlugUnlocked}
+                      value={currentPost.slug}
+                      onChange={(e) =>
+                        setCurrentPost((prev) => ({
+                          ...prev,
+                          slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-"),
+                        }))
+                      }
+                      className="h-9 text-xs font-mono bg-white border-slate-200 flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setIsCustomSlugUnlocked(!isCustomSlugUnlocked)}
+                      className="text-xs h-9 px-3 shrink-0"
+                    >
+                      {isCustomSlugUnlocked ? <Lock className="size-3.5 mr-1" /> : <Unlock className="size-3.5 mr-1" />}
+                      {isCustomSlugUnlocked ? "Lock" : "Customize"}
+                    </Button>
+                  </div>
+                </div>
+
+                {/* 4. Google SEO Preview Card */}
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+                  <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
+                    <Sparkles className="size-4 text-primary" /> Google Search Result Simulation
+                  </h3>
+
+                  {/* Visual Google Card */}
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
+                    <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                      <span className="size-4 rounded-full bg-navy text-white text-[9px] font-bold flex items-center justify-center">S</span>
+                      <span>smgaba.com &rsaquo; blog &rsaquo; {currentPost.slug || "article-url"}</span>
+                    </div>
+                    <div className="text-base font-medium text-blue-800 line-clamp-1 hover:underline cursor-pointer">
+                      {currentPost.metaTitle || currentPost.title || "Article Title"}
+                    </div>
+                    <div className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      {currentPost.metaDescription || currentPost.excerpt || "Article summary will appear here on Google search results."}
                     </div>
                   </div>
 
-                  {/* Custom URL Input */}
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      Custom Image URL
-                    </label>
-                    <Input
-                      type="url"
-                      placeholder="https://images.unsplash.com/..."
-                      value={currentPost.image}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, image: e.target.value }))}
-                      className="h-9 text-xs border-slate-200 bg-white font-mono"
-                    />
-                  </div>
-                </div>
+                  <div className="space-y-3 pt-2">
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Meta Title
+                      </label>
+                      <Input
+                        type="text"
+                        value={currentPost.metaTitle}
+                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaTitle: e.target.value }))}
+                        className="h-9 text-xs bg-white border-slate-200"
+                      />
+                    </div>
 
-                {/* SEO Metadata Card */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
-                  <h3 className="text-sm font-bold uppercase tracking-wider text-navy flex items-center gap-2">
-                    <Sparkles className="size-4 text-primary" /> Search Engine Optimization (SEO)
-                  </h3>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      SEO Meta Title
-                    </label>
-                    <Input
-                      type="text"
-                      placeholder="Article Title | SMG ABA"
-                      value={currentPost.metaTitle}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaTitle: e.target.value }))}
-                      className="h-9 text-xs border-slate-200 bg-white"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                      SEO Meta Description
-                    </label>
-                    <textarea
-                      rows={2}
-                      placeholder="Custom description for Google search snippets..."
-                      value={currentPost.metaDescription}
-                      onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaDescription: e.target.value }))}
-                      className="w-full p-2.5 text-xs text-slate-800 bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-navy/20 focus:border-navy"
-                    />
+                    <div>
+                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
+                        Meta Description
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={currentPost.metaDescription}
+                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaDescription: e.target.value }))}
+                        className="w-full p-2.5 text-xs text-slate-800 bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-navy/20"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
-        {/* TAB 3: LIVE PREVIEW VIEW */}
+        {/* ========================================================================= */}
+        {/* VIEW 3: EXACT 1-CLICK LIVE PREVIEW */}
+        {/* ========================================================================= */}
         {activeTab === "preview" && (
-          <div className="mt-8 space-y-6">
-            {/* Top Toolbar */}
+          <div className="space-y-6">
+            {/* Top Preview Bar */}
             <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4">
               <Button
                 variant="outline"
@@ -1530,7 +1520,7 @@ function BlogsEditorPage() {
 
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-500 font-medium hidden sm:inline">
-                  Previewing exact live layout:
+                  Previewing exact website layout:
                 </span>
                 <Button
                   size="sm"
