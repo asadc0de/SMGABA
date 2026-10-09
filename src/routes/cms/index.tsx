@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
+  LayoutDashboard,
   Lock,
   Unlock,
   FileText,
@@ -363,6 +364,12 @@ function CmsPagesListPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy bg-white hover:bg-slate-100 h-8 text-xs font-semibold">
+              <Link to="/dashboard">
+                <LayoutDashboard className="size-3.5" />
+                Dashboard
+              </Link>
+            </Button>
             <Button
               variant="outline"
               size="sm"

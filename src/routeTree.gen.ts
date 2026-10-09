@@ -18,6 +18,7 @@ import { Route as BookanappointmentRouteImport } from './routes/bookanappointmen
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
@@ -47,6 +48,7 @@ import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/boo
 import { Route as SolutionsCfoAdvisoryServicesRouteImport } from './routes/solutions/cfo-advisory-services'
 import { Route as SolutionsTaxRouteImport } from './routes/solutions/tax'
 import { Route as SolutionsWealthManagementRouteImport } from './routes/solutions/wealth-management'
+import { Route as ToolsIndexRouteImport } from './routes/tools/index'
 import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
@@ -100,6 +102,11 @@ const ConstructionRoute = ConstructionRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -249,6 +256,11 @@ const SolutionsWealthManagementRoute =
     path: '/solutions/wealth-management',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ToolsIndexRoute = ToolsIndexRouteImport.update({
+  id: '/tools/',
+  path: '/tools/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsEventsRoute = ToolsEventsRouteImport.update({
   id: '/tools/events',
   path: '/tools/events',
@@ -305,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -337,6 +350,7 @@ export interface FileRoutesByFullPath {
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
+  '/tools/': typeof ToolsIndexRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
   '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
@@ -354,6 +368,7 @@ export interface FileRoutesByTo {
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -386,6 +401,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogIndexRoute
   '/cms': typeof CmsIndexRoute
   '/solutions': typeof SolutionsIndexRoute
+  '/tools': typeof ToolsIndexRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
   '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
@@ -404,6 +420,7 @@ export interface FileRoutesById {
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
+  '/dashboard': typeof DashboardRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -436,6 +453,7 @@ export interface FileRoutesById {
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
+  '/tools/': typeof ToolsIndexRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
   '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
@@ -455,6 +473,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/construction'
     | '/contact'
+    | '/dashboard'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -487,6 +506,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cms/'
     | '/solutions/'
+    | '/tools/'
     | '/cms/$id/edit'
     | '/cms/$id/preview'
     | '/internal/pages/new'
@@ -504,6 +524,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/construction'
     | '/contact'
+    | '/dashboard'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -536,6 +557,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/cms'
     | '/solutions'
+    | '/tools'
     | '/cms/$id/edit'
     | '/cms/$id/preview'
     | '/internal/pages/new'
@@ -553,6 +575,7 @@ export interface FileRouteTypes {
     | '/careers'
     | '/construction'
     | '/contact'
+    | '/dashboard'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -585,6 +608,7 @@ export interface FileRouteTypes {
     | '/blog/'
     | '/cms/'
     | '/solutions/'
+    | '/tools/'
     | '/cms/$id/edit'
     | '/cms/$id/preview'
     | '/internal/pages/new'
@@ -603,6 +627,7 @@ export interface RootRouteChildren {
   CareersRoute: typeof CareersRoute
   ConstructionRoute: typeof ConstructionRoute
   ContactRoute: typeof ContactRoute
+  DashboardRoute: typeof DashboardRoute
   EventsRoute: typeof EventsRoute
   FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
@@ -635,6 +660,7 @@ export interface RootRouteChildren {
   BlogIndexRoute: typeof BlogIndexRoute
   CmsIndexRoute: typeof CmsIndexRoute
   SolutionsIndexRoute: typeof SolutionsIndexRoute
+  ToolsIndexRoute: typeof ToolsIndexRoute
   CmsIdEditRoute: typeof CmsIdEditRoute
   CmsIdPreviewRoute: typeof CmsIdPreviewRoute
   InternalPagesNewRoute: typeof InternalPagesNewRoute
@@ -706,6 +732,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -911,6 +944,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SolutionsWealthManagementRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/': {
+      id: '/tools/'
+      path: '/tools'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof ToolsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/events': {
       id: '/tools/events'
       path: '/tools/events'
@@ -987,6 +1027,7 @@ const rootRouteChildren: RootRouteChildren = {
   CareersRoute: CareersRoute,
   ConstructionRoute: ConstructionRoute,
   ContactRoute: ContactRoute,
+  DashboardRoute: DashboardRoute,
   EventsRoute: EventsRoute,
   FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,
@@ -1019,6 +1060,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogIndexRoute: BlogIndexRoute,
   CmsIndexRoute: CmsIndexRoute,
   SolutionsIndexRoute: SolutionsIndexRoute,
+  ToolsIndexRoute: ToolsIndexRoute,
   CmsIdEditRoute: CmsIdEditRoute,
   CmsIdPreviewRoute: CmsIdPreviewRoute,
   InternalPagesNewRoute: InternalPagesNewRoute,

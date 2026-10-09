@@ -1,4 +1,4 @@
-import type { Config } from "@puckeditor/core/rsc";
+import type { Config } from "@puckeditor/core";
 import { HeadingRender, type HeadingProps } from "./blocks/Heading";
 import { RichTextRender, type RichTextProps } from "./blocks/RichText";
 import { ButtonRender, type ButtonBlockProps } from "./blocks/Button";

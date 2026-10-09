@@ -125,7 +125,7 @@ export function LinkPickerInput({
     getCmsPagesList()
       .then((res) => {
         if (isMounted && res?.pages) {
-          const list = res.pages.map((p: CmsPage) => ({
+          const list = res.pages.map((p: any) => ({
             label: `${p.title} (${p.status === "published" ? "Live" : "Draft"})`,
             path: `/${p.slug}`,
           }));
@@ -254,7 +254,7 @@ export function LinkPickerInput({
 export function createLinkPickerField(options: {
   label?: string;
   placeholder?: string;
-} = {}): CustomField<string> {
+} = {}): CustomField<any> {
   const { label = "Link Destination", placeholder } = options;
 
   return {

@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
+  LayoutDashboard,
   BookOpen,
   Plus,
   Search,
@@ -448,11 +449,23 @@ function BlogsEditorPage() {
                 </p>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="gap-1.5 rounded-full text-navy bg-white border-slate-200 hover:bg-slate-100 h-9 text-xs font-semibold"
+                >
+                  <Link to="/dashboard">
+                    <LayoutDashboard className="size-3.5" />
+                    Dashboard
+                  </Link>
+                </Button>
+
                 <Button
                   onClick={handleStartNew}
                   size="sm"
-                  className="rounded-full bg-navy text-white hover:bg-navy/90 gap-1.5 shadow-md shadow-navy/20 h-9 px-5 text-xs font-semibold"
+                  className="rounded-full bg-navy text-white hover:bg-navy/90 gap-1.5 shadow-md shadow-navy/20 h-9 px-4 text-xs font-semibold cursor-pointer"
                 >
                   <Plus className="size-4" /> Create New Article
                 </Button>

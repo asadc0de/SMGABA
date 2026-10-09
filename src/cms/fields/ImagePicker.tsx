@@ -618,7 +618,7 @@ export function createImagePickerField({
   label = "Image Source",
   description,
   placeholder,
-}: ImagePickerFieldProps = {}): CustomField<string> {
+}: ImagePickerFieldProps = {}): CustomField<any> {
   return {
     type: "custom",
     label,

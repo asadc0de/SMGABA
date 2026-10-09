@@ -204,8 +204,9 @@ export function validateBlockStyle(style: unknown): { valid: boolean; error?: st
     }
   }
 
-  if (s.align && typeof s.align === "object") {
-    const resp = s.align as Record<string, unknown>;
+  const alignVal = s["align"];
+  if (alignVal && typeof alignVal === "object") {
+    const resp = alignVal as Record<string, unknown>;
     for (const dev of ["base", "md", "lg"]) {
       const val = resp[dev];
       if (val !== undefined && val !== null && val !== "" && !VALID_ALIGNS.has(val as Align)) {
@@ -215,11 +216,11 @@ export function validateBlockStyle(style: unknown): { valid: boolean; error?: st
         };
       }
     }
-  } else if (typeof s.align === "string" && s.align !== "") {
-    if (!VALID_ALIGNS.has(s.align as Align)) {
+  } else if (typeof alignVal === "string" && alignVal !== "") {
+    if (!VALID_ALIGNS.has(alignVal as Align)) {
       return {
         valid: false,
-        error: `Invalid align value "${s.align}" for align. Must be one of: left, center, right.`,
+        error: `Invalid align value "${alignVal}" for align. Must be one of: left, center, right.`,
       };
     }
   }

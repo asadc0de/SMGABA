@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
+  LayoutDashboard,
   Lock,
   Unlock,
   Calendar,
@@ -458,6 +459,18 @@ function EventsAdminPage() {
 
               {/* Action & Tools Links */}
               <div className="flex items-center gap-2 flex-wrap">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl border-navy/20 text-navy hover:bg-navy hover:text-white text-xs font-semibold"
+                >
+                  <Link to="/dashboard">
+                    <LayoutDashboard className="mr-1.5 size-3.5" />
+                    Dashboard
+                  </Link>
+                </Button>
+
                 <Button
                   asChild
                   variant="outline"

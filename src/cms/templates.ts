@@ -1,4 +1,7 @@
 import type { Data } from "@puckeditor/core";
+import type { CmsComponentProps, CmsRootProps } from "./render.config";
+
+export type CmsTemplateData = Data<CmsComponentProps, CmsRootProps>;
 
 export interface CmsTemplate {
   id: string;
@@ -6,7 +9,7 @@ export interface CmsTemplate {
   description: string;
   badge?: string;
   hasFirstBlockHero: boolean;
-  getInitialData: (title: string) => Data;
+  getInitialData: (title: string) => CmsTemplateData;
 }
 
 export const PAGE_TEMPLATES: CmsTemplate[] = [
