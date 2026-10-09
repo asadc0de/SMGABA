@@ -8,6 +8,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
   label: "Call to Action Strip",
@@ -37,15 +38,15 @@ export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
     animation: createAnimationControlsField({
       label: "Micro Animations (Scroll & Hover)",
     }),
-    theme: {
-      type: "select",
-      label: "Color Theme Preset",
+    theme: createSegmentedField({
+      label: "Theme",
       options: [
-        { label: "Navy Dark Brand (#0f2142)", value: "navy" },
-        { label: "Light Slate Card", value: "light" },
-        { label: "Blue Gradient Brand", value: "blue-gradient" },
+        { label: "Navy", value: "navy", description: "Navy Dark Brand" },
+        { label: "Light", value: "light", description: "Light Slate Card" },
+        { label: "Gradient", value: "blue-gradient", description: "Blue Gradient Brand" },
       ],
-    },
+      defaultValue: "navy",
+    }),
     backgroundColor: createColorPickerField({
       label: "Custom Background Color",
     }),
@@ -55,22 +56,22 @@ export const CTABannerBlock: ComponentConfig<CTABannerProps> = {
     borderColor: createColorPickerField({
       label: "Custom Border Color",
     }),
-    alignment: {
-      type: "select",
-      label: "Text Alignment",
+    alignment: createSegmentedField({
+      label: "Alignment",
       options: [
-        { label: "Centered (Default)", value: "center" },
-        { label: "Left Aligned", value: "left" },
+        { label: "Center", value: "center", description: "Centered" },
+        { label: "Left", value: "left", description: "Left Aligned" },
       ],
-    },
-    layout: {
-      type: "select",
-      label: "Container Shape",
+      defaultValue: "center",
+    }),
+    layout: createSegmentedField({
+      label: "Shape",
       options: [
-        { label: "Rounded Card Box (Default)", value: "card" },
-        { label: "Full Width Strip", value: "full-width" },
+        { label: "Card", value: "card", description: "Rounded Card Box" },
+        { label: "Full Strip", value: "full-width", description: "Full Width Strip" },
       ],
-    },
+      defaultValue: "card",
+    }),
     primaryButton: {
       type: "object",
       label: "Primary Button",

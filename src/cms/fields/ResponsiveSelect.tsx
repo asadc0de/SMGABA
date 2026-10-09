@@ -9,6 +9,15 @@ import {
   SPACE_OPTIONS,
   ALIGN_OPTIONS,
 } from "../style";
+import {
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Smartphone,
+  Tablet,
+  Monitor,
+  Info,
+} from "lucide-react";
 
 export interface ResponsiveOption<T> {
   label: string;
@@ -22,6 +31,7 @@ export interface ResponsiveSelectProps<T extends string> {
   options: ResponsiveOption<T>[];
   defaultValue?: T;
   label?: string;
+  isAlignField?: boolean;
 }
 
 const usePuckSelected = createUsePuck();
@@ -34,116 +44,134 @@ function useActiveViewportDevice(): Device {
       if (currentWidth <= 950) return "md";
       return "lg";
     }
-  } catch {
-    // Graceful fallback outside Puck context
-  }
+  } catch {}
   return "base";
 }
 
+const SPACE_SHORT_LABELS: Record<string, string> = {
+  none: "0",
+  sm: "S",
+  md: "M",
+  lg: "L",
+  xl: "XL",
+};
+
+/**
+ * Compact single-line segmented control for Alignment and Spacing
+ */
 export function ResponsiveSelect<T extends string>({
   value,
   onChange,
   readOnly,
   options,
   defaultValue,
+  label = "Control",
+  isAlignField = false,
 }: ResponsiveSelectProps<T>) {
   const autoDevice = useActiveViewportDevice();
-  const [activeTab, setActiveTab] = useState<Device>(autoDevice);
+  const [activeDevice, setActiveDevice] = useState<Device>(autoDevice);
 
-  // Normalize legacy string value (e.g. "left") to { base: "left" }
+  // Normalize legacy string value
   const normalizedValue: Responsive<T> =
-    typeof value === "string" ? { base: value as T } : (value || {});
+    typeof value === "string" ? { base: value as T } : value || {};
 
-  // Sync active tab with Puck viewport switcher changes
   useEffect(() => {
-    setActiveTab(autoDevice);
+    setActiveDevice(autoDevice);
   }, [autoDevice]);
 
-  const currentDeviceValue = normalizedValue[activeTab];
+  const currentDeviceValue =
+    normalizedValue[activeDevice] || (activeDevice === "base" ? defaultValue || options[0]?.value : undefined);
 
-  function handleSelect(newVal: string) {
+  const handleSelect = (val: string) => {
     if (readOnly) return;
-
     const next: Responsive<T> = { ...normalizedValue };
-    if (newVal === "__inherit__" || newVal === "") {
-      delete next[activeTab];
-    } else {
-      next[activeTab] = newVal as T;
-    }
+    next[activeDevice] = val as T;
     onChange(next);
-  }
-
-  // Resolve what value cascades down to tablet / desktop when unset
-  const resolvedBase = normalizedValue.base || defaultValue || options[0]?.value;
-  const resolvedMd = normalizedValue.md || resolvedBase;
-
-  const inheritLabel =
-    activeTab === "md"
-      ? `Inherit from Mobile (${options.find((o) => o.value === resolvedBase)?.label || resolvedBase})`
-      : activeTab === "lg"
-        ? `Inherit from Tablet (${options.find((o) => o.value === resolvedMd)?.label || resolvedMd})`
-        : "";
+  };
 
   return (
-    <div className="flex flex-col gap-2 w-full pt-1 pb-2">
-      {/* Device Switcher Tabs */}
-      <div className="flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
-        <button
-          type="button"
-          onClick={() => setActiveTab("base")}
-          className={`flex-1 py-1 text-xs font-medium rounded-md transition-all ${
-            activeTab === "base"
-              ? "bg-white text-navy shadow-xs font-semibold"
-              : "text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          Mobile
-          {normalizedValue.base && <span className="ml-1 text-[10px] text-primary">●</span>}
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("md")}
-          className={`flex-1 py-1 text-xs font-medium rounded-md transition-all ${
-            activeTab === "md"
-              ? "bg-white text-navy shadow-xs font-semibold"
-              : "text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          Tablet
-          {normalizedValue.md && <span className="ml-1 text-[10px] text-primary">●</span>}
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab("lg")}
-          className={`flex-1 py-1 text-xs font-medium rounded-md transition-all ${
-            activeTab === "lg"
-              ? "bg-white text-navy shadow-xs font-semibold"
-              : "text-slate-500 hover:text-slate-800"
-          }`}
-        >
-          Desktop
-          {normalizedValue.lg && <span className="ml-1 text-[10px] text-primary">●</span>}
-        </button>
-      </div>
+    <div className="w-full text-[13px]">
+      <div className="flex items-center justify-between gap-2 min-h-[32px]">
+        {/* Left: Compact Label */}
+        <div className="flex items-center gap-1 min-w-0 pr-1">
+          <span className="text-[13px] font-medium text-slate-700 truncate" title={label}>
+            {label}
+          </span>
+        </div>
 
-      {/* Value Selector for Active Device */}
-      <select
-        value={currentDeviceValue || (activeTab === "base" ? defaultValue || "" : "__inherit__")}
-        disabled={readOnly}
-        onChange={(e) => handleSelect(e.target.value)}
-        className="w-full rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-      >
-        {activeTab !== "base" && (
-          <option value="__inherit__" className="text-slate-400 font-medium">
-            {inheritLabel}
-          </option>
-        )}
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
+        {/* Right: Segmented Button Control */}
+        <div className="flex items-center gap-1 shrink-0">
+          {isAlignField ? (
+            /* Segmented Align Icons: Left | Center | Right */
+            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+              <button
+                type="button"
+                disabled={readOnly}
+                onClick={() => handleSelect("left")}
+                title="Align Left"
+                className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                  (currentDeviceValue || "left") === "left"
+                    ? "bg-white text-[#0f2142] shadow-2xs font-semibold"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <AlignLeft className="size-3.5" />
+              </button>
+              <button
+                type="button"
+                disabled={readOnly}
+                onClick={() => handleSelect("center")}
+                title="Align Center"
+                className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                  currentDeviceValue === "center"
+                    ? "bg-white text-[#0f2142] shadow-2xs font-semibold"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <AlignCenter className="size-3.5" />
+              </button>
+              <button
+                type="button"
+                disabled={readOnly}
+                onClick={() => handleSelect("right")}
+                title="Align Right"
+                className={`p-1.5 rounded-md transition-all cursor-pointer ${
+                  currentDeviceValue === "right"
+                    ? "bg-white text-[#0f2142] shadow-2xs font-semibold"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <AlignRight className="size-3.5" />
+              </button>
+            </div>
+          ) : (
+            /* Segmented Space Pills: 0 | S | M | L | XL */
+            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+              {options.map((opt) => {
+                const isSelected = (currentDeviceValue || defaultValue) === opt.value;
+                const shortLabel = SPACE_SHORT_LABELS[opt.value] || opt.label;
+
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    disabled={readOnly}
+                    onClick={() => handleSelect(opt.value)}
+                    title={opt.label}
+                    className={`px-2 py-0.5 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-white text-[#0f2142] shadow-2xs"
+                        : "text-slate-500 hover:text-slate-800"
+                    }`}
+                  >
+                    {shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
@@ -165,6 +193,8 @@ export function createResponsiveSpaceField(
         readOnly={readOnly}
         options={SPACE_OPTIONS}
         defaultValue={defaultValue}
+        label={label}
+        isAlignField={false}
       />
     ),
   };
@@ -187,7 +217,11 @@ export function createResponsiveAlignField(
         readOnly={readOnly}
         options={ALIGN_OPTIONS}
         defaultValue={defaultValue}
+        label={label}
+        isAlignField={true}
       />
     ),
   };
 }
+
+export default ResponsiveSelect;

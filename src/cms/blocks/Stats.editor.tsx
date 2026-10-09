@@ -8,6 +8,7 @@ import { createSizeControlsField, createToggleField } from "../fields/SizeContro
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const StatsBlock: ComponentConfig<StatsProps> = {
   label: "Stats",
@@ -35,23 +36,23 @@ export const StatsBlock: ComponentConfig<StatsProps> = {
       label: "Micro Animations (Entrance & Stagger)",
       showStaggerToggle: true,
     }),
-    columns: {
-      type: "select",
-      label: "Grid Columns (Desktop)",
+    columns: createSegmentedField({
+      label: "Columns",
       options: [
-        { label: "2 Columns", value: "2" },
-        { label: "3 Columns (Default)", value: "3" },
-        { label: "4 Columns", value: "4" },
+        { label: "2", value: "2", description: "2 Columns" },
+        { label: "3", value: "3", description: "3 Columns" },
+        { label: "4", value: "4", description: "4 Columns" },
       ],
-    },
-    theme: {
-      type: "select",
-      label: "Visual Theme Preset",
+      defaultValue: "3",
+    }),
+    theme: createSegmentedField({
+      label: "Theme",
       options: [
-        { label: "Navy Dark Brand (#0f2142)", value: "navy" },
-        { label: "Light Slate Card", value: "light" },
+        { label: "Navy", value: "navy", description: "Navy Dark Brand" },
+        { label: "Light", value: "light", description: "Light Slate Card" },
       ],
-    },
+      defaultValue: "navy",
+    }),
     backgroundColor: createColorPickerField({
       label: "Custom Container Background Color",
     }),

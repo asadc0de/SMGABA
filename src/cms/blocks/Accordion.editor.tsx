@@ -8,6 +8,7 @@ import { createSizeControlsField, createToggleField } from "../fields/SizeContro
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const AccordionBlock: ComponentConfig<AccordionProps> = {
   label: "FAQ Accordion",
@@ -35,24 +36,24 @@ export const AccordionBlock: ComponentConfig<AccordionProps> = {
       label: "Micro Animations (Entrance & Stagger)",
       showStaggerToggle: true,
     }),
-    type: {
-      type: "select",
-      label: "Accordion Expansion Mode",
+    type: createSegmentedField({
+      label: "Expansion Mode",
       options: [
-        { label: "Single Item (One open at a time)", value: "single" },
-        { label: "Multiple Items (Allow multiple open)", value: "multiple" },
+        { label: "Single", value: "single", description: "One open at a time" },
+        { label: "Multi", value: "multiple", description: "Multiple open at once" },
       ],
-    },
-    theme: {
-      type: "select",
-      label: "Visual Theme",
+      defaultValue: "single",
+    }),
+    theme: createSegmentedField({
+      label: "Theme",
       options: [
-        { label: "Separated Pill Boxes (Default)", value: "separated" },
-        { label: "Clean Bordered Dividers", value: "bordered" },
-        { label: "Contained Card Container", value: "card" },
-        { label: "Navy Dark Brand", value: "navy" },
+        { label: "Pills", value: "separated", description: "Separated Pill Boxes" },
+        { label: "Bordered", value: "bordered", description: "Clean Bordered Dividers" },
+        { label: "Card", value: "card", description: "Contained Card Container" },
+        { label: "Navy", value: "navy", description: "Navy Dark Brand" },
       ],
-    },
+      defaultValue: "separated",
+    }),
     backgroundColor: createColorPickerField({
       label: "Background Color",
     }),

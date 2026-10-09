@@ -9,6 +9,7 @@ import { createSizeControlsField, createToggleField } from "../fields/SizeContro
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 const ICON_OPTIONS = [
   { label: "Shield (Security & Protection)", value: "Shield" },
@@ -63,24 +64,24 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
       label: "Micro Animations (Entrance & Stagger)",
       showStaggerToggle: true,
     }),
-    columns: {
-      type: "select",
-      label: "Columns (Desktop)",
+    columns: createSegmentedField({
+      label: "Columns",
       options: [
-        { label: "2 Columns", value: "2" },
-        { label: "3 Columns (Default)", value: "3" },
-        { label: "4 Columns", value: "4" },
+        { label: "2", value: "2", description: "2 Columns" },
+        { label: "3", value: "3", description: "3 Columns" },
+        { label: "4", value: "4", description: "4 Columns" },
       ],
-    },
-    style: {
-      type: "select",
+      defaultValue: "3",
+    }),
+    style: createSegmentedField({
       label: "Card Style",
       options: [
-        { label: "White Elevated Cards (Default)", value: "cards" },
-        { label: "Plain Minimal (Border-Free)", value: "plain" },
-        { label: "Centered Alignment", value: "centered" },
+        { label: "Cards", value: "cards", description: "White elevated cards" },
+        { label: "Plain", value: "plain", description: "Plain border-free" },
+        { label: "Centered", value: "centered", description: "Centered alignment" },
       ],
-    },
+      defaultValue: "cards",
+    }),
     backgroundColor: createColorPickerField({
       label: "Section Background Color",
     }),

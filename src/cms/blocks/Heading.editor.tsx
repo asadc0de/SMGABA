@@ -12,6 +12,7 @@ import { createTypographyField, createFontSizePixelField } from "../fields/TextF
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const HeadingBlock: ComponentConfig<HeadingProps> = {
   label: "Heading",
@@ -31,15 +32,15 @@ export const HeadingBlock: ComponentConfig<HeadingProps> = {
       label: "Heading Text",
     },
     advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
-    level: {
-      type: "select",
+    level: createSegmentedField({
       label: "Heading Level",
       options: [
-        { label: "H1 - Primary Heading", value: "h1" },
-        { label: "H2 - Section Heading", value: "h2" },
-        { label: "H3 - Subheading", value: "h3" },
+        { label: "H1", value: "h1", description: "Primary Heading" },
+        { label: "H2", value: "h2", description: "Section Heading" },
+        { label: "H3", value: "h3", description: "Subheading" },
       ],
-    },
+      defaultValue: "h2",
+    }),
     fontSizePx: createFontSizePixelField({
       label: "Explicit Font Size (px)",
       description: "Set direct pixel font size (e.g. 36px, 48px, 64px).",

@@ -16,9 +16,7 @@ import {
   SlidersHorizontal,
   Sliders,
   Layers,
-  HelpCircle,
   X,
-  Check,
   Type,
   Image as ImageIcon,
   Link,
@@ -28,9 +26,6 @@ import {
   MoveVertical,
   MousePointerClick,
   Code,
-  Shield,
-  Eye,
-  EyeOff,
 } from "lucide-react";
 import { getBlockIcon, getFriendlyBlockName } from "./editor-overlay";
 import { puckEditorConfig } from "./puck.config";
@@ -66,7 +61,7 @@ export const SUBGROUPS_BY_TAB: Record<SettingTabId, SubgroupDefinition[]> = {
   content: [
     { id: "content_main", label: "Text & Copy", icon: Type },
     { id: "content_media", label: "Media & Assets", icon: ImageIcon },
-    { id: "content_links", label: "Links & Action Buttons", icon: Link },
+    { id: "content_links", label: "Links & Buttons", icon: Link },
     { id: "content_items", label: "Collection & Items", icon: List },
   ],
   style: [
@@ -187,7 +182,7 @@ const FIELD_META_MAP: Record<string, FieldMeta> = {
   objectFit: { tab: "style", subgroup: "style_box" },
   thickness: { tab: "style", subgroup: "style_box" },
   styleVariant: { tab: "style", subgroup: "style_box" },
-  layout: { tab: "style", subgroup: "style_box" }, // For Testimonial (Design A vs B presentation)
+  layout: { tab: "style", subgroup: "style_box" },
 
   styleControls: { tab: "style", subgroup: "style_appearance" },
 
@@ -346,14 +341,14 @@ function getSubgroupSummary(subgroupId: string, props: any): string | null {
       const text = props.label || props.title || props.headline || props.text || props.content || props.quote || props.heading;
       if (text && typeof text === "string") {
         const clean = text.trim();
-        return clean.length > 28 ? `“${clean.slice(0, 26)}...”` : `“${clean}”`;
+        return clean.length > 26 ? `“${clean.slice(0, 24)}...”` : `“${clean}”`;
       }
       return "Configured text content";
     }
     case "content_media": {
       const src = props.src || props.avatarUrl || props.imageUrl || props.backgroundImage || props.heroImage;
       if (src && typeof src === "string") {
-        const filename = src.split("/").pop()?.slice(0, 20);
+        const filename = src.split("/").pop()?.slice(0, 18);
         return filename ? `Media: ${filename}` : "Media source set";
       }
       return "No media selected";
@@ -361,7 +356,7 @@ function getSubgroupSummary(subgroupId: string, props: any): string | null {
     case "content_links": {
       const href = props.url || props.linkUrl || props.ctaHref || props.primaryCta?.href || props.primaryButton?.href;
       if (href && typeof href === "string") {
-        return `Link: ${href.slice(0, 22)}`;
+        return `Link: ${href.slice(0, 20)}`;
       }
       return "Destination link";
     }
@@ -382,12 +377,12 @@ let rememberedActiveTab: SettingTabId = "content";
 
 /**
  * Modern Redesigned Right Settings Panel for Puck Editor
- * Features:
- * - Sticky Header with Title, Icon, Breadcrumb, Actions, Search & Simple/Advanced Toggle
- * - 4 Smart Categorized Tabs (Content, Style, Layout, Motion)
- * - Collapsible Accordion Subgroups (Max 2 open at a time, 1st open by default)
- * - Concise Glanceable Summaries on collapsed subgroup headers
- * - Simple Mode vs Advanced Mode filtering
+ * Specifications:
+ * - Fixed Width: 300px to 320px (no resize)
+ * - 8px consistent grid spacing (16px between groups, 8px between controls)
+ * - 13px labels, 12px helper text
+ * - Brand navy #0f2142 accent
+ * - Flat clean 1px border without heavy box shadows
  */
 export function RedesignedSettingsPanel({
   children,
@@ -413,7 +408,7 @@ export function RedesignedSettingsPanel({
   const selectedId = selectedItem?.props?.id;
   const blockType = selectedItem?.type;
   const BlockIcon = getBlockIcon(blockType);
-  const friendlyName = selectedItem ? getFriendlyBlockName(blockType) : "Page Root Settings";
+  const friendlyName = selectedItem ? getFriendlyBlockName(blockType) : "Page Settings";
   const currentProps = selectedItem?.props || (appState.data?.root?.props as any) || {};
 
   // Find parent component if nested inside Columns, Section, etc.
@@ -514,16 +509,12 @@ export function RedesignedSettingsPanel({
   const handleToggleGroup = (groupId: string) => {
     setOpenGroups((prev) => {
       if (prev.includes(groupId)) {
-        // If clicking an already open group
         if (prev.length > 1) {
           return prev.filter((id) => id !== groupId);
         }
-        // If only 1 group open, allow closing or keep
         return [];
       } else {
-        // Opening a new group: max 2 open at any time
         if (prev.length >= 2) {
-          // Drop oldest, add new
           return [prev[prev.length - 1], groupId];
         }
         return [...prev, groupId];
@@ -709,19 +700,19 @@ export function RedesignedSettingsPanel({
   }, [trimmedSearch, categorizedData]);
 
   return (
-    <div className="flex flex-col h-full w-full bg-white select-none text-slate-800 font-sans">
+    <div className="flex flex-col h-full w-[310px] min-w-[300px] max-w-[320px] bg-white select-none text-slate-800 font-sans border-l border-slate-200">
       {/* 1. STICKY PANEL HEADER */}
-      <div className="sticky top-0 z-20 bg-white border-b border-slate-200 shadow-2xs">
+      <div className="sticky top-0 z-20 bg-white border-b border-slate-200">
         {/* Header Top Row: Icon + Name + Breadcrumb + Actions */}
-        <div className="px-3.5 pt-3 pb-2 flex items-center justify-between gap-2">
+        <div className="px-3 pt-3 pb-2 flex items-center justify-between gap-2">
           {/* Left: Element Icon & Name + Breadcrumb */}
           <div className="min-w-0 flex-1">
             {/* Breadcrumb row */}
-            <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium mb-1 overflow-hidden">
+            <div className="flex items-center gap-1 text-[11px] text-slate-400 font-medium mb-0.5 overflow-hidden">
               <button
                 type="button"
                 onClick={handleDeselectToPage}
-                className="hover:text-navy hover:underline transition-colors truncate cursor-pointer flex items-center gap-1"
+                className="hover:text-[#0f2142] hover:underline transition-colors truncate cursor-pointer flex items-center gap-1"
                 title="View Page Global Settings"
               >
                 <Globe className="size-3 shrink-0 text-slate-400" />
@@ -734,11 +725,11 @@ export function RedesignedSettingsPanel({
                   <button
                     type="button"
                     onClick={handleSelectParent}
-                    className="hover:text-navy hover:underline transition-colors truncate cursor-pointer flex items-center gap-1"
-                    title={`Select parent container: ${friendlyParentName}`}
+                    className="hover:text-[#0f2142] hover:underline transition-colors truncate cursor-pointer flex items-center gap-1"
+                    title={`Select parent: ${friendlyParentName}`}
                   >
                     {ParentIcon && <ParentIcon className="size-3 shrink-0 text-slate-400" />}
-                    <span className="truncate max-w-[80px]">{friendlyParentName}</span>
+                    <span className="truncate max-w-[75px]">{friendlyParentName}</span>
                   </button>
                 </>
               )}
@@ -746,53 +737,50 @@ export function RedesignedSettingsPanel({
               {selectedItem && (
                 <>
                   <ChevronRight className="size-3 text-slate-300 shrink-0" />
-                  <span className="text-slate-700 font-semibold truncate">{friendlyName}</span>
+                  <span className="text-slate-700 font-semibold truncate max-w-[80px]">{friendlyName}</span>
                 </>
               )}
             </div>
 
-            {/* Element Title & Icon Badge */}
-            <div className="flex items-center gap-2">
-              <div className="size-6 rounded-md bg-[#0f2142]/5 border border-[#0f2142]/10 flex items-center justify-center text-[#0f2142] shrink-0">
-                <BlockIcon className="size-3.5" />
+            {/* Element Title & Icon */}
+            <div className="flex items-center gap-1.5">
+              <div className="size-5 rounded bg-[#0f2142]/5 border border-[#0f2142]/10 flex items-center justify-center text-[#0f2142] shrink-0">
+                <BlockIcon className="size-3" />
               </div>
-              <h3 className="text-xs sm:text-sm font-bold text-navy truncate">
+              <h3 className="text-[13px] font-bold text-[#0f2142] truncate">
                 {friendlyName}
               </h3>
             </div>
           </div>
 
           {/* Right: 3 Action Icon Buttons */}
-          <div className="flex items-center gap-1 shrink-0 bg-slate-50 p-1 rounded-lg border border-slate-200">
-            {/* Duplicate Button */}
+          <div className="flex items-center gap-0.5 shrink-0 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
             <button
               type="button"
               onClick={handleDuplicate}
               disabled={!selectedItem}
               title="Duplicate element"
-              className="p-1.5 rounded-md text-slate-600 hover:text-navy hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+              className="p-1 rounded text-slate-600 hover:text-[#0f2142] hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
             >
               <Copy className="size-3.5" />
             </button>
 
-            {/* Reset Style Button */}
             <button
               type="button"
               onClick={handleResetStyle}
               disabled={!selectedItem}
               title="Reset styling to default"
-              className="p-1.5 rounded-md text-slate-600 hover:text-amber-700 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+              className="p-1 rounded text-slate-600 hover:text-amber-700 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
             >
               <RotateCcw className="size-3.5" />
             </button>
 
-            {/* Delete Button */}
             <button
               type="button"
               onClick={handleDelete}
               disabled={!selectedItem}
               title="Delete element"
-              className="p-1.5 rounded-md text-slate-600 hover:text-red-600 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+              className="p-1 rounded text-slate-600 hover:text-red-600 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
             >
               <Trash2 className="size-3.5" />
             </button>
@@ -800,22 +788,22 @@ export function RedesignedSettingsPanel({
         </div>
 
         {/* Header Middle Row: Search Box & Simple/Advanced Segmented Toggle */}
-        <div className="px-3 pb-2.5 flex items-center gap-2">
+        <div className="px-3 pb-2 flex items-center gap-1.5">
           {/* Search Box */}
           <div className="relative flex-1 flex items-center">
-            <Search className="size-3.5 absolute left-2.5 text-slate-400 pointer-events-none" />
+            <Search className="size-3.5 absolute left-2 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search settings..."
-              className="w-full pl-8 pr-7 py-1 text-xs rounded-lg border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-navy focus:ring-1 focus:ring-navy outline-none transition-all placeholder:text-slate-400 font-medium"
+              className="w-full pl-7 pr-6 py-1 text-[12px] rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142] outline-none transition-all placeholder:text-slate-400 font-medium"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery("")}
-                className="absolute right-2 text-slate-400 hover:text-slate-600 text-xs font-bold p-1 cursor-pointer"
+                className="absolute right-1.5 text-slate-400 hover:text-slate-600 text-xs font-bold p-1 cursor-pointer"
                 title="Clear search"
               >
                 <X className="size-3" />
@@ -831,12 +819,12 @@ export function RedesignedSettingsPanel({
                 setEditorMode("simple");
                 toast.info("⚡ Simple Mode active");
               }}
-              className={`flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
                 editorMode === "simple"
-                  ? "bg-white text-navy shadow-2xs"
+                  ? "bg-white text-[#0f2142] shadow-2xs"
                   : "text-slate-500 hover:text-slate-800"
               }`}
-              title="Simple Mode: Streamlined essentials and presets"
+              title="Simple Mode"
             >
               <Sparkles className="size-3 text-amber-500" />
               <span>Simple</span>
@@ -847,22 +835,22 @@ export function RedesignedSettingsPanel({
                 setEditorMode("advanced");
                 toast.info("🛠️ Advanced Mode active");
               }}
-              className={`flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
                 editorMode === "advanced"
-                  ? "bg-white text-navy shadow-2xs"
+                  ? "bg-white text-[#0f2142] shadow-2xs"
                   : "text-slate-500 hover:text-slate-800"
               }`}
-              title="Advanced Mode: Exact px, flex/grid, and full CSS unlocked"
+              title="Advanced Mode"
             >
               <SlidersHorizontal className="size-3 text-blue-600" />
-              <span>Advanced</span>
+              <span>Adv</span>
             </button>
           </div>
         </div>
 
         {/* 2. TABS BAR (Max 4 tabs: Content, Style, Layout, Motion) */}
         {!trimmedSearch && availableTabs.length > 1 && (
-          <div className="flex border-t border-slate-200 bg-slate-50/70 px-2 pt-1 gap-1">
+          <div className="flex border-t border-slate-200 bg-slate-50/70 px-2 pt-1 gap-0.5">
             {availableTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -872,13 +860,13 @@ export function RedesignedSettingsPanel({
                   key={tab.id}
                   type="button"
                   onClick={() => handleTabChange(tab.id)}
-                  className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-t-lg text-xs font-bold transition-all cursor-pointer border-t border-x ${
+                  className={`flex-1 flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-t-lg text-[12px] font-semibold transition-all cursor-pointer border-t border-x ${
                     isActive
-                      ? "bg-white text-navy border-slate-200 border-b-transparent shadow-xs -mb-px z-10"
+                      ? "bg-white text-[#0f2142] border-slate-200 border-b-transparent font-bold -mb-px z-10"
                       : "bg-transparent text-slate-500 hover:text-slate-800 border-transparent hover:bg-slate-100/60"
                   }`}
                 >
-                  <Icon className={`size-3.5 ${isActive ? "text-blue-600" : "text-slate-400"}`} />
+                  <Icon className={`size-3.5 ${isActive ? "text-[#0f2142]" : "text-slate-400"}`} />
                   <span>{tab.label}</span>
                 </button>
               );
@@ -887,17 +875,17 @@ export function RedesignedSettingsPanel({
         )}
       </div>
 
-      {/* 3. SETTINGS FIELDS CONTENT BODY (Accordion Groups) */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-2.5 bg-slate-50/30">
+      {/* 3. SETTINGS FIELDS CONTENT BODY (16px spacing between groups, 8px between controls) */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-4 bg-white">
         {isLoading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
-            <div className="size-5 border-2 border-navy border-t-transparent rounded-full animate-spin" />
+            <div className="size-5 border-2 border-[#0f2142] border-t-transparent rounded-full animate-spin" />
             <span className="text-xs font-medium">Updating settings...</span>
           </div>
         ) : trimmedSearch ? (
           /* Live Search Filter Results Mode */
-          <div className="space-y-3 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
-            <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider pb-1 border-b border-slate-100">
+          <div className="space-y-3 bg-white">
+            <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider pb-1 border-b border-slate-100">
               <span>Matching Settings ({searchResults.length})</span>
               <span className="text-[10px] text-slate-400">for &quot;{trimmedSearch}&quot;</span>
             </div>
@@ -909,30 +897,30 @@ export function RedesignedSettingsPanel({
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="mt-2 text-xs text-blue-600 hover:underline font-semibold cursor-pointer"
+                  className="mt-2 text-xs text-[#0f2142] hover:underline font-semibold cursor-pointer"
                 >
                   Clear search
                 </button>
               </div>
             ) : (
               searchResults.map((item) => (
-                <div key={item.key} className="space-y-1 bg-slate-50/70 p-2.5 rounded-xl border border-slate-200/80">
+                <div key={item.key} className="space-y-1.5 p-2 rounded-lg border border-slate-200">
                   <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     <span className="font-mono text-slate-600">{item.key}</span>
-                    <span className="px-1.5 py-0.2 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                    <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-700">
                       {item.tab}
                     </span>
                   </div>
-                  <div className="pt-1">{item.element}</div>
+                  <div>{item.element}</div>
                 </div>
               ))
             )}
           </div>
         ) : (
           /* Tabbed Accordion Groups Mode */
-          <div className="space-y-2">
+          <div className="space-y-3">
             {currentTabSubgroups.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 bg-white p-6 rounded-2xl border border-slate-200">
+              <div className="py-12 text-center text-slate-400 p-4 rounded-xl border border-slate-200">
                 <p className="text-xs">No {activeTab} settings available for this element in {editorMode} mode.</p>
               </div>
             ) : (
@@ -945,45 +933,41 @@ export function RedesignedSettingsPanel({
                 return (
                   <div
                     key={subgroup.id}
-                    className={`rounded-xl border transition-all overflow-hidden bg-white ${
-                      isOpen
-                        ? "border-slate-300 shadow-xs"
-                        : "border-slate-200 hover:border-slate-300"
-                    }`}
+                    className="rounded-lg border border-slate-200 overflow-hidden bg-white"
                   >
-                    {/* Accordion Group Header */}
+                    {/* Accordion Group Header: 12px uppercase / 13px bold */}
                     <button
                       type="button"
                       onClick={() => handleToggleGroup(subgroup.id)}
-                      className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
-                        isOpen ? "bg-slate-50/80 border-b border-slate-200/80" : "hover:bg-slate-50/50"
+                      className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
+                        isOpen ? "bg-slate-50 border-b border-slate-200" : "hover:bg-slate-50/60"
                       }`}
                     >
-                      <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
-                        <SubIcon className={`size-3.5 shrink-0 ${isOpen ? "text-blue-600" : "text-slate-400"}`} />
+                      <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-2">
+                        <SubIcon className={`size-3.5 shrink-0 ${isOpen ? "text-[#0f2142]" : "text-slate-400"}`} />
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-bold text-slate-800 truncate">
+                            <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wider truncate">
                               {subgroup.label}
                             </span>
                             {subgroup.isAdvanced && (
-                              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                                Advanced
+                              <span className="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                ADV
                               </span>
                             )}
                           </div>
 
                           {/* Summary row when collapsed */}
                           {!isOpen && summary && (
-                            <span className="text-[10.5px] text-slate-400 truncate block mt-0.5 font-medium">
+                            <span className="text-[11px] text-slate-400 truncate block mt-0.5 font-normal">
                               {summary}
                             </span>
                           )}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-500">
+                      <div className="flex items-center gap-1 shrink-0">
+                        <span className="text-[10px] font-semibold text-slate-400">
                           {fields.length}
                         </span>
                         <ChevronDown
@@ -994,9 +978,9 @@ export function RedesignedSettingsPanel({
                       </div>
                     </button>
 
-                    {/* Accordion Group Fields Body */}
+                    {/* Accordion Group Fields Body (8px grid spacing between controls) */}
                     {isOpen && (
-                      <div className="p-3 space-y-3 bg-white">
+                      <div className="p-3 space-y-2.5 bg-white">
                         {fields.map((item) => (
                           <div key={item.key} className="puck-field-container">
                             {item.element}
@@ -1014,20 +998,16 @@ export function RedesignedSettingsPanel({
 
       {/* Modern Field Overrides CSS styling */}
       <style>{`
-        .puck-field-container {
-          margin-bottom: 8px;
-        }
-
-        /* Sleek Puck input fields */
+        /* Puck input field labels */
         [class*="_FieldLabel_"] {
-          margin-bottom: 4px !important;
+          margin-bottom: 2px !important;
         }
 
         [class*="_FieldLabel-label_"] {
-          font-size: 11.5px !important;
-          font-weight: 700 !important;
-          color: #1e293b !important;
-          letter-spacing: 0.01em !important;
+          font-size: 13px !important;
+          font-weight: 500 !important;
+          color: #334155 !important;
+          letter-spacing: 0em !important;
         }
 
         [class*="_FieldLabel-readOnly_"] {
@@ -1039,16 +1019,16 @@ export function RedesignedSettingsPanel({
         [class*="_Select_"],
         [class*="_Textarea_"] {
           font-size: 12px !important;
-          border-radius: 8px !important;
-          border-color: #e2e8f0 !important;
-          background-color: #f8fafc !important;
+          border-radius: 6px !important;
+          border-color: #cbd5e1 !important;
+          background-color: #ffffff !important;
+          padding: 4px 8px !important;
           transition: all 0.15s ease !important;
         }
 
         [class*="_Input_"]:focus,
         [class*="_Select_"]:focus,
         [class*="_Textarea_"]:focus {
-          background-color: #ffffff !important;
           border-color: #0f2142 !important;
           box-shadow: 0 0 0 1px #0f2142 !important;
           outline: none !important;

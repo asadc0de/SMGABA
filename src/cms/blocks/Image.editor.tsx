@@ -9,6 +9,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const ImageBlock: ComponentConfig<ImageBlockProps> = {
   label: "Image",
@@ -68,28 +69,26 @@ export const ImageBlock: ComponentConfig<ImageBlockProps> = {
         { label: "21:9 (Ultrawide Banner)", value: "21/9" },
       ],
     },
-    objectFit: {
-      type: "select",
+    objectFit: createSegmentedField({
       label: "Object Fit",
       options: [
-        { label: "Cover (Crop to Fit)", value: "cover" },
-        { label: "Contain (Show Full Image)", value: "contain" },
-        { label: "Fill (Stretch)", value: "fill" },
+        { label: "Cover", value: "cover", description: "Crop to Fit" },
+        { label: "Contain", value: "contain", description: "Show Full Image" },
+        { label: "Fill", value: "fill", description: "Stretch" },
       ],
-    },
-    rounded: {
-      type: "select",
-      label: "Corner Roundedness",
+      defaultValue: "cover",
+    }),
+    rounded: createSegmentedField({
+      label: "Corners",
       options: [
-        { label: "None (Square)", value: "none" },
-        { label: "Small (4px)", value: "sm" },
-        { label: "Medium (6px)", value: "md" },
-        { label: "Large (8px)", value: "lg" },
-        { label: "Extra Large (12px)", value: "xl" },
-        { label: "2XL (16px)", value: "2xl" },
-        { label: "Full (Pill / Circle)", value: "full" },
+        { label: "0", value: "none", description: "Square (0px)" },
+        { label: "S", value: "sm", description: "Small (4px)" },
+        { label: "M", value: "md", description: "Medium (8px)" },
+        { label: "L", value: "lg", description: "Large (16px)" },
+        { label: "Full", value: "full", description: "Circle / Pill" },
       ],
-    },
+      defaultValue: "none",
+    }),
     borderColor: createColorPickerField({
       label: "Border / Frame Color",
     }),

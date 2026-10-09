@@ -1,5 +1,6 @@
 import * as React from "react";
 import type { CustomField } from "@puckeditor/core";
+import { Info, RotateCcw } from "lucide-react";
 
 export interface SizeSliderProps {
   value?: number;
@@ -15,86 +16,67 @@ export interface SizeSliderProps {
   description?: string;
 }
 
+/**
+ * Compact Single-row Slider with numeric input
+ */
 export function SizeSlider({
   value,
   onChange,
   readOnly,
-  label = "Element Size / Scale",
-  min = 50,
+  label = "Scale",
+  min = 10,
   max = 150,
   step = 1,
   unit = "%",
   defaultValue = 100,
-  presets = [50, 75, 100, 125, 150],
   description,
 }: SizeSliderProps) {
   const numVal = typeof value === "number" && !Number.isNaN(value) ? value : defaultValue;
   const clampedVal = Math.min(max, Math.max(min, numVal));
 
   return (
-    <div className="flex flex-col gap-2 w-full bg-slate-50 p-3 rounded-lg border border-slate-200">
-      <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
-        <span>{label}</span>
-        <div className="flex items-center gap-1.5">
-          <span className="px-2 py-0.5 rounded-full bg-navy text-white font-mono text-[11px] font-bold shadow-2xs">
-            {clampedVal}
-            {unit}
+    <div className="w-full space-y-1 text-[13px]">
+      <div className="flex items-center justify-between gap-2 min-h-[32px]">
+        {/* Left: Label with tooltip info */}
+        <div className="flex items-center gap-1 min-w-0 pr-1">
+          <span className="text-[13px] font-medium text-slate-700 truncate" title={label}>
+            {label}
           </span>
-          {clampedVal !== defaultValue && !readOnly && (
-            <button
-              type="button"
-              onClick={() => onChange(defaultValue)}
-              className="text-[10px] text-slate-400 hover:text-navy underline cursor-pointer"
-              title="Reset to default"
-            >
-              Reset
-            </button>
+          {description && (
+            <span className="text-slate-400 hover:text-slate-600 cursor-help" title={description}>
+              <Info className="size-3" />
+            </span>
           )}
         </div>
-      </div>
 
-      {description && (
-        <p className="text-[11px] text-slate-500 leading-tight -mt-0.5">{description}</p>
-      )}
+        {/* Right: Slider + Number Input alongside */}
+        <div className="flex items-center gap-2 shrink-0">
+          <input
+            type="range"
+            min={min}
+            max={max}
+            step={step}
+            disabled={readOnly}
+            value={clampedVal}
+            onChange={(e) => onChange(Number(e.target.value))}
+            className="w-20 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#0f2142] focus:outline-none"
+          />
 
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        disabled={readOnly}
-        value={clampedVal}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-navy focus:outline-none"
-      />
-
-      <div className="flex items-center justify-between gap-1 pt-0.5">
-        <span className="text-[10px] text-slate-400">
-          {min}
-          {unit}
-        </span>
-        <div className="flex items-center gap-1 flex-wrap justify-center">
-          {presets.map((preset) => (
-            <button
-              key={preset}
-              type="button"
+          <div className="flex items-center rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-[#0f2142] focus-within:ring-1 focus-within:ring-[#0f2142]">
+            <input
+              type="number"
+              min={min}
+              max={max}
               disabled={readOnly}
-              onClick={() => onChange(preset)}
-              className={`px-1.5 py-0.5 rounded text-[10px] font-semibold transition-all cursor-pointer ${
-                clampedVal === preset
-                  ? "bg-navy text-white shadow-2xs scale-105"
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100 hover:text-slate-900"
-              }`}
-            >
-              {preset}
+              value={clampedVal}
+              onChange={(e) => onChange(Number(e.target.value))}
+              className="w-12 px-1.5 py-1 text-[12px] font-mono text-slate-800 outline-none text-right"
+            />
+            <span className="bg-slate-50 border-l border-slate-200 px-1 py-1 text-[11px] font-medium text-slate-500 select-none">
               {unit}
-            </button>
-          ))}
+            </span>
+          </div>
         </div>
-        <span className="text-[10px] text-slate-400">
-          {max}
-          {unit}
-        </span>
       </div>
     </div>
   );
@@ -114,8 +96,8 @@ export function createSizeSliderField(options: {
   description?: string;
 } = {}): CustomField<number> {
   const {
-    label = "Element Size / Scale",
-    min = 50,
+    label = "Scale",
+    min = 10,
     max = 150,
     step = 1,
     unit = "%",
@@ -144,3 +126,5 @@ export function createSizeSliderField(options: {
     ),
   };
 }
+
+export default createSizeSliderField;

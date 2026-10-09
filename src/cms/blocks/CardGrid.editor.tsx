@@ -10,6 +10,7 @@ import { createSizeControlsField, createToggleField } from "../fields/SizeContro
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const CardGridBlock: ComponentConfig<CardGridProps> = {
   label: "Cards Grid",
@@ -37,34 +38,35 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
       label: "Micro Animations (Entrance & Stagger)",
       showStaggerToggle: true,
     }),
-    columns: {
-      type: "select",
-      label: "Columns (Desktop)",
+    columns: createSegmentedField({
+      label: "Columns",
       options: [
-        { label: "2 Columns", value: "2" },
-        { label: "3 Columns (Default)", value: "3" },
-        { label: "4 Columns", value: "4" },
+        { label: "2", value: "2", description: "2 Columns" },
+        { label: "3", value: "3", description: "3 Columns" },
+        { label: "4", value: "4", description: "4 Columns" },
       ],
-    },
-    gap: {
-      type: "select",
-      label: "Card Spacing Gap",
+      defaultValue: "3",
+    }),
+    gap: createSegmentedField({
+      label: "Gap",
       options: [
-        { label: "Small (16px)", value: "sm" },
-        { label: "Medium (24px - Default)", value: "md" },
-        { label: "Large (32px)", value: "lg" },
+        { label: "S", value: "sm", description: "Small (16px)" },
+        { label: "M", value: "md", description: "Medium (24px)" },
+        { label: "L", value: "lg", description: "Large (32px)" },
       ],
-    },
-    cardStyle: {
-      type: "select",
-      label: "Card Visual Style",
+      defaultValue: "md",
+    }),
+    cardStyle: createSegmentedField({
+      label: "Card Style",
       options: [
-        { label: "Elevated Shadow (White)", value: "elevated" },
-        { label: "Bordered Outline", value: "bordered" },
-        { label: "Navy Dark Card", value: "navy-card" },
-        { label: "Glassmorphism Frosted", value: "glass" },
+        { label: "Elevated", value: "elevated", description: "White shadow card" },
+        { label: "Bordered", value: "bordered", description: "1px border card" },
+        { label: "Navy", value: "navy-card", description: "Dark brand card" },
+        { label: "Glass", value: "glass", description: "Frosted glass card" },
       ],
-    },
+      defaultValue: "elevated",
+      fullWidth: true,
+    }),
     backgroundColor: createColorPickerField({
       label: "Section Background Color",
     }),

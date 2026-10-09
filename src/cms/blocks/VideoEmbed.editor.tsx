@@ -6,6 +6,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const VideoEmbedBlock: ComponentConfig<VideoEmbedProps> = {
   label: "Video Player",
@@ -20,14 +21,14 @@ export const VideoEmbedBlock: ComponentConfig<VideoEmbedProps> = {
       type: "text",
       label: "Video Title (Required for Accessibility)",
     },
-    aspectRatio: {
-      type: "select",
+    aspectRatio: createSegmentedField({
       label: "Aspect Ratio",
       options: [
-        { label: "16:9 Widescreen (Standard)", value: "16:9" },
-        { label: "4:3 Classic", value: "4:3" },
+        { label: "16:9", value: "16:9", description: "Widescreen Standard" },
+        { label: "4:3", value: "4:3", description: "Classic Standard" },
       ],
-    },
+      defaultValue: "16:9",
+    }),
     caption: {
       type: "textarea",
       label: "Caption (Optional)",

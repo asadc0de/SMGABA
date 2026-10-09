@@ -28,6 +28,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createTypographyField, createFontSizePixelField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
   label: "Button",
@@ -66,50 +67,18 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
       label: "Button Destination Link",
       placeholder: "Select site page or enter link",
     }),
-    variant: {
-      type: "custom",
-      label: "Button Style & Color",
-      render: ({ value, onChange, readOnly }) => {
-        const currentVariant = (value as ButtonVariant) || "primary";
-        return (
-          <div className="flex flex-col gap-1.5 p-3 bg-slate-50 border border-slate-200 rounded-xl my-1">
-            <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-              Color Style Swatch
-            </span>
-            <div className="grid grid-cols-1 gap-1.5 pt-1">
-              {BUTTON_VARIANTS.map((v) => {
-                const isSelected = currentVariant === v.id;
-                return (
-                  <button
-                    key={v.id}
-                    type="button"
-                    disabled={readOnly}
-                    onClick={() => onChange(v.id)}
-                    className={`flex items-center justify-between p-2 rounded-lg border transition-all ${
-                      isSelected
-                        ? "ring-2 ring-navy border-navy bg-white shadow-2xs"
-                        : "border-slate-200 bg-white hover:bg-slate-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <div className={`h-6 w-14 rounded-full flex items-center justify-center text-[10px] font-semibold px-2 ${v.bgClass} ${v.textClass} ${v.borderClass}`}>
-                        Btn
-                      </div>
-                      <span className="text-xs font-medium text-slate-800">{v.label}</span>
-                    </div>
-                    {isSelected && (
-                      <div className="size-4 rounded-full bg-navy text-white flex items-center justify-center shrink-0">
-                        <Check className="size-2.5 stroke-[3]" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        );
-      },
-    },
+    variant: createSegmentedField<ButtonVariant>({
+      label: "Button Style",
+      options: [
+        { label: "Navy", value: "primary", description: "Brand Navy Solid" },
+        { label: "Gradient", value: "gradient", description: "Blue Gradient" },
+        { label: "Slate", value: "secondary", description: "Light Slate" },
+        { label: "Outline", value: "outline", description: "Navy Outline" },
+        { label: "White", value: "white", description: "White Solid" },
+      ],
+      defaultValue: "primary",
+      fullWidth: true,
+    }),
     backgroundColor: createColorPickerField({
       label: "Custom Background Color",
       description: "Overrides default button background",
@@ -128,43 +97,15 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
       defaultHeightType: "auto",
     }),
     advancedLayout: createAdvancedLayoutField({ defaultDisplay: "inline" }),
-    size: {
-      type: "custom",
+    size: createSegmentedField<ButtonSize>({
       label: "Button Size",
-      render: ({ value, onChange, readOnly }) => {
-        const currentSize = (value as ButtonSize) || "md";
-        return (
-          <div className="flex flex-col gap-1.5 p-3 bg-slate-50 border border-slate-200 rounded-xl my-1">
-            <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-              Button Size
-            </span>
-            <div className="grid grid-cols-3 gap-1.5 pt-1">
-              {BUTTON_SIZES.map((s) => {
-                const isSelected = currentSize === s.id;
-                return (
-                  <button
-                    key={s.id}
-                    type="button"
-                    disabled={readOnly}
-                    onClick={() => onChange(s.id)}
-                    className={`py-2 px-1 text-center rounded-lg border transition-all ${
-                      isSelected
-                        ? "bg-navy text-white border-navy font-bold shadow-2xs"
-                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100 font-medium"
-                    }`}
-                  >
-                    <div className="text-xs">{s.label}</div>
-                    <div className={`text-[10px] ${isSelected ? "text-blue-200" : "text-slate-400"}`}>
-                      {s.desc}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        );
-      },
-    },
+      options: [
+        { label: "Small", value: "sm", description: "Compact" },
+        { label: "Medium", value: "md", description: "Standard" },
+        { label: "Large", value: "lg", description: "Prominent" },
+      ],
+      defaultValue: "md",
+    }),
     align: createResponsiveAlignField("Alignment", "left"),
     marginTop: createResponsiveSpaceField("Margin Top", "md"),
     marginBottom: createResponsiveSpaceField("Margin Bottom", "md"),

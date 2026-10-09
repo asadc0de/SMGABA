@@ -11,6 +11,7 @@ import { createSizeControlsField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createImagePickerField } from "../fields/ImagePicker";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const SectionBlock: ComponentConfig<SectionProps> = {
   label: "Container Section",
@@ -49,28 +50,26 @@ export const SectionBlock: ComponentConfig<SectionProps> = {
       label: "Background Image (when image theme selected)",
       placeholder: "https://... or select from media library",
     }),
-    overlayStrength: {
-      type: "select",
-      label: "Image Overlay Strength",
+    overlayStrength: createSegmentedField({
+      label: "Image Overlay",
       options: [
-        { label: "Medium Dark (60%)", value: "medium" },
-        { label: "Subtle Dark (40%)", value: "subtle" },
-        { label: "Heavy Dark (80%)", value: "heavy" },
-        { label: "Navy Brand Tint", value: "navy" },
-        { label: "None (Transparent)", value: "none" },
+        { label: "None", value: "none" },
+        { label: "Subtle", value: "subtle" },
+        { label: "Med", value: "medium" },
+        { label: "Heavy", value: "heavy" },
       ],
-    },
-    paddingVertical: {
-      type: "select",
-      label: "Vertical Padding Preset",
+      defaultValue: "none",
+    }),
+    paddingVertical: createSegmentedField({
+      label: "Padding",
       options: [
-        { label: "Standard Spacing (from Spacing controls below)", value: "" },
-        { label: "Compact (32px - 40px)", value: "compact" },
-        { label: "Normal (48px - 80px)", value: "normal" },
-        { label: "Spacious (64px - 128px)", value: "spacious" },
-        { label: "Flush / None (0px)", value: "none" },
+        { label: "0", value: "none", description: "Flush (0px)" },
+        { label: "S", value: "compact", description: "Compact" },
+        { label: "M", value: "normal", description: "Normal" },
+        { label: "L", value: "spacious", description: "Spacious" },
       ],
-    },
+      defaultValue: "normal",
+    }),
     sizeControls: createSizeControlsField({
       label: "Section Container Dimensions (W/H)",
     }),

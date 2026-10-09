@@ -11,6 +11,7 @@ import { createAdvancedLayoutField } from "../fields/AdvancedLayout";
 import { createSizeControlsField, createToggleField } from "../fields/SizeControls";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const ColumnsBlock: ComponentConfig<ColumnsProps> = {
   label: "Columns Layout",
@@ -25,24 +26,24 @@ export const ColumnsBlock: ComponentConfig<ColumnsProps> = {
     paddingBottom: { base: "none" },
   },
   fields: {
-    columns: {
-      type: "select",
-      label: "Number of Columns",
+    columns: createSegmentedField({
+      label: "Columns",
       options: [
-        { label: "2 Columns", value: "2" },
-        { label: "3 Columns", value: "3" },
+        { label: "2 Cols", value: "2" },
+        { label: "3 Cols", value: "3" },
       ],
-    },
-    gap: {
-      type: "select",
-      label: "Column Spacing / Gap",
+      defaultValue: "2",
+    }),
+    gap: createSegmentedField({
+      label: "Gap",
       options: [
-        { label: "Small (16px)", value: "sm" },
-        { label: "Medium (24-32px)", value: "md" },
-        { label: "Large (32-48px)", value: "lg" },
-        { label: "Extra Large (48-64px)", value: "xl" },
+        { label: "S", value: "sm", description: "Small (16px)" },
+        { label: "M", value: "md", description: "Medium (24px)" },
+        { label: "L", value: "lg", description: "Large (32px)" },
+        { label: "XL", value: "xl", description: "Extra Large (48px)" },
       ],
-    },
+      defaultValue: "md",
+    }),
     backgroundColor: createColorPickerField({
       label: "Container Background Color",
     }),

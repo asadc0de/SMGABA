@@ -1,19 +1,16 @@
 import * as React from "react";
 import { type CustomField } from "@puckeditor/core";
-import { Globe, Link as LinkIcon, Mail, Phone, Hash, FileText, ExternalLink, Check } from "lucide-react";
+import { FileText, Globe, Mail, Phone, ExternalLink, Check, Info } from "lucide-react";
 import { getCmsPagesList, type CmsPage } from "@/lib/cms.server";
 
-export interface LinkPickerValue {
-  type?: "page" | "external" | "email" | "phone" | "anchor";
-  url?: string;
-}
+export type LinkType = "page" | "external" | "email" | "phone";
 
 // Built-in standard website pages
 const DEFAULT_SITE_PAGES = [
   { label: "Home Page", path: "/" },
   { label: "About Us", path: "/about-us" },
   { label: "Solutions / Services", path: "/solutions" },
-  { label: "Book an Appointment / Consultation", path: "/bookanappointment" },
+  { label: "Book an Appointment", path: "/bookanappointment" },
   { label: "Contact Us", path: "/contact" },
   { label: "Careers", path: "/careers" },
   { label: "Client Testimonials", path: "/testimonials" },
@@ -29,9 +26,9 @@ const DEFAULT_SITE_PAGES = [
 ];
 
 /**
- * Parses any raw URL string into structured link type and clean input value
+ * Parses raw URL string into link type and clean value
  */
-export function parseRawUrl(rawUrl?: string): { type: "page" | "external" | "email" | "phone" | "anchor"; target: string } {
+export function parseRawUrl(rawUrl?: string): { type: LinkType; target: string } {
   if (!rawUrl || typeof rawUrl !== "string") {
     return { type: "page", target: "/" };
   }
@@ -43,9 +40,6 @@ export function parseRawUrl(rawUrl?: string): { type: "page" | "external" | "ema
   if (s.startsWith("tel:")) {
     return { type: "phone", target: s.replace(/^tel:/i, "") };
   }
-  if (s.startsWith("#")) {
-    return { type: "anchor", target: s.replace(/^#/, "") };
-  }
   if (s.startsWith("http://") || s.startsWith("https://")) {
     return { type: "external", target: s };
   }
@@ -53,7 +47,7 @@ export function parseRawUrl(rawUrl?: string): { type: "page" | "external" | "ema
     return { type: "page", target: s };
   }
 
-  // Fallback for plain strings
+  // Fallbacks
   if (s.includes("@")) {
     return { type: "email", target: s };
   }
@@ -65,9 +59,9 @@ export function parseRawUrl(rawUrl?: string): { type: "page" | "external" | "ema
 }
 
 /**
- * Reconstructs clean URL string from structured picker state
+ * Constructs clean URL string from structured picker state
  */
-export function buildUrlString(type: "page" | "external" | "email" | "phone" | "anchor", target: string): string {
+export function buildUrlString(type: LinkType, target: string): string {
   const clean = target.trim();
   if (!clean) return "";
 
@@ -83,8 +77,6 @@ export function buildUrlString(type: "page" | "external" | "email" | "phone" | "
       return `mailto:${clean.replace(/^mailto:/i, "")}`;
     case "phone":
       return `tel:${clean.replace(/^tel:/i, "")}`;
-    case "anchor":
-      return `#${clean.replace(/^#/, "")}`;
     default:
       return clean;
   }
@@ -98,25 +90,36 @@ export interface LinkPickerFieldProps {
   placeholder?: string;
 }
 
+const LINK_TYPE_BUTTONS: { id: LinkType; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  { id: "page", label: "Page", icon: FileText },
+  { id: "external", label: "Website", icon: Globe },
+  { id: "email", label: "Email", icon: Mail },
+  { id: "phone", label: "Phone", icon: Phone },
+];
+
+/**
+ * Compact, clean Link Picker with segmented Link Type buttons & single context-aware field
+ */
 export function LinkPickerInput({
   value = "",
   onChange,
   readOnly = false,
-  placeholder = "Select or enter destination",
+  label = "Destination Link",
+  placeholder,
 }: LinkPickerFieldProps) {
   const parsed = parseRawUrl(value);
-  const [linkType, setLinkType] = React.useState<"page" | "external" | "email" | "phone" | "anchor">(parsed.type);
+  const [linkType, setLinkType] = React.useState<LinkType>(parsed.type);
   const [targetVal, setTargetVal] = React.useState<string>(parsed.target);
   const [cmsPages, setCmsPages] = React.useState<{ label: string; path: string }[]>([]);
 
-  // Sync when prop value changes externally
+  // Sync external prop updates
   React.useEffect(() => {
     const p = parseRawUrl(value);
     setLinkType(p.type);
     setTargetVal(p.target);
   }, [value]);
 
-  // Load published CMS pages to include in the dropdown
+  // Load published CMS pages
   React.useEffect(() => {
     let isMounted = true;
     getCmsPagesList()
@@ -145,14 +148,13 @@ export function LinkPickerInput({
     return combined;
   }, [cmsPages]);
 
-  const handleTypeChange = (newType: "page" | "external" | "email" | "phone" | "anchor") => {
+  const handleTypeChange = (newType: LinkType) => {
     setLinkType(newType);
     let defaultTarget = "";
     if (newType === "page") defaultTarget = allPages[0]?.path || "/";
-    if (newType === "external") defaultTarget = "https://";
-    if (newType === "email") defaultTarget = "";
-    if (newType === "phone") defaultTarget = "";
-    if (newType === "anchor") defaultTarget = "section-name";
+    else if (newType === "external") defaultTarget = "https://";
+    else if (newType === "email") defaultTarget = "";
+    else if (newType === "phone") defaultTarget = "";
 
     setTargetVal(defaultTarget);
     onChange(buildUrlString(newType, defaultTarget));
@@ -164,204 +166,82 @@ export function LinkPickerInput({
   };
 
   return (
-    <div className="flex flex-col gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl my-1 text-xs">
-      <div className="flex items-center justify-between gap-1 pb-1.5 border-b border-slate-200/80">
-        <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider">
-          Link Destination
+    <div className="w-full space-y-1.5 text-[13px]">
+      {/* Label and Link Type Segmented Switcher */}
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-[13px] font-medium text-slate-700 truncate" title={label}>
+          {label}
         </span>
-        {value && (
-          <span className="text-[10px] font-mono text-slate-500 bg-white px-1.5 py-0.5 rounded border border-slate-200 truncate max-w-[140px]" title={value}>
-            {value}
-          </span>
-        )}
+
+        {/* 4 Segmented Type Buttons: Page | Website | Email | Phone */}
+        <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+          {LINK_TYPE_BUTTONS.map((btn) => {
+            const Icon = btn.icon;
+            const isSelected = linkType === btn.id;
+
+            return (
+              <button
+                key={btn.id}
+                type="button"
+                disabled={readOnly}
+                onClick={() => handleTypeChange(btn.id)}
+                title={`Link type: ${btn.label}`}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-medium transition-all cursor-pointer ${
+                  isSelected
+                    ? "bg-white text-[#0f2142] font-semibold shadow-2xs"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+              >
+                <Icon className="size-3 shrink-0" />
+                <span className="hidden sm:inline">{btn.label}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Destination Type Selector Pills */}
-      <div className="grid grid-cols-3 gap-1 pt-0.5">
-        <button
-          type="button"
-          disabled={readOnly}
-          onClick={() => handleTypeChange("page")}
-          className={`flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-semibold transition-all ${
-            linkType === "page"
-              ? "bg-navy text-white shadow-2xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
-          }`}
-        >
-          <FileText className="size-3" />
-          <span>Site Page</span>
-        </button>
-
-        <button
-          type="button"
-          disabled={readOnly}
-          onClick={() => handleTypeChange("external")}
-          className={`flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-semibold transition-all ${
-            linkType === "external"
-              ? "bg-navy text-white shadow-2xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
-          }`}
-        >
-          <Globe className="size-3" />
-          <span>Website</span>
-        </button>
-
-        <button
-          type="button"
-          disabled={readOnly}
-          onClick={() => handleTypeChange("email")}
-          className={`flex items-center justify-center gap-1 py-1.5 px-2 rounded-lg font-semibold transition-all ${
-            linkType === "email"
-              ? "bg-navy text-white shadow-2xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
-          }`}
-        >
-          <Mail className="size-3" />
-          <span>Email</span>
-        </button>
-      </div>
-
-      <div className="grid grid-cols-2 gap-1">
-        <button
-          type="button"
-          disabled={readOnly}
-          onClick={() => handleTypeChange("phone")}
-          className={`flex items-center justify-center gap-1 py-1 px-2 rounded-lg font-semibold transition-all ${
-            linkType === "phone"
-              ? "bg-navy text-white shadow-2xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
-          }`}
-        >
-          <Phone className="size-3" />
-          <span>Phone Call</span>
-        </button>
-
-        <button
-          type="button"
-          disabled={readOnly}
-          onClick={() => handleTypeChange("anchor")}
-          className={`flex items-center justify-center gap-1 py-1 px-2 rounded-lg font-semibold transition-all ${
-            linkType === "anchor"
-              ? "bg-navy text-white shadow-2xs"
-              : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200/80"
-          }`}
-        >
-          <Hash className="size-3" />
-          <span>Page Section</span>
-        </button>
-      </div>
-
-      {/* Inputs specific to each type */}
-      <div className="pt-1.5">
-        {linkType === "page" && (
-          <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-600 block">
-              Choose an existing page:
-            </label>
-            <select
-              disabled={readOnly}
-              value={targetVal}
-              onChange={(e) => handleTargetChange(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
-            >
-              {allPages.map((pg) => (
-                <option key={pg.path} value={pg.path}>
-                  {pg.label} ({pg.path})
-                </option>
-              ))}
-            </select>
-            <p className="text-[10px] text-slate-500 pt-0.5">
-              Automatically points to this page with zero risk of typos.
-            </p>
-          </div>
-        )}
-
-        {linkType === "external" && (
-          <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-600 block">
-              Outside website URL:
-            </label>
-            <div className="relative flex items-center">
-              <input
-                type="text"
-                disabled={readOnly}
-                value={targetVal}
-                onChange={(e) => handleTargetChange(e.target.value)}
-                placeholder="https://example.com"
-                className="w-full rounded-lg border border-slate-300 bg-white pl-2.5 pr-8 py-1.5 text-xs text-slate-800 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
-              />
-              <ExternalLink className="size-3.5 absolute right-2.5 text-slate-400 pointer-events-none" />
-            </div>
-            <p className="text-[10px] text-slate-500 pt-0.5">
-              Links to an external site in a new tab.
-            </p>
-          </div>
-        )}
-
-        {linkType === "email" && (
-          <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-600 block">
-              Email recipient:
-            </label>
-            <div className="relative flex items-center">
-              <input
-                type="email"
-                disabled={readOnly}
-                value={targetVal}
-                onChange={(e) => handleTargetChange(e.target.value)}
-                placeholder="info@smgaba.com"
-                className="w-full rounded-lg border border-slate-300 bg-white pl-2.5 pr-8 py-1.5 text-xs text-slate-800 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
-              />
-              <Mail className="size-3.5 absolute right-2.5 text-slate-400 pointer-events-none" />
-            </div>
-            <p className="text-[10px] text-slate-500 pt-0.5">
-              Opens the user&apos;s email client when clicked.
-            </p>
-          </div>
-        )}
-
-        {linkType === "phone" && (
-          <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-600 block">
-              Phone number:
-            </label>
-            <div className="relative flex items-center">
-              <input
-                type="tel"
-                disabled={readOnly}
-                value={targetVal}
-                onChange={(e) => handleTargetChange(e.target.value)}
-                placeholder="(212) 555-0199"
-                className="w-full rounded-lg border border-slate-300 bg-white pl-2.5 pr-8 py-1.5 text-xs text-slate-800 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
-              />
-              <Phone className="size-3.5 absolute right-2.5 text-slate-400 pointer-events-none" />
-            </div>
-            <p className="text-[10px] text-slate-500 pt-0.5">
-              Dials this number immediately on mobile devices.
-            </p>
-          </div>
-        )}
-
-        {linkType === "anchor" && (
-          <div className="space-y-1">
-            <label className="text-[11px] font-medium text-slate-600 block">
-              Section anchor ID:
-            </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-2.5 text-slate-400 font-bold select-none">#</span>
-              <input
-                type="text"
-                disabled={readOnly}
-                value={targetVal}
-                onChange={(e) => handleTargetChange(e.target.value)}
-                placeholder="booking-calendar"
-                className="w-full rounded-lg border border-slate-300 bg-white pl-6 pr-2.5 py-1.5 text-xs text-slate-800 outline-none focus:border-navy focus:ring-1 focus:ring-navy"
-              />
-            </div>
-            <p className="text-[10px] text-slate-500 pt-0.5">
-              Smoothly scrolls to this section on the same page.
-            </p>
-          </div>
+      {/* Exactly 1 Single Relevant Input Field */}
+      <div>
+        {linkType === "page" ? (
+          <select
+            disabled={readOnly}
+            value={targetVal || "/"}
+            onChange={(e) => handleTargetChange(e.target.value)}
+            className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-[12px] text-slate-800 outline-none focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142]"
+          >
+            {allPages.map((pg) => (
+              <option key={pg.path} value={pg.path}>
+                {pg.label} ({pg.path})
+              </option>
+            ))}
+          </select>
+        ) : linkType === "external" ? (
+          <input
+            type="url"
+            disabled={readOnly}
+            value={targetVal}
+            onChange={(e) => handleTargetChange(e.target.value)}
+            placeholder="https://example.com"
+            className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-[12px] text-slate-800 outline-none focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142]"
+          />
+        ) : linkType === "email" ? (
+          <input
+            type="email"
+            disabled={readOnly}
+            value={targetVal}
+            onChange={(e) => handleTargetChange(e.target.value)}
+            placeholder="contact@smgaba.com"
+            className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-[12px] text-slate-800 outline-none focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142]"
+          />
+        ) : (
+          <input
+            type="tel"
+            disabled={readOnly}
+            value={targetVal}
+            onChange={(e) => handleTargetChange(e.target.value)}
+            placeholder="+1 (555) 000-0000"
+            className="w-full rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-[12px] text-slate-800 outline-none focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142]"
+          />
         )}
       </div>
     </div>
@@ -369,21 +249,24 @@ export function LinkPickerInput({
 }
 
 /**
- * Creates a Puck custom field configured with the LinkPickerInput.
+ * Creates a Puck custom field configured with LinkPickerInput.
  */
 export function createLinkPickerField(options: {
   label?: string;
   placeholder?: string;
 } = {}): CustomField<string> {
+  const { label = "Link Destination", placeholder } = options;
+
   return {
     type: "custom",
-    label: options.label || "Link / Destination",
+    label,
     render: ({ value, onChange, readOnly }) => (
       <LinkPickerInput
         value={typeof value === "string" ? value : ""}
         onChange={onChange}
         readOnly={readOnly}
-        placeholder={options.placeholder}
+        label={label}
+        placeholder={placeholder}
       />
     ),
   };
