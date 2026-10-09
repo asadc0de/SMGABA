@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Calendar, Clock, ArrowRight, Search, Tag, BookOpen, Sparkles } from "lucide-react";
+import { getPublicBlogs, type ExtendedBlogPost } from "@/lib/blogs.server";
 import { BLOG_POSTS, getAllBlogCategories } from "@/data/blogPosts";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -20,16 +21,27 @@ export const Route = createFileRoute("/blog/")({
       },
     ],
   }),
+  loader: async () => {
+    const posts = await getPublicBlogs();
+    return { posts };
+  },
   component: BlogIndexPage,
 });
 
 function BlogIndexPage() {
+  const loaderData = Route.useLoaderData();
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const categories = useMemo(() => getAllBlogCategories(), []);
+  const activePosts = useMemo(() => {
+    const raw = loaderData?.posts && loaderData.posts.length > 0 ? loaderData.posts : BLOG_POSTS;
+    return raw.filter((p) => !p.archived);
+  }, [loaderData]);
 
-  const activePosts = useMemo(() => BLOG_POSTS.filter((p) => !p.archived), []);
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(activePosts.map((p) => p.category).filter(Boolean)));
+    return ["All", ...cats];
+  }, [activePosts]);
 
   const filteredPosts = useMemo(() => {
     return activePosts.filter((post) => {
@@ -38,8 +50,8 @@ function BlogIndexPage() {
       const matchesSearch =
         searchQuery === "" ||
         post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.category.toLowerCase().includes(searchQuery.toLowerCase());
+        post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.category?.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [activePosts, activeCategory, searchQuery]);

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getBlogPostBySlug } from "@/data/blogPosts";
+import { getUnifiedBlogPost } from "@/lib/blogs.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -7,25 +7,27 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/blog/$slug")({
-  head: ({ params }) => {
-    const post = getBlogPostBySlug(params.slug);
+  head: ({ loaderData }) => {
+    const post = loaderData?.post;
     if (!post) {
       return {
         meta: [{ title: "Article Not Found | SMG ABA" }],
+        links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
       };
     }
     return {
       meta: [
-        { title: post.metaTitle },
-        { name: "description", content: post.metaDescription },
-        { property: "og:title", content: post.metaTitle },
-        { property: "og:description", content: post.metaDescription },
+        { title: post.metaTitle || post.title },
+        { name: "description", content: post.metaDescription || post.excerpt || "" },
+        { property: "og:title", content: post.metaTitle || post.title },
+        { property: "og:description", content: post.metaDescription || post.excerpt || "" },
         { property: "og:image", content: post.image },
       ],
+      links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
     };
   },
-  loader: ({ params }) => {
-    const post = getBlogPostBySlug(params.slug);
+  loader: async ({ params }) => {
+    const post = await getUnifiedBlogPost(params.slug);
     return { post };
   },
   component: BlogSlugPage,

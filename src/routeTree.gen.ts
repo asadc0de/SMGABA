@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as SlugRouteImport } from './routes/$slug'
 import { Route as AboutUsRouteImport } from './routes/about-us'
 import { Route as AutomotiveRouteImport } from './routes/automotive'
+import { Route as BlogsEditorRouteImport } from './routes/blogs-editor'
 import { Route as BookanappointmentRouteImport } from './routes/bookanappointment'
 import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
@@ -74,6 +75,11 @@ const AboutUsRoute = AboutUsRouteImport.update({
 const AutomotiveRoute = AutomotiveRouteImport.update({
   id: '/automotive',
   path: '/automotive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsEditorRoute = BlogsEditorRouteImport.update({
+  id: '/blogs-editor',
+  path: '/blogs-editor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookanappointmentRoute = BookanappointmentRouteImport.update({
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
   '/automotive': typeof AutomotiveRoute
+  '/blogs-editor': typeof BlogsEditorRoute
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
@@ -342,6 +349,7 @@ export interface FileRoutesByTo {
   '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
   '/automotive': typeof AutomotiveRoute
+  '/blogs-editor': typeof BlogsEditorRoute
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
@@ -391,6 +399,7 @@ export interface FileRoutesById {
   '/$slug': typeof SlugRoute
   '/about-us': typeof AboutUsRoute
   '/automotive': typeof AutomotiveRoute
+  '/blogs-editor': typeof BlogsEditorRoute
   '/bookanappointment': typeof BookanappointmentRoute
   '/careers': typeof CareersRoute
   '/construction': typeof ConstructionRoute
@@ -441,6 +450,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/about-us'
     | '/automotive'
+    | '/blogs-editor'
     | '/bookanappointment'
     | '/careers'
     | '/construction'
@@ -489,6 +499,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/about-us'
     | '/automotive'
+    | '/blogs-editor'
     | '/bookanappointment'
     | '/careers'
     | '/construction'
@@ -537,6 +548,7 @@ export interface FileRouteTypes {
     | '/$slug'
     | '/about-us'
     | '/automotive'
+    | '/blogs-editor'
     | '/bookanappointment'
     | '/careers'
     | '/construction'
@@ -586,6 +598,7 @@ export interface RootRouteChildren {
   SlugRoute: typeof SlugRoute
   AboutUsRoute: typeof AboutUsRoute
   AutomotiveRoute: typeof AutomotiveRoute
+  BlogsEditorRoute: typeof BlogsEditorRoute
   BookanappointmentRoute: typeof BookanappointmentRoute
   CareersRoute: typeof CareersRoute
   ConstructionRoute: typeof ConstructionRoute
@@ -658,6 +671,13 @@ declare module '@tanstack/react-router' {
       path: '/automotive'
       fullPath: '/automotive'
       preLoaderRoute: typeof AutomotiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs-editor': {
+      id: '/blogs-editor'
+      path: '/blogs-editor'
+      fullPath: '/blogs-editor'
+      preLoaderRoute: typeof BlogsEditorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bookanappointment': {
@@ -962,6 +982,7 @@ const rootRouteChildren: RootRouteChildren = {
   SlugRoute: SlugRoute,
   AboutUsRoute: AboutUsRoute,
   AutomotiveRoute: AutomotiveRoute,
+  BlogsEditorRoute: BlogsEditorRoute,
   BookanappointmentRoute: BookanappointmentRoute,
   CareersRoute: CareersRoute,
   ConstructionRoute: ConstructionRoute,

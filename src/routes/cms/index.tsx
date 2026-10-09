@@ -42,6 +42,7 @@ import {
   EyeOff,
   Settings,
   Search,
+  BookOpen,
   Copy,
   Globe,
   ArrowUpDown,
@@ -371,6 +372,12 @@ function CmsPagesListPage() {
             >
               <RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} />
               Refresh
+            </Button>
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-blue-700 bg-blue-50/80 border-blue-200 hover:bg-blue-100 h-8 text-xs font-semibold">
+              <Link to="/blogs-editor">
+                <BookOpen className="size-3.5" />
+                Blog Studio
+              </Link>
             </Button>
             <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-navy/5 h-8 text-xs">
               <Link to="/internal/redirects">
