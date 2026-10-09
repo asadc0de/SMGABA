@@ -29,10 +29,12 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
   categories: {
     basics: {
       title: "Basics",
+      defaultExpanded: true,
       components: ["Heading", "RichText", "Image", "Button", "Spacer", "Divider"],
     },
     sections: {
       title: "Sections",
+      defaultExpanded: true,
       components: [
         "Hero",
         "CardGrid",
@@ -48,6 +50,7 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     },
     advanced: {
       title: "Advanced",
+      defaultExpanded: false,
       components: ["Columns", "Section", "VideoEmbed", "CalendlyBooking", "Callout"],
     },
   },

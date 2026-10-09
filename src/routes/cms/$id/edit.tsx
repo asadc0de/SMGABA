@@ -319,6 +319,49 @@ function CustomDrawerWrapper({ children }: { children?: React.ReactNode }) {
           color: #0f2142 !important;
         }
 
+        /* Block label clean English names without slashes */
+        [data-block-name="hero"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="hero"] [class*="_DrawerItem-name_"]::after { content: "Top Banner" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="ctabanner"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="ctabanner"] [class*="_DrawerItem-name_"]::after { content: "Call to Action" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="richtext"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="richtext"] [class*="_DrawerItem-name_"]::after { content: "Text" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="cardgrid"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="cardgrid"] [class*="_DrawerItem-name_"]::after { content: "Cards Grid" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="imagegallery"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="imagegallery"] [class*="_DrawerItem-name_"]::after { content: "Photo Gallery" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="accordion"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="accordion"] [class*="_DrawerItem-name_"]::after { content: "FAQ Accordion" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="iconfeatures"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="iconfeatures"] [class*="_DrawerItem-name_"]::after { content: "Feature List" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="steps"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="steps"] [class*="_DrawerItem-name_"]::after { content: "Process Steps" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="testimonialslider"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="testimonialslider"] [class*="_DrawerItem-name_"]::after { content: "Testimonial Carousel" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="columns"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="columns"] [class*="_DrawerItem-name_"]::after { content: "Columns Layout" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="section"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="section"] [class*="_DrawerItem-name_"]::after { content: "Container Section" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="videoembed"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="videoembed"] [class*="_DrawerItem-name_"]::after { content: "Video Player" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="calendlybooking"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="calendlybooking"] [class*="_DrawerItem-name_"]::after { content: "Calendly Calendar" !important; font-size: 11px !important; font-weight: 600 !important; }
+
+        [data-block-name="callout"] [class*="_DrawerItem-name_"] { font-size: 0 !important; }
+        [data-block-name="callout"] [class*="_DrawerItem-name_"]::after { content: "Notice Box" !important; font-size: 11px !important; font-weight: 600 !important; }
+
         /* Drag grip handle */
         [data-puck-component-item] [class*="_DrawerItem-draggable_"] svg {
           opacity: 0.4 !important;

@@ -9,7 +9,55 @@ import { defaultSectionProps } from "./blocks/Section";
 import { CmsCanvasContextMenu } from "./editor-context-menu";
 
 export function CmsRootEditor(props: CmsRootProps) {
-  const { dispatch, appState } = usePuck();
+  const { dispatch, appState, history } = usePuck();
+
+  // Canvas Keyboard Shortcuts (Esc to deselect, Undo/Redo)
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const isInput =
+        activeEl &&
+        (activeEl.tagName === "INPUT" ||
+          activeEl.tagName === "TEXTAREA" ||
+          (activeEl as HTMLElement).isContentEditable);
+
+      // Escape key to deselect active block
+      if (e.key === "Escape") {
+        if (appState.ui.itemSelector) {
+          e.preventDefault();
+          dispatch({
+            type: "setUi",
+            ui: { itemSelector: null },
+          });
+        }
+        return;
+      }
+
+      if (isInput) return;
+
+      const isMac = typeof navigator !== "undefined" && navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const modifier = isMac ? e.metaKey : e.ctrlKey;
+      if (!modifier) return;
+
+      if (e.key.toLowerCase() === "z" && !e.shiftKey) {
+        if (history?.hasPast) {
+          e.preventDefault();
+          history.back();
+        }
+      } else if (
+        (e.key.toLowerCase() === "z" && e.shiftKey) ||
+        e.key.toLowerCase() === "y"
+      ) {
+        if (history?.hasFuture) {
+          e.preventDefault();
+          history.forward();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [appState.ui.itemSelector, history, dispatch]);
 
   const handleAddBlankSection = (e: React.MouseEvent) => {
     e.preventDefault();

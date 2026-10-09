@@ -424,18 +424,6 @@ export function RedesignedSettingsPanel({
     });
   };
 
-  // Keyboard shortcut Ctrl+\ or Alt+S to collapse/expand settings panel
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "\\") {
-        e.preventDefault();
-        toggleCollapsed();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
   // Search filter query state
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -547,6 +535,65 @@ export function RedesignedSettingsPanel({
     setActiveTab(newTab);
     rememberedActiveTab = newTab;
   };
+
+  // Global Keyboard Shortcuts (Esc to deselect, Tab 1-4 switches, Ctrl+\ toggle panel)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const activeEl = document.activeElement;
+      const isInput =
+        activeEl &&
+        (activeEl.tagName === "INPUT" ||
+          activeEl.tagName === "TEXTAREA" ||
+          (activeEl as HTMLElement).isContentEditable);
+
+      // Toggle panel collapse (Ctrl+\ or Meta+\)
+      if ((e.ctrlKey || e.metaKey) && e.key === "\\") {
+        e.preventDefault();
+        toggleCollapsed();
+        return;
+      }
+
+      // Escape key to deselect back to page level
+      if (e.key === "Escape") {
+        if (selectedItem) {
+          e.preventDefault();
+          dispatch({
+            type: "setUi",
+            ui: { itemSelector: null },
+          });
+        }
+        return;
+      }
+
+      // Tab switching shortcuts (Alt+1/2/3/4 or number 1/2/3/4 when not typing in input)
+      if (!isInput && selectedItem) {
+        if (e.key === "1" || (e.altKey && e.key === "1")) {
+          if (availableTabs.some((t) => t.id === "content")) {
+            e.preventDefault();
+            handleTabChange("content");
+          }
+        } else if (e.key === "2" || (e.altKey && e.key === "2")) {
+          if (availableTabs.some((t) => t.id === "style")) {
+            e.preventDefault();
+            handleTabChange("style");
+          }
+        } else if (e.key === "3" || (e.altKey && e.key === "3")) {
+          if (availableTabs.some((t) => t.id === "layout")) {
+            e.preventDefault();
+            handleTabChange("layout");
+          }
+        } else if (e.key === "4" || (e.altKey && e.key === "4")) {
+          if (availableTabs.some((t) => t.id === "motion")) {
+            e.preventDefault();
+            handleTabChange("motion");
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedItem, availableTabs, dispatch]);
 
   /**
    * Accordion Toggle Handler: Max 2 open, min 1 open rule
@@ -723,18 +770,54 @@ export function RedesignedSettingsPanel({
     toast.success(`Styles reset to default for ${friendlyName}`);
   };
 
-  // Search matching logic
+const FIELD_SEARCH_KEYWORDS: Record<string, string[]> = {
+  styleControls: ["color", "colors", "background", "text", "border", "shadow", "corner", "radius", "font", "typography", "padding", "margin", "swatch", "preset"],
+  backgroundColor: ["color", "colors", "background", "bg", "swatch"],
+  textColor: ["color", "colors", "text", "font", "swatch"],
+  borderColor: ["color", "colors", "border", "stroke", "swatch"],
+  sizeControls: ["size", "width", "height", "scale", "dimension", "percent"],
+  advancedLayout: ["layout", "flex", "grid", "display", "margin", "padding", "align", "direction"],
+  animation: ["animation", "motion", "entrance", "scroll", "effect", "fade", "slide", "zoom"],
+  hoverEffect: ["hover", "interaction", "motion", "scale", "lift", "glow"],
+  url: ["link", "url", "href", "button", "destination"],
+  linkUrl: ["link", "url", "href", "destination"],
+  ctaHref: ["link", "url", "href", "destination"],
+  src: ["image", "photo", "picture", "media", "asset", "upload"],
+  avatarUrl: ["image", "photo", "avatar", "picture"],
+  imageUrl: ["image", "photo", "picture", "media"],
+  heroImage: ["image", "photo", "background", "hero", "banner"],
+  backgroundImage: ["image", "background", "bg", "photo"],
+  align: ["align", "alignment", "center", "left", "right", "justify"],
+  marginTop: ["spacing", "margin", "top", "space", "padding"],
+  marginBottom: ["spacing", "margin", "bottom", "space", "padding"],
+  paddingTop: ["spacing", "padding", "top", "space", "margin"],
+  paddingBottom: ["spacing", "padding", "bottom", "space", "margin"],
+  rounded: ["corner", "radius", "round", "border", "shape"],
+  cardStyle: ["card", "shadow", "border", "style", "appearance"],
+  variant: ["variant", "style", "theme", "color", "look"],
+};
+
+  // Search matching logic with keyword expansion
   const trimmedSearch = searchQuery.trim().toLowerCase();
   const searchResults = useMemo(() => {
     if (!trimmedSearch) return [];
 
     const matches: { key: string; element: React.ReactNode; tab: SettingTabId; subgroup: string }[] = [];
+    const seen = new Set<string>();
 
     (Object.keys(categorizedData) as SettingTabId[]).forEach((tab) => {
       Object.entries(categorizedData[tab]).forEach(([subgroupId, items]) => {
         items.forEach((item) => {
+          if (seen.has(item.key)) return;
           const keyLower = item.key.toLowerCase();
-          if (keyLower.includes(trimmedSearch)) {
+          const keywords = FIELD_SEARCH_KEYWORDS[item.key] || [];
+          const matchesKey = keyLower.includes(trimmedSearch);
+          const matchesKeyword = keywords.some((kw) => kw.includes(trimmedSearch) || trimmedSearch.includes(kw));
+          const matchesSubgroup = subgroupId.toLowerCase().includes(trimmedSearch);
+          const matchesTab = tab.toLowerCase().includes(trimmedSearch);
+
+          if (matchesKey || matchesKeyword || matchesSubgroup || matchesTab) {
+            seen.add(item.key);
             matches.push({ ...item, tab, subgroup: subgroupId });
           }
         });
