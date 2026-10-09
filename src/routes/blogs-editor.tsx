@@ -37,6 +37,8 @@ import {
   RefreshCw,
   Globe,
   HelpCircle,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   getAdminBlogs,
@@ -178,6 +180,8 @@ function createBlankPost(): ExtendedBlogPost {
   };
 }
 
+const POSTS_PER_PAGE = 18;
+
 function BlogsEditorPage() {
   const initialData = Route.useLoaderData();
   const [blogsList, setBlogsList] = useState<ExtendedBlogPost[]>(initialData?.blogs || []);
@@ -186,6 +190,7 @@ function BlogsEditorPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [listPage, setListPage] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [isCustomSlugUnlocked, setIsCustomSlugUnlocked] = useState(false);
 
@@ -238,6 +243,13 @@ function BlogsEditorPage() {
       return matchesSearch && matchesStatus && matchesCategory;
     });
   }, [blogsList, searchTerm, statusFilter, categoryFilter]);
+
+  const totalListPages = Math.ceil(filteredBlogs.length / POSTS_PER_PAGE);
+
+  const paginatedBlogs = useMemo(() => {
+    const start = (listPage - 1) * POSTS_PER_PAGE;
+    return filteredBlogs.slice(start, start + POSTS_PER_PAGE);
+  }, [filteredBlogs, listPage]);
 
   // Handler: Start New Post
   const handleStartNew = () => {
@@ -537,7 +549,10 @@ function BlogsEditorPage() {
               <div className="flex flex-wrap items-center gap-1.5 bg-slate-100/80 p-1.5 rounded-xl">
                 <button
                   type="button"
-                  onClick={() => setStatusFilter("all")}
+                  onClick={() => {
+                    setStatusFilter("all");
+                    setListPage(1);
+                  }}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     statusFilter === "all"
                       ? "bg-white text-navy shadow-xs font-bold"
@@ -548,7 +563,10 @@ function BlogsEditorPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStatusFilter("published")}
+                  onClick={() => {
+                    setStatusFilter("published");
+                    setListPage(1);
+                  }}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     statusFilter === "published"
                       ? "bg-white text-emerald-700 shadow-xs font-bold"
@@ -559,7 +577,10 @@ function BlogsEditorPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStatusFilter("scheduled")}
+                  onClick={() => {
+                    setStatusFilter("scheduled");
+                    setListPage(1);
+                  }}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     statusFilter === "scheduled"
                       ? "bg-white text-blue-700 shadow-xs font-bold"
@@ -570,7 +591,10 @@ function BlogsEditorPage() {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStatusFilter("draft")}
+                  onClick={() => {
+                    setStatusFilter("draft");
+                    setListPage(1);
+                  }}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                     statusFilter === "draft"
                       ? "bg-white text-amber-700 shadow-xs font-bold"
@@ -585,7 +609,10 @@ function BlogsEditorPage() {
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 <select
                   value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  onChange={(e) => {
+                    setCategoryFilter(e.target.value);
+                    setListPage(1);
+                  }}
                   className="w-full sm:w-auto h-9 px-3 text-xs font-medium rounded-full border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20"
                 >
                   {allCategories.map((cat) => (
@@ -601,7 +628,10 @@ function BlogsEditorPage() {
                     type="text"
                     placeholder="Search articles..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setListPage(1);
+                    }}
                     className="pl-9 h-9 text-xs rounded-full border-slate-200 bg-white placeholder:text-slate-400 focus-visible:ring-navy"
                   />
                 </div>
@@ -627,153 +657,224 @@ function BlogsEditorPage() {
                 </Button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredBlogs.map((post) => {
-                  const isScheduled = post.status === "scheduled";
-                  const isDraft = post.status === "draft";
-                  const isPublished = !isScheduled && !isDraft;
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {paginatedBlogs.map((post) => {
+                    const isScheduled = post.status === "scheduled";
+                    const isDraft = post.status === "draft";
+                    const isPublished = !isScheduled && !isDraft;
 
-                  return (
-                    <div
-                      key={post.slug}
-                      className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-navy/30 transition-all duration-200 flex flex-col justify-between overflow-hidden"
-                    >
-                      {/* Image Header */}
-                      <div className="relative h-44 w-full overflow-hidden bg-slate-100">
-                        {post.image ? (
-                          <img
-                            src={post.image}
-                            alt={post.title}
-                            className="size-full object-cover group-hover:scale-105 transition duration-300"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="size-full flex items-center justify-center bg-gradient-to-br from-navy/10 to-primary/10 text-navy/40">
-                            <BookOpen className="size-10" />
-                          </div>
-                        )}
-
-                        {/* Top Badges */}
-                        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                          <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-white/95 text-navy shadow-xs backdrop-blur-xs">
-                            {post.category}
-                          </span>
-
-                          {isScheduled && (
-                            <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-xs flex items-center gap-1">
-                              <CalendarClock className="size-3" /> Scheduled
-                            </span>
-                          )}
-                          {isDraft && (
-                            <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-white shadow-xs">
-                              Draft
-                            </span>
-                          )}
-                          {isPublished && (
-                            <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-white shadow-xs flex items-center gap-1">
-                              <CheckCircle2 className="size-3" /> Live
-                            </span>
-                          )}
-                        </div>
-
-                        {/* Schedule Date Banner if scheduled */}
-                        {isScheduled && post.publishDate && (
-                          <div className="absolute bottom-0 inset-x-0 bg-blue-950/90 text-blue-100 px-3 py-1.5 text-[11px] font-medium flex items-center justify-between backdrop-blur-xs">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="size-3 text-blue-300" /> Releases on:
-                            </span>
-                            <span className="font-semibold text-white">
-                              {new Date(post.publishDate).toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                                year: "numeric",
-                              })}
-                            </span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Content Details */}
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
-                          <div className="flex items-center gap-3 text-[11px] text-slate-500 mb-2">
-                            <span className="flex items-center gap-1">
-                              <Calendar className="size-3" /> {post.date}
-                            </span>
-                            <span>&bull;</span>
-                            <span className="flex items-center gap-1">
-                              <Clock className="size-3" /> {post.readTime || "4 min read"}
-                            </span>
-                          </div>
-
-                          <h3 className="font-serif-hero text-lg font-bold text-navy group-hover:text-primary transition line-clamp-2 leading-snug">
-                            {post.title}
-                          </h3>
-
-                          {post.excerpt && (
-                            <p className="mt-2 text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                              {post.excerpt}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Author & Footer Bar */}
-                        <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <div className="size-6 rounded-full bg-navy/10 text-navy flex items-center justify-center text-[10px] font-bold">
-                              {post.author ? post.author[0] : "S"}
+                    return (
+                      <div
+                        key={post.slug}
+                        className="group bg-white rounded-2xl border border-slate-200/80 shadow-xs hover:shadow-md hover:border-navy/30 transition-all duration-200 flex flex-col justify-between overflow-hidden"
+                      >
+                        {/* Image Header */}
+                        <div className="relative h-44 w-full overflow-hidden bg-slate-100">
+                          {post.image ? (
+                            <img
+                              src={post.image}
+                              alt={post.title}
+                              className="size-full object-cover group-hover:scale-105 transition duration-300"
+                              loading="lazy"
+                            />
+                          ) : (
+                            <div className="size-full flex items-center justify-center bg-gradient-to-br from-navy/10 to-primary/10 text-navy/40">
+                              <BookOpen className="size-10" />
                             </div>
-                            <span className="text-xs font-medium text-slate-700 truncate max-w-[120px]">
-                              {post.author}
+                          )}
+
+                          {/* Top Badges */}
+                          <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
+                            <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-white/95 text-navy shadow-xs backdrop-blur-xs">
+                              {post.category}
                             </span>
+
+                            {isScheduled && (
+                              <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-xs flex items-center gap-1">
+                                <CalendarClock className="size-3" /> Scheduled
+                              </span>
+                            )}
+                            {isDraft && (
+                              <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-amber-500 text-white shadow-xs">
+                                Draft
+                              </span>
+                            )}
+                            {isPublished && (
+                              <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-emerald-600 text-white shadow-xs flex items-center gap-1">
+                                <CheckCircle2 className="size-3" /> Live
+                              </span>
+                            )}
                           </div>
 
-                          <div className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleEditPost(post)}
-                              title="Edit Article"
-                              className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-navy hover:bg-slate-100 flex items-center justify-center transition"
-                            >
-                              <Edit3 className="size-3.5" />
-                            </button>
+                          {/* Schedule Date Banner if scheduled */}
+                          {isScheduled && post.publishDate && (
+                            <div className="absolute bottom-0 inset-x-0 bg-blue-950/90 text-blue-100 px-3 py-1.5 text-[11px] font-medium flex items-center justify-between backdrop-blur-xs">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="size-3 text-blue-300" /> Releases on:
+                              </span>
+                              <span className="font-semibold text-white">
+                                {new Date(post.publishDate).toLocaleDateString("en-US", {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                })}
+                              </span>
+                            </div>
+                          )}
+                        </div>
 
-                            <button
-                              type="button"
-                              onClick={() => handleDuplicatePost(post)}
-                              title="Duplicate as Draft"
-                              className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-navy hover:bg-slate-100 flex items-center justify-center transition"
-                            >
-                              <Copy className="size-3.5" />
-                            </button>
+                        {/* Content Details */}
+                        <div className="p-5 flex-1 flex flex-col justify-between">
+                          <div>
+                            <div className="flex items-center gap-3 text-[11px] text-slate-500 mb-2">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="size-3" /> {post.date}
+                              </span>
+                              <span>&bull;</span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="size-3" /> {post.readTime || "4 min read"}
+                              </span>
+                            </div>
 
-                            {post.isCustom && (
+                            <h3 className="font-serif-hero text-lg font-bold text-navy group-hover:text-primary transition line-clamp-2 leading-snug">
+                              {post.title}
+                            </h3>
+
+                            {post.excerpt && (
+                              <p className="mt-2 text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                                {post.excerpt}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Author & Footer Bar */}
+                          <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="size-6 rounded-full bg-navy/10 text-navy flex items-center justify-center text-[10px] font-bold">
+                                {post.author ? post.author[0] : "S"}
+                              </div>
+                              <span className="text-xs font-medium text-slate-700 truncate max-w-[120px]">
+                                {post.author}
+                              </span>
+                            </div>
+
+                            <div className="flex items-center gap-1">
                               <button
                                 type="button"
-                                onClick={() => handleDeletePost(post.slug)}
-                                title="Delete Article"
-                                className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 flex items-center justify-center transition"
+                                onClick={() => handleEditPost(post)}
+                                title="Edit Article"
+                                className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-navy hover:bg-slate-100 flex items-center justify-center transition"
                               >
-                                <Trash2 className="size-3.5" />
+                                <Edit3 className="size-3.5" />
                               </button>
-                            )}
 
-                            <a
-                              href={`/blog/${post.slug}`}
-                              target="_blank"
-                              rel="noreferrer"
-                              title="View Public Page"
-                              className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-navy hover:bg-slate-100 flex items-center justify-center transition"
-                            >
-                              <ExternalLink className="size-3.5" />
-                            </a>
+                              <button
+                                type="button"
+                                onClick={() => handleDuplicatePost(post)}
+                                title="Duplicate as Draft"
+                                className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-navy hover:bg-slate-100 flex items-center justify-center transition"
+                              >
+                                <Copy className="size-3.5" />
+                              </button>
+
+                              {post.isCustom && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeletePost(post.slug)}
+                                  title="Delete Article"
+                                  className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-red-600 hover:bg-red-50 hover:border-red-200 flex items-center justify-center transition"
+                                >
+                                  <Trash2 className="size-3.5" />
+                                </button>
+                              )}
+
+                              <a
+                                href={`/blog/${post.slug}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                title="View Public Page"
+                                className="size-8 rounded-lg border border-slate-200 text-slate-600 hover:text-navy hover:bg-slate-100 flex items-center justify-center transition"
+                              >
+                                <ExternalLink className="size-3.5" />
+                              </a>
+                            </div>
                           </div>
                         </div>
                       </div>
+                    );
+                  })}
+                </div>
+
+                {/* Pagination Controls (18 blogs per page) */}
+                {totalListPages > 1 && (
+                  <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-xs text-slate-500 font-medium">
+                      Showing{" "}
+                      <span className="font-semibold text-slate-800">
+                        {(listPage - 1) * POSTS_PER_PAGE + 1}
+                      </span>{" "}
+                      to{" "}
+                      <span className="font-semibold text-slate-800">
+                        {Math.min(listPage * POSTS_PER_PAGE, filteredBlogs.length)}
+                      </span>{" "}
+                      of{" "}
+                      <span className="font-semibold text-slate-800">
+                        {filteredBlogs.length}
+                      </span>{" "}
+                      articles
                     </div>
-                  );
-                })}
-              </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={listPage === 1}
+                        onClick={() => {
+                          setListPage((p) => Math.max(1, p - 1));
+                          window.scrollTo({ top: 150, behavior: "smooth" });
+                        }}
+                        className="rounded-full gap-1 text-xs font-semibold text-navy border-slate-200 hover:bg-slate-100 disabled:opacity-30 h-8 px-3"
+                      >
+                        <ChevronLeft className="size-3.5" /> Prev
+                      </Button>
+
+                      <div className="flex items-center gap-1 mx-1">
+                        {Array.from({ length: totalListPages }, (_, i) => i + 1).map((pNum) => (
+                          <button
+                            key={pNum}
+                            type="button"
+                            onClick={() => {
+                              setListPage(pNum);
+                              window.scrollTo({ top: 150, behavior: "smooth" });
+                            }}
+                            className={`size-8 rounded-full text-xs font-bold transition ${
+                              pNum === listPage
+                                ? "bg-navy text-white shadow-xs"
+                                : "text-slate-700 hover:bg-slate-100 border border-slate-200"
+                            }`}
+                          >
+                            {pNum}
+                          </button>
+                        ))}
+                      </div>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        disabled={listPage === totalListPages}
+                        onClick={() => {
+                          setListPage((p) => Math.min(totalListPages, p + 1));
+                          window.scrollTo({ top: 150, behavior: "smooth" });
+                        }}
+                        className="rounded-full gap-1 text-xs font-semibold text-navy border-slate-200 hover:bg-slate-100 disabled:opacity-30 h-8 px-3"
+                      >
+                        Next <ChevronRight className="size-3.5" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
