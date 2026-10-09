@@ -155,11 +155,27 @@ function ChatbaseWidget() {
   const location = useLocation();
 
   useEffect(() => {
-    // Do not load on internal /tools pages
-    if (location.pathname.startsWith("/tools")) return;
+    // Do not load on internal /tools, /cms visual editor, or /blogs-editor pages
+    if (
+      location.pathname.startsWith("/tools") ||
+      location.pathname.startsWith("/cms") ||
+      location.pathname.startsWith("/blogs-editor")
+    ) {
+      const existingIframe = document.querySelector('iframe[src*="chatbase.co"]');
+      if (existingIframe) {
+        (existingIframe as HTMLElement).style.display = "none";
+      }
+      return;
+    }
 
     // Guard: don't inject twice
-    if (document.getElementById("w2wTSCgQzP7JI9lkHfkm7")) return;
+    if (document.getElementById("w2wTSCgQzP7JI9lkHfkm7")) {
+      const existingIframe = document.querySelector('iframe[src*="chatbase.co"]');
+      if (existingIframe) {
+        (existingIframe as HTMLElement).style.display = "";
+      }
+      return;
+    }
     if ((window as any).__chatbaseInjected) return;
     (window as any).__chatbaseInjected = true;
 

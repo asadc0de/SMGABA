@@ -1248,6 +1248,7 @@ function CmsPageEditorRoute() {
                   <RedesignedSettingsPanel
                     isLoading={isLoading}
                     itemSelector={itemSelector}
+                    onOpenSeo={openSeoSettings}
                   >
                     {children}
                   </RedesignedSettingsPanel>

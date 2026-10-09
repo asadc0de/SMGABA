@@ -113,8 +113,13 @@ export function CustomActionBar({
   );
 }
 
+import { Plus } from "lucide-react";
+import { usePuck } from "@puckeditor/core";
+import { defaultSectionProps } from "./blocks/Section";
+import { toast } from "sonner";
+
 /**
- * Custom Component Overlay wrapper for outline and floating badge
+ * Custom Component Overlay wrapper for outline, floating badge, and hover + insert button
  */
 export function CustomComponentOverlay({
   componentId,
@@ -129,14 +134,57 @@ export function CustomComponentOverlay({
   isSelected: boolean;
   children?: React.ReactNode;
 }) {
+  const { dispatch } = usePuck();
   const friendlyName = getFriendlyBlockName(componentType);
   const Icon = getBlockIcon(componentType);
+
+  const isSectionOrTopLevel =
+    componentType === "Section" ||
+    componentType === "Hero" ||
+    componentType === "CardGrid" ||
+    componentType === "Accordion" ||
+    componentType === "CTABanner" ||
+    componentType === "Stats" ||
+    componentType === "IconFeatures" ||
+    componentType === "Steps" ||
+    componentType === "Testimonial" ||
+    componentType === "TestimonialSlider" ||
+    componentType === "ImageGallery";
+
+  const handleInsertSectionBelow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const newSectionId = `Section-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    const newSectionItem = {
+      type: "Section",
+      props: {
+        id: newSectionId,
+        ...defaultSectionProps,
+      },
+    };
+
+    dispatch({
+      type: "setData",
+      data: (prevData) => {
+        const content = [...(prevData.content || [])];
+        const idx = content.findIndex((c) => c.props?.id === componentId);
+        if (idx !== -1) {
+          content.splice(idx + 1, 0, newSectionItem as any);
+        } else {
+          content.push(newSectionItem as any);
+        }
+        return { ...prevData, content };
+      },
+    });
+
+    toast.success("Added new Section below");
+  };
 
   return (
     <div
       data-puck-component-id={componentId}
       data-puck-component-type={componentType}
-      className={`relative w-full h-full pointer-events-none transition-colors duration-150 ${
+      className={`relative w-full h-full pointer-events-none transition-colors duration-150 group/overlay ${
         isSelected
           ? "bg-blue-500/[0.04]"
           : hover
@@ -161,6 +209,23 @@ export function CustomComponentOverlay({
           <span>{friendlyName}</span>
         </div>
       )}
+
+      {/* Hover '+' Insert Divider between sections / top-level blocks */}
+      {hover && isSectionOrTopLevel && (
+        <div className="absolute -bottom-3 left-0 right-0 z-40 flex items-center justify-center pointer-events-auto opacity-0 group-hover/overlay:opacity-100 transition-opacity duration-150">
+          <div className="w-full border-t border-dashed border-blue-400/60 absolute left-0 right-0 top-1/2 -translate-y-1/2" />
+          <button
+            type="button"
+            onClick={handleInsertSectionBelow}
+            title="Insert new Section below"
+            className="relative z-10 flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#0f2142] text-white hover:bg-blue-600 shadow-md transition-all hover:scale-110 cursor-pointer text-[10px] font-bold"
+          >
+            <Plus className="size-3 stroke-[3]" />
+            <span>Add Section</span>
+          </button>
+        </div>
+      )}
+
       {children}
     </div>
   );

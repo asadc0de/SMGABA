@@ -11,6 +11,7 @@ import {
   RotateCcw,
   Search,
   ChevronRight,
+  ChevronLeft,
   ChevronDown,
   Globe,
   SlidersHorizontal,
@@ -26,6 +27,11 @@ import {
   MoveVertical,
   MousePointerClick,
   Code,
+  ArrowRight,
+  ExternalLink,
+  PanelRightClose,
+  PanelRightOpen,
+  Check,
 } from "lucide-react";
 import { getBlockIcon, getFriendlyBlockName } from "./editor-overlay";
 import { puckEditorConfig } from "./puck.config";
@@ -388,13 +394,47 @@ export function RedesignedSettingsPanel({
   children,
   isLoading,
   itemSelector,
+  onOpenSeo,
 }: {
   children?: React.ReactNode;
   isLoading?: boolean;
   itemSelector?: ItemSelector | null;
+  onOpenSeo?: () => void;
 }) {
   const { selectedItem, appState, dispatch, getParentById, getSelectorForId } = usePuck();
   const [editorMode, setEditorMode] = useEditorMode();
+
+  // Panel Collapse state (Persisted in localStorage)
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return localStorage.getItem("cms_panel_collapsed") === "true";
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleCollapsed = () => {
+    setIsCollapsed((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem("cms_panel_collapsed", String(next));
+      } catch {}
+      return next;
+    });
+  };
+
+  // Keyboard shortcut Ctrl+\ or Alt+S to collapse/expand settings panel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "\\") {
+        e.preventDefault();
+        toggleCollapsed();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Search filter query state
   const [searchQuery, setSearchQuery] = useState("");
@@ -404,6 +444,11 @@ export function RedesignedSettingsPanel({
 
   // Accordion open subgroups state (Array of open subgroup IDs: min 1, max 2)
   const [openGroups, setOpenGroups] = useState<string[]>([]);
+
+  // State for empty-state direct page title editing & root accordion
+  const [isRootAccordionOpen, setIsRootAccordionOpen] = useState(false);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   const selectedId = selectedItem?.props?.id;
   const blockType = selectedItem?.type;
@@ -699,11 +744,75 @@ export function RedesignedSettingsPanel({
     return matches;
   }, [trimmedSearch, categorizedData]);
 
+  if (isCollapsed) {
+    return (
+      <div className="relative flex flex-col items-center justify-between h-full w-[36px] min-w-[36px] bg-white border-l border-slate-200 py-3 select-none text-slate-700 shadow-2xs hover:bg-slate-50/80 transition-all duration-200">
+        {/* Edge Arrow Expand Button */}
+        <button
+          type="button"
+          onClick={() => {
+            setIsCollapsed(false);
+            try {
+              localStorage.setItem("cms_panel_collapsed", "false");
+            } catch {}
+          }}
+          className="absolute -left-3 top-10 z-30 size-6 rounded-full bg-white border border-slate-300 shadow-sm flex items-center justify-center text-slate-500 hover:text-[#0f2142] hover:bg-slate-50 transition-all cursor-pointer hover:scale-110"
+          title="Expand Settings Panel (Ctrl+\)"
+        >
+          <ChevronLeft className="size-3.5" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setIsCollapsed(false);
+            try {
+              localStorage.setItem("cms_panel_collapsed", "false");
+            } catch {}
+          }}
+          className="p-1.5 rounded-lg text-slate-600 hover:text-[#0f2142] hover:bg-slate-100 transition-all cursor-pointer"
+          title="Expand Settings Panel (Ctrl+\)"
+        >
+          <ChevronLeft className="size-4" />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => {
+            setIsCollapsed(false);
+            try {
+              localStorage.setItem("cms_panel_collapsed", "false");
+            } catch {}
+          }}
+          className="flex flex-col items-center gap-2 cursor-pointer group py-2"
+          title="Expand Settings Panel"
+        >
+          <SlidersHorizontal className="size-3.5 text-slate-400 group-hover:text-[#0f2142] transition-colors" />
+          <span className="[writing-mode:vertical-lr] rotate-180 text-[11px] font-bold text-slate-500 group-hover:text-[#0f2142] tracking-widest uppercase transition-colors">
+            Settings
+          </span>
+        </button>
+
+        <div className="w-4 h-px bg-slate-200" />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col h-full w-[310px] min-w-[300px] max-w-[320px] bg-white select-none text-slate-800 font-sans border-l border-slate-200">
+    <div className="relative flex flex-col h-full w-[310px] min-w-[300px] max-w-[320px] bg-white select-none text-slate-800 font-sans border-l border-slate-200">
+      {/* Edge Arrow Collapse Button */}
+      <button
+        type="button"
+        onClick={toggleCollapsed}
+        className="absolute -left-3 top-10 z-30 size-6 rounded-full bg-white border border-slate-300 shadow-sm flex items-center justify-center text-slate-500 hover:text-[#0f2142] hover:bg-slate-50 transition-all cursor-pointer hover:scale-110"
+        title="Collapse Panel (Ctrl+\)"
+      >
+        <ChevronRight className="size-3.5" />
+      </button>
+
       {/* 1. STICKY PANEL HEADER */}
       <div className="sticky top-0 z-20 bg-white border-b border-slate-200">
-        {/* Header Top Row: Icon + Name + Breadcrumb + Actions */}
+        {/* Header Top Row: Icon + Name + Breadcrumb + Actions + Collapse */}
         <div className="px-3 pt-3 pb-2 flex items-center justify-between gap-2">
           {/* Left: Element Icon & Name + Breadcrumb */}
           <div className="min-w-0 flex-1">
@@ -753,103 +862,119 @@ export function RedesignedSettingsPanel({
             </div>
           </div>
 
-          {/* Right: 3 Action Icon Buttons */}
-          <div className="flex items-center gap-0.5 shrink-0 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-            <button
-              type="button"
-              onClick={handleDuplicate}
-              disabled={!selectedItem}
-              title="Duplicate element"
-              className="p-1 rounded text-slate-600 hover:text-[#0f2142] hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <Copy className="size-3.5" />
-            </button>
+          {/* Right: Actions + Panel Collapse Button */}
+          <div className="flex items-center gap-1 shrink-0">
+            {selectedItem && (
+              <div className="flex items-center gap-0.5 shrink-0 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+                <button
+                  type="button"
+                  onClick={handleDuplicate}
+                  disabled={!selectedItem}
+                  title="Duplicate element"
+                  className="p-1 rounded text-slate-600 hover:text-[#0f2142] hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                >
+                  <Copy className="size-3.5" />
+                </button>
 
-            <button
-              type="button"
-              onClick={handleResetStyle}
-              disabled={!selectedItem}
-              title="Reset styling to default"
-              className="p-1 rounded text-slate-600 hover:text-amber-700 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
-            >
-              <RotateCcw className="size-3.5" />
-            </button>
+                <button
+                  type="button"
+                  onClick={handleResetStyle}
+                  disabled={!selectedItem}
+                  title="Reset styling to default"
+                  className="p-1 rounded text-slate-600 hover:text-amber-700 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                >
+                  <RotateCcw className="size-3.5" />
+                </button>
 
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={!selectedItem}
+                  title="Delete element"
+                  className="p-1 rounded text-slate-600 hover:text-red-600 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+                >
+                  <Trash2 className="size-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Collapse Panel Button */}
             <button
               type="button"
-              onClick={handleDelete}
-              disabled={!selectedItem}
-              title="Delete element"
-              className="p-1 rounded text-slate-600 hover:text-red-600 hover:bg-white transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none"
+              onClick={toggleCollapsed}
+              title="Collapse Panel (Ctrl+\)"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all cursor-pointer border border-transparent hover:border-slate-200"
             >
-              <Trash2 className="size-3.5" />
+              <PanelRightClose className="size-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Header Middle Row: Search Box & Simple/Advanced Segmented Toggle */}
-        <div className="px-3 pb-2 flex items-center gap-1.5">
-          {/* Search Box */}
-          <div className="relative flex-1 flex items-center">
-            <Search className="size-3.5 absolute left-2 text-slate-400 pointer-events-none" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search settings..."
-              className="w-full pl-7 pr-6 py-1 text-[12px] rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142] outline-none transition-all placeholder:text-slate-400 font-medium"
-            />
-            {searchQuery && (
+        {/* Header Middle Row: Search Box & Simple/Advanced Segmented Toggle (when element selected) */}
+        {selectedItem && (
+          <div className="px-3 pb-2 flex items-center gap-1.5">
+            {/* Search Box */}
+            <div className="relative flex-1 flex items-center">
+              <Search className="size-3.5 absolute left-2 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search settings..."
+                className="w-full pl-7 pr-6 py-1 text-[12px] rounded-lg border border-slate-200 bg-slate-50 focus:bg-white focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142] outline-none transition-all placeholder:text-slate-400 font-medium"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-1.5 text-slate-400 hover:text-slate-600 text-xs font-bold p-1 cursor-pointer"
+                  title="Clear search"
+                >
+                  <X className="size-3" />
+                </button>
+              )}
+            </div>
+
+            {/* Simple | Advanced Mode Segmented Toggle */}
+            <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 shrink-0">
               <button
                 type="button"
-                onClick={() => setSearchQuery("")}
-                className="absolute right-1.5 text-slate-400 hover:text-slate-600 text-xs font-bold p-1 cursor-pointer"
-                title="Clear search"
+                onClick={() => {
+                  setEditorMode("simple");
+                  toast.info("⚡ Simple Mode active");
+                }}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  editorMode === "simple"
+                    ? "bg-white text-[#0f2142] shadow-2xs"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+                title="Simple Mode"
               >
-                <X className="size-3" />
+                <Sparkles className="size-3 text-amber-500" />
+                <span>Simple</span>
               </button>
-            )}
+              <button
+                type="button"
+                onClick={() => {
+                  setEditorMode("advanced");
+                  toast.info("🛠️ Advanced Mode active");
+                }}
+                className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  editorMode === "advanced"
+                    ? "bg-white text-[#0f2142] shadow-2xs"
+                    : "text-slate-500 hover:text-slate-800"
+                }`}
+                title="Advanced Mode"
+              >
+                <SlidersHorizontal className="size-3 text-blue-600" />
+                <span>Adv</span>
+              </button>
+            </div>
           </div>
-
-          {/* Simple | Advanced Mode Segmented Toggle */}
-          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 shrink-0">
-            <button
-              type="button"
-              onClick={() => {
-                setEditorMode("simple");
-                toast.info("⚡ Simple Mode active");
-              }}
-              className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                editorMode === "simple"
-                  ? "bg-white text-[#0f2142] shadow-2xs"
-                  : "text-slate-500 hover:text-slate-800"
-              }`}
-              title="Simple Mode"
-            >
-              <Sparkles className="size-3 text-amber-500" />
-              <span>Simple</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEditorMode("advanced");
-                toast.info("🛠️ Advanced Mode active");
-              }}
-              className={`flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-                editorMode === "advanced"
-                  ? "bg-white text-[#0f2142] shadow-2xs"
-                  : "text-slate-500 hover:text-slate-800"
-              }`}
-              title="Advanced Mode"
-            >
-              <SlidersHorizontal className="size-3 text-blue-600" />
-              <span>Adv</span>
-            </button>
-          </div>
-        </div>
+        )}
 
         {/* 2. TABS BAR (Max 4 tabs: Content, Style, Layout, Motion) */}
-        {!trimmedSearch && availableTabs.length > 1 && (
+        {selectedItem && !trimmedSearch && availableTabs.length > 1 && (
           <div className="flex border-t border-slate-200 bg-slate-50/70 px-2 pt-1 gap-0.5">
             {availableTabs.map((tab) => {
               const Icon = tab.icon;
@@ -875,126 +1000,315 @@ export function RedesignedSettingsPanel({
         )}
       </div>
 
-      {/* 3. SETTINGS FIELDS CONTENT BODY (16px spacing between groups, 8px between controls) */}
-      <div className="flex-1 overflow-y-auto p-3 space-y-4 bg-white">
-        {isLoading ? (
-          <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
-            <div className="size-5 border-2 border-[#0f2142] border-t-transparent rounded-full animate-spin" />
-            <span className="text-xs font-medium">Updating settings...</span>
+      {/* 3. EMPTY STATE VIEW (when nothing is selected on canvas) */}
+      {!selectedItem ? (
+        <div className="flex-1 overflow-y-auto p-3 space-y-4 bg-white">
+          {/* Main Empty State Alert Banner */}
+          <div className="p-4 flex flex-col items-center text-center bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-2.5">
+            <div className="size-11 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-[#0f2142] shadow-2xs">
+              <MousePointerClick className="size-5 text-[#0f2142]" />
+            </div>
+            <div>
+              <h4 className="text-[13px] font-bold text-slate-800">
+                No Element Selected
+              </h4>
+              <p className="text-[12px] text-slate-500 mt-0.5 leading-relaxed max-w-[230px] mx-auto">
+                Click any element on the page to edit it
+              </p>
+            </div>
           </div>
-        ) : trimmedSearch ? (
-          /* Live Search Filter Results Mode */
-          <div className="space-y-3 bg-white">
-            <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider pb-1 border-b border-slate-100">
-              <span>Matching Settings ({searchResults.length})</span>
-              <span className="text-[10px] text-slate-400">for &quot;{trimmedSearch}&quot;</span>
+
+          {/* 3 Page-Level Settings Quick Links */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between pb-1 border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <span>Page Level Settings</span>
             </div>
 
-            {searchResults.length === 0 ? (
-              <div className="py-8 text-center text-slate-400">
-                <Search className="size-6 mx-auto mb-1.5 opacity-40" />
-                <p className="text-xs">No settings found matching &quot;{searchQuery}&quot;.</p>
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="mt-2 text-xs text-[#0f2142] hover:underline font-semibold cursor-pointer"
-                >
-                  Clear search
-                </button>
-              </div>
-            ) : (
-              searchResults.map((item) => (
-                <div key={item.key} className="space-y-1.5 p-2 rounded-lg border border-slate-200">
-                  <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    <span className="font-mono text-slate-600">{item.key}</span>
-                    <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-700">
-                      {item.tab}
+            {/* 1. Page Title */}
+            <div className="p-2.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-all space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="size-6 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                    <FileText className="size-3.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-bold text-slate-800 block truncate">Page Title</span>
+                    <span className="text-[11px] text-slate-400 truncate block">
+                      {currentProps.title || "Set page title"}
                     </span>
                   </div>
-                  <div>{item.element}</div>
                 </div>
-              ))
-            )}
-          </div>
-        ) : (
-          /* Tabbed Accordion Groups Mode */
-          <div className="space-y-3">
-            {currentTabSubgroups.length === 0 ? (
-              <div className="py-12 text-center text-slate-400 p-4 rounded-xl border border-slate-200">
-                <p className="text-xs">No {activeTab} settings available for this element in {editorMode} mode.</p>
-              </div>
-            ) : (
-              currentTabSubgroups.map((subgroup) => {
-                const SubIcon = subgroup.icon;
-                const fields = categorizedData[activeTab]?.[subgroup.id] || [];
-                const isOpen = openGroups.includes(subgroup.id);
-                const summary = getSubgroupSummary(subgroup.id, currentProps);
 
-                return (
-                  <div
-                    key={subgroup.id}
-                    className="rounded-lg border border-slate-200 overflow-hidden bg-white"
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingTitle(currentProps.title || "");
+                    setIsEditingTitle(!isEditingTitle);
+                  }}
+                  className="px-2 py-1 rounded-md text-[11px] font-semibold text-[#0f2142] bg-slate-100 hover:bg-slate-200 transition-colors cursor-pointer"
+                >
+                  {isEditingTitle ? "Done" : "Edit"}
+                </button>
+              </div>
+
+              {isEditingTitle && (
+                <div className="pt-1 flex items-center gap-1.5 animate-in fade-in duration-150">
+                  <input
+                    type="text"
+                    value={editingTitle}
+                    onChange={(e) => setEditingTitle(e.target.value)}
+                    placeholder="Enter page title..."
+                    className="flex-1 px-2.5 py-1 text-xs rounded-lg border border-slate-300 outline-none focus:border-[#0f2142] focus:ring-1 focus:ring-[#0f2142]"
+                    autoFocus
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      dispatch({
+                        type: "setData",
+                        data: (prev) => ({
+                          ...prev,
+                          root: {
+                            ...prev.root,
+                            props: {
+                              ...(prev.root?.props || {}),
+                              title: editingTitle,
+                            },
+                          },
+                        }),
+                      });
+                      setIsEditingTitle(false);
+                      toast.success("Page title updated");
+                    }}
+                    className="px-2.5 py-1 text-xs rounded-lg bg-[#0f2142] text-white font-bold hover:bg-[#0f2142]/90 cursor-pointer"
                   >
-                    {/* Accordion Group Header: 12px uppercase / 13px bold */}
-                    <button
-                      type="button"
-                      onClick={() => handleToggleGroup(subgroup.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
-                        isOpen ? "bg-slate-50 border-b border-slate-200" : "hover:bg-slate-50/60"
-                      }`}
+                    Save
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* 2. SEO & Metadata */}
+            <button
+              type="button"
+              onClick={() => {
+                if (onOpenSeo) {
+                  onOpenSeo();
+                } else {
+                  toast.info("Open Settings > SEO from top bar");
+                }
+              }}
+              className="w-full p-2.5 rounded-xl border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60 transition-all flex items-center justify-between text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <div className="size-6 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Globe className="size-3.5" />
+                </div>
+                <div className="min-w-0">
+                  <span className="text-xs font-bold text-slate-800 block truncate group-hover:text-[#0f2142]">SEO & Social Metadata</span>
+                  <span className="text-[11px] text-slate-400 truncate block">
+                    Google title, snippet & OG social cards
+                  </span>
+                </div>
+              </div>
+              <ArrowRight className="size-3.5 text-slate-400 group-hover:text-[#0f2142] group-hover:translate-x-0.5 transition-all shrink-0" />
+            </button>
+
+            {/* 3. Page Background & Header Hero */}
+            <div className="p-2.5 rounded-xl border border-slate-200 bg-white space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="size-6 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center shrink-0">
+                    <Palette className="size-3.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-bold text-slate-800 block truncate">Header Banner</span>
+                    <span className="text-[11px] text-slate-400 truncate block">
+                      {currentProps.showPageHero ? "Header Banner: Enabled" : "Header Banner: Hidden"}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !currentProps.showPageHero;
+                    dispatch({
+                      type: "setData",
+                      data: (prev) => ({
+                        ...prev,
+                        root: {
+                          ...prev.root,
+                          props: {
+                            ...(prev.root?.props || {}),
+                            showPageHero: next,
+                          },
+                        },
+                      }),
+                    });
+                    toast.success(next ? "Header banner enabled" : "Header banner hidden");
+                  }}
+                  className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
+                    currentProps.showPageHero ? "bg-[#0f2142]" : "bg-slate-300"
+                  }`}
+                  title={currentProps.showPageHero ? "Click to disable header banner" : "Click to enable header banner"}
+                >
+                  <span
+                    className={`pointer-events-none inline-block size-4 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                      currentProps.showPageHero ? "translate-x-4" : "translate-x-0"
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Root page fields full accordion toggle */}
+          {childArray.length > 0 && (
+            <div className="pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setIsRootAccordionOpen(!isRootAccordionOpen)}
+                className="w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 transition-all cursor-pointer"
+              >
+                <span>Advanced Page Properties ({childArray.length} fields)</span>
+                <ChevronDown className={`size-3.5 transition-transform duration-200 ${isRootAccordionOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {isRootAccordionOpen && (
+                <div className="mt-2 space-y-3 pt-2 border-t border-slate-100 animate-in fade-in duration-150">
+                  {childArray.map((child, i) => (
+                    <div key={i} className="puck-field-container">
+                      {child}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        /* 4. SETTINGS FIELDS CONTENT BODY FOR SELECTED ELEMENT */
+        <div className="flex-1 overflow-y-auto p-3 space-y-4 bg-white">
+          {isLoading ? (
+            <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
+              <div className="size-5 border-2 border-[#0f2142] border-t-transparent rounded-full animate-spin" />
+              <span className="text-xs font-medium">Updating settings...</span>
+            </div>
+          ) : trimmedSearch ? (
+            /* Live Search Filter Results Mode */
+            <div className="space-y-3 bg-white">
+              <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider pb-1 border-b border-slate-100">
+                <span>Matching Settings ({searchResults.length})</span>
+                <span className="text-[10px] text-slate-400">for &quot;{trimmedSearch}&quot;</span>
+              </div>
+
+              {searchResults.length === 0 ? (
+                <div className="py-8 text-center text-slate-400">
+                  <Search className="size-6 mx-auto mb-1.5 opacity-40" />
+                  <p className="text-xs">No settings found matching &quot;{searchQuery}&quot;.</p>
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery("")}
+                    className="mt-2 text-xs text-[#0f2142] hover:underline font-semibold cursor-pointer"
+                  >
+                    Clear search
+                  </button>
+                </div>
+              ) : (
+                searchResults.map((item) => (
+                  <div key={item.key} className="space-y-1.5 p-2 rounded-lg border border-slate-200">
+                    <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                      <span className="font-mono text-slate-600">{item.key}</span>
+                      <span className="px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-700">
+                        {item.tab}
+                      </span>
+                    </div>
+                    <div>{item.element}</div>
+                  </div>
+                ))
+              )}
+            </div>
+          ) : (
+            /* Tabbed Accordion Groups Mode */
+            <div className="space-y-3">
+              {currentTabSubgroups.length === 0 ? (
+                <div className="py-12 text-center text-slate-400 p-4 rounded-xl border border-slate-200">
+                  <p className="text-xs">No {activeTab} settings available for this element in {editorMode} mode.</p>
+                </div>
+              ) : (
+                currentTabSubgroups.map((subgroup) => {
+                  const SubIcon = subgroup.icon;
+                  const fields = categorizedData[activeTab]?.[subgroup.id] || [];
+                  const isOpen = openGroups.includes(subgroup.id);
+                  const summary = getSubgroupSummary(subgroup.id, currentProps);
+
+                  return (
+                    <div
+                      key={subgroup.id}
+                      className="rounded-lg border border-slate-200 overflow-hidden bg-white"
                     >
-                      <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-2">
-                        <SubIcon className={`size-3.5 shrink-0 ${isOpen ? "text-[#0f2142]" : "text-slate-400"}`} />
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wider truncate">
-                              {subgroup.label}
-                            </span>
-                            {subgroup.isAdvanced && (
-                              <span className="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
-                                ADV
+                      {/* Accordion Group Header: 12px uppercase / 13px bold */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleGroup(subgroup.id)}
+                        className={`w-full flex items-center justify-between px-3 py-2 text-left transition-colors cursor-pointer ${
+                          isOpen ? "bg-slate-50 border-b border-slate-200" : "hover:bg-slate-50/60"
+                        }`}
+                      >
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1 mr-2">
+                          <SubIcon className={`size-3.5 shrink-0 ${isOpen ? "text-[#0f2142]" : "text-slate-400"}`} />
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[12px] font-bold text-slate-700 uppercase tracking-wider truncate">
+                                {subgroup.label}
+                              </span>
+                              {subgroup.isAdvanced && (
+                                <span className="px-1 py-0.2 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                  ADV
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Summary row when collapsed */}
+                            {!isOpen && summary && (
+                              <span className="text-[11px] text-slate-400 truncate block mt-0.5 font-normal">
+                                {summary}
                               </span>
                             )}
                           </div>
-
-                          {/* Summary row when collapsed */}
-                          {!isOpen && summary && (
-                            <span className="text-[11px] text-slate-400 truncate block mt-0.5 font-normal">
-                              {summary}
-                            </span>
-                          )}
                         </div>
-                      </div>
 
-                      <div className="flex items-center gap-1 shrink-0">
-                        <span className="text-[10px] font-semibold text-slate-400">
-                          {fields.length}
-                        </span>
-                        <ChevronDown
-                          className={`size-3.5 text-slate-400 transition-transform duration-200 ${
-                            isOpen ? "rotate-180 text-slate-600" : ""
-                          }`}
-                        />
-                      </div>
-                    </button>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <span className="text-[10px] font-semibold text-slate-400">
+                            {fields.length}
+                          </span>
+                          <ChevronDown
+                            className={`size-3.5 text-slate-400 transition-transform duration-200 ${
+                              isOpen ? "rotate-180 text-slate-600" : ""
+                            }`}
+                          />
+                        </div>
+                      </button>
 
-                    {/* Accordion Group Fields Body (8px grid spacing between controls) */}
-                    {isOpen && (
-                      <div className="p-3 space-y-2.5 bg-white">
-                        {fields.map((item) => (
-                          <div key={item.key} className="puck-field-container">
-                            {item.element}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })
-            )}
-          </div>
-        )}
-      </div>
+                      {/* Accordion Group Fields Body (8px grid spacing between controls) */}
+                      {isOpen && (
+                        <div className="p-3 space-y-2.5 bg-white">
+                          {fields.map((item) => (
+                            <div key={item.key} className="puck-field-container">
+                              {item.element}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Modern Field Overrides CSS styling */}
       <style>{`
