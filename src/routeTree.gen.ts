@@ -19,6 +19,7 @@ import { Route as CareersRouteImport } from './routes/careers'
 import { Route as ConstructionRouteImport } from './routes/construction'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DocsRouteImport } from './routes/docs'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as FloridaLocationRouteImport } from './routes/florida-location'
 import { Route as HealthcareRouteImport } from './routes/healthcare'
@@ -107,6 +108,11 @@ const ContactRoute = ContactRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsRoute = DocsRouteImport.update({
+  id: '/docs',
+  path: '/docs',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EventsRoute = EventsRouteImport.update({
@@ -318,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/docs': typeof DocsRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -369,6 +376,7 @@ export interface FileRoutesByTo {
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/docs': typeof DocsRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -421,6 +429,7 @@ export interface FileRoutesById {
   '/construction': typeof ConstructionRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
+  '/docs': typeof DocsRoute
   '/events': typeof EventsRoute
   '/florida-location': typeof FloridaLocationRoute
   '/healthcare': typeof HealthcareRoute
@@ -474,6 +483,7 @@ export interface FileRouteTypes {
     | '/construction'
     | '/contact'
     | '/dashboard'
+    | '/docs'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -525,6 +535,7 @@ export interface FileRouteTypes {
     | '/construction'
     | '/contact'
     | '/dashboard'
+    | '/docs'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -576,6 +587,7 @@ export interface FileRouteTypes {
     | '/construction'
     | '/contact'
     | '/dashboard'
+    | '/docs'
     | '/events'
     | '/florida-location'
     | '/healthcare'
@@ -628,6 +640,7 @@ export interface RootRouteChildren {
   ConstructionRoute: typeof ConstructionRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRoute
+  DocsRoute: typeof DocsRoute
   EventsRoute: typeof EventsRoute
   FloridaLocationRoute: typeof FloridaLocationRoute
   HealthcareRoute: typeof HealthcareRoute
@@ -739,6 +752,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs': {
+      id: '/docs'
+      path: '/docs'
+      fullPath: '/docs'
+      preLoaderRoute: typeof DocsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/events': {
@@ -1028,6 +1048,7 @@ const rootRouteChildren: RootRouteChildren = {
   ConstructionRoute: ConstructionRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRoute,
+  DocsRoute: DocsRoute,
   EventsRoute: EventsRoute,
   FloridaLocationRoute: FloridaLocationRoute,
   HealthcareRoute: HealthcareRoute,

@@ -191,7 +191,7 @@ export function SectionRender(props: SectionProps) {
         <DropZone
           zone="content"
           minEmptyHeight={80}
-          className={`w-full min-h-[80px] ${layoutClasses || "flex flex-col gap-6"}`}
+          className={`w-full min-h-[80px] cms-drop-flow ${layoutClasses || "flex flex-row flex-wrap items-center gap-4"}`}
         />
       </div>
     </section>

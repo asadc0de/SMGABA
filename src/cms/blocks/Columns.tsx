@@ -126,14 +126,14 @@ export function ColumnsRender(props: ColumnsProps) {
           <DropZone
             zone="column-1"
             minEmptyHeight={60}
-            className="w-full flex flex-col gap-4 min-h-[60px] h-full"
+            className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
           />
         </div>
         <div className={`w-full flex flex-col min-w-0 ${isEqualHeight ? "h-full justify-between" : ""}`}>
           <DropZone
             zone="column-2"
             minEmptyHeight={60}
-            className="w-full flex flex-col gap-4 min-h-[60px] h-full"
+            className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
           />
         </div>
         {isThreeColumns && (
@@ -141,7 +141,7 @@ export function ColumnsRender(props: ColumnsProps) {
             <DropZone
               zone="column-3"
               minEmptyHeight={60}
-              className="w-full flex flex-col gap-4 min-h-[60px] h-full"
+              className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
             />
           </div>
         )}

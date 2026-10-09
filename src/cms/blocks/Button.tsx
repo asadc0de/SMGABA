@@ -179,7 +179,7 @@ export function ButtonRender(props: ButtonBlockProps) {
   const sizeClass = getButtonSizeClasses(size);
   const isInline = advancedLayout?.display !== "block";
   const advClasses = buildAdvancedLayoutClasses(advancedLayout);
-  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element" : "flex w-full";
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max" : "flex w-full";
 
   if (!isValid) {
     return (

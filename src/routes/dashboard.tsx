@@ -358,6 +358,18 @@ function DashboardPage() {
 
             <div className="flex flex-wrap items-center gap-2.5">
               <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="rounded-full text-xs font-semibold gap-1.5 h-9 bg-white hover:bg-blue-50/50 hover:text-blue-700 hover:border-blue-200 cursor-pointer"
+              >
+                <Link to="/docs">
+                  <BookOpen className="size-3.5 text-blue-600" />
+                  <span>CMS Guide</span>
+                </Link>
+              </Button>
+
+              <Button
                 onClick={refreshData}
                 disabled={isRefreshing}
                 variant="outline"

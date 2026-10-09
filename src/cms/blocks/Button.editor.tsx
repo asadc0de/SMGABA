@@ -38,10 +38,11 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
     variant: "primary",
     size: "md",
     align: { base: "left" },
-    marginTop: { base: "md" },
-    marginBottom: { base: "md" },
+    marginTop: { base: "none" },
+    marginBottom: { base: "none" },
     paddingTop: { base: "none" },
     paddingBottom: { base: "none" },
+    advancedLayout: { display: "inline" },
   },
   fields: {
     label: {

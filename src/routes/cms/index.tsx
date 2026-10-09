@@ -398,6 +398,12 @@ function CmsPagesListPage() {
                 Site Settings &amp; Nav
               </Link>
             </Button>
+            <Button asChild variant="outline" size="sm" className="gap-1.5 text-navy hover:bg-blue-50/60 hover:text-blue-700 hover:border-blue-200 h-8 text-xs">
+              <Link to="/docs" target="_blank">
+                <BookOpen className="size-3.5 text-blue-600" />
+                Docs v1.0
+              </Link>
+            </Button>
             <Button asChild size="sm" className="bg-navy text-white hover:bg-navy/90 gap-1.5 rounded-full h-8 text-xs font-semibold">
               <Link to="/cms/new">
                 <PlusCircle className="size-3.5" />

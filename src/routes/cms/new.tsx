@@ -24,6 +24,7 @@ import {
   PlusCircle,
   LayoutTemplate,
   Check,
+  BookOpen,
 } from "lucide-react";
 
 export const Route = createFileRoute("/cms/new")({
@@ -247,15 +248,35 @@ function NewCmsPageForm() {
 
         {/* Page Creation Form with Template Picker */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 space-y-8">
-            <div className="border-b border-slate-100 pb-6">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                <LayoutTemplate className="size-3.5 text-primary" />
-                Page Builder Setup
+            <div className="border-b border-slate-100 pb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+                  <LayoutTemplate className="size-3.5 text-primary" />
+                  <span>Page Builder Setup</span>
+                  <span className="text-slate-300">·</span>
+                  <Link
+                    to="/docs"
+                    target="_blank"
+                    className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 hover:text-blue-800"
+                  >
+                    <BookOpen className="size-3" />
+                    <span>Docs v1.0</span>
+                  </Link>
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold font-serif-hero text-navy">Create New CMS Page</h1>
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                  Select a starter layout template or start from scratch, then customize in the visual Puck editor.
+                </p>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-bold font-serif-hero text-navy">Create New CMS Page</h1>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1">
-                Select a starter layout template or start from scratch, then customize in the visual Puck editor.
-              </p>
+
+              <div className="shrink-0">
+                <Button asChild variant="outline" size="sm" className="rounded-full text-xs font-semibold gap-1.5 h-8 border-slate-200 hover:bg-blue-50/60 hover:text-blue-700 hover:border-blue-200">
+                  <Link to="/docs" target="_blank">
+                    <BookOpen className="size-3.5 text-blue-600" />
+                    <span>Docs v1.0</span>
+                  </Link>
+                </Button>
+              </div>
             </div>
 
             <form onSubmit={handleCreate} className="space-y-8">

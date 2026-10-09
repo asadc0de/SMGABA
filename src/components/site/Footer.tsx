@@ -20,6 +20,7 @@ const COMPANY_LINKS = [
   { label: "Testimonials", href: "/testimonials" },
   { label: "Events & Webinars", href: "/events" },
   { label: "Resources", href: "/resources" },
+  { label: "CMS Documentation", href: "/docs" },
   { label: "Contact Us", href: "/contact" },
 ];
 

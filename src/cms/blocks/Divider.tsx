@@ -122,10 +122,14 @@ export function DividerRender(props: DividerProps) {
 
   const isInline = props.advancedLayout?.display === "inline";
   const advClasses = buildAdvancedLayoutClasses(props.advancedLayout);
-  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full flex";
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max" : "w-full flex";
 
   return (
-    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
+    <div
+      data-cms-inline={isInline ? "true" : undefined}
+      data-cms-display={props.advancedLayout?.display || (isInline ? "inline" : "block")}
+      className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}
+    >
       <hr
         style={lineStyle}
         className={`my-0 border-0 transition-all duration-150 ${animClasses}`}

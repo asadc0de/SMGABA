@@ -126,53 +126,74 @@ export function CmsRootEditor(props: CmsRootProps) {
 
         /* Smooth DropZone highlight and flex flow for inline elements */
         [data-puck-drop-zone],
-        .puck-drop-zone {
+        .puck-drop-zone,
+        .cms-drop-flow,
+        .cms-content-flow {
           display: flex !important;
           flex-direction: row !important;
           flex-wrap: wrap !important;
-          align-items: flex-start !important;
+          align-items: center !important;
           align-content: flex-start !important;
           width: 100% !important;
+          row-gap: 0.75rem !important;
+          column-gap: 0.75rem !important;
         }
 
         /* Default block components take full width */
         [data-puck-component] {
           width: 100%;
           max-width: 100%;
+          flex: 0 0 100%;
           box-sizing: border-box;
         }
 
         /* Inline Puck components shrink and sit side-by-side like real CSS */
         [data-puck-component]:has([data-cms-display="inline"]),
+        [data-puck-component]:has([data-cms-display="inline-block"]),
+        [data-puck-component]:has([data-cms-display="inline-flex"]),
         [data-puck-component]:has([data-cms-inline="true"]),
         [data-puck-component]:has(.cms-inline-element) {
           display: inline-flex !important;
           width: auto !important;
-          max-width: 100% !important;
-          vertical-align: top !important;
+          max-width: max-content !important;
+          vertical-align: middle !important;
+          flex: 0 0 auto !important;
           flex-grow: 0 !important;
           flex-shrink: 0 !important;
+          margin-right: 0.25rem;
+          margin-bottom: 0.25rem;
+        }
+
+        /* Ensure inner container inside inline puck component respects inline sizing */
+        [data-puck-component]:has([data-cms-display="inline"]) > div,
+        [data-puck-component]:has([data-cms-display="inline-block"]) > div,
+        [data-puck-component]:has([data-cms-display="inline-flex"]) > div,
+        [data-puck-component]:has([data-cms-inline="true"]) > div,
+        [data-puck-component]:has(.cms-inline-element) > div {
+          width: auto !important;
+          max-width: max-content !important;
+          display: inline-flex !important;
         }
 
         /* Percentage and preset widths on Puck components */
-        [data-puck-component]:has([data-cms-width="20%"]) { width: 20% !important; }
-        [data-puck-component]:has([data-cms-width="25%"]) { width: 25% !important; }
-        [data-puck-component]:has([data-cms-width="30%"]) { width: 30% !important; }
-        [data-puck-component]:has([data-cms-width="33%"]) { width: 33.333% !important; }
-        [data-puck-component]:has([data-cms-width="35%"]) { width: 35% !important; }
-        [data-puck-component]:has([data-cms-width="40%"]) { width: 40% !important; }
-        [data-puck-component]:has([data-cms-width="45%"]) { width: 45% !important; }
-        [data-puck-component]:has([data-cms-width="50%"]) { width: 50% !important; }
-        [data-puck-component]:has([data-cms-width="55%"]) { width: 55% !important; }
-        [data-puck-component]:has([data-cms-width="60%"]) { width: 60% !important; }
-        [data-puck-component]:has([data-cms-width="65%"]) { width: 65% !important; }
-        [data-puck-component]:has([data-cms-width="66%"]) { width: 66.666% !important; }
-        [data-puck-component]:has([data-cms-width="70%"]) { width: 70% !important; }
-        [data-puck-component]:has([data-cms-width="75%"]) { width: 75% !important; }
-        [data-puck-component]:has([data-cms-width="80%"]) { width: 80% !important; }
-        [data-puck-component]:has([data-cms-width="85%"]) { width: 85% !important; }
-        [data-puck-component]:has([data-cms-width="90%"]) { width: 90% !important; }
-        [data-puck-component]:has([data-cms-width="auto"]) { width: max-content !important; max-width: 100% !important; }
+        [data-puck-component]:has([data-cms-width="20%"]) { width: 20% !important; flex: 0 0 20% !important; }
+        [data-puck-component]:has([data-cms-width="25%"]) { width: 25% !important; flex: 0 0 25% !important; }
+        [data-puck-component]:has([data-cms-width="30%"]) { width: 30% !important; flex: 0 0 30% !important; }
+        [data-puck-component]:has([data-cms-width="33%"]) { width: 33.333% !important; flex: 0 0 33.333% !important; }
+        [data-puck-component]:has([data-cms-width="35%"]) { width: 35% !important; flex: 0 0 35% !important; }
+        [data-puck-component]:has([data-cms-width="40%"]) { width: 40% !important; flex: 0 0 40% !important; }
+        [data-puck-component]:has([data-cms-width="45%"]) { width: 45% !important; flex: 0 0 45% !important; }
+        [data-puck-component]:has([data-cms-width="50%"]) { width: 50% !important; flex: 0 0 50% !important; }
+        [data-puck-component]:has([data-cms-width="55%"]) { width: 55% !important; flex: 0 0 55% !important; }
+        [data-puck-component]:has([data-cms-width="60%"]) { width: 60% !important; flex: 0 0 60% !important; }
+        [data-puck-component]:has([data-cms-width="65%"]) { width: 65% !important; flex: 0 0 65% !important; }
+        [data-puck-component]:has([data-cms-width="66%"]) { width: 66.666% !important; flex: 0 0 66.666% !important; }
+        [data-puck-component]:has([data-cms-width="70%"]) { width: 70% !important; flex: 0 0 70% !important; }
+        [data-puck-component]:has([data-cms-width="75%"]) { width: 75% !important; flex: 0 0 75% !important; }
+        [data-puck-component]:has([data-cms-width="80%"]) { width: 80% !important; flex: 0 0 80% !important; }
+        [data-puck-component]:has([data-cms-width="85%"]) { width: 85% !important; flex: 0 0 85% !important; }
+        [data-puck-component]:has([data-cms-width="90%"]) { width: 90% !important; flex: 0 0 90% !important; }
+        [data-puck-component]:has([data-cms-width="auto"]) { width: max-content !important; max-width: 100% !important; flex: 0 0 auto !important; }
       `}</style>
 
       <CmsRoot {...props}>

@@ -110,11 +110,15 @@ export function HeadingRender(props: HeadingProps) {
 
   const isInline = advancedLayout?.display === "inline";
   const advClasses = buildAdvancedLayoutClasses(advancedLayout);
-  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full";
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max" : "w-full";
 
   if (level === "h1") {
     return (
-      <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
+      <div
+        data-cms-inline={isInline ? "true" : undefined}
+        data-cms-display={advancedLayout?.display || (isInline ? "inline" : "block")}
+        className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}
+      >
         <h1
           style={finalStyle}
           className="font-serif-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-[1.12]"
@@ -127,7 +131,11 @@ export function HeadingRender(props: HeadingProps) {
 
   if (level === "h3") {
     return (
-      <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
+      <div
+        data-cms-inline={isInline ? "true" : undefined}
+        data-cms-display={advancedLayout?.display || (isInline ? "inline" : "block")}
+        className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}
+      >
         <h3
           style={finalStyle}
           className="font-serif-hero text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight leading-snug"
@@ -139,7 +147,11 @@ export function HeadingRender(props: HeadingProps) {
   }
 
   return (
-    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}>
+    <div
+      data-cms-inline={isInline ? "true" : undefined}
+      data-cms-display={advancedLayout?.display || (isInline ? "inline" : "block")}
+      className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}
+    >
       <h2
         style={finalStyle}
         className="font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-[1.2]"

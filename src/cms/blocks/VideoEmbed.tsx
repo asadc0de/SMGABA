@@ -219,10 +219,14 @@ export function VideoEmbedRender(props: VideoEmbedProps) {
 
   const isInline = props.advancedLayout?.display === "inline";
   const advClasses = buildAdvancedLayoutClasses(props.advancedLayout);
-  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle" : "w-full";
+  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max" : "w-full";
 
   return (
-    <div className={`${wrapperDisplayClass} ${advClasses} ${styleClasses}`}>
+    <div
+      data-cms-inline={isInline ? "true" : undefined}
+      data-cms-display={props.advancedLayout?.display || (isInline ? "inline" : "block")}
+      className={`${wrapperDisplayClass} ${advClasses} ${styleClasses}`}
+    >
       <div style={containerStyle} className={`w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 ${animationClasses}`}>
         {!valid ? (
           <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-6 text-center text-xs sm:text-sm text-destructive shadow-xs">
