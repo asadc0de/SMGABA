@@ -11,19 +11,40 @@ import {
   RotateCcw,
   Search,
   ChevronRight,
+  ChevronDown,
   Globe,
   SlidersHorizontal,
+  Sliders,
   Layers,
   HelpCircle,
   X,
   Check,
-  ArrowUpRight,
+  Type,
+  Image as ImageIcon,
+  Link,
+  List,
+  Box,
+  Maximize2,
+  MoveVertical,
+  MousePointerClick,
+  Code,
+  Shield,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { getBlockIcon, getFriendlyBlockName } from "./editor-overlay";
 import { puckEditorConfig } from "./puck.config";
+import { useEditorMode, type EditorMode } from "./editor-mode";
 import { toast } from "sonner";
 
 export type SettingTabId = "content" | "style" | "layout" | "motion";
+
+export interface SubgroupDefinition {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  isAdvanced?: boolean;
+}
 
 interface TabDefinition {
   id: SettingTabId;
@@ -39,171 +60,321 @@ const ALL_TABS: TabDefinition[] = [
 ];
 
 /**
- * Mapping of known field names to their respective tabs
+ * Subgroup definitions organized by Tab
  */
-const FIELD_TAB_MAP: Record<string, SettingTabId> = {
-  // Content Tab Fields
-  label: "content",
-  text: "content",
-  title: "content",
-  content: "content",
-  heading: "content",
-  subheading: "content",
-  headline: "content",
-  subheadline: "content",
-  eyebrow: "content",
-  badge: "content",
-  quote: "content",
-  authorName: "content",
-  authorRole: "content",
-  authorCompany: "content",
-  rating: "content",
-  items: "content",
-  src: "content",
-  url: "content",
-  linkUrl: "content",
-  ctaText: "content",
-  ctaHref: "content",
-  primaryCta: "content",
-  secondaryCta: "content",
-  primaryButton: "content",
-  secondaryButton: "content",
-  avatarUrl: "content",
-  imageUrl: "content",
-  backgroundImage: "content",
-  icon: "content",
-  calendlyUrl: "content",
-  videoUrl: "content",
-  embedUrl: "content",
-  youtubeUrl: "content",
-  vimeoUrl: "content",
-  enableLightbox: "content",
-  showCaptions: "content",
-  alt: "content",
-  caption: "content",
-  statItems: "content",
-  stepItems: "content",
-  featureItems: "content",
-  accordionItems: "content",
-  showPageHero: "content",
-  heroEyebrow: "content",
-  heroDescription: "content",
-  heroImage: "content",
-  heroPrimaryCtaText: "content",
-  heroPrimaryCtaHref: "content",
-  heroSecondaryCtaText: "content",
-  heroSecondaryCtaHref: "content",
-  seoTitle: "content",
-  metaDescription: "content",
-  canonicalUrl: "content",
-  ogTitle: "content",
-  ogDescription: "content",
-  ogImage: "content",
-
-  // Style Tab Fields
-  styleControls: "style",
-  variant: "style",
-  color: "style",
-  textColor: "style",
-  backgroundColor: "style",
-  borderColor: "style",
-  theme: "style",
-  cardStyle: "style",
-  overlayStrength: "style",
-  overlay: "style",
-  styleVariant: "style",
-  rounded: "style",
-  aspectRatio: "style",
-  objectFit: "style",
-  typography: "style",
-  titleTypography: "style",
-  bodyTypography: "style",
-  headlineTypography: "style",
-  quoteTypography: "style",
-  authorTypography: "style",
-  fontSizePx: "style",
-  level: "style",
-  thickness: "style",
-  layout: "style", // For Testimonial (Design A vs B presentation)
-
-  // Layout Tab Fields
-  advancedLayout: "layout",
-  sizeControls: "layout",
-  sizePercent: "layout",
-  size: "layout",
-  width: "layout",
-  height: "layout",
-  minHeight: "layout",
-  columns: "layout",
-  gap: "layout",
-  sameItemSize: "layout",
-  equalHeightCards: "layout",
-  align: "layout",
-  marginTop: "layout",
-  marginBottom: "layout",
-  paddingTop: "layout",
-  paddingBottom: "layout",
-  paddingVertical: "layout",
-  spacerHeight: "layout",
-  dividerWidth: "layout",
-
-  // Motion Tab Fields
-  animation: "motion",
-  hoverEffect: "motion",
-  transition: "motion",
+export const SUBGROUPS_BY_TAB: Record<SettingTabId, SubgroupDefinition[]> = {
+  content: [
+    { id: "content_main", label: "Text & Copy", icon: Type },
+    { id: "content_media", label: "Media & Assets", icon: ImageIcon },
+    { id: "content_links", label: "Links & Action Buttons", icon: Link },
+    { id: "content_items", label: "Collection & Items", icon: List },
+  ],
+  style: [
+    { id: "style_colors", label: "Colors & Swatches", icon: Palette },
+    { id: "style_typography", label: "Typography & Text", icon: Type },
+    { id: "style_box", label: "Shadow, Corners & Borders", icon: Box },
+    { id: "style_appearance", label: "Style Controls", icon: Sliders },
+    { id: "style_advanced", label: "Advanced Styling", icon: SlidersHorizontal, isAdvanced: true },
+  ],
+  layout: [
+    { id: "layout_dimensions", label: "Dimensions & Sizing", icon: Maximize2 },
+    { id: "layout_structure", label: "Columns & Grid", icon: LayoutGrid },
+    { id: "layout_spacing", label: "Spacing & Alignment", icon: MoveVertical },
+    { id: "layout_advanced", label: "Advanced Flex & Display", icon: Code, isAdvanced: true },
+  ],
+  motion: [
+    { id: "motion_entrance", label: "Entrance & Scroll Effects", icon: Sparkles },
+    { id: "motion_interactive", label: "Hover & Transitions", icon: MousePointerClick },
+  ],
 };
 
 /**
- * Categorize a field name into one of 4 tabs
+ * Mapping of known field names to their respective Tab and Subgroup
  */
-export function getFieldCategory(fieldName: string): SettingTabId {
-  if (FIELD_TAB_MAP[fieldName]) {
-    return FIELD_TAB_MAP[fieldName];
+interface FieldMeta {
+  tab: SettingTabId;
+  subgroup: string;
+  isAdvanced?: boolean;
+}
+
+const FIELD_META_MAP: Record<string, FieldMeta> = {
+  // Content Tab Fields
+  label: { tab: "content", subgroup: "content_main" },
+  text: { tab: "content", subgroup: "content_main" },
+  title: { tab: "content", subgroup: "content_main" },
+  content: { tab: "content", subgroup: "content_main" },
+  heading: { tab: "content", subgroup: "content_main" },
+  subheading: { tab: "content", subgroup: "content_main" },
+  headline: { tab: "content", subgroup: "content_main" },
+  subheadline: { tab: "content", subgroup: "content_main" },
+  eyebrow: { tab: "content", subgroup: "content_main" },
+  badge: { tab: "content", subgroup: "content_main" },
+  quote: { tab: "content", subgroup: "content_main" },
+  authorName: { tab: "content", subgroup: "content_main" },
+  authorRole: { tab: "content", subgroup: "content_main" },
+  authorCompany: { tab: "content", subgroup: "content_main" },
+  rating: { tab: "content", subgroup: "content_main" },
+  showPageHero: { tab: "content", subgroup: "content_main" },
+  heroEyebrow: { tab: "content", subgroup: "content_main" },
+  heroDescription: { tab: "content", subgroup: "content_main" },
+  seoTitle: { tab: "content", subgroup: "content_main" },
+  metaDescription: { tab: "content", subgroup: "content_main" },
+  canonicalUrl: { tab: "content", subgroup: "content_main" },
+  ogTitle: { tab: "content", subgroup: "content_main" },
+  ogDescription: { tab: "content", subgroup: "content_main" },
+
+  // Media & Assets
+  src: { tab: "content", subgroup: "content_media" },
+  avatarUrl: { tab: "content", subgroup: "content_media" },
+  imageUrl: { tab: "content", subgroup: "content_media" },
+  backgroundImage: { tab: "content", subgroup: "content_media" },
+  heroImage: { tab: "content", subgroup: "content_media" },
+  ogImage: { tab: "content", subgroup: "content_media" },
+  videoUrl: { tab: "content", subgroup: "content_media" },
+  embedUrl: { tab: "content", subgroup: "content_media" },
+  youtubeUrl: { tab: "content", subgroup: "content_media" },
+  vimeoUrl: { tab: "content", subgroup: "content_media" },
+  alt: { tab: "content", subgroup: "content_media" },
+  caption: { tab: "content", subgroup: "content_media" },
+  calendlyUrl: { tab: "content", subgroup: "content_media" },
+  icon: { tab: "content", subgroup: "content_media" },
+
+  // Links & Buttons
+  url: { tab: "content", subgroup: "content_links" },
+  linkUrl: { tab: "content", subgroup: "content_links" },
+  ctaText: { tab: "content", subgroup: "content_links" },
+  ctaHref: { tab: "content", subgroup: "content_links" },
+  primaryCta: { tab: "content", subgroup: "content_links" },
+  secondaryCta: { tab: "content", subgroup: "content_links" },
+  primaryButton: { tab: "content", subgroup: "content_links" },
+  secondaryButton: { tab: "content", subgroup: "content_links" },
+  heroPrimaryCtaText: { tab: "content", subgroup: "content_links" },
+  heroPrimaryCtaHref: { tab: "content", subgroup: "content_links" },
+  heroSecondaryCtaText: { tab: "content", subgroup: "content_links" },
+  heroSecondaryCtaHref: { tab: "content", subgroup: "content_links" },
+
+  // Items & Collection
+  items: { tab: "content", subgroup: "content_items" },
+  statItems: { tab: "content", subgroup: "content_items" },
+  stepItems: { tab: "content", subgroup: "content_items" },
+  featureItems: { tab: "content", subgroup: "content_items" },
+  accordionItems: { tab: "content", subgroup: "content_items" },
+  enableLightbox: { tab: "content", subgroup: "content_items" },
+  showCaptions: { tab: "content", subgroup: "content_items" },
+
+  // Style Tab Fields
+  variant: { tab: "style", subgroup: "style_colors" },
+  color: { tab: "style", subgroup: "style_colors" },
+  textColor: { tab: "style", subgroup: "style_colors" },
+  backgroundColor: { tab: "style", subgroup: "style_colors" },
+  borderColor: { tab: "style", subgroup: "style_colors" },
+  theme: { tab: "style", subgroup: "style_colors" },
+  cardStyle: { tab: "style", subgroup: "style_colors" },
+  overlayStrength: { tab: "style", subgroup: "style_colors" },
+  overlay: { tab: "style", subgroup: "style_colors" },
+
+  typography: { tab: "style", subgroup: "style_typography" },
+  titleTypography: { tab: "style", subgroup: "style_typography" },
+  bodyTypography: { tab: "style", subgroup: "style_typography" },
+  headlineTypography: { tab: "style", subgroup: "style_typography" },
+  quoteTypography: { tab: "style", subgroup: "style_typography" },
+  authorTypography: { tab: "style", subgroup: "style_typography" },
+  fontSizePx: { tab: "style", subgroup: "style_typography", isAdvanced: true },
+  level: { tab: "style", subgroup: "style_typography" },
+
+  rounded: { tab: "style", subgroup: "style_box" },
+  aspectRatio: { tab: "style", subgroup: "style_box" },
+  objectFit: { tab: "style", subgroup: "style_box" },
+  thickness: { tab: "style", subgroup: "style_box" },
+  styleVariant: { tab: "style", subgroup: "style_box" },
+  layout: { tab: "style", subgroup: "style_box" }, // For Testimonial (Design A vs B presentation)
+
+  styleControls: { tab: "style", subgroup: "style_appearance" },
+
+  // Layout Tab Fields
+  size: { tab: "layout", subgroup: "layout_dimensions" },
+  sizePercent: { tab: "layout", subgroup: "layout_dimensions" },
+  sizeControls: { tab: "layout", subgroup: "layout_dimensions" },
+  width: { tab: "layout", subgroup: "layout_dimensions" },
+  height: { tab: "layout", subgroup: "layout_dimensions" },
+  minHeight: { tab: "layout", subgroup: "layout_dimensions" },
+  spacerHeight: { tab: "layout", subgroup: "layout_dimensions" },
+  dividerWidth: { tab: "layout", subgroup: "layout_dimensions" },
+
+  columns: { tab: "layout", subgroup: "layout_structure" },
+  gap: { tab: "layout", subgroup: "layout_structure" },
+  sameItemSize: { tab: "layout", subgroup: "layout_structure" },
+  equalHeightCards: { tab: "layout", subgroup: "layout_structure" },
+
+  align: { tab: "layout", subgroup: "layout_spacing" },
+  marginTop: { tab: "layout", subgroup: "layout_spacing" },
+  marginBottom: { tab: "layout", subgroup: "layout_spacing" },
+  paddingTop: { tab: "layout", subgroup: "layout_spacing" },
+  paddingBottom: { tab: "layout", subgroup: "layout_spacing" },
+  paddingVertical: { tab: "layout", subgroup: "layout_spacing" },
+
+  advancedLayout: { tab: "layout", subgroup: "layout_advanced", isAdvanced: true },
+
+  // Motion Tab Fields
+  animation: { tab: "motion", subgroup: "motion_entrance" },
+  hoverEffect: { tab: "motion", subgroup: "motion_interactive" },
+  transition: { tab: "motion", subgroup: "motion_interactive" },
+};
+
+/**
+ * Look up or infer field metadata
+ */
+export function getFieldMeta(fieldName: string): FieldMeta {
+  if (FIELD_META_MAP[fieldName]) {
+    return FIELD_META_MAP[fieldName];
   }
 
   const lower = fieldName.toLowerCase();
-  if (
-    lower.includes("anim") ||
-    lower.includes("motion") ||
-    lower.includes("hover") ||
-    lower.includes("effect")
-  ) {
-    return "motion";
+  if (lower.includes("anim") || lower.includes("motion")) {
+    return { tab: "motion", subgroup: "motion_entrance" };
+  }
+  if (lower.includes("hover") || lower.includes("effect")) {
+    return { tab: "motion", subgroup: "motion_interactive" };
+  }
+  if (lower.includes("advanced") || lower.includes("flex") || lower.includes("grid")) {
+    return { tab: "layout", subgroup: "layout_advanced", isAdvanced: true };
+  }
+  if (lower.includes("size") || lower.includes("width") || lower.includes("height")) {
+    return { tab: "layout", subgroup: "layout_dimensions" };
+  }
+  if (lower.includes("margin") || lower.includes("padding") || lower.includes("align") || lower.includes("space")) {
+    return { tab: "layout", subgroup: "layout_spacing" };
+  }
+  if (lower.includes("column") || lower.includes("gap")) {
+    return { tab: "layout", subgroup: "layout_structure" };
+  }
+  if (lower.includes("color") || lower.includes("bg") || lower.includes("variant") || lower.includes("theme")) {
+    return { tab: "style", subgroup: "style_colors" };
+  }
+  if (lower.includes("font") || lower.includes("text") || lower.includes("type")) {
+    return { tab: "style", subgroup: "style_typography" };
+  }
+  if (lower.includes("radius") || lower.includes("rounded") || lower.includes("border") || lower.includes("shadow")) {
+    return { tab: "style", subgroup: "style_box" };
+  }
+  if (lower.includes("style")) {
+    return { tab: "style", subgroup: "style_appearance" };
   }
 
-  if (
-    lower.includes("layout") ||
-    lower.includes("size") ||
-    lower.includes("width") ||
-    lower.includes("height") ||
-    lower.includes("margin") ||
-    lower.includes("padding") ||
-    lower.includes("space") ||
-    lower.includes("gap") ||
-    lower.includes("column") ||
-    lower.includes("align") ||
-    lower.includes("grid") ||
-    lower.includes("flex")
-  ) {
-    return "layout";
-  }
+  return { tab: "content", subgroup: "content_main" };
+}
 
-  if (
-    lower.includes("style") ||
-    lower.includes("color") ||
-    lower.includes("bg") ||
-    lower.includes("font") ||
-    lower.includes("text") ||
-    lower.includes("border") ||
-    lower.includes("radius") ||
-    lower.includes("shadow") ||
-    lower.includes("theme") ||
-    lower.includes("opacity")
-  ) {
-    return "style";
-  }
+/**
+ * Generate human-readable summary badge when a subgroup is closed
+ */
+function getSubgroupSummary(subgroupId: string, props: any): string | null {
+  if (!props) return null;
 
-  return "content";
+  switch (subgroupId) {
+    case "style_colors": {
+      const parts: string[] = [];
+      if (props.variant) parts.push(`Variant: ${props.variant}`);
+      if (props.theme) parts.push(`Theme: ${props.theme}`);
+      if (props.cardStyle) parts.push(`Style: ${props.cardStyle}`);
+      if (props.backgroundColor) parts.push(`Bg: ${props.backgroundColor}`);
+      if (props.textColor) parts.push(`Text: ${props.textColor}`);
+      if (props.color) parts.push(`Color: ${props.color}`);
+      return parts.slice(0, 2).join(" • ") || "Default theme colors";
+    }
+    case "style_typography": {
+      const parts: string[] = [];
+      if (props.level) parts.push(String(props.level).toUpperCase());
+      if (props.fontSizePx) parts.push(`${props.fontSizePx}px`);
+      if (props.typography?.fontSize) parts.push(`Size: ${props.typography.fontSize}`);
+      return parts.join(" • ") || "Standard typography";
+    }
+    case "style_box": {
+      const parts: string[] = [];
+      if (props.rounded && props.rounded !== "none") parts.push(`Rounded: ${props.rounded}`);
+      if (props.aspectRatio && props.aspectRatio !== "auto") parts.push(`Ratio: ${props.aspectRatio}`);
+      if (props.thickness) parts.push(`Thickness: ${props.thickness}`);
+      return parts.join(" • ") || "Standard box shape";
+    }
+    case "style_appearance": {
+      if (props.styleControls?.shadow?.preset && props.styleControls.shadow.preset !== "none") {
+        return `Shadow: ${props.styleControls.shadow.preset}`;
+      }
+      return "Default appearance";
+    }
+    case "layout_dimensions": {
+      const parts: string[] = [];
+      if (props.size) parts.push(`Size: ${props.size}`);
+      if (props.sizePercent && props.sizePercent !== 100) parts.push(`Scale: ${props.sizePercent}%`);
+      if (props.width) parts.push(`Width: ${props.width}`);
+      if (props.height) parts.push(`Height: ${props.height}`);
+      return parts.join(" • ") || "Auto dimensions (100%)";
+    }
+    case "layout_structure": {
+      const parts: string[] = [];
+      if (props.columns) parts.push(`${props.columns} Columns`);
+      if (props.gap) parts.push(`Gap: ${props.gap}`);
+      return parts.join(" • ") || "Standard structure";
+    }
+    case "layout_spacing": {
+      const align = typeof props.align === "object" ? props.align?.base : props.align;
+      const parts: string[] = [];
+      if (align && align !== "left") parts.push(`Align: ${align}`);
+      const mTop = typeof props.marginTop === "object" ? props.marginTop?.base : props.marginTop;
+      const mBtm = typeof props.marginBottom === "object" ? props.marginBottom?.base : props.marginBottom;
+      if (mTop || mBtm) parts.push(`Margin: ${mTop || "md"}/${mBtm || "md"}`);
+      return parts.join(" • ") || "Align: Left • Margin: Medium";
+    }
+    case "layout_advanced": {
+      if (props.advancedLayout?.display) {
+        return `Display: ${props.advancedLayout.display}`;
+      }
+      return "Flexbox & Grid layout controls";
+    }
+    case "motion_entrance": {
+      if (props.animation?.type && props.animation.type !== "none") {
+        return `Preset: ${props.animation.type}`;
+      }
+      return "Entrance active";
+    }
+    case "motion_interactive": {
+      if (props.hoverEffect && props.hoverEffect !== "none") {
+        return `Hover: ${props.hoverEffect}`;
+      }
+      return "Subtle hover transitions";
+    }
+    case "content_main": {
+      const text = props.label || props.title || props.headline || props.text || props.content || props.quote || props.heading;
+      if (text && typeof text === "string") {
+        const clean = text.trim();
+        return clean.length > 28 ? `“${clean.slice(0, 26)}...”` : `“${clean}”`;
+      }
+      return "Configured text content";
+    }
+    case "content_media": {
+      const src = props.src || props.avatarUrl || props.imageUrl || props.backgroundImage || props.heroImage;
+      if (src && typeof src === "string") {
+        const filename = src.split("/").pop()?.slice(0, 20);
+        return filename ? `Media: ${filename}` : "Media source set";
+      }
+      return "No media selected";
+    }
+    case "content_links": {
+      const href = props.url || props.linkUrl || props.ctaHref || props.primaryCta?.href || props.primaryButton?.href;
+      if (href && typeof href === "string") {
+        return `Link: ${href.slice(0, 22)}`;
+      }
+      return "Destination link";
+    }
+    case "content_items": {
+      const items = props.items || props.statItems || props.stepItems || props.featureItems || props.accordionItems;
+      if (Array.isArray(items)) {
+        return `${items.length} ${items.length === 1 ? "item" : "items"} configured`;
+      }
+      return "Collection items";
+    }
+    default:
+      return null;
+  }
 }
 
 // Global variable to remember last active tab across element selections
@@ -211,6 +382,12 @@ let rememberedActiveTab: SettingTabId = "content";
 
 /**
  * Modern Redesigned Right Settings Panel for Puck Editor
+ * Features:
+ * - Sticky Header with Title, Icon, Breadcrumb, Actions, Search & Simple/Advanced Toggle
+ * - 4 Smart Categorized Tabs (Content, Style, Layout, Motion)
+ * - Collapsible Accordion Subgroups (Max 2 open at a time, 1st open by default)
+ * - Concise Glanceable Summaries on collapsed subgroup headers
+ * - Simple Mode vs Advanced Mode filtering
  */
 export function RedesignedSettingsPanel({
   children,
@@ -222,6 +399,7 @@ export function RedesignedSettingsPanel({
   itemSelector?: ItemSelector | null;
 }) {
   const { selectedItem, appState, dispatch, getParentById, getSelectorForId } = usePuck();
+  const [editorMode, setEditorMode] = useEditorMode();
 
   // Search filter query state
   const [searchQuery, setSearchQuery] = useState("");
@@ -229,25 +407,32 @@ export function RedesignedSettingsPanel({
   // Active Tab state
   const [activeTab, setActiveTab] = useState<SettingTabId>(rememberedActiveTab);
 
+  // Accordion open subgroups state (Array of open subgroup IDs: min 1, max 2)
+  const [openGroups, setOpenGroups] = useState<string[]>([]);
+
   const selectedId = selectedItem?.props?.id;
   const blockType = selectedItem?.type;
   const BlockIcon = getBlockIcon(blockType);
   const friendlyName = selectedItem ? getFriendlyBlockName(blockType) : "Page Root Settings";
+  const currentProps = selectedItem?.props || (appState.data?.root?.props as any) || {};
 
   // Find parent component if nested inside Columns, Section, etc.
   const parentComponent = selectedId ? getParentById(selectedId) : undefined;
   const ParentIcon = parentComponent ? getBlockIcon(parentComponent.type) : null;
   const friendlyParentName = parentComponent ? getFriendlyBlockName(parentComponent.type) : null;
 
-  // Categorize child elements (each child corresponds to a field with key === fieldName)
+  // Categorize child elements into Tabs and Subgroups
   const childArray = React.Children.toArray(children);
 
-  const categorizedFields = useMemo(() => {
-    const buckets: Record<SettingTabId, { key: string; element: React.ReactNode }[]> = {
-      content: [],
-      style: [],
-      layout: [],
-      motion: [],
+  const categorizedData = useMemo(() => {
+    const tabMap: Record<
+      SettingTabId,
+      Record<string, { key: string; element: React.ReactNode; isAdvanced?: boolean }[]>
+    > = {
+      content: {},
+      style: {},
+      layout: {},
+      motion: {},
     };
 
     childArray.forEach((child) => {
@@ -255,18 +440,31 @@ export function RedesignedSettingsPanel({
         const rawKey = String(child.key || "");
         // Puck keys are usually ".$fieldName" or "fieldName"
         const fieldName = rawKey.replace(/^\.\$/, "");
-        const category = getFieldCategory(fieldName);
-        buckets[category].push({ key: fieldName, element: child });
+        const meta = getFieldMeta(fieldName);
+
+        if (!tabMap[meta.tab][meta.subgroup]) {
+          tabMap[meta.tab][meta.subgroup] = [];
+        }
+
+        tabMap[meta.tab][meta.subgroup].push({
+          key: fieldName,
+          element: child,
+          isAdvanced: meta.isAdvanced,
+        });
       }
     });
 
-    return buckets;
+    return tabMap;
   }, [children]);
 
   // Determine available tabs (only tabs that have at least 1 field)
   const availableTabs = useMemo(() => {
-    return ALL_TABS.filter((tab) => categorizedFields[tab.id].length > 0);
-  }, [categorizedFields]);
+    return ALL_TABS.filter((tab) => {
+      const subgroups = categorizedData[tab.id];
+      const totalFields = Object.values(subgroups).reduce((acc, list) => acc + list.length, 0);
+      return totalFields > 0;
+    });
+  }, [categorizedData]);
 
   // Ensure active tab is valid for the currently selected block
   useEffect(() => {
@@ -280,9 +478,57 @@ export function RedesignedSettingsPanel({
     }
   }, [selectedId, blockType, availableTabs]);
 
+  // Retrieve visible subgroups for active tab based on Simple/Advanced mode
+  const currentTabSubgroups = useMemo(() => {
+    const defs = SUBGROUPS_BY_TAB[activeTab] || [];
+    return defs.filter((sub) => {
+      const fields = categorizedData[activeTab]?.[sub.id] || [];
+      if (fields.length === 0) return false;
+
+      // In Simple mode, hide advanced subgroups
+      if (editorMode === "simple" && sub.isAdvanced) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [activeTab, categorizedData, editorMode]);
+
+  // Reset open groups when tab or selected block changes: default only 1st group open
+  useEffect(() => {
+    if (currentTabSubgroups.length > 0) {
+      setOpenGroups([currentTabSubgroups[0].id]);
+    } else {
+      setOpenGroups([]);
+    }
+  }, [activeTab, selectedId, editorMode]);
+
   const handleTabChange = (newTab: SettingTabId) => {
     setActiveTab(newTab);
     rememberedActiveTab = newTab;
+  };
+
+  /**
+   * Accordion Toggle Handler: Max 2 open, min 1 open rule
+   */
+  const handleToggleGroup = (groupId: string) => {
+    setOpenGroups((prev) => {
+      if (prev.includes(groupId)) {
+        // If clicking an already open group
+        if (prev.length > 1) {
+          return prev.filter((id) => id !== groupId);
+        }
+        // If only 1 group open, allow closing or keep
+        return [];
+      } else {
+        // Opening a new group: max 2 open at any time
+        if (prev.length >= 2) {
+          // Drop oldest, add new
+          return [prev[prev.length - 1], groupId];
+        }
+        return [...prev, groupId];
+      }
+    });
   };
 
   // Actions
@@ -321,7 +567,6 @@ export function RedesignedSettingsPanel({
     dispatch({
       type: "setData",
       data: (prevData) => {
-        // Search in content
         const contentIdx = (prevData.content || []).findIndex((c) => c.props?.id === selectedId);
         if (contentIdx !== -1) {
           const newContent = [...(prevData.content || [])];
@@ -329,7 +574,6 @@ export function RedesignedSettingsPanel({
           return { ...prevData, content: newContent };
         }
 
-        // Search in zones
         if (prevData.zones) {
           const newZones = { ...prevData.zones };
           for (const [zoneKey, list] of Object.entries(newZones)) {
@@ -448,26 +692,28 @@ export function RedesignedSettingsPanel({
   const searchResults = useMemo(() => {
     if (!trimmedSearch) return [];
 
-    const matches: { key: string; element: React.ReactNode; category: SettingTabId }[] = [];
+    const matches: { key: string; element: React.ReactNode; tab: SettingTabId; subgroup: string }[] = [];
 
-    (Object.keys(categorizedFields) as SettingTabId[]).forEach((cat) => {
-      categorizedFields[cat].forEach((item) => {
-        const keyLower = item.key.toLowerCase();
-        if (keyLower.includes(trimmedSearch)) {
-          matches.push({ ...item, category: cat });
-        }
+    (Object.keys(categorizedData) as SettingTabId[]).forEach((tab) => {
+      Object.entries(categorizedData[tab]).forEach(([subgroupId, items]) => {
+        items.forEach((item) => {
+          const keyLower = item.key.toLowerCase();
+          if (keyLower.includes(trimmedSearch)) {
+            matches.push({ ...item, tab, subgroup: subgroupId });
+          }
+        });
       });
     });
 
     return matches;
-  }, [trimmedSearch, categorizedFields]);
+  }, [trimmedSearch, categorizedData]);
 
   return (
     <div className="flex flex-col h-full w-full bg-white select-none text-slate-800 font-sans">
       {/* 1. STICKY PANEL HEADER */}
       <div className="sticky top-0 z-20 bg-white border-b border-slate-200 shadow-2xs">
         {/* Header Top Row: Icon + Name + Breadcrumb + Actions */}
-        <div className="px-3.5 pt-3 pb-2.5 flex items-center justify-between gap-2">
+        <div className="px-3.5 pt-3 pb-2 flex items-center justify-between gap-2">
           {/* Left: Element Icon & Name + Breadcrumb */}
           <div className="min-w-0 flex-1">
             {/* Breadcrumb row */}
@@ -553,15 +799,16 @@ export function RedesignedSettingsPanel({
           </div>
         </div>
 
-        {/* Header Search Filter Box */}
-        <div className="px-3 pb-2.5">
-          <div className="relative flex items-center">
+        {/* Header Middle Row: Search Box & Simple/Advanced Segmented Toggle */}
+        <div className="px-3 pb-2.5 flex items-center gap-2">
+          {/* Search Box */}
+          <div className="relative flex-1 flex items-center">
             <Search className="size-3.5 absolute left-2.5 text-slate-400 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search settings (e.g. color, padding, font)..."
+              placeholder="Search settings..."
               className="w-full pl-8 pr-7 py-1 text-xs rounded-lg border border-slate-200 bg-slate-50/80 focus:bg-white focus:border-navy focus:ring-1 focus:ring-navy outline-none transition-all placeholder:text-slate-400 font-medium"
             />
             {searchQuery && (
@@ -575,6 +822,42 @@ export function RedesignedSettingsPanel({
               </button>
             )}
           </div>
+
+          {/* Simple | Advanced Mode Segmented Toggle */}
+          <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 shrink-0">
+            <button
+              type="button"
+              onClick={() => {
+                setEditorMode("simple");
+                toast.info("⚡ Simple Mode active");
+              }}
+              className={`flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                editorMode === "simple"
+                  ? "bg-white text-navy shadow-2xs"
+                  : "text-slate-500 hover:text-slate-800"
+              }`}
+              title="Simple Mode: Streamlined essentials and presets"
+            >
+              <Sparkles className="size-3 text-amber-500" />
+              <span>Simple</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setEditorMode("advanced");
+                toast.info("🛠️ Advanced Mode active");
+              }}
+              className={`flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                editorMode === "advanced"
+                  ? "bg-white text-navy shadow-2xs"
+                  : "text-slate-500 hover:text-slate-800"
+              }`}
+              title="Advanced Mode: Exact px, flex/grid, and full CSS unlocked"
+            >
+              <SlidersHorizontal className="size-3 text-blue-600" />
+              <span>Advanced</span>
+            </button>
+          </div>
         </div>
 
         {/* 2. TABS BAR (Max 4 tabs: Content, Style, Layout, Motion) */}
@@ -583,7 +866,6 @@ export function RedesignedSettingsPanel({
             {availableTabs.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
-              const count = categorizedFields[tab.id].length;
 
               return (
                 <button
@@ -605,8 +887,8 @@ export function RedesignedSettingsPanel({
         )}
       </div>
 
-      {/* 3. SETTINGS FIELDS CONTENT BODY */}
-      <div className="flex-1 overflow-y-auto p-3.5 space-y-3.5 bg-white">
+      {/* 3. SETTINGS FIELDS CONTENT BODY (Accordion Groups) */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-2.5 bg-slate-50/30">
         {isLoading ? (
           <div className="py-12 flex flex-col items-center justify-center gap-2 text-slate-400">
             <div className="size-5 border-2 border-navy border-t-transparent rounded-full animate-spin" />
@@ -614,7 +896,7 @@ export function RedesignedSettingsPanel({
           </div>
         ) : trimmedSearch ? (
           /* Live Search Filter Results Mode */
-          <div className="space-y-3">
+          <div className="space-y-3 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs">
             <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase tracking-wider pb-1 border-b border-slate-100">
               <span>Matching Settings ({searchResults.length})</span>
               <span className="text-[10px] text-slate-400">for &quot;{trimmedSearch}&quot;</span>
@@ -634,11 +916,11 @@ export function RedesignedSettingsPanel({
               </div>
             ) : (
               searchResults.map((item) => (
-                <div key={item.key} className="space-y-1 bg-slate-50/50 p-2.5 rounded-xl border border-slate-200/80">
+                <div key={item.key} className="space-y-1 bg-slate-50/70 p-2.5 rounded-xl border border-slate-200/80">
                   <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
                     <span className="font-mono text-slate-600">{item.key}</span>
                     <span className="px-1.5 py-0.2 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-                      {item.category}
+                      {item.tab}
                     </span>
                   </div>
                   <div className="pt-1">{item.element}</div>
@@ -647,18 +929,84 @@ export function RedesignedSettingsPanel({
             )}
           </div>
         ) : (
-          /* Tabbed Fields Mode */
-          <div className="space-y-3">
-            {categorizedFields[activeTab]?.length > 0 ? (
-              categorizedFields[activeTab].map((item) => (
-                <div key={item.key} className="puck-field-container">
-                  {item.element}
-                </div>
-              ))
-            ) : (
-              <div className="py-8 text-center text-slate-400">
-                <p className="text-xs">No {activeTab} settings available for this element.</p>
+          /* Tabbed Accordion Groups Mode */
+          <div className="space-y-2">
+            {currentTabSubgroups.length === 0 ? (
+              <div className="py-12 text-center text-slate-400 bg-white p-6 rounded-2xl border border-slate-200">
+                <p className="text-xs">No {activeTab} settings available for this element in {editorMode} mode.</p>
               </div>
+            ) : (
+              currentTabSubgroups.map((subgroup) => {
+                const SubIcon = subgroup.icon;
+                const fields = categorizedData[activeTab]?.[subgroup.id] || [];
+                const isOpen = openGroups.includes(subgroup.id);
+                const summary = getSubgroupSummary(subgroup.id, currentProps);
+
+                return (
+                  <div
+                    key={subgroup.id}
+                    className={`rounded-xl border transition-all overflow-hidden bg-white ${
+                      isOpen
+                        ? "border-slate-300 shadow-xs"
+                        : "border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    {/* Accordion Group Header */}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleGroup(subgroup.id)}
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 text-left transition-colors cursor-pointer ${
+                        isOpen ? "bg-slate-50/80 border-b border-slate-200/80" : "hover:bg-slate-50/50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
+                        <SubIcon className={`size-3.5 shrink-0 ${isOpen ? "text-blue-600" : "text-slate-400"}`} />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-xs font-bold text-slate-800 truncate">
+                              {subgroup.label}
+                            </span>
+                            {subgroup.isAdvanced && (
+                              <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                                Advanced
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Summary row when collapsed */}
+                          {!isOpen && summary && (
+                            <span className="text-[10.5px] text-slate-400 truncate block mt-0.5 font-medium">
+                              {summary}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-slate-100 text-slate-500">
+                          {fields.length}
+                        </span>
+                        <ChevronDown
+                          className={`size-3.5 text-slate-400 transition-transform duration-200 ${
+                            isOpen ? "rotate-180 text-slate-600" : ""
+                          }`}
+                        />
+                      </div>
+                    </button>
+
+                    {/* Accordion Group Fields Body */}
+                    {isOpen && (
+                      <div className="p-3 space-y-3 bg-white">
+                        {fields.map((item) => (
+                          <div key={item.key} className="puck-field-container">
+                            {item.element}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })
             )}
           </div>
         )}
