@@ -23,6 +23,7 @@ import { isValidCanonicalUrl, type CmsRootProps } from "@/cms/root";
 import { isValidImageUrl } from "@/cms/blocks/Image";
 import { ImagePickerInput } from "@/cms/fields/ImagePicker";
 import { CustomActionBar, CustomComponentOverlay, getBlockIcon, getFriendlyBlockName } from "@/cms/editor-overlay";
+import { RedesignedSettingsPanel } from "@/cms/editor-settings-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -1242,6 +1243,14 @@ function CmsPageEditorRoute() {
                   >
                     {children}
                   </CustomComponentOverlay>
+                ),
+                fields: ({ children, isLoading, itemSelector }) => (
+                  <RedesignedSettingsPanel
+                    isLoading={isLoading}
+                    itemSelector={itemSelector}
+                  >
+                    {children}
+                  </RedesignedSettingsPanel>
                 ),
               }}
             />
