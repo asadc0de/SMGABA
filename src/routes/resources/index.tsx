@@ -20,7 +20,7 @@ import { QuoteForm } from "@/components/site/QuoteForm";
 
 const POSTS_PER_PAGE = 12;
 
-export const Route = createFileRoute("/resources")({
+export const Route = createFileRoute("/resources/")({
   head: () => ({
     meta: [
       { title: "Resources & Newsletters | SMG Advisory Insights" },

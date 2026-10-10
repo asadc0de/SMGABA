@@ -32,7 +32,6 @@ import { Route as NewYorkCityLocationRouteImport } from './routes/new-york-city-
 import { Route as OurTeamRouteImport } from './routes/our-team'
 import { Route as PrivacyPolicy2RouteImport } from './routes/privacy-policy-2'
 import { Route as RealEstateRouteImport } from './routes/real-estate'
-import { Route as ResourcesRouteImport } from './routes/resources'
 import { Route as RetailRouteImport } from './routes/retail'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
@@ -44,6 +43,7 @@ import { Route as CmsNewRouteImport } from './routes/cms/new'
 import { Route as InternalRedirectsRouteImport } from './routes/internal/redirects'
 import { Route as InternalSettingsRouteImport } from './routes/internal/settings'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
+import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ResourcesSlugRouteImport } from './routes/resources/$slug'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
 import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/bookkeeping'
@@ -176,11 +176,6 @@ const RealEstateRoute = RealEstateRouteImport.update({
   path: '/real-estate',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResourcesRoute = ResourcesRouteImport.update({
-  id: '/resources',
-  path: '/resources',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RetailRoute = RetailRouteImport.update({
   id: '/retail',
   path: '/retail',
@@ -236,10 +231,15 @@ const InternalWebinarLinksRoute = InternalWebinarLinksRouteImport.update({
   path: '/internal/webinar-links',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResourcesIndexRoute = ResourcesIndexRouteImport.update({
+  id: '/resources/',
+  path: '/resources/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesSlugRoute = ResourcesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => ResourcesRoute,
+  id: '/resources/$slug',
+  path: '/resources/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SolutionsIndexRoute = SolutionsIndexRouteImport.update({
   id: '/solutions/',
@@ -343,7 +343,6 @@ export interface FileRoutesByFullPath {
   '/our-team': typeof OurTeamRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
-  '/resources': typeof ResourcesRouteWithChildren
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
@@ -363,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/resources/': typeof ResourcesIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
@@ -396,7 +396,6 @@ export interface FileRoutesByTo {
   '/our-team': typeof OurTeamRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
-  '/resources': typeof ResourcesRouteWithChildren
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
@@ -416,6 +415,7 @@ export interface FileRoutesByTo {
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog': typeof BlogIndexRoute
   '/cms': typeof CmsIndexRoute
+  '/resources': typeof ResourcesIndexRoute
   '/solutions': typeof SolutionsIndexRoute
   '/tools': typeof ToolsIndexRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
@@ -450,7 +450,6 @@ export interface FileRoutesById {
   '/our-team': typeof OurTeamRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
-  '/resources': typeof ResourcesRouteWithChildren
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
@@ -470,6 +469,7 @@ export interface FileRoutesById {
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
+  '/resources/': typeof ResourcesIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
   '/tools/': typeof ToolsIndexRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
@@ -505,7 +505,6 @@ export interface FileRouteTypes {
     | '/our-team'
     | '/privacy-policy-2'
     | '/real-estate'
-    | '/resources'
     | '/retail'
     | '/testimonials'
     | '/api/chatbase-lead'
@@ -525,6 +524,7 @@ export interface FileRouteTypes {
     | '/tools/redirections'
     | '/blog/'
     | '/cms/'
+    | '/resources/'
     | '/solutions/'
     | '/tools/'
     | '/cms/$id/edit'
@@ -558,7 +558,6 @@ export interface FileRouteTypes {
     | '/our-team'
     | '/privacy-policy-2'
     | '/real-estate'
-    | '/resources'
     | '/retail'
     | '/testimonials'
     | '/api/chatbase-lead'
@@ -578,6 +577,7 @@ export interface FileRouteTypes {
     | '/tools/redirections'
     | '/blog'
     | '/cms'
+    | '/resources'
     | '/solutions'
     | '/tools'
     | '/cms/$id/edit'
@@ -611,7 +611,6 @@ export interface FileRouteTypes {
     | '/our-team'
     | '/privacy-policy-2'
     | '/real-estate'
-    | '/resources'
     | '/retail'
     | '/testimonials'
     | '/api/chatbase-lead'
@@ -631,6 +630,7 @@ export interface FileRouteTypes {
     | '/tools/redirections'
     | '/blog/'
     | '/cms/'
+    | '/resources/'
     | '/solutions/'
     | '/tools/'
     | '/cms/$id/edit'
@@ -665,7 +665,6 @@ export interface RootRouteChildren {
   OurTeamRoute: typeof OurTeamRoute
   PrivacyPolicy2Route: typeof PrivacyPolicy2Route
   RealEstateRoute: typeof RealEstateRoute
-  ResourcesRoute: typeof ResourcesRouteWithChildren
   RetailRoute: typeof RetailRoute
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
@@ -675,6 +674,7 @@ export interface RootRouteChildren {
   InternalRedirectsRoute: typeof InternalRedirectsRoute
   InternalSettingsRoute: typeof InternalSettingsRoute
   InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
+  ResourcesSlugRoute: typeof ResourcesSlugRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
   SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
   SolutionsTaxRoute: typeof SolutionsTaxRoute
@@ -684,6 +684,7 @@ export interface RootRouteChildren {
   ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CmsIndexRoute: typeof CmsIndexRoute
+  ResourcesIndexRoute: typeof ResourcesIndexRoute
   SolutionsIndexRoute: typeof SolutionsIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
   CmsIdEditRoute: typeof CmsIdEditRoute
@@ -857,13 +858,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RealEstateRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/resources': {
-      id: '/resources'
-      path: '/resources'
-      fullPath: '/resources'
-      preLoaderRoute: typeof ResourcesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/retail': {
       id: '/retail'
       path: '/retail'
@@ -941,12 +935,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalWebinarLinksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resources/': {
+      id: '/resources/'
+      path: '/resources'
+      fullPath: '/resources/'
+      preLoaderRoute: typeof ResourcesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources/$slug': {
       id: '/resources/$slug'
-      path: '/$slug'
+      path: '/resources/$slug'
       fullPath: '/resources/$slug'
       preLoaderRoute: typeof ResourcesSlugRouteImport
-      parentRoute: typeof ResourcesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/solutions/': {
       id: '/solutions/'
@@ -1056,18 +1057,6 @@ declare module '@tanstack/react-router' {
   }
 }
 
-interface ResourcesRouteChildren {
-  ResourcesSlugRoute: typeof ResourcesSlugRoute
-}
-
-const ResourcesRouteChildren: ResourcesRouteChildren = {
-  ResourcesSlugRoute: ResourcesSlugRoute,
-}
-
-const ResourcesRouteWithChildren = ResourcesRoute._addFileChildren(
-  ResourcesRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
@@ -1092,7 +1081,6 @@ const rootRouteChildren: RootRouteChildren = {
   OurTeamRoute: OurTeamRoute,
   PrivacyPolicy2Route: PrivacyPolicy2Route,
   RealEstateRoute: RealEstateRoute,
-  ResourcesRoute: ResourcesRouteWithChildren,
   RetailRoute: RetailRoute,
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
@@ -1102,6 +1090,7 @@ const rootRouteChildren: RootRouteChildren = {
   InternalRedirectsRoute: InternalRedirectsRoute,
   InternalSettingsRoute: InternalSettingsRoute,
   InternalWebinarLinksRoute: InternalWebinarLinksRoute,
+  ResourcesSlugRoute: ResourcesSlugRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
   SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
   SolutionsTaxRoute: SolutionsTaxRoute,
@@ -1111,6 +1100,7 @@ const rootRouteChildren: RootRouteChildren = {
   ToolsRedirectionsRoute: ToolsRedirectionsRoute,
   BlogIndexRoute: BlogIndexRoute,
   CmsIndexRoute: CmsIndexRoute,
+  ResourcesIndexRoute: ResourcesIndexRoute,
   SolutionsIndexRoute: SolutionsIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
   CmsIdEditRoute: CmsIdEditRoute,
