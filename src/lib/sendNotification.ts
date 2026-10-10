@@ -250,6 +250,9 @@ Reply-To: ${payload.email}
       return { success: false, error: error.message };
     }
 
+    console.log(
+      `[Resend Success] Notification email sent successfully (ID: ${data?.id}) to ${notifyEmail.trim()}`,
+    );
     return { success: true, id: data?.id };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : String(err);

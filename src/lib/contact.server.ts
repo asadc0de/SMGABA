@@ -251,7 +251,11 @@ export async function processContactSubmission(
       clientIp,
     });
 
-    if (!emailResult.success) {
+    if (emailResult.success) {
+      console.log(
+        `[Email Notification Success] Email sent via Resend for ${trimmedEmail} (Email ID: ${emailResult.id || "N/A"})`,
+      );
+    } else {
       console.warn(
         `[Email Notification Warning] Failed to send email for ${trimmedEmail}: ${emailResult.error}`,
       );
