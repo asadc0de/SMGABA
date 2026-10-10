@@ -1,6 +1,6 @@
 import { createFileRoute, redirect, notFound, isRedirect } from "@tanstack/react-router";
 import { getBlogPost } from "@/lib/blogs.server";
-import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
+import { LEGACY_BLOG_SLUGS, LEGACY_RESOURCE_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
 import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 import { resolveWebinarSlug } from "@/lib/webinar-redirects";
 import { resolveCmsRedirect } from "@/lib/redirects.server";
@@ -23,12 +23,17 @@ export const Route = createFileRoute("/$slug")({
       return;
     }
 
-    // 2. If this slug is a known legacy blog post, 301 to the canonical /blog/<slug> URL.
+    // 2. If this slug is a known resource post, 301 to the canonical /resources/<slug> URL.
+    if (LEGACY_RESOURCE_SLUGS.has(params.slug)) {
+      throw redirect({ to: `/resources/${params.slug}`, statusCode: 301 });
+    }
+
+    // 3. If this slug is a known legacy blog post, 301 to the canonical /blog/<slug> URL.
     if (LEGACY_BLOG_SLUGS.has(params.slug)) {
       throw redirect({ to: `/blog/${params.slug}`, statusCode: 301 });
     }
 
-    // 3. Check stale sitemap static fallback redirects if any
+    // 4. Check stale sitemap static fallback redirects if any
     if (STALE_SITEMAP_REDIRECTS && STALE_SITEMAP_REDIRECTS[params.slug]) {
       throw redirect({ to: STALE_SITEMAP_REDIRECTS[params.slug], statusCode: 301 });
     }

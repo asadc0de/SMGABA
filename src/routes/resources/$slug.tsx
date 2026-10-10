@@ -1,29 +1,23 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { getBlogPost } from "@/lib/blogs.server";
-import { LEGACY_RESOURCE_SLUGS } from "@/data/legacyRedirects";
+import { createFileRoute } from "@tanstack/react-router";
+import { getResourcePostBySlug } from "@/data/resourcePosts";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 
-export const Route = createFileRoute("/blog/$slug")({
-  beforeLoad: ({ params }) => {
-    if (LEGACY_RESOURCE_SLUGS.has(params.slug)) {
-      throw redirect({ to: `/resources/${params.slug}`, statusCode: 301 });
-    }
-  },
+export const Route = createFileRoute("/resources/$slug")({
   head: ({ loaderData }) => {
     const post = loaderData?.post;
     if (!post) {
       return {
-        meta: [{ title: "Article Not Found | SMG ABA" }],
+        meta: [{ title: "Resource Not Found | SMG ABA" }],
         links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
       };
     }
     return {
       meta: [
-        { title: post.metaTitle || post.title },
+        { title: post.metaTitle || `${post.title} | SMG Resources` },
         { name: "description", content: post.metaDescription || post.excerpt || "" },
         { property: "og:title", content: post.metaTitle || post.title },
         { property: "og:description", content: post.metaDescription || post.excerpt || "" },
@@ -33,13 +27,13 @@ export const Route = createFileRoute("/blog/$slug")({
     };
   },
   loader: async ({ params }) => {
-    const post = await getBlogPost({ data: params.slug });
-    return { post };
+    const post = getResourcePostBySlug(params.slug);
+    return { post: post || null };
   },
-  component: BlogSlugPage,
+  component: ResourceSlugPage,
 });
 
-function BlogSlugPage() {
+function ResourceSlugPage() {
   const { post } = Route.useLoaderData();
 
   if (!post) {
@@ -48,17 +42,17 @@ function BlogSlugPage() {
         <Header />
         <main className="py-32 px-6 text-center">
           <div className="mx-auto max-w-md card-surface p-10">
-            <BookOpen className="mx-auto size-12 text-muted-foreground" />
+            <Sparkles className="mx-auto size-12 text-muted-foreground" />
             <h1 className="mt-4 font-serif-hero text-2xl font-bold text-navy">
-              Article Not Found
+              Resource Not Found
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              The article you are looking for does not exist or has been moved.
+              The resource or article you are looking for does not exist or has been moved.
             </p>
             <div className="mt-6 flex justify-center gap-3">
               <Button asChild variant="outline" className="rounded-full">
-                <a href="/blog">
-                  <ArrowLeft className="mr-2 size-4" /> Back to Blog
+                <a href="/resources">
+                  <ArrowLeft className="mr-2 size-4" /> Back to Resources
                 </a>
               </Button>
               <Button asChild className="rounded-full bg-navy text-white hover:bg-navy/90">
@@ -72,5 +66,5 @@ function BlogSlugPage() {
     );
   }
 
-  return <BlogPostView post={post} />;
+  return <BlogPostView post={post} isResource={true} />;
 }

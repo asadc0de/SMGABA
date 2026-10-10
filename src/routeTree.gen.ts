@@ -44,6 +44,7 @@ import { Route as CmsNewRouteImport } from './routes/cms/new'
 import { Route as InternalRedirectsRouteImport } from './routes/internal/redirects'
 import { Route as InternalSettingsRouteImport } from './routes/internal/settings'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
+import { Route as ResourcesSlugRouteImport } from './routes/resources/$slug'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
 import { Route as SolutionsBookkeepingRouteImport } from './routes/solutions/bookkeeping'
 import { Route as SolutionsCfoAdvisoryServicesRouteImport } from './routes/solutions/cfo-advisory-services'
@@ -235,6 +236,11 @@ const InternalWebinarLinksRoute = InternalWebinarLinksRouteImport.update({
   path: '/internal/webinar-links',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResourcesSlugRoute = ResourcesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ResourcesRoute,
+} as any)
 const SolutionsIndexRoute = SolutionsIndexRouteImport.update({
   id: '/solutions/',
   path: '/solutions/',
@@ -337,7 +343,7 @@ export interface FileRoutesByFullPath {
   '/our-team': typeof OurTeamRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
-  '/resources': typeof ResourcesRoute
+  '/resources': typeof ResourcesRouteWithChildren
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
@@ -347,6 +353,7 @@ export interface FileRoutesByFullPath {
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
+  '/resources/$slug': typeof ResourcesSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
@@ -389,7 +396,7 @@ export interface FileRoutesByTo {
   '/our-team': typeof OurTeamRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
-  '/resources': typeof ResourcesRoute
+  '/resources': typeof ResourcesRouteWithChildren
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
@@ -399,6 +406,7 @@ export interface FileRoutesByTo {
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
+  '/resources/$slug': typeof ResourcesSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
@@ -442,7 +450,7 @@ export interface FileRoutesById {
   '/our-team': typeof OurTeamRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
-  '/resources': typeof ResourcesRoute
+  '/resources': typeof ResourcesRouteWithChildren
   '/retail': typeof RetailRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
+  '/resources/$slug': typeof ResourcesSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
   '/solutions/tax': typeof SolutionsTaxRoute
@@ -506,6 +515,7 @@ export interface FileRouteTypes {
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
+    | '/resources/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
@@ -558,6 +568,7 @@ export interface FileRouteTypes {
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
+    | '/resources/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
@@ -610,6 +621,7 @@ export interface FileRouteTypes {
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
+    | '/resources/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
     | '/solutions/tax'
@@ -653,7 +665,7 @@ export interface RootRouteChildren {
   OurTeamRoute: typeof OurTeamRoute
   PrivacyPolicy2Route: typeof PrivacyPolicy2Route
   RealEstateRoute: typeof RealEstateRoute
-  ResourcesRoute: typeof ResourcesRoute
+  ResourcesRoute: typeof ResourcesRouteWithChildren
   RetailRoute: typeof RetailRoute
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
@@ -929,6 +941,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalWebinarLinksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/resources/$slug': {
+      id: '/resources/$slug'
+      path: '/$slug'
+      fullPath: '/resources/$slug'
+      preLoaderRoute: typeof ResourcesSlugRouteImport
+      parentRoute: typeof ResourcesRoute
+    }
     '/solutions/': {
       id: '/solutions/'
       path: '/solutions'
@@ -1037,6 +1056,18 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface ResourcesRouteChildren {
+  ResourcesSlugRoute: typeof ResourcesSlugRoute
+}
+
+const ResourcesRouteChildren: ResourcesRouteChildren = {
+  ResourcesSlugRoute: ResourcesSlugRoute,
+}
+
+const ResourcesRouteWithChildren = ResourcesRoute._addFileChildren(
+  ResourcesRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SlugRoute: SlugRoute,
@@ -1061,7 +1092,7 @@ const rootRouteChildren: RootRouteChildren = {
   OurTeamRoute: OurTeamRoute,
   PrivacyPolicy2Route: PrivacyPolicy2Route,
   RealEstateRoute: RealEstateRoute,
-  ResourcesRoute: ResourcesRoute,
+  ResourcesRoute: ResourcesRouteWithChildren,
   RetailRoute: RetailRoute,
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,

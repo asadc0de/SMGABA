@@ -1,5 +1,6 @@
 import { BLOG_POSTS } from "@/data/blogPosts";
-import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
+import { RESOURCE_POSTS } from "@/data/resourcePosts";
+import { LEGACY_BLOG_SLUGS, LEGACY_RESOURCE_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
 import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 
 /**
@@ -74,8 +75,8 @@ export function isValidSlugFormat(slug: string): boolean {
 /**
  * Collects all reserved slugs derived from:
  * 1. Top-level static routes and namespaces
- * 2. Static blog posts
- * 3. Legacy blog redirect slugs
+ * 2. Static blog posts and resource posts
+ * 3. Legacy blog & resource redirect slugs
  * 4. Stale sitemap redirect slugs
  * 5. Predefined webinar redirects
  */
@@ -94,8 +95,20 @@ export function getAllReservedSlugs(): Set<string> {
     }
   }
 
+  // 2b. Static resource posts
+  for (const post of RESOURCE_POSTS) {
+    if (post.slug) {
+      reserved.add(post.slug.toLowerCase());
+    }
+  }
+
   // 3. Legacy blog post slugs
   for (const slug of LEGACY_BLOG_SLUGS) {
+    reserved.add(slug.toLowerCase());
+  }
+
+  // 3b. Legacy resource post slugs
+  for (const slug of LEGACY_RESOURCE_SLUGS) {
     reserved.add(slug.toLowerCase());
   }
 

@@ -148,7 +148,7 @@ export async function getSupabaseServerClient(): Promise<SupabaseClient | null> 
 }
 
 import { WEBINAR_REDIRECTS } from "../data/webinarRedirects";
-import { LEGACY_BLOG_SLUGS, STALE_SITEMAP_REDIRECTS } from "../data/legacyRedirects";
+import { LEGACY_BLOG_SLUGS, LEGACY_RESOURCE_SLUGS, STALE_SITEMAP_REDIRECTS } from "../data/legacyRedirects";
 
 // In-memory fallback store for local testing/dev
 const localFallbackRedirects = new Map<string, WebinarRedirect>();
@@ -168,7 +168,16 @@ export function getAllStaticRedirects(): WebinarRedirect[] {
     });
   }
 
-  // 2. Legacy blog slugs
+  // 2. Legacy resource slugs (moved from blog to resources)
+  for (const slug of LEGACY_RESOURCE_SLUGS) {
+    list.push({
+      slug,
+      target_url: `/resources/${slug}`,
+      created_at: "2024-01-01T00:00:00.000Z",
+    });
+  }
+
+  // 3. Legacy blog slugs
   for (const slug of LEGACY_BLOG_SLUGS) {
     list.push({
       slug,

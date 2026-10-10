@@ -14,17 +14,34 @@ import {
   BookOpen,
 } from "lucide-react";
 import { BlogPost, BLOG_POSTS } from "@/data/blogPosts";
+import { RESOURCE_POSTS, type ResourcePost } from "@/data/resourcePosts";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { QuoteForm } from "@/components/site/QuoteForm";
 
 interface BlogPostViewProps {
-  post: BlogPost;
+  post: BlogPost | ResourcePost;
+  isResource?: boolean;
+  parentLabel?: string;
+  parentHref?: string;
 }
 
-export function BlogPostView({ post }: BlogPostViewProps) {
+export function BlogPostView({
+  post,
+  isResource: explicitIsResource,
+  parentLabel: customParentLabel,
+  parentHref: customParentHref,
+}: BlogPostViewProps) {
   const [copied, setCopied] = useState(false);
+
+  const isResource =
+    explicitIsResource !== undefined
+      ? explicitIsResource
+      : RESOURCE_POSTS.some((r) => r.slug === post.slug);
+
+  const parentLabel = customParentLabel || (isResource ? "Resources" : "Blog");
+  const parentHref = customParentHref || (isResource ? "/resources" : "/blog");
 
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -34,8 +51,10 @@ export function BlogPostView({ post }: BlogPostViewProps) {
     }
   };
 
-  // Find related posts (excluding archived)
-  const relatedPosts = BLOG_POSTS.filter((p) => !p.archived && p.slug !== post.slug)
+  // Find related posts (excluding archived) from the relevant pool
+  const candidatePool = isResource ? RESOURCE_POSTS : BLOG_POSTS;
+  const relatedPosts = candidatePool
+    .filter((p) => !p.archived && p.slug !== post.slug)
     .sort((a, b) => (a.category === post.category ? -1 : 1))
     .slice(0, 3);
 
@@ -53,8 +72,8 @@ export function BlogPostView({ post }: BlogPostViewProps) {
                 Home
               </a>
               <ChevronRight className="size-3 text-slate-400" />
-              <a href="/blog" className="hover:text-white transition-colors">
-                Blog
+              <a href={parentHref} className="hover:text-white transition-colors">
+                {parentLabel}
               </a>
               <ChevronRight className="size-3 text-slate-400" />
               <span className="text-blue-300 truncate max-w-xs">{post.category}</span>
@@ -236,11 +255,11 @@ export function BlogPostView({ post }: BlogPostViewProps) {
                 </div>
               </div>
 
-              {/* Back to blog button */}
+              {/* Back to index button */}
               <div className="pt-8 flex items-center justify-between">
                 <Button asChild variant="outline" className="gap-2 rounded-full">
-                  <a href="/blog">
-                    <ArrowLeft className="size-4" /> Back to All Articles
+                  <a href={parentHref}>
+                    <ArrowLeft className="size-4" /> Back to All {parentLabel}
                   </a>
                 </Button>
                 <Button asChild className="gap-2 rounded-full bg-navy text-white hover:bg-navy/90">
@@ -261,55 +280,58 @@ export function BlogPostView({ post }: BlogPostViewProps) {
                 <div>
                   <span className="eyebrow">Explore More</span>
                   <h2 className="mt-2 font-serif-hero text-2xl sm:text-3xl font-bold text-navy">
-                    Related Articles & Insights
+                    Related {parentLabel} & Insights
                   </h2>
                 </div>
                 <Button asChild variant="ghost" className="hidden sm:inline-flex gap-1.5 text-primary font-bold">
-                  <a href="/blog">
-                    View All Posts <ArrowRight className="size-4" />
+                  <a href={parentHref}>
+                    View All {parentLabel} <ArrowRight className="size-4" />
                   </a>
                 </Button>
               </div>
 
               <div className="grid gap-6 md:grid-cols-3">
-                {relatedPosts.map((rel) => (
-                  <a
-                    key={rel.slug}
-                    href={`/${rel.slug}/`}
-                    className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/40"
-                  >
-                    <div>
-                      <div className="relative aspect-16/10 w-full overflow-hidden rounded-xl bg-muted mb-4">
-                        <img
-                          src={rel.image}
-                          alt={rel.title}
-                          className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-                          loading="lazy"
-                        />
-                        <span className="absolute top-3 left-3 rounded-full bg-navy/80 backdrop-blur-md px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-wider text-white">
-                          {rel.category}
-                        </span>
+                {relatedPosts.map((rel) => {
+                  const relHref = isResource ? `/resources/${rel.slug}` : `/blog/${rel.slug}`;
+                  return (
+                    <a
+                      key={rel.slug}
+                      href={relHref}
+                      className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary/40"
+                    >
+                      <div>
+                        <div className="relative aspect-16/10 w-full overflow-hidden rounded-xl bg-muted mb-4">
+                          <img
+                            src={rel.image}
+                            alt={rel.title}
+                            className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                          <span className="absolute top-3 left-3 rounded-full bg-navy/80 backdrop-blur-md px-2.5 py-0.5 text-[0.7rem] font-bold uppercase tracking-wider text-white">
+                            {rel.category}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Calendar className="size-3 text-primary" />
+                          <span>{rel.date}</span>
+                          <span>•</span>
+                          <span>{rel.readTime}</span>
+                        </div>
+                        <h3 className="mt-2 font-serif-hero text-lg font-bold text-navy leading-snug group-hover:text-primary transition-colors">
+                          {rel.title}
+                        </h3>
+                        <p className="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                          {rel.excerpt}
+                        </p>
                       </div>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Calendar className="size-3 text-primary" />
-                        <span>{rel.date}</span>
-                        <span>•</span>
-                        <span>{rel.readTime}</span>
-                      </div>
-                      <h3 className="mt-2 font-serif-hero text-lg font-bold text-navy leading-snug group-hover:text-primary transition-colors">
-                        {rel.title}
-                      </h3>
-                      <p className="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
-                        {rel.excerpt}
-                      </p>
-                    </div>
 
-                    <div className="mt-4 pt-3 border-t border-border/60 flex items-center text-xs font-bold text-primary gap-1 group-hover:translate-x-0.5 transition-transform">
-                      <span>Read Article</span>
-                      <ArrowRight className="size-3.5" />
-                    </div>
-                  </a>
-                ))}
+                      <div className="mt-4 pt-3 border-t border-border/60 flex items-center text-xs font-bold text-primary gap-1 group-hover:translate-x-0.5 transition-transform">
+                        <span>Read {isResource ? "Resource" : "Article"}</span>
+                        <ArrowRight className="size-3.5" />
+                      </div>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </section>
