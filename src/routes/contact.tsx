@@ -87,6 +87,7 @@ function ContactPage() {
     phone: "",
     officePreference: "General Inquiry",
     message: "",
+    website: "",
     agreed: false,
   });
 
@@ -132,6 +133,7 @@ function ContactPage() {
           source: "main",
           message: formData.message.trim(),
           officePreference: formData.officePreference,
+          website: formData.website || undefined,
         }),
       });
 
@@ -145,6 +147,7 @@ function ContactPage() {
           phone: "",
           officePreference: "General Inquiry",
           message: "",
+          website: "",
           agreed: false,
         });
       } else {
@@ -254,6 +257,16 @@ function ContactPage() {
                       aria-describedby={errorMessage ? "contact-form-error" : undefined}
                       className="space-y-5"
                     >
+                      {/* Honeypot Spam Trap */}
+                      <input
+                        type="text"
+                        name="website"
+                        value={formData.website}
+                        onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                        className="hidden"
+                        tabIndex={-1}
+                        autoComplete="off"
+                      />
                       {/* Name field */}
                       <div>
                         <label

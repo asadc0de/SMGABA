@@ -25,6 +25,7 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
     contactInfo: "",
     bestTime: "Morning",
     notes: "",
+    website: "",
   });
 
   const handleSubmit = async (e: FormEvent) => {
@@ -72,7 +73,10 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
             formData.notes.trim() ||
             `Consultation inquiry for ${data.title} industry. Best time to contact: ${formData.bestTime}`,
           source: `industry-${data.slug}`,
+          formType: `Industry Consultation (${data.title})`,
+          subject: `New Consultation Request - ${data.title}: ${formData.name.trim()}`,
           bestTime: formData.bestTime,
+          website: formData.website || undefined,
         }),
       });
 
@@ -86,6 +90,7 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
           contactInfo: "",
           bestTime: "Morning",
           notes: "",
+          website: "",
         });
       } else {
         setErrorMessage(
@@ -226,6 +231,16 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                 onSubmit={handleSubmit}
                 className="space-y-4"
               >
+                {/* Honeypot Spam Trap */}
+                <input
+                  type="text"
+                  name="website"
+                  value={formData.website}
+                  onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                  className="hidden"
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
                 {errorMessage && (
                   <div className="p-3 rounded-xl bg-red-500/20 border border-red-500/30 text-xs text-red-200 text-center">
                     {errorMessage}

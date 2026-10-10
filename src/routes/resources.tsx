@@ -78,6 +78,46 @@ function ResourcesPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [newsletterHoneypot, setNewsletterHoneypot] = useState("");
+  const [newsletterSubmitting, setNewsletterSubmitting] = useState(false);
+  const [newsletterSuccess, setNewsletterSuccess] = useState(false);
+  const [newsletterError, setNewsletterError] = useState<string | null>(null);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    setNewsletterSubmitting(true);
+    setNewsletterError(null);
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "Newsletter Subscriber",
+          email: newsletterEmail.trim(),
+          source: "resources-newsletter",
+          formType: "Newsletter Subscription",
+          subject: `New Newsletter Subscription: ${newsletterEmail.trim()}`,
+          message: "User subscribed to monthly SMG Executive Briefing newsletter.",
+          website: newsletterHoneypot || undefined,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success !== false) {
+        setNewsletterSuccess(true);
+        setNewsletterEmail("");
+      } else {
+        setNewsletterError(data.error || "Subscription failed. Please try again.");
+      }
+    } catch {
+      setNewsletterError("Network error. Please try again later.");
+    } finally {
+      setNewsletterSubmitting(false);
+    }
+  };
 
   // Normalize categories for filter bar
   const categories = useMemo(() => {
@@ -172,23 +212,51 @@ function ResourcesPage() {
               </div>
 
               <div className="lg:col-span-5">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    alert("Thank you for subscribing to the SMG Newsletter!");
-                  }}
-                  className="flex flex-col gap-3 sm:flex-row"
-                >
-                  <input
-                    type="email"
-                    required
-                    placeholder="Enter your email"
-                    className="h-12 w-full rounded-full border border-white/20 bg-white/10 px-5 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none"
-                  />
-                  <Button type="submit" size="lg" className="shrink-0 bg-white text-navy hover:bg-slate-100 font-bold">
-                    Subscribe
-                  </Button>
-                </form>
+                {newsletterSuccess ? (
+                  <div className="rounded-2xl bg-white/10 border border-white/20 p-5 text-center">
+                    <p className="font-bold text-white text-base">Thank you for subscribing!</p>
+                    <p className="mt-1 text-xs text-slate-200">
+                      You will receive the next edition of the SMG Executive Briefing in your inbox.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleNewsletterSubmit} className="flex flex-col gap-3">
+                    {/* Spam Honeypot */}
+                    <input
+                      type="text"
+                      name="website"
+                      value={newsletterHoneypot}
+                      onChange={(e) => setNewsletterHoneypot(e.target.value)}
+                      className="hidden"
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      <input
+                        type="email"
+                        required
+                        placeholder="Enter your email"
+                        value={newsletterEmail}
+                        onChange={(e) => setNewsletterEmail(e.target.value)}
+                        disabled={newsletterSubmitting}
+                        className="h-12 w-full rounded-full border border-white/20 bg-white/10 px-5 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none disabled:opacity-50"
+                      />
+                      <Button
+                        type="submit"
+                        size="lg"
+                        disabled={newsletterSubmitting}
+                        className="shrink-0 bg-white text-navy hover:bg-slate-100 font-bold disabled:opacity-50"
+                      >
+                        {newsletterSubmitting ? "Subscribing..." : "Subscribe"}
+                      </Button>
+                    </div>
+
+                    {newsletterError && (
+                      <p className="text-xs text-rose-300 font-medium">{newsletterError}</p>
+                    )}
+                  </form>
+                )}
               </div>
             </div>
           </div>
