@@ -26,6 +26,10 @@ export interface ContactProcessResult {
   success: boolean;
   message?: string;
   error?: string;
+  crmSaved?: boolean;
+  emailSent?: boolean;
+  emailId?: string;
+  emailError?: string;
   status: number;
 }
 
@@ -282,6 +286,9 @@ export async function processContactSubmission(
       success: false,
       error:
         "Unable to submit your inquiry at this moment. Please call us directly or try again later.",
+      crmSaved: crmResult.success,
+      emailSent: emailResult.success,
+      emailError: emailResult.error,
       status: 502,
     };
   }
@@ -290,6 +297,10 @@ export async function processContactSubmission(
     success: true,
     message:
       "Thank you for reaching out! We have received your submission and will be in touch shortly.",
+    crmSaved: crmResult.success,
+    emailSent: emailResult.success,
+    emailId: emailResult.id,
+    emailError: emailResult.error,
     status: 200,
   };
 }

@@ -36,6 +36,10 @@ export const Route = createFileRoute("/api/contact")({
             success: result.success,
             message: result.message,
             error: result.error,
+            crmSaved: result.crmSaved,
+            emailSent: result.emailSent,
+            emailId: result.emailId,
+            emailError: result.emailError,
           },
           { status: result.status },
         );
