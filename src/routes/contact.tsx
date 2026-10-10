@@ -250,6 +250,27 @@ function ContactPage() {
                       <p className="mt-2 text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
                         Your message has been received. Our team will review your inquiry and follow up within one business day.
                       </p>
+                      <div className="mt-6">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => {
+                            setSubmitted(false);
+                            setFormData({
+                              name: "",
+                              email: "",
+                              phone: "",
+                              officePreference: "General Inquiry",
+                              message: "",
+                              website: "",
+                              agreed: false,
+                            });
+                          }}
+                          className="rounded-full border-slate-300 text-slate-700 hover:bg-slate-100 text-xs uppercase font-bold tracking-wider cursor-pointer"
+                        >
+                          Send Another Message
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     <form

@@ -551,6 +551,25 @@ function TestimonialsPage() {
                 <p className="mt-2 text-sm text-blue-100">
                   Your message has been received. Our team will contact you shortly.
                 </p>
+                <div className="mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormData({
+                        name: "",
+                        email: "",
+                        phone: "",
+                        company: "",
+                        service: "",
+                        message: "",
+                      });
+                    }}
+                    className="rounded-full border border-white/30 bg-white/10 hover:bg-white/20 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider transition cursor-pointer"
+                  >
+                    Send Another Message
+                  </button>
+                </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">

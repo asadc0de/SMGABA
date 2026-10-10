@@ -222,6 +222,25 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                 <CheckCircle2 className="mx-auto size-12 text-blue-400" />
                 <h3 className="mt-3 font-serif-hero text-2xl font-bold text-white">Thank You!</h3>
                 <p className="mt-2 text-sm text-blue-100">{data.form.thankYouMessage}</p>
+                <div className="mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false);
+                      setFormData({
+                        name: "",
+                        email: "",
+                        phone: "",
+                        company: "",
+                        message: "",
+                        website: "",
+                      });
+                    }}
+                    className="rounded-full border border-white/30 bg-white/10 hover:bg-white/20 text-white px-6 py-2 text-xs font-bold uppercase tracking-wider transition cursor-pointer"
+                  >
+                    Send Another Message
+                  </button>
+                </div>
               </div>
             ) : (
               <form
