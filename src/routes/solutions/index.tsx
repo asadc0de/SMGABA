@@ -46,7 +46,7 @@ const SOLUTIONS_DATA = [
       "Catch-Up & Cleanup Bookkeeping",
       "Year-End Reporting Support",
     ],
-    image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-bookkeeping-1.jpeg",
+    image: "/images/solutions/smg-bookkeeping-1.jpeg",
     reverse: false,
     bgClass: "bg-white",
   },
@@ -64,7 +64,7 @@ const SOLUTIONS_DATA = [
       "Profitability & Margin Analysis",
       "Business Growth & Financing Advisory",
     ],
-    image: "https://www.smgaba.com/wp-content/uploads/2021/10/AdobeStock_201950021-1.jpeg",
+    image: "/images/solutions/adobestock-201950021-1.jpeg",
     reverse: true,
     bgClass: "bg-[#faf9f6]",
   },
@@ -83,7 +83,7 @@ const SOLUTIONS_DATA = [
       "Tax Notice & Audit Representation",
       "Entity & Transaction Structuring",
     ],
-    image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-tax-services-1.jpeg",
+    image: "/images/solutions/smg-tax-services-1.jpeg",
     reverse: false,
     bgClass: "bg-white",
   },
@@ -102,7 +102,7 @@ const SOLUTIONS_DATA = [
       "Legacy, Estate, Trust & Philanthropy Strategies",
       "Business Transition & Exit Planning",
     ],
-    image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-back-office-1.jpeg",
+    image: "/images/solutions/smg-back-office-1.jpeg",
     reverse: true,
     bgClass: "bg-[#faf9f6]",
   },
@@ -218,7 +218,7 @@ function SolutionsIndexPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.jpg"
           eyebrow="Our Solutions"
           title="Financial Solutions Built for Growth"
           description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy and wealth management—tailored to give your business clarity and momentum."

@@ -28,7 +28,7 @@ function ManhattanLocationPage() {
 
       <main>
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg"
           eyebrow="Manhattan Location"
           title="New York City"
           description="In the heart of Manhattan on Seventh Avenue, serving restaurant operators, hospitality groups, and enterprises across the 5 boroughs."

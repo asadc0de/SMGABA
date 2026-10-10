@@ -113,7 +113,7 @@ function WealthManagementPage() {
       <main>
         {/* Hero Section */}
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.jpg"
           eyebrow="Solutions / Wealth Management"
           title="Wealth Management"
           description="Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management."

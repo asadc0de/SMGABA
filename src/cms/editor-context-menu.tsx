@@ -44,32 +44,32 @@ const CURATED_IMAGE_PRESETS = [
   },
   {
     name: "Modern Executive Office & City Skyline",
-    url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     category: "Corporate & Hero",
   },
   {
     name: "Financial Data & Analytics Growth",
-    url: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1551836022-d5d88e9218df.jpg",
     category: "Finance & Analytics",
   },
   {
     name: "Executive Leadership Advisory Session",
-    url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1573496359142-b8d87734a5a2.jpg",
     category: "Team & Advisory",
   },
   {
     name: "Professional Executive Portrait (Marcus)",
-    url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    url: "/images/stock/unsplash-photo-1507003211169-0a1dd7228f2d.jpg",
     category: "Portraits",
   },
   {
     name: "Professional Financial Director (Elena)",
-    url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80",
+    url: "/images/stock/unsplash-photo-1573497019940-1c28c88b4f3e.jpg",
     category: "Portraits",
   },
   {
     name: "Modern Conference & Boardroom",
-    url: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1497366216548-37526070297c.jpg",
     category: "Office & Culture",
   },
 ];

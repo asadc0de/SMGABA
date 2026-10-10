@@ -32,7 +32,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Jul 14, 2026",
     "author": "SMG Advisory Team",
     "category": "Bookkeeping",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/07/7-Signs-Your-Business-Has-Outgrown-DIY-Bookkeeping-.png",
+    "image": "/images/blog/7-signs-your-business-has-outgrown-diy-bookkeeping.png",
     "readTime": "6 min read",
     "excerpt": "Outgrown DIY bookkeeping? Learn when it's time for professional bookkeeping services and more accurate financial reporting.",
     "blocks": [
@@ -587,7 +587,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Jul 28, 2026",
     "author": "SMG Advisory Team",
     "category": "Bookkeeping",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/07/Bookkeeping-Cleanup-7-Red-Flags-Your-Financials-Need-Attention-.png",
+    "image": "/images/blog/bookkeeping-cleanup-7-red-flags-your-financials-need-attention.png",
     "readTime": "10 min read",
     "excerpt": "Discover seven signs you need bookkeeping cleanup services to improve accuracy, cash flow, and business decisions.",
     "blocks": [
@@ -1592,7 +1592,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Oct 25, 2024",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2024/10/Corporate-transparency-Act.png",
+    "image": "/images/blog/corporate-transparency-act.png",
     "readTime": "2 min read",
     "excerpt": "Understand your business reporting requirements under the Corporate Transparency Act. Learn about the key filing deadlines.",
     "archived": true,
@@ -1628,7 +1628,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Sep 27, 2022",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/09/EIDL-Loan-Payment-Reminder.jpg",
+    "image": "/images/blog/eidl-loan-payment-reminder.jpg",
     "readTime": "2 min read",
     "excerpt": "As a reminder to those currently a part of the COVID-19 Economic Injury Disaster Loan (EIDL) program, all borrowers are required to submit regular principal and interest payments, beginning 30 months from the effective date of your loan.",
     "archived": true,
@@ -1665,7 +1665,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Jul 21, 2026",
     "author": "SMG Advisory Team",
     "category": "Bookkeeping",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/07/What-Does-an-Outsourced-Accounting-Department-Cost-—and-Is-It-Worth-It.png",
+    "image": "/images/blog/what-does-an-outsourced-accounting-department-cost-and-is-it-worth-it.png",
     "readTime": "5 min read",
     "excerpt": "Learn how outsourced bookkeeping helps growing businesses improve financial reporting, save time, and support confident business decisions.",
     "blocks": [
@@ -2217,7 +2217,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Aug 26, 2026",
     "author": "SMG Advisory Team",
     "category": "Financial Strategy",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/08/How-to-Know-if-Your-Business-Is-Actually-Profitable.png",
+    "image": "/images/blog/how-to-know-if-your-business-is-actually-profitable.png",
     "readTime": "12 min read",
     "excerpt": "Learn how to measure business profitability using profit margins, financial reports, and accurate financial information.",
     "blocks": [
@@ -2764,7 +2764,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Dec 20, 2022",
     "author": "Gregory Scotto",
     "category": "Advisory",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/12/Information-Regarding-1099-for-2022.png",
+    "image": "/images/blog/information-regarding-1099-for-2022.png",
     "readTime": "2 min read",
     "excerpt": "Please note, that it’s the client’s responsibility as the taxpayer to obtain W-9s from all vendors that provide services to recipients. This includes",
     "archived": true,
@@ -2801,7 +2801,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Aug 4, 2026",
     "author": "SMG Advisory Team",
     "category": "Bookkeeping",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/08/How-Monthly-Bookkeeping-Improves-Financial-Visibility-for-Growing-Businesses.png",
+    "image": "/images/blog/how-monthly-bookkeeping-improves-financial-visibility-for-growing-businesses.png",
     "readTime": "12 min read",
     "excerpt": "Discover how monthly bookkeeping improves financial visibility and helps growing businesses make smarter financial decisions.",
     "blocks": [
@@ -3580,7 +3580,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         "type": "p",
         "text": "Your financial records should do more than keep your business compliant. They should provide the insight you need to grow with confidence.",
-        "html": "<img loading=\"lazy\" decoding=\"async\" class=\"aligncenter size-full wp-image-5657\" src=\"https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information-.png\" alt=\"\" width=\"1200\" height=\"628\" srcset=\"https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information-.png 1200w, https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information--300x157.png 300w, https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information--1024x536.png 1024w, https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information--768x402.png 768w, https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information--67x35.png 67w, https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information--36x19.png 36w, https://www.smgaba.com/wp-content/uploads/2026/08/Build-Your-Business-on-Better-Financial-Information--48x25.png 48w\" sizes=\"auto, (max-width: 1200px) 100vw, 1200px\" /><br /> Your financial records should do more than keep your business compliant. They should provide the insight you need to grow with confidence."
+        "html": "<img loading=\"lazy\" decoding=\"async\" class=\"aligncenter size-full wp-image-5657\" src=\"/images/blog/build-your-business-on-better-financial-information.png\" alt=\"\" width=\"1200\" height=\"628\"   /><br /> Your financial records should do more than keep your business compliant. They should provide the insight you need to grow with confidence."
       },
       {
         "type": "p",
@@ -3677,7 +3677,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Jul 7, 2026",
     "author": "SMG Advisory Team",
     "category": "Financial Strategy",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/07/Why-Growing-Businesses-Are-Replacing-In-House-Accounting-with-Outsourced-Accounting-Services.png",
+    "image": "/images/blog/why-growing-businesses-are-replacing-in-house-accounting-with-outsourced-accounting-services.png",
     "readTime": "7 min read",
     "excerpt": "Discover why growing businesses are replacing in-house accounting teams with outsourced accounting services to cut cost and improve visibility",
     "blocks": [
@@ -4230,7 +4230,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Mar 31, 2021",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2021/03/PPP-Application-Extension.jpg",
+    "image": "/images/blog/ppp-application-extension.jpg",
     "readTime": "2 min read",
     "excerpt": "On Tuesday, March 30 the President signed into law an extension for PPP applications pushing the deadline to apply from March 31 to May 31.",
     "archived": true,
@@ -4257,7 +4257,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Aug 11, 2026",
     "author": "SMG Advisory Team",
     "category": "Financial Strategy",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/08/The-3-Financial-Reports-Every-Business-Owner-Should-Review-Monthly-.png",
+    "image": "/images/blog/the-3-financial-reports-every-business-owner-should-review-monthly.png",
     "readTime": "15 min read",
     "excerpt": "Learn the three financial reports every business owner should review monthly to improve financial visibility and make better decisions.",
     "blocks": [
@@ -4626,7 +4626,7 @@ export const BLOG_POSTS: BlogPost[] = [
       {
         "type": "p",
         "text": "Many business owners assume that a profitable business automatically has healthy cash flow.",
-        "html": "<img loading=\"lazy\" decoding=\"async\" class=\"aligncenter size-full wp-image-5697\" src=\"https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money-.png\" alt=\"\" width=\"1200\" height=\"628\" srcset=\"https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money-.png 1200w, https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money--300x157.png 300w, https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money--1024x536.png 1024w, https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money--768x402.png 768w, https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money--67x35.png 67w, https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money--36x19.png 36w, https://www.smgaba.com/wp-content/uploads/2026/08/Cash-Flow-Statement-Following-the-Movement-of-Money--48x25.png 48w\" sizes=\"auto, (max-width: 1200px) 100vw, 1200px\" /><br /> Many business owners assume that a profitable business automatically has healthy cash flow."
+        "html": "<img loading=\"lazy\" decoding=\"async\" class=\"aligncenter size-full wp-image-5697\" src=\"/images/blog/cash-flow-statement-following-the-movement-of-money.png\" alt=\"\" width=\"1200\" height=\"628\"   /><br /> Many business owners assume that a profitable business automatically has healthy cash flow."
       },
       {
         "type": "p",
@@ -5242,7 +5242,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Jan 17, 2023",
     "author": "Gregory Scotto",
     "category": "Tax & Compliance",
-    "image": "https://www.smgaba.com/wp-content/uploads/2023/01/Time-to-file-your-tax.png",
+    "image": "/images/blog/time-to-file-your-tax.png",
     "readTime": "2 min read",
     "excerpt": "Get ready to file your 2022 taxes. Find your required documents, complete the tax questionnaire, and securely submit your files to SMG ABA.",
     "archived": true,
@@ -5324,7 +5324,7 @@ export const BLOG_POSTS: BlogPost[] = [
     "date": "Aug 20, 2026",
     "author": "SMG Advisory Team",
     "category": "Tax & Compliance",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/08/Year-end-tax-planning-review-before-December.png",
+    "image": "/images/blog/year-end-tax-planning-review-before-december.png",
     "readTime": "12 min read",
     "excerpt": "Start year-end tax planning before December to prepare for estimated taxes, cash flow needs, and important business decisions.",
     "blocks": [

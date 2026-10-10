@@ -112,7 +112,7 @@ function OurTeamPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1522071820081-009f0129c71c.jpg"
           eyebrow="Leadership & Specialists"
           title="Our Team"
           description="Meet the experienced partners, certified public accountants, and executive advisors at SMG ABA providing proactive accounting, tax, and CFO guidance to help businesses grow."

@@ -125,7 +125,7 @@ function BlogIndexPage() {
       <main>
         {/* Hero */}
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg"
           eyebrow="Financial Intelligence"
           title="Insights & Advisory Blog"
           description="Actionable guidance, tax regulations, outsourced bookkeeping strategies, and financial insights to propel your business forward."

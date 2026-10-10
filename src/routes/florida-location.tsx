@@ -46,7 +46,7 @@ function FloridaLocationPage() {
 
       <main>
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1507525428034-b723cf961d3e.jpg"
           eyebrow="Florida Regional Office"
           title="St. Petersburg, FL"
           description="Serving the Tampa Bay, Clearwater, and Gulf Coast hospitality and business communities with dedicated on-the-ground advisory."

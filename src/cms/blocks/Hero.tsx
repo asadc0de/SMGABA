@@ -65,7 +65,7 @@ export const defaultHeroProps: HeroProps = {
     href: "/solutions",
     variant: "outline",
   },
-  backgroundImage: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg",
+  backgroundImage: "/images/blog/smg-wallpaper.jpg",
   overlay: "site",
   minHeight: "medium",
   align: "left",
@@ -258,7 +258,7 @@ export function HeroRender(props: HeroProps) {
             className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
             style={{
               backgroundImage:
-                "url('https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg')",
+                "url('/images/blog/smg-wallpaper.jpg')",
               backgroundSize: "cover",
             }}
             aria-hidden="true"

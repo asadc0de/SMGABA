@@ -69,47 +69,47 @@ const SITE_ASSETS = [
 const CURATED_STOCK_PHOTOS = [
   {
     name: "Modern Executive Office & City View",
-    url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     category: "Corporate & Hero",
   },
   {
     name: "Financial Data & Analytics Dashboard",
-    url: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1551836022-d5d88e9218df.jpg",
     category: "Finance & Analytics",
   },
   {
     name: "Executive Leadership Strategy Session",
-    url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1573496359142-b8d87734a5a2.jpg",
     category: "Team & Advisory",
   },
   {
     name: "Professional Executive Portrait (Marcus)",
-    url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+    url: "/images/stock/unsplash-photo-1507003211169-0a1dd7228f2d.jpg",
     category: "Portraits",
   },
   {
     name: "Professional Financial Director Portrait (Elena)",
-    url: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=400&q=80",
+    url: "/images/stock/unsplash-photo-1573497019940-1c28c88b4f3e.jpg",
     category: "Portraits",
   },
   {
     name: "Senior Advisor Portrait (David)",
-    url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+    url: "/images/stock/unsplash-photo-1500648767791-00dcc994a43e.jpg",
     category: "Portraits",
   },
   {
     name: "Modern Glass Architecture / Skyline",
-    url: "https://images.unsplash.com/photo-1508873696983-2df5293cb32b?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     category: "Corporate & Hero",
   },
   {
     name: "Financial Planning & Tax Consultation",
-    url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
     category: "Finance & Analytics",
   },
   {
     name: "Collaborative Team Working on Growth",
-    url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+    url: "/images/stock/unsplash-photo-1522071820081-009f0129c71c.jpg",
     category: "Team & Advisory",
   },
 ];

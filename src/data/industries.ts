@@ -46,7 +46,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized accounting for auto dealerships, collision centers, and repair facilities. Floor plan audits, parts inventory, and warranty claims accounting.",
     heroBg:
-      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1503376780353-7e6692767b70.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Automotive & Dealerships",
     heroDescription:
@@ -58,7 +58,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Automotive businesses manage massive capital requirements, high transaction volume, and tight floor plan interest rates. Standard accounting software often fails to capture the complexity of DMS integrations, warranty holdbacks, and tiered commission plans.",
         "SMG provides clear, timely financial intelligence to dealership principals and general managers, helping you optimize cash turnaround on trade-ins, parts inventory, and service bays.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-back-office-1.jpeg",
+      image: "/images/solutions/smg-back-office-1.jpeg",
     },
     servicesTitle: "Automotive Advisory Services",
     servicesDescription:
@@ -111,7 +111,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for general contractors, specialty subcontractors, and civil builders. Job costing, AIA progress billing, and bonding capacity.",
     heroBg:
-      "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1504307651254-35680f356dfd.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Construction & Contractors",
     heroDescription:
@@ -123,7 +123,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "In the construction sector, winning profitable bids and securing high-limit surety bonds depends entirely on accurate Work-in-Progress (WIP) schedules and timely job cost tracking.",
         "SMG bridges the gap between the field job site and executive ledger. We integrate your project management tools (Procore, Buildertrend, Foundation) with your books, ensuring every change order and retainage dollar is accounted for.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-back-office-1.jpeg",
+      image: "/images/solutions/smg-back-office-1.jpeg",
     },
     servicesTitle: "Construction Advisory Services",
     servicesDescription:
@@ -177,7 +177,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for medical practices, dental clinics, surgical centers, and healthcare providers. Physician comp, billing audits, and tax strategy.",
     heroBg:
-      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1576091160399-112ba8d25d1d.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Healthcare & Medical Practices",
     heroDescription:
@@ -189,7 +189,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Physicians and clinical executives navigate declining reimbursement rates, complex billing cycles, and heavy equipment overhead. Traditional bookkeeping firms rarely understand how to reconcile practice management billing with true cash receipts.",
         "SMG handles the complete back-office accounting, payroll, and tax planning so your clinical team can concentrate on patient outcomes while enjoying predictable distributions and maximized tax write-offs.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-bookkeeping-1.jpeg",
+      image: "/images/solutions/smg-bookkeeping-1.jpeg",
     },
     servicesTitle: "Healthcare Advisory Services",
     servicesDescription:
@@ -238,7 +238,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized restaurant, bar, and hospitality accounting. Weekly prime cost control, tipped payroll compliance, and POS integrations.",
     heroBg:
-      "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1517248135467-4c7edcad34c4.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Hospitality & Restaurants",
     heroDescription:
@@ -250,7 +250,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "SMG is a proud partner of the New York State Restaurant Association, the New York City Hospitality Alliance, and the National Restaurant Association. We manage financials for high-volume restaurants, cocktail lounges, bakeries, caterers, and nightlife groups nationwide.",
         "Our goal is to increase your net profitability while letting you do what you do best: manage your front of the house, craft menus, run your kitchen, or expand to new locations.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/home-feature-hospitality.jpg",
+      image: "/images/solutions/home-feature-hospitality.jpg",
       badges: [{ text: "NYC Hospitality Alliance Member" }, { text: "NYS Restaurant Association" }],
     },
     servicesTitle: "Hospitality Advisory Services",
@@ -305,7 +305,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for law firms, solo attorneys, and legal practices. Partner distributions, capital accounting, and billable realization analysis.",
     heroBg:
-      "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1589829545856-d10d557cf95f.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Legal Professionals & Law Firms",
     heroDescription:
@@ -317,7 +317,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Law firms face unique financial challenges: complex operating overhead, multi-state partner tax filings, and distribution formulas that can create internal friction.",
         "SMG tracks advanced client litigation costs, optimizes partner equity models, and provides managing partners with clear realization metrics to maximize law firm profitability.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-tax-services-1.jpeg",
+      image: "/images/solutions/smg-tax-services-1.jpeg",
     },
     servicesTitle: "Legal Advisory Services",
     servicesDescription:
@@ -367,7 +367,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized cost accounting for manufacturers, assemblers, and wholesale distributors. Bill of Materials costing, supply chain cash flow, and R&D tax credits.",
     heroBg:
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1581091226825-a6a2a5aee158.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Manufacturers & Distributors",
     heroDescription:
@@ -379,7 +379,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Manufacturing businesses thrive or falter on unit economics. A slight miscalculation in overhead absorption or raw material scrap rates can distort profitability across hundreds of thousands of units.",
         "SMG provides production-floor cost accounting that links your ERP, inventory scanners, and general ledger, empowering leadership to eliminate unprofitable SKUs and claim substantial R&D tax credits.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-bookkeeping-1.jpeg",
+      image: "/images/solutions/smg-bookkeeping-1.jpeg",
     },
     servicesTitle: "Manufacturing Advisory Services",
     servicesDescription:
@@ -428,7 +428,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Comprehensive accounting for property developers, syndicators, and real estate management firms. 1031 exchanges, CAM reconciliations, and partnership returns.",
     heroBg:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Real Estate & Development",
     heroDescription:
@@ -440,7 +440,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Real estate transactions require meticulous financial tracking across multiple legal entities, capital accounts, and tax jurisdictions. At SMG, we structure your accounting systems so you have total visibility into property cash flows and return on equity.",
         "Whether you are managing a 50-unit residential portfolio, closing a 1031 exchange, or structuring a multi-million dollar commercial development, our advisors ensure compliance, maximize depreciation, and safeguard your bottom line.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/10/AdobeStock_201950021-1.jpeg",
+      image: "/images/solutions/adobestock-201950021-1.jpeg",
     },
     servicesTitle: "Real Estate Advisory Services",
     servicesDescription:
@@ -494,7 +494,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for retail stores, boutique chains, franchises, and omni-channel e-commerce. POS sync, inventory turns, and multi-state sales tax.",
     heroBg:
-      "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1441986300917-64674bd600d8.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Retail & Omni-Channel Commerce",
     heroDescription:
@@ -506,7 +506,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Modern retail blends brick-and-mortar locations with e-commerce storefronts, creating millions of micro-transactions, merchant fees, sales tax liabilities, and inventory holding costs.",
         "SMG unifies your POS registers, Shopify stores, and inventory management systems into clean, daily-reconciled financial reports. We give retail executives the clear data needed to negotiate supplier terms, open new storefronts, and protect cash margins.",
       ],
-      image: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-tax-services-1.jpeg",
+      image: "/images/solutions/smg-tax-services-1.jpeg",
     },
     servicesTitle: "Retail Advisory Services",
     servicesDescription:

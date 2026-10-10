@@ -25,7 +25,7 @@ function PrivacyPolicyPage() {
 
       <main>
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1450101499163-c8848c66ca85.jpg"
           eyebrow="Legal"
           title="Privacy Policy"
           description="Read SMG ABA's Privacy Policy to learn how we collect, use, protect, and safeguard your personal information when using our website."

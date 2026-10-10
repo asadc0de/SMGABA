@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { BOOKING_ROUTE } from "@/data/calendly";
 
-const HERO_IMAGE = "https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg";
+const HERO_IMAGE = "/images/blog/smg-wallpaper.jpg";
 
 export function Hero() {
   return (

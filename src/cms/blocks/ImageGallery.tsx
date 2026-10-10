@@ -74,37 +74,37 @@ export const defaultImageGalleryProps: ImageGalleryProps = {
   paddingBottom: { base: "none", md: "none", lg: "none" },
   items: [
     {
-      url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+      url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
       title: "Executive Strategic Advisory",
       caption: "Financial structuring & board consultation.",
       alt: "Modern office towers",
     },
     {
-      url: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80",
+      url: "/images/stock/unsplash-photo-1551836022-d5d88e9218df.jpg",
       title: "Real-Time FP&A Insights",
       caption: "Custom KPI dashboards & cash flow forecast models.",
       alt: "Analytics graph on screen",
     },
     {
-      url: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=1200&q=80",
+      url: "/images/stock/unsplash-photo-1573496359142-b8d87734a5a2.jpg",
       title: "Collaborative Tax Optimization",
       caption: "Multi-entity tax planning and proactive filing.",
       alt: "Advisory team meeting",
     },
     {
-      url: "https://images.unsplash.com/photo-1508873696983-2df5293cb32b?auto=format&fit=crop&w=1200&q=80",
+      url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
       title: "Commercial Asset Management",
       caption: "Hospitality & enterprise portfolio tracking.",
       alt: "Modern architectural exterior",
     },
     {
-      url: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80",
+      url: "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
       title: "Audit & Risk Compliance",
       caption: "Comprehensive governance and assurance.",
       alt: "Reviewing financial balance sheets",
     },
     {
-      url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80",
+      url: "/images/stock/unsplash-photo-1522071820081-009f0129c71c.jpg",
       title: "High-Growth Team Scaling",
       caption: "Fractional CFO support through rapid expansion.",
       alt: "Leadership team brainstorming",

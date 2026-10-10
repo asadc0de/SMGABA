@@ -32,7 +32,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Jan 19, 2026",
     "author": "Gregory Scotto",
     "category": "Advisory",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/01/One-big-beautiful-Act.png",
+    "image": "/images/resources/one-big-beautiful-act.png",
     "readTime": "4 min read",
     "excerpt": "Explore a comprehensive summary of \"The One Big Beautiful Bill\". Learn how these permanent and temporary tax reform provisions impact you.",
     "blocks": [
@@ -114,7 +114,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Mar 6, 2025",
     "author": "Gregory Scotto",
     "category": "Community & Events",
-    "image": "https://www.smgaba.com/wp-content/uploads/2026/07/SMG-Golf-Outing-Raises-Over-170000-for-Fight-CRC.png",
+    "image": "/images/resources/smg-golf-outing-raises-over-170000-for-fight-crc.png",
     "readTime": "2 min read",
     "excerpt": "SMG is proud to share the success of our golf outing, raising over $170,000 in support of Fight CRC. Read the full event highlights here.",
     "blocks": [
@@ -148,7 +148,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Oct 25, 2024",
     "author": "Gregory Scotto",
     "category": "Community & Events",
-    "image": "https://www.smgaba.com/wp-content/uploads/2024/10/Our-2024-Benefit-Golf-Outing.png",
+    "image": "/images/resources/our-2024-benefit-golf-outing.png",
     "readTime": "2 min read",
     "excerpt": "SMG golf outing raised over $170,000 for fight CRC in memory of our dear friend Jonathan Schulman. Discover how our community came together.",
     "blocks": [
@@ -189,7 +189,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Nov 6, 2023",
     "author": "Gregory Scotto",
     "category": "Firm News",
-    "image": "https://www.smgaba.com/wp-content/uploads/2023/11/Exciting-News-We-Are-Relocating-Our-Florida-Office.png",
+    "image": "/images/resources/exciting-news-we-are-relocating-our-florida-office.png",
     "readTime": "2 min read",
     "excerpt": "We are thrilled to share some exciting news with you – SMG's Florida office will be moving to a stunning new location in St. Petersburg!",
     "blocks": [
@@ -240,7 +240,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Oct 20, 2023",
     "author": "Gregory Scotto",
     "category": "Community & Events",
-    "image": "https://www.smgaba.com/wp-content/uploads/2023/10/The-2023-Inaugural-Golf-Outing.png",
+    "image": "/images/resources/the-2023-inaugural-golf-outing.png",
     "readTime": "2 min read",
     "excerpt": "Thank you to everyone who joined SMG and Helbraun Levey for our Inaugural Golf Outing! See the event highlights and photos here!",
     "blocks": [
@@ -276,7 +276,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Dec 29, 2022",
     "author": "Gregory Scotto",
     "category": "Advisory",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/12/Social-Security-Deferral.png",
+    "image": "/images/resources/social-security-deferral.png",
     "readTime": "2 min read",
     "excerpt": "Learn about the CARES Act payroll tax deferral repayment deadline, payment options through EFTPS, and what employers need to know.",
     "blocks": [
@@ -317,7 +317,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Dec 20, 2022",
     "author": "Gregory Scotto",
     "category": "Firm News",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/12/Upcoming-Holiday-Office-Closures.png",
+    "image": "/images/resources/upcoming-holiday-office-closures.png",
     "readTime": "2 min read",
     "excerpt": "View SMG ABA's holiday office hours, payroll processing deadlines, and important year-end schedule updates for clients.",
     "blocks": [
@@ -363,7 +363,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Nov 17, 2022",
     "author": "Gregory Scotto",
     "category": "Firm News",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/11/Exciting-Firm-News.jpg",
+    "image": "/images/resources/exciting-firm-news.jpg",
     "readTime": "2 min read",
     "excerpt": "We are pleased to announce our expansion into the state of Florida!...",
     "blocks": [
@@ -399,7 +399,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Nov 7, 2022",
     "author": "Gregory Scotto",
     "category": "Firm News",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/11/We-Made-the-Inc.-5000-List.jpg",
+    "image": "/images/resources/we-made-the-inc.-5000-list.jpg",
     "readTime": "2 min read",
     "excerpt": "We are very excited that SMG ABA LLC. has been recognized in this year's #Inc5000 List for the 6th year in a row! Our team is truly honored to be included",
     "blocks": [
@@ -425,7 +425,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Oct 3, 2022",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/10/The-Inflation-Reduction-Act.jpg",
+    "image": "/images/resources/the-inflation-reduction-act.jpg",
     "readTime": "2 min read",
     "excerpt": "In August of 2022, the Inflation Reduction Act was officially signed into law, adding tax benefits to those in the process of incorporating",
     "blocks": [
@@ -461,7 +461,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Sep 27, 2022",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2022/09/Gov.-Hochul-Announces-Seed-Funding-Grant.jpg",
+    "image": "/images/resources/gov.-hochul-announces-seed-funding-grant.jpg",
     "readTime": "2 min read",
     "excerpt": "At the height of the COVID-19 pandemic, opening a business during this time was proven to be no easy feat. Limited income as a result led to the stunted growth of small and micro-businesses. As such business owners are still recovering in a post-pandemic economy and getting back to normalcy, plans to provide financial aid were recently announced by New York Governor Kathy Hochul.",
     "blocks": [
@@ -502,7 +502,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Dec 7, 2021",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2021/12/Restaurant-Revitalization-Fund-–-Use-of-Funds.jpg",
+    "image": "/images/resources/restaurant-revitalization-fund-use-of-funds.jpg",
     "readTime": "2 min read",
     "excerpt": "If you received Restaurant Revitalization Funds (RRF), you are required to submit a report stating the use of funds thus far by December 31, 2021.",
     "blocks": [
@@ -528,7 +528,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Dec 2, 2021",
     "author": "Gregory Scotto",
     "category": "Firm News",
-    "image": "https://www.smgaba.com/wp-content/uploads/2021/12/Welcoming-Our-Newest-Partners-Marc-Valente-and-Thomas-Batsilas.jpg",
+    "image": "/images/resources/welcoming-our-newest-partners-marc-valente-and-thomas-batsilas.jpg",
     "readTime": "2 min read",
     "excerpt": "SMG is proud to announce our two new partners, Marc Valente and Thomas Batsilas.",
     "blocks": [
@@ -569,7 +569,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Apr 8, 2021",
     "author": "Gregory Scotto",
     "category": "Tax & Compliance",
-    "image": "https://www.smgaba.com/wp-content/uploads/2021/04/NYS-Tax-Treatment-of-Unemployment-Compensation.jpg",
+    "image": "/images/resources/nys-tax-treatment-of-unemployment-compensation.jpg",
     "readTime": "2 min read",
     "excerpt": "The Federal American Rescue Plan Act of 2021 (ARP) includes a provision that allows certain individuals to exclude up to $10,200 of unemployment compensation received in 2020 from federal gross income.",
     "blocks": [
@@ -615,7 +615,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Mar 25, 2021",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1200&q=80",
+    "image": "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
     "readTime": "4 min read",
     "excerpt": "**UPDATE: AS OF MARCH 30, 2021, THE SBA ANNOUNCED THAT RESTAURANT OWNERS WHO SEEK TO PARTICIPATE IN THE RESTAURANT REVILATIZATION FUND WILL NOT NEED TO",
     "blocks": [
@@ -740,7 +740,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "date": "Mar 25, 2021",
     "author": "Gregory Scotto",
     "category": "Government Grants & Legislation",
-    "image": "https://www.smgaba.com/wp-content/uploads/2021/03/Restaurant-Revitalization-Fund-2021.jpg",
+    "image": "/images/resources/restaurant-revitalization-fund-2021.jpg",
     "readTime": "3 min read",
     "excerpt": "The American Rescue Plan Act of 2021 establishes a $28.6 billion Restaurant Revitalization Fund within the SBA, which will provide eligible business with",
     "blocks": [

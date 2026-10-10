@@ -41,7 +41,7 @@ export function SubpageHero({
       <div
         className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
         style={{
-          backgroundImage: `url('https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg')`,
+          backgroundImage: `url('/images/blog/smg-wallpaper.jpg')`,
           backgroundSize: "cover",
         }}
       />

@@ -1,28 +1,28 @@
 const LOGOS = [
-  { src: "https://www.smgaba.com/wp-content/uploads/2020/01/1413842518-entrepreneur-logo.jpg", alt: "Entrepreneur" },
-  { src: "https://www.smgaba.com/wp-content/uploads/2023/09/SMG_Inc5000_1080x1080-03.png", alt: "Inc. 5000 2023 Logo" },
-  { src: "https://www.smgaba.com/wp-content/uploads/2020/01/HIA-logo.jpg", alt: "HIA" },
+  { src: "/images/awards/1413842518-entrepreneur-logo.jpg", alt: "Entrepreneur" },
+  { src: "/images/awards/smg-inc5000-1080x1080-03.png", alt: "Inc. 5000 2023 Logo" },
+  { src: "/images/awards/hia-logo.jpg", alt: "HIA" },
   {
-    src: "https://www.smgaba.com/wp-content/uploads/2021/11/2021-Exceptional-Workplace-Award-Logo-copy-1.png",
+    src: "/images/awards/2021-exceptional-workplace-award-logo-copy-1.png",
     alt: "2021 Exceptional Workplace Award",
   },
-  { src: "https://www.smgaba.com/wp-content/uploads/2020/01/Stevie-Gold.jpg", alt: "Stevie Gold Award" },
-  { src: "https://www.smgaba.com/wp-content/uploads/2020/01/LIBN_BPTW-Logo-NoYear.png", alt: "LIBN Best Places To Work" },
+  { src: "/images/awards/stevie-gold.jpg", alt: "Stevie Gold Award" },
+  { src: "/images/awards/libn-bptw-logo-noyear.png", alt: "LIBN Best Places To Work" },
   {
-    src: "https://www.smgaba.com/wp-content/uploads/2020/01/Hospitality-Restaurantowner.com-logo.png",
+    src: "/images/awards/hospitality-restaurantowner.com-logo.png",
     alt: "RestaurantOwner.com",
   },
   {
-    src: "https://www.smgaba.com/wp-content/uploads/2023/11/SPACC_ProudMemberLogo_Color.png",
+    src: "/images/awards/spacc-proudmemberlogo-color.png",
     alt: "SMG is a proud member of the St. Pete Chamber of Commerce",
   },
   {
-    src: "https://www.smgaba.com/wp-content/uploads/2020/01/Hospitality-NYC-Restaurant-Alliance.jpg",
+    src: "/images/awards/hospitality-nyc-restaurant-alliance.jpg",
     alt: "NYC Restaurant Alliance",
   },
-  { src: "https://www.smgaba.com/wp-content/uploads/2021/11/nysra-rgb.png", alt: "New York State Restaurant Association Logo" },
+  { src: "/images/awards/nysra-rgb.png", alt: "New York State Restaurant Association Logo" },
   {
-    src: "https://www.smgaba.com/wp-content/uploads/2020/01/Hospitality-Natiaonal-Restaurant-Association-logo.jpg",
+    src: "/images/awards/hospitality-natiaonal-restaurant-association-logo.jpg",
     alt: "National Restaurant Association",
   },
 ];

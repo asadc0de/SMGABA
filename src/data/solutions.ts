@@ -97,7 +97,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Accurate, timely bookkeeping backed by responsive professionals who help you stay organized, make confident decisions, and focus on growing your business.",
     heroBg:
-      "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.jpg",
     eyebrow: "Solutions / Bookkeeping",
     heroTitle: "Bookkeeping That Brings Clarity to Your Business",
     heroDescription:
@@ -194,7 +194,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Gain the financial clarity, forecasting, and executive guidance you need to make smarter business decisions, improve profitability, and confidently grow your business.",
     heroBg:
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     eyebrow: "Solutions / CFO Advisory",
     heroTitle: "Strategic CFO Guidance That Drives Growth and Profitability",
     heroDescription:
@@ -293,7 +293,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Stay ahead of tax deadlines, reduce costly surprises, and make confident financial decisions with year-round tax planning and preparation tailored to your business.",
     heroBg:
-      "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
     eyebrow: "Solutions / Tax Services",
     heroTitle: "Proactive Tax Planning & Preparation for Growing Businesses",
     heroDescription:
@@ -393,7 +393,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management.",
     heroBg:
-      "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&w=1920&q=80",
+      "/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.jpg",
     eyebrow: "Solutions / Wealth Management",
     heroTitle: "Wealth Management",
     heroDescription:

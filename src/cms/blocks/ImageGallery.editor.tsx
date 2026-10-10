@@ -171,7 +171,7 @@ export const ImageGalleryBlock: ComponentConfig<ImageGalleryProps> = {
         }),
       },
       defaultItemProps: {
-        url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80",
+        url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
         title: "Showcase Photo",
         caption: "Corporate advisory and team highlights.",
         alt: "Showcase photography",

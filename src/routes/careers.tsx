@@ -192,7 +192,7 @@ function CareersPage() {
       <main className="flex-1">
         {/* Page Hero Header */}
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.jpg"
           eyebrow="Join Our Team"
           title="Careers at SMG"
           description="Explore open positions and join our team."
@@ -497,7 +497,7 @@ function CareersLoading() {
       <Header />
       <main className="flex-1">
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.jpg"
           eyebrow="Join Our Team"
           title="Careers at SMG"
           description="Explore open positions and join our team."
@@ -525,7 +525,7 @@ function CareersErrorFallback() {
       <Header />
       <main className="flex-1">
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.jpg"
           eyebrow="Join Our Team"
           title="Careers at SMG"
           description="Explore open positions and join our team."

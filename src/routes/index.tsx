@@ -10,7 +10,7 @@ import { QuoteForm } from "@/components/site/QuoteForm";
 import { LogoMarquee } from "@/components/site/LogoMarquee";
 import { ProvenProcess } from "@/components/site/ProvenProcess";
 
-const HERO_IMAGE = "https://www.smgaba.com/wp-content/uploads/2021/11/smg-wallpaper.jpg";
+const HERO_IMAGE = "/images/blog/smg-wallpaper.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -38,22 +38,22 @@ const SOLUTIONS = [
   {
     title: "Outsourced Bookkeeping",
     href: "/solutions#outsourced-bookkeeping",
-    img: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-bookkeeping-1.jpeg",
+    img: "/images/solutions/smg-bookkeeping-1.jpeg",
   },
   {
     title: "CFO on the Go",
     href: "/solutions#cfo-on-the-go",
-    img: "https://www.smgaba.com/wp-content/uploads/2021/10/AdobeStock_201950021-1.jpeg",
+    img: "/images/solutions/adobestock-201950021-1.jpeg",
   },
   {
     title: "Tax Services",
     href: "/solutions#tax-services",
-    img: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-tax-services-1.jpeg",
+    img: "/images/solutions/smg-tax-services-1.jpeg",
   },
   {
     title: "Back Office",
     href: "/solutions#back-office",
-    img: "https://www.smgaba.com/wp-content/uploads/2021/11/smg-back-office-1.jpeg",
+    img: "/images/solutions/smg-back-office-1.jpeg",
   },
 ];
 
@@ -99,7 +99,7 @@ function Index() {
             <div className="relative">
               <div className="absolute -bottom-5 -left-5 hidden size-40 rounded-3xl bg-mist lg:block" />
               <img
-                src="https://www.smgaba.com/wp-content/uploads/2021/11/home-feature-hospitality.jpg"
+                src="/images/solutions/home-feature-hospitality.jpg"
                 alt="SMG Home Feature Hospitality Accounting"
                 loading="lazy"
                 className="relative aspect-4/3 w-full rounded-3xl object-cover shadow-[var(--shadow-card-hover)]"
@@ -236,11 +236,11 @@ function Index() {
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 {[
                   {
-                    src: "https://www.smgaba.com/wp-content/uploads/2021/12/nyc-hospitality-Logo.png",
+                    src: "/images/blog/nyc-hospitality-logo.png",
                     alt: "NYC Restaurant Alliance Logo",
                   },
                   {
-                    src: "https://www.smgaba.com/wp-content/uploads/2021/11/nysra-rgb.png",
+                    src: "/images/awards/nysra-rgb.png",
                     alt: "New York State Restauran Association Logo",
                   },
                 ].map((l) => (
@@ -267,7 +267,7 @@ function Index() {
 
             <div className="order-1 lg:order-2">
               <img
-                src="https://www.smgaba.com/wp-content/uploads/2020/02/szngsfqqjkih5cqdjdk-ja-e1635541793896.jpg"
+                src="/images/blog/szngsfqqjkih5cqdjdk-ja-e1635541793896.jpg"
                 alt="Hospitality accounting clients"
                 loading="lazy"
                 className="aspect-4/5 w-full rounded-3xl object-cover shadow-[var(--shadow-card-hover)]"

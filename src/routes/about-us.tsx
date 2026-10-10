@@ -71,7 +71,7 @@ function AboutUsPage() {
             1. HERO SECTION (Photographic background + blue gradient overlay + CTA)
            ========================================================================= */}
         <SubpageHero
-          bgImage="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1920&q=80"
+          bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.jpg"
           title="About Us"
           description="Get a premier, customized financial, accounting and advisory plan or environment that is accurate, responsive and crafted for you and your business. We focus on long-term client engagement and partnerships."
           buttonText="MEET OUR TEAM"
@@ -182,7 +182,7 @@ function AboutUsPage() {
               <div className="lg:col-span-5 flex justify-center">
                 <div className="relative size-72 sm:size-84 overflow-hidden rounded-full border-4 border-[#3b82f6]/20 p-2 shadow-2xl">
                   <img
-                    src="https://www.smgaba.com/wp-content/uploads/2021/11/home-feature-hospitality.jpg"
+                    src="/images/solutions/home-feature-hospitality.jpg"
                     alt="SMG Partnership"
                     className="size-full rounded-full object-cover"
                   />
