@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
-import { ExternalLink, CheckCircle2 } from "lucide-react";
+import { ExternalLink, CheckCircle2, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/solutions/wealth-management")({
   head: () => ({
@@ -82,34 +82,68 @@ function WealthManagementPage() {
 
       <main>
         {/* =========================================================================
-            SECTION 1: HERO
+            SECTION 1: HERO (Matching SMG Photographic Dark Blue Hero Theme)
            ========================================================================= */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-slate-50/50 py-16 sm:py-24 border-b border-slate-100">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            {/* Logo in header */}
-            <div className="mb-10 flex items-center">
-              <img
-                src="/images/wealth/kuttin-logo.png"
-                alt="Kuttin Wealth Management"
-                className="h-12 sm:h-14 w-auto object-contain"
-              />
-            </div>
+        <section className="relative isolate overflow-hidden bg-[#122344] pt-32 pb-20 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-32 text-white border-b border-[#1b3a6b]">
+          {/* Background photographic image matching site theme */}
+          <img
+            src="/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.jpg"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 size-full object-cover object-center"
+          />
 
+          {/* Rich Blue Dark Gradient Overlay matching original site theme */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `
+                linear-gradient(105deg, rgba(14, 28, 56, 0.95) 0%, rgba(20, 42, 82, 0.90) 48%, rgba(27, 58, 112, 0.85) 100%)
+              `,
+            }}
+          />
+
+          {/* Subtle wallpaper texture mix-blend */}
+          <div
+            className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
+            style={{
+              backgroundImage: "url('/images/blog/smg-wallpaper.jpg')",
+              backgroundSize: "cover",
+            }}
+          />
+
+          {/* Hero Content */}
+          <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
-              {/* Left Column: Text & CTA */}
+              {/* Left Column: Eyebrow, Logo, Title, Body & CTAs */}
               <div className="lg:col-span-7">
-                <h1 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#142340] leading-[1.15]">
+                <div className="flex flex-wrap items-center gap-3.5 mb-6">
+                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-200 backdrop-blur-md border border-white/15">
+                    <span>Solutions / Wealth Management</span>
+                  </div>
+
+                  {/* Kuttin Logo pill badge */}
+                  <div className="rounded-full bg-white px-3.5 py-1 shadow-md flex items-center">
+                    <img
+                      src="/images/wealth/kuttin-logo.png"
+                      alt="Kuttin Wealth Management"
+                      className="h-6 w-auto object-contain"
+                    />
+                  </div>
+                </div>
+
+                <h1 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.18] drop-shadow-sm">
                   Wealth management and financial advice tailored to you.
                 </h1>
 
-                <div className="mt-6 space-y-5 text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
+                <div className="mt-6 space-y-4 text-base sm:text-lg text-blue-50/95 leading-relaxed font-normal">
                   <p>
                     True wealth is built with purpose—and it starts with a personalized financial plan designed around your goals, values, and vision for the future.
                   </p>
-                  <p>
+                  <p className="text-sm sm:text-base text-blue-100/90 leading-relaxed">
                     As the preferred financial planning alliance of SMG ABA, Kuttin Wealth Management brings together deep experience, advanced tools, and a personalized approach to help you navigate every stage of your financial journey. Whether you're focused on long-term growth, retirement, or legacy planning, we align our strategies with your timeline, priorities, and risk profile.
                   </p>
-                  <div className="pt-2 text-slate-800 font-medium space-y-1">
+                  <div className="pt-2 text-white font-medium text-sm sm:text-base space-y-1">
                     <p>Ready to see how a custom financial plan can support your future?</p>
                     <p>Schedule your complimentary initial consultation today.</p>
                   </div>
@@ -120,19 +154,19 @@ function WealthManagementPage() {
                     href={CONSULTATION_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[#1b4e94] px-8 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all duration-300 hover:bg-[#142340] hover:scale-105 active:scale-95"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#142340] shadow-xl transition-all duration-200 hover:bg-slate-100 hover:scale-105 active:scale-95"
                   >
                     <span>Schedule a consultation</span>
                     <ExternalLink className="size-4" />
                   </a>
 
-                  <p className="text-sm text-slate-600">
+                  <p className="text-xs sm:text-sm text-blue-200 font-normal">
                     To learn more, visit{" "}
                     <a
                       href={LEARN_MORE_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-[#1b4e94] hover:text-[#142340] underline underline-offset-4 transition"
+                      className="font-semibold text-white underline underline-offset-4 hover:text-blue-100 transition"
                     >
                       Kuttin Wealth Management
                     </a>
@@ -140,19 +174,19 @@ function WealthManagementPage() {
                 </div>
               </div>
 
-              {/* Right Column: Collage Image with Captions */}
+              {/* Right Column: High-end Team Collage Card */}
               <div className="lg:col-span-5">
-                <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-3 shadow-xl">
+                <div className="relative rounded-3xl border border-white/20 bg-white/10 p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-white/30">
                   <img
                     src="/images/wealth/kuttin-team-collage.jpeg"
                     alt="Kuttin Wealth Management Team"
-                    className="w-full h-auto rounded-2xl object-cover"
+                    className="w-full h-auto rounded-2xl object-cover shadow-sm"
                   />
-                  <div className="px-3 pt-4 pb-2 text-center">
-                    <p className="font-bold text-base text-[#142340]">
+                  <div className="px-3 pt-4 pb-2 text-center text-white">
+                    <p className="font-bold text-base tracking-wide font-serif-hero">
                       Kuttin Wealth Management
                     </p>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-blue-200/90 mt-1">
                       A private wealth advisory practice of Ameriprise Financial Services, LLC
                     </p>
                   </div>
@@ -163,14 +197,17 @@ function WealthManagementPage() {
         </section>
 
         {/* =========================================================================
-            SECTION 2: ADVICE
+            SECTION 2: ADVICE (Light Theme with Card Grid)
            ========================================================================= */}
-        <section className="py-20 sm:py-28 bg-white border-b border-slate-100">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+        <section className="py-20 sm:py-28 bg-[#faf9f6] border-b border-slate-100">
+          <div className="mx-auto max-w-7xl px-6 lg:px-12">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
-              {/* Left Column: Text & Bullets */}
+              {/* Left Column: Heading, Paragraphs & Bullets */}
               <div className="lg:col-span-7">
-                <h2 className="font-serif-hero text-3xl sm:text-4xl font-bold text-[#142340] leading-tight">
+                <span className="text-xs font-bold uppercase tracking-widest text-[#1b4e94]">
+                  Financial Advisory
+                </span>
+                <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340] leading-tight">
                   What kind of advice can I expect from a financial advisor?
                 </h2>
 
@@ -189,22 +226,26 @@ function WealthManagementPage() {
                   </p>
                 </div>
 
-                <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   {ADVICE_BULLETS.map((bullet) => (
-                    <li
+                    <div
                       key={bullet}
-                      className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-[#faf9f6] p-4 text-sm font-medium text-slate-800"
+                      className="flex items-start gap-3 rounded-2xl border border-border/80 bg-white p-4 shadow-xs transition duration-200 hover:-translate-y-0.5 hover:border-[#1b4e94]/40 hover:shadow-md"
                     >
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#1b4e94]" />
-                      <span>{bullet}</span>
-                    </li>
+                      <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[#1b4e94]">
+                        <CheckCircle2 className="size-4" />
+                      </div>
+                      <span className="text-sm font-medium text-slate-800 leading-snug">
+                        {bullet}
+                      </span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
 
-              {/* Right Column: Advisor Image */}
+              {/* Right Column: Advisor Image in frame */}
               <div className="lg:col-span-5">
-                <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-3 shadow-lg">
+                <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-3 shadow-xl transition-all duration-300 hover:shadow-2xl">
                   <img
                     src="/images/wealth/advisor-couple-tablet.jpeg"
                     alt="Financial advisor meeting with clients"
@@ -217,11 +258,14 @@ function WealthManagementPage() {
         </section>
 
         {/* =========================================================================
-            SECTION 3: INDUSTRY RECOGNITION
+            SECTION 3: INDUSTRY RECOGNITION (Dark Navy Theme)
            ========================================================================= */}
         <section className="py-20 sm:py-28 bg-[#142340] text-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10 text-center">
-            <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+          <div className="mx-auto max-w-7xl px-6 lg:px-12 text-center">
+            <span className="text-xs font-bold uppercase tracking-widest text-blue-300">
+              Industry Excellence
+            </span>
+            <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
               Kuttin Wealth Management Industry Recognition
             </h2>
 
@@ -230,7 +274,7 @@ function WealthManagementPage() {
               {BADGES.map((badge) => (
                 <div
                   key={badge.alt}
-                  className="flex items-center justify-center rounded-2xl bg-white p-4 shadow-md transition hover:scale-105"
+                  className="flex items-center justify-center rounded-2xl border border-white/10 bg-white p-4 shadow-lg transition duration-200 hover:scale-105"
                 >
                   <img
                     src={badge.src}
@@ -251,7 +295,7 @@ function WealthManagementPage() {
                   href={CONSULTATION_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold uppercase tracking-wider text-[#142340] shadow-lg transition-all duration-300 hover:bg-blue-50 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-9 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#142340] shadow-xl transition-all duration-200 hover:bg-slate-100 hover:scale-105 active:scale-95"
                 >
                   <span>Schedule a consultation</span>
                   <ExternalLink className="size-4 text-[#142340]" />
@@ -262,13 +306,14 @@ function WealthManagementPage() {
         </section>
 
         {/* =========================================================================
-            DISCLOSURES
+            DISCLOSURES (Clean, Subdued Legal Section)
            ========================================================================= */}
         <section className="py-16 bg-[#faf9f6] border-t border-slate-200 text-slate-500">
           <div className="mx-auto max-w-5xl px-6 lg:px-10">
-            <h3 className="text-xs font-bold uppercase tracking-widest text-slate-700 mb-6">
-              Disclosures
-            </h3>
+            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-700 mb-6">
+              <Shield className="size-4 text-slate-500" />
+              <h3 className="font-bold">Disclosures</h3>
+            </div>
 
             <div className="space-y-4 text-xs leading-relaxed text-slate-500 font-normal">
               {DISCLOSURES.map((disclosure, index) => (
