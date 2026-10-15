@@ -213,7 +213,7 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
   const logoAlt = settings?.header?.logoAlt || "SMG Accounting, Bookkeeping & Advisory";
   const ctaButton = settings?.header?.ctaButton || {
     enabled: true,
-    label: "Schedule Consultation",
+    label: "Schedule a Consultation",
     href: BOOKING_ROUTE,
   };
 

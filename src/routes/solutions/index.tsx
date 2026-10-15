@@ -15,6 +15,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { submitNoCrmLead } from "@/lib/leads.server";
+import { BOOKING_ROUTE } from "@/data/calendly";
+
 
 export const Route = createFileRoute("/solutions/")({
   head: () => ({
@@ -221,10 +223,19 @@ function SolutionsIndexPage() {
           bgImage="/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.jpg"
           eyebrow="Our Solutions"
           title="Financial Solutions Built for Growth"
-          description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy and wealth management—tailored to give your business clarity and momentum."
-          buttonText="GET A CONSULTATION"
-          buttonHref="#contact-form"
+          description="SMG's bookkeeping, accounting, tax and CFO advisory services work together under one firm—so your numbers, tax strategy and business decisions stay connected. Wealth management is also available through our strategic partner."
+          buttonText="SCHEDULE A CONSULTATION"
+          buttonHref={BOOKING_ROUTE}
         />
+
+        {/* Intro paragraph */}
+        <div className="py-10 sm:py-12 bg-white border-b border-slate-100">
+          <div className="mx-auto max-w-3xl px-6 lg:px-8 text-center">
+            <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
+              When bookkeeping, accounting, tax and advisory all come from one team, your financial data flows seamlessly from your books into your tax return and your strategic decisions. That integration saves time, eliminates gaps, and gives you a clearer picture of where your business stands.
+            </p>
+          </div>
+        </div>
 
         {/* =========================================================================
             2. SOLUTIONS CARDS SECTION (Alternating Zig-Zag)

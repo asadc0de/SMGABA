@@ -102,7 +102,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     heroTitle: "Bookkeeping That Brings Clarity to Your Business",
     heroDescription:
       "Accurate, timely bookkeeping backed by responsive professionals who help you stay organized, make confident decisions, and focus on growing your business.",
-    buttonText: "GET STARTED",
+    buttonText: "SCHEDULE A CONSULTATION",
+    ctaHref: BOOKING_ROUTE,
     servicesHeading: "Our Bookkeeping Services Include",
     servicesSubheading:
       "End-to-end bookkeeping workflows designed to eliminate back-office drag and give you clean, actionable financials every single month.",
@@ -134,7 +135,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
       },
       {
         title: "Year-End Reporting Support",
-        desc: "We deliver complete, audit-ready financial packages to your CPA for a seamless, low-stress tax filing season.",
+        desc: "We deliver complete, audit-ready financial statements that flow directly into your tax return, because SMG handles your bookkeeping, accounting and tax services together for a seamless, low-stress tax season.",
         iconName: "FileText",
       },
     ],

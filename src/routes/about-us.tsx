@@ -36,7 +36,7 @@ export const Route = createFileRoute("/about-us")({
 const FIVE_BENEFITS = [
   "Dedicated Team Member",
   "Industry Specialists",
-  "Seasoned By Trend & Technology By Day",
+  "Experienced Professionals, Modern Technology",
   "Advanced Tech Systems",
   "The SMG Guarantee",
 ];
@@ -73,7 +73,7 @@ function AboutUsPage() {
         <SubpageHero
           bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.jpg"
           title="About Us"
-          description="Get a premier, customized financial, accounting and advisory plan or environment that is accurate, responsive and crafted for you and your business. We focus on long-term client engagement and partnerships."
+          description="Get a customized accounting, bookkeeping, tax and advisory plan that is accurate, responsive and built around you and your business. We focus on long-term client relationships."
           buttonText="MEET OUR TEAM"
           buttonHref="/our-team"
         />
@@ -92,13 +92,13 @@ function AboutUsPage() {
 
             <div className="mt-10 space-y-6 text-left text-base sm:text-lg leading-relaxed text-slate-600 font-normal">
               <p>
-                SMG provides accounting, bookkeeping and account management to diverse businesses and individuals. Whether business, personal or non-profit we partner and work with you to understand your real-time.
+                SMG provides accounting, bookkeeping, tax and advisory services to businesses, non-profits and individuals. Our mission is to give you accurate, timely financial information and responsive guidance, so you understand where you stand today and can plan with confidence for what comes next.
               </p>
               <p>
-                The culmination of the benefits of selecting SMG is high quality client relationship and partnering with you to grow your business while saving you time and money. We strive to become an integral part of your team, knowing you, your employees and your operations. We focus on long-term, high quality client relationships by creating strategic partnerships which grow on the foundation of trust.
+                We focus on long-term, high-quality client relationships built on trust. We take the time to know you, your employees and your operations, so our guidance grows with your business while saving you time and money.
               </p>
               <p>
-                Past business challenges are often due to inefficient bookkeeping, cash management, reporting and tax. Other reasons include improper preparation, untimely advice and lack of foresight. We emphasize the short, mid and long term to focus on creating solutions that allow you to focus on your business while feeling secure with accounting matters that affect you.
+                Many business challenges stem from inefficient bookkeeping, poor cash management, inadequate reporting or reactive tax planning. We address the short, mid and long term—so you can focus on running your business with confidence that your accounting is handled.
               </p>
             </div>
 

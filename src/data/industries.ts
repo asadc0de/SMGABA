@@ -430,7 +430,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Real Estate & Development",
     metaTitle: "Real Estate Accounting & Advisory | SMG",
     metaDescription:
-      "Comprehensive accounting for property developers, syndicators, and real estate management firms. 1031 exchanges, CAM reconciliations, and partnership returns.",
+      "Comprehensive accounting, tax planning, and financial reporting for property developers, syndicators, and real estate management firms. 1031 exchanges, CAM reconciliations, and partnership returns.",
     heroBg:
       "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     eyebrow: "Industry Practice",
@@ -456,11 +456,11 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       },
       {
         title: "1031 Exchange Advisory",
-        desc: "Strategic coordination of like-kind exchange timelines and replacement property capital accounts to defer capital gains tax.",
+        desc: "Tracking like-kind exchange timelines, replacement property capital accounts, and deferred gain calculations in coordination with a qualified intermediary to defer capital gains tax.",
       },
       {
-        title: "Depreciation & Cost Segregation",
-        desc: "Accelerating tax deductions through bonus depreciation and coordinating certified engineering cost segregation studies.",
+        title: "Depreciation Planning",
+        desc: "Evaluating bonus depreciation opportunities and coordinating with outside engineering specialists on cost segregation studies where appropriate. Results depend on the property and your individual tax situation.",
       },
       {
         title: "Partnership Capital Accounting",
@@ -471,8 +471,8 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         desc: "Quarterly and annual financial statements formatted for bank lenders, equity partners, and institutional investors.",
       },
       {
-        title: "Entity Structuring & Asset Protection",
-        desc: "Advising on optimal holding structures (LLCs, LPs, REITs) to protect personal assets and minimize overall tax exposure.",
+        title: "Entity Structuring & Tax Planning",
+        desc: "Evaluating holding structures (LLCs, LPs) from an accounting and tax perspective, working alongside your attorney. Legal and asset-protection advice is provided by your legal counsel.",
       },
     ],
     form: {
@@ -487,7 +487,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     highlights: [
       "Property-Level P&Ls",
       "1031 Exchange Timelines",
-      "Cost Segregation & Depreciation",
+      "Depreciation Planning",
     ],
     iconName: "Building2",
   },

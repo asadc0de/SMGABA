@@ -4,6 +4,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import type { IndustryData } from "@/data/industries";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 declare global {
   interface Window {
@@ -117,8 +118,8 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
           eyebrow={data.eyebrow}
           title={data.heroTitle}
           description={data.heroDescription}
-          buttonText="GET STARTED"
-          buttonHref="#contact-form"
+          buttonText="SCHEDULE A CONSULTATION"
+          buttonHref={BOOKING_ROUTE}
         />
 
         {/* =========================================================================
@@ -346,7 +347,7 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                     data-industry={data.slug}
                     className="inline-flex items-center justify-center rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    {isSubmitting ? "Submitting..." : "SCHEDULE CONSULTATION"}
+                    {isSubmitting ? "Submitting..." : "SCHEDULE A CONSULTATION"}
                   </button>
                 </div>
               </form>

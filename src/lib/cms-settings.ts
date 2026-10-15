@@ -217,7 +217,7 @@ export const DEFAULT_SITE_SETTINGS: CmsSiteSettings = {
     sticky: true,
     ctaButton: {
       enabled: true,
-      label: "Schedule Consultation",
+      label: "Schedule a Consultation",
       href: BOOKING_ROUTE,
     },
     navItems: [
