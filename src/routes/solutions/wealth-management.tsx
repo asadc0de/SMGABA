@@ -115,17 +115,11 @@ function WealthManagementPage() {
           {/* Hero Content */}
           <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
-              {/* Left Column: Text & Clear CTAs */}
+              {/* Left Column: Clean Eyebrow, Title, Body & Dual Action Buttons */}
               <div className="lg:col-span-7 space-y-6">
-                {/* Brand Alliance Badge */}
-                <div>
-                  <div className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-2 shadow-lg">
-                    <img
-                      src="/images/wealth/kuttin-logo.png"
-                      alt="Kuttin Wealth Management"
-                      className="h-6 sm:h-7 w-auto object-contain"
-                    />
-                  </div>
+                {/* Standard Site Eyebrow */}
+                <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-200 backdrop-blur-md border border-white/15">
+                  <span>Solutions / Wealth Management</span>
                 </div>
 
                 {/* H1 Title */}
@@ -149,41 +143,53 @@ function WealthManagementPage() {
                   <p className="text-blue-200">Schedule your complimentary initial consultation today.</p>
                 </div>
 
-                {/* CTA Row */}
-                <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
+                {/* CTA Buttons Row */}
+                <div className="pt-2 flex flex-wrap items-center gap-4">
                   <a
                     href={CONSULTATION_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0e1d3a] shadow-xl transition-all duration-200 hover:bg-blue-50 hover:scale-105 active:scale-95"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0e1d3a] shadow-xl transition-all duration-200 hover:bg-slate-100 hover:scale-105 active:scale-95"
                   >
                     <span>Schedule a consultation</span>
                     <ExternalLink className="size-4 text-[#0e1d3a]" />
                   </a>
 
-                  <p className="text-xs sm:text-sm text-blue-200 font-normal">
-                    To learn more, visit{" "}
-                    <a
-                      href={LEARN_MORE_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-white underline underline-offset-4 hover:text-blue-100 transition"
-                    >
-                      Kuttin Wealth Management
-                    </a>
-                  </p>
+                  <a
+                    href={LEARN_MORE_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/30 bg-white/10 px-7 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white backdrop-blur-sm shadow-md transition-all duration-200 hover:bg-white/20 hover:border-white/50 hover:scale-105 active:scale-95"
+                  >
+                    <span>Learn More: Kuttin Wealth</span>
+                    <ExternalLink className="size-4 text-white" />
+                  </a>
                 </div>
               </div>
 
-              {/* Right Column: Clean, High-Contrast White Card for Collage */}
+              {/* Right Column: Branded Kuttin Wealth Card with Logo Header & Team Collage */}
               <div className="lg:col-span-5">
-                <div className="mx-auto max-w-md lg:max-w-none overflow-hidden rounded-3xl bg-white p-4 shadow-2xl ring-1 ring-black/10">
-                  <img
-                    src="/images/wealth/kuttin-team-collage.jpeg"
-                    alt="Kuttin Wealth Management Team"
-                    className="w-full h-auto rounded-2xl object-cover shadow-sm"
-                  />
-                  <div className="px-2 pt-4 pb-1 text-center">
+                <div className="mx-auto max-w-md lg:max-w-none overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/10">
+                  {/* Card Header displaying Kuttin Logo cleanly */}
+                  <div className="bg-slate-50/90 px-6 py-4 border-b border-slate-100 flex items-center justify-center">
+                    <img
+                      src="/images/wealth/kuttin-logo.png"
+                      alt="Kuttin Wealth Management"
+                      className="h-8 sm:h-9 w-auto object-contain"
+                    />
+                  </div>
+
+                  {/* Collage Image */}
+                  <div className="p-3.5 pb-0">
+                    <img
+                      src="/images/wealth/kuttin-team-collage.jpeg"
+                      alt="Kuttin Wealth Management Team"
+                      className="w-full h-auto rounded-2xl object-cover shadow-xs"
+                    />
+                  </div>
+
+                  {/* Card Footer Captions */}
+                  <div className="px-4 py-4 text-center">
                     <p className="font-serif-hero font-bold text-base text-[#142340]">
                       Kuttin Wealth Management
                     </p>
