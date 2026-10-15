@@ -18,6 +18,7 @@ import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { CoreValues } from "@/components/site/CoreValues";
 import { IntegrationsMarquee } from "@/components/site/IntegrationsMarquee";
+import { BOOKING_ROUTE } from "@/data/calendly";
 
 export const Route = createFileRoute("/about-us")({
   head: () => ({
@@ -137,10 +138,10 @@ function AboutUsPage() {
             </p>
             <div className="mt-8">
               <a
-                href="#contact-form"
+                href={BOOKING_ROUTE}
                 className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#17488c] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95"
               >
-                GET A QUOTE
+                SCHEDULE A CONSULTATION
               </a>
             </div>
           </div>

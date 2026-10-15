@@ -217,7 +217,7 @@ function ContactPage() {
                   <div className="mt-6">
                     <Button asChild className="w-full rounded-full bg-[#142340] hover:bg-[#1b4e94] text-white font-bold text-xs uppercase tracking-wider py-3 shadow-md">
                       <a href={BOOKING_ROUTE} className="flex items-center justify-center gap-2">
-                        <span>Book a Consultation</span>
+                        <span>Schedule a Consultation</span>
                         <ArrowRight className="size-4" />
                       </a>
                     </Button>

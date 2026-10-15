@@ -200,7 +200,8 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     heroTitle: "Strategic CFO Guidance That Drives Growth and Profitability",
     heroDescription:
       "Gain the financial clarity, forecasting, and executive guidance you need to make smarter business decisions, improve profitability, and confidently grow your business.",
-    buttonText: "REQUEST CFO CONSULTATION",
+    buttonText: "SCHEDULE A CONSULTATION",
+    ctaHref: BOOKING_ROUTE,
     servicesHeading: "Our CFO Advisory Services Include",
     servicesSubheading:
       "Executive-level financial strategy and operational visibility to support key decisions and capital management.",
