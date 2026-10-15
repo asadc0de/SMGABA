@@ -65,4 +65,5 @@ export const STALE_SITEMAP_REDIRECTS: Record<string, string> = {
     "/hospitality",
   "contact-us": "/contact",
   "tierra-verde-fl": "/florida-location",
+  "privacy-policy-2": "/privacy-policy",
 };

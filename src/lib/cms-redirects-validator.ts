@@ -32,6 +32,7 @@ export const KNOWN_STATIC_ROUTES = new Set([
   "/new-york-city-location",
   "/islandia-location",
   "/florida-location",
+  "/privacy-policy",
   "/privacy-policy-2",
 ]);
 

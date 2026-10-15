@@ -23,6 +23,7 @@ export const STATIC_ROUTE_SLUGS: readonly string[] = [
   "manufacturers",
   "new-york-city-location",
   "our-team",
+  "privacy-policy",
   "privacy-policy-2",
   "real-estate",
   "resources",

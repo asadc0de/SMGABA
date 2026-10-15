@@ -342,7 +342,7 @@ export function Footer({ settings }: { settings?: CmsSiteSettings } = {}) {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 text-[0.7rem] text-slate-400/70 sm:flex-row lg:px-10">
           <p>{copyrightText}</p>
           <div className="flex items-center gap-4">
-            <a href="/privacy-policy-2" className="transition-colors hover:text-white">Privacy Policy</a>
+            <a href="/privacy-policy" className="transition-colors hover:text-white">Privacy Policy</a>
           </div>
         </div>
       </div>

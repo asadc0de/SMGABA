@@ -116,7 +116,7 @@ function BookAnAppointmentPage() {
                   </div>
 
                   <div className="mt-8 pt-6 border-t border-slate-200/80 flex items-center justify-between text-[0.7rem] text-slate-400">
-                    <a href="/privacy-policy-2" className="hover:text-[#1b4e94] transition-colors underline">
+                    <a href="/privacy-policy" className="hover:text-[#1b4e94] transition-colors underline">
                       Privacy Policy
                     </a>
                     <span className="flex items-center gap-1 text-slate-500 font-medium">

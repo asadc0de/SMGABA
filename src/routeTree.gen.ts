@@ -30,6 +30,7 @@ import { Route as LegalProfessionalsRouteImport } from './routes/legal-professio
 import { Route as ManufacturersRouteImport } from './routes/manufacturers'
 import { Route as NewYorkCityLocationRouteImport } from './routes/new-york-city-location'
 import { Route as OurTeamRouteImport } from './routes/our-team'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyPolicy2RouteImport } from './routes/privacy-policy-2'
 import { Route as RealEstateRouteImport } from './routes/real-estate'
 import { Route as RetailRouteImport } from './routes/retail'
@@ -164,6 +165,11 @@ const NewYorkCityLocationRoute = NewYorkCityLocationRouteImport.update({
 const OurTeamRoute = OurTeamRouteImport.update({
   id: '/our-team',
   path: '/our-team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyPolicy2Route = PrivacyPolicy2RouteImport.update({
@@ -341,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/retail': typeof RetailRoute
@@ -394,6 +401,7 @@ export interface FileRoutesByTo {
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/retail': typeof RetailRoute
@@ -448,6 +456,7 @@ export interface FileRoutesById {
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
   '/our-team': typeof OurTeamRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/retail': typeof RetailRoute
@@ -503,6 +512,7 @@ export interface FileRouteTypes {
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/privacy-policy'
     | '/privacy-policy-2'
     | '/real-estate'
     | '/retail'
@@ -556,6 +566,7 @@ export interface FileRouteTypes {
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/privacy-policy'
     | '/privacy-policy-2'
     | '/real-estate'
     | '/retail'
@@ -609,6 +620,7 @@ export interface FileRouteTypes {
     | '/manufacturers'
     | '/new-york-city-location'
     | '/our-team'
+    | '/privacy-policy'
     | '/privacy-policy-2'
     | '/real-estate'
     | '/retail'
@@ -663,6 +675,7 @@ export interface RootRouteChildren {
   ManufacturersRoute: typeof ManufacturersRoute
   NewYorkCityLocationRoute: typeof NewYorkCityLocationRoute
   OurTeamRoute: typeof OurTeamRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   PrivacyPolicy2Route: typeof PrivacyPolicy2Route
   RealEstateRoute: typeof RealEstateRoute
   RetailRoute: typeof RetailRoute
@@ -842,6 +855,13 @@ declare module '@tanstack/react-router' {
       path: '/our-team'
       fullPath: '/our-team'
       preLoaderRoute: typeof OurTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy-policy-2': {
@@ -1079,6 +1099,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManufacturersRoute: ManufacturersRoute,
   NewYorkCityLocationRoute: NewYorkCityLocationRoute,
   OurTeamRoute: OurTeamRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   PrivacyPolicy2Route: PrivacyPolicy2Route,
   RealEstateRoute: RealEstateRoute,
   RetailRoute: RetailRoute,

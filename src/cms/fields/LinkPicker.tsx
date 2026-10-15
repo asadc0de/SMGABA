@@ -22,7 +22,7 @@ const DEFAULT_SITE_PAGES = [
   { label: "Bookkeeping Services", path: "/solutions/bookkeeping" },
   { label: "CFO Advisory Services", path: "/solutions/cfo-advisory-services" },
   { label: "Wealth Management", path: "/wealth-management" },
-  { label: "Privacy Policy", path: "/privacy-policy-2" },
+  { label: "Privacy Policy", path: "/privacy-policy" },
 ];
 
 /**
