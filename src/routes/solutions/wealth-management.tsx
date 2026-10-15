@@ -82,10 +82,10 @@ function WealthManagementPage() {
 
       <main>
         {/* =========================================================================
-            SECTION 1: HERO (Matching SMG Photographic Dark Blue Hero Theme)
+            SECTION 1: HERO (Clean, Premium, High-Contrast Layout)
            ========================================================================= */}
-        <section className="relative isolate overflow-hidden bg-[#122344] pt-32 pb-20 sm:pt-40 sm:pb-24 lg:pt-48 lg:pb-32 text-white border-b border-[#1b3a6b]">
-          {/* Background photographic image matching site theme */}
+        <section className="relative isolate overflow-hidden bg-[#0e1d3a] pt-36 pb-20 sm:pt-44 sm:pb-28 lg:pt-48 lg:pb-32 text-white">
+          {/* Photographic background matching site theme */}
           <img
             src="/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.jpg"
             alt=""
@@ -93,17 +93,17 @@ function WealthManagementPage() {
             className="absolute inset-0 size-full object-cover object-center"
           />
 
-          {/* Rich Blue Dark Gradient Overlay matching original site theme */}
+          {/* Deep Navy Gradient Overlay */}
           <div
             className="absolute inset-0"
             style={{
               background: `
-                linear-gradient(105deg, rgba(14, 28, 56, 0.95) 0%, rgba(20, 42, 82, 0.90) 48%, rgba(27, 58, 112, 0.85) 100%)
+                linear-gradient(115deg, rgba(10, 22, 45, 0.96) 0%, rgba(15, 32, 65, 0.92) 50%, rgba(20, 45, 90, 0.86) 100%)
               `,
             }}
           />
 
-          {/* Subtle wallpaper texture mix-blend */}
+          {/* Subtle wallpaper texture */}
           <div
             className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
             style={{
@@ -115,49 +115,50 @@ function WealthManagementPage() {
           {/* Hero Content */}
           <div className="relative mx-auto max-w-7xl px-6 lg:px-12">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-center">
-              {/* Left Column: Eyebrow, Logo, Title, Body & CTAs */}
-              <div className="lg:col-span-7">
-                <div className="flex flex-wrap items-center gap-3.5 mb-6">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-200 backdrop-blur-md border border-white/15">
-                    <span>Solutions / Wealth Management</span>
-                  </div>
-
-                  {/* Kuttin Logo pill badge */}
-                  <div className="rounded-full bg-white px-3.5 py-1 shadow-md flex items-center">
+              {/* Left Column: Text & Clear CTAs */}
+              <div className="lg:col-span-7 space-y-6">
+                {/* Brand Alliance Badge */}
+                <div>
+                  <div className="inline-flex items-center gap-3 rounded-full bg-white px-4 py-2 shadow-lg">
                     <img
                       src="/images/wealth/kuttin-logo.png"
                       alt="Kuttin Wealth Management"
-                      className="h-6 w-auto object-contain"
+                      className="h-6 sm:h-7 w-auto object-contain"
                     />
                   </div>
                 </div>
 
-                <h1 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.18] drop-shadow-sm">
+                {/* H1 Title */}
+                <h1 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15] drop-shadow-sm">
                   Wealth management and financial advice tailored to you.
                 </h1>
 
-                <div className="mt-6 space-y-4 text-base sm:text-lg text-blue-50/95 leading-relaxed font-normal">
-                  <p>
-                    True wealth is built with purpose—and it starts with a personalized financial plan designed around your goals, values, and vision for the future.
-                  </p>
-                  <p className="text-sm sm:text-base text-blue-100/90 leading-relaxed">
-                    As the preferred financial planning alliance of SMG ABA, Kuttin Wealth Management brings together deep experience, advanced tools, and a personalized approach to help you navigate every stage of your financial journey. Whether you're focused on long-term growth, retirement, or legacy planning, we align our strategies with your timeline, priorities, and risk profile.
-                  </p>
-                  <div className="pt-2 text-white font-medium text-sm sm:text-base space-y-1">
-                    <p>Ready to see how a custom financial plan can support your future?</p>
-                    <p>Schedule your complimentary initial consultation today.</p>
-                  </div>
+                {/* Lead Narrative */}
+                <p className="text-base sm:text-lg text-blue-100/95 leading-relaxed font-light">
+                  True wealth is built with purpose—and it starts with a personalized financial plan designed around your goals, values, and vision for the future.
+                </p>
+
+                {/* Body Description */}
+                <p className="text-sm sm:text-base text-blue-100/80 leading-relaxed font-normal">
+                  As the preferred financial planning alliance of SMG ABA, Kuttin Wealth Management brings together deep experience, advanced tools, and a personalized approach to help you navigate every stage of your financial journey. Whether you're focused on long-term growth, retirement, or legacy planning, we align our strategies with your timeline, priorities, and risk profile.
+                </p>
+
+                {/* Clean Consultation Prompt Callout */}
+                <div className="pt-2 border-t border-white/15 space-y-1 text-sm sm:text-base text-white/95 font-medium">
+                  <p>Ready to see how a custom financial plan can support your future?</p>
+                  <p className="text-blue-200">Schedule your complimentary initial consultation today.</p>
                 </div>
 
-                <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+                {/* CTA Row */}
+                <div className="pt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
                   <a
                     href={CONSULTATION_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#142340] shadow-xl transition-all duration-200 hover:bg-slate-100 hover:scale-105 active:scale-95"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0e1d3a] shadow-xl transition-all duration-200 hover:bg-blue-50 hover:scale-105 active:scale-95"
                   >
                     <span>Schedule a consultation</span>
-                    <ExternalLink className="size-4" />
+                    <ExternalLink className="size-4 text-[#0e1d3a]" />
                   </a>
 
                   <p className="text-xs sm:text-sm text-blue-200 font-normal">
@@ -174,19 +175,19 @@ function WealthManagementPage() {
                 </div>
               </div>
 
-              {/* Right Column: High-end Team Collage Card */}
+              {/* Right Column: Clean, High-Contrast White Card for Collage */}
               <div className="lg:col-span-5">
-                <div className="relative rounded-3xl border border-white/20 bg-white/10 p-3 shadow-2xl backdrop-blur-md transition-all duration-300 hover:border-white/30">
+                <div className="mx-auto max-w-md lg:max-w-none overflow-hidden rounded-3xl bg-white p-4 shadow-2xl ring-1 ring-black/10">
                   <img
                     src="/images/wealth/kuttin-team-collage.jpeg"
                     alt="Kuttin Wealth Management Team"
                     className="w-full h-auto rounded-2xl object-cover shadow-sm"
                   />
-                  <div className="px-3 pt-4 pb-2 text-center text-white">
-                    <p className="font-bold text-base tracking-wide font-serif-hero">
+                  <div className="px-2 pt-4 pb-1 text-center">
+                    <p className="font-serif-hero font-bold text-base text-[#142340]">
                       Kuttin Wealth Management
                     </p>
-                    <p className="text-xs text-blue-200/90 mt-1">
+                    <p className="mt-1 text-xs text-slate-500 font-normal leading-relaxed">
                       A private wealth advisory practice of Ameriprise Financial Services, LLC
                     </p>
                   </div>
@@ -197,7 +198,7 @@ function WealthManagementPage() {
         </section>
 
         {/* =========================================================================
-            SECTION 2: ADVICE (Light Theme with Card Grid)
+            SECTION 2: ADVICE (Spacious Light Section)
            ========================================================================= */}
         <section className="py-20 sm:py-28 bg-[#faf9f6] border-b border-slate-100">
           <div className="mx-auto max-w-7xl px-6 lg:px-12">
@@ -230,7 +231,7 @@ function WealthManagementPage() {
                   {ADVICE_BULLETS.map((bullet) => (
                     <div
                       key={bullet}
-                      className="flex items-start gap-3 rounded-2xl border border-border/80 bg-white p-4 shadow-xs transition duration-200 hover:-translate-y-0.5 hover:border-[#1b4e94]/40 hover:shadow-md"
+                      className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs transition duration-200 hover:-translate-y-0.5 hover:border-[#1b4e94]/40 hover:shadow-md"
                     >
                       <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-blue-50 text-[#1b4e94]">
                         <CheckCircle2 className="size-4" />
@@ -243,9 +244,9 @@ function WealthManagementPage() {
                 </div>
               </div>
 
-              {/* Right Column: Advisor Image in frame */}
+              {/* Right Column: Advisor Image */}
               <div className="lg:col-span-5">
-                <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-3 shadow-xl transition-all duration-300 hover:shadow-2xl">
+                <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-3 shadow-xl transition duration-300 hover:shadow-2xl">
                   <img
                     src="/images/wealth/advisor-couple-tablet.jpeg"
                     alt="Financial advisor meeting with clients"
@@ -258,9 +259,9 @@ function WealthManagementPage() {
         </section>
 
         {/* =========================================================================
-            SECTION 3: INDUSTRY RECOGNITION (Dark Navy Theme)
+            SECTION 3: INDUSTRY RECOGNITION (Signature Deep Navy)
            ========================================================================= */}
-        <section className="py-20 sm:py-28 bg-[#142340] text-white">
+        <section className="py-20 sm:py-28 bg-[#0e1d3a] text-white">
           <div className="mx-auto max-w-7xl px-6 lg:px-12 text-center">
             <span className="text-xs font-bold uppercase tracking-widest text-blue-300">
               Industry Excellence
@@ -270,11 +271,11 @@ function WealthManagementPage() {
             </h2>
 
             {/* Badges Row */}
-            <div className="my-12 flex flex-wrap items-center justify-center gap-6 sm:gap-8">
+            <div className="my-12 flex flex-wrap items-center justify-center gap-5 sm:gap-6">
               {BADGES.map((badge) => (
                 <div
                   key={badge.alt}
-                  className="flex items-center justify-center rounded-2xl border border-white/10 bg-white p-4 shadow-lg transition duration-200 hover:scale-105"
+                  className="flex items-center justify-center rounded-2xl bg-white p-4 shadow-lg transition duration-200 hover:scale-105"
                 >
                   <img
                     src={badge.src}
@@ -295,10 +296,10 @@ function WealthManagementPage() {
                   href={CONSULTATION_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-9 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#142340] shadow-xl transition-all duration-200 hover:bg-slate-100 hover:scale-105 active:scale-95"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-9 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0e1d3a] shadow-xl transition-all duration-200 hover:bg-slate-100 hover:scale-105 active:scale-95"
                 >
                   <span>Schedule a consultation</span>
-                  <ExternalLink className="size-4 text-[#142340]" />
+                  <ExternalLink className="size-4 text-[#0e1d3a]" />
                 </a>
               </div>
             </div>
@@ -306,7 +307,7 @@ function WealthManagementPage() {
         </section>
 
         {/* =========================================================================
-            DISCLOSURES (Clean, Subdued Legal Section)
+            DISCLOSURES (Subdued, Clean Legal Section)
            ========================================================================= */}
         <section className="py-16 bg-[#faf9f6] border-t border-slate-200 text-slate-500">
           <div className="mx-auto max-w-5xl px-6 lg:px-10">
