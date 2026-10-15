@@ -110,7 +110,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     services: [
       {
         title: "Monthly Bookkeeping",
-        desc: "Keep your books up to date and accurate every month with structured reconciliations and transaction tracking.",
+        desc: "Keep your general ledger current and accurate every month through systematic transaction coding and account classification.",
         iconName: "Calendar",
       },
       {
@@ -161,10 +161,10 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     ],
     targetProfilesHeading: "Our Bookkeeping Services Are Ideal for Business Owners Who:",
     targetProfiles: [
-      "Are spending too much time managing their books instead of running their core business.",
-      "Need accurate, up-to-date financial records to make confident operational decisions.",
-      "Have fallen behind on bookkeeping and need an expert team to get back on track quickly.",
-      "Want reliable monthly financial reports without building a costly in-house accounting department.",
+      "Business owners spending valuable hours on data entry rather than revenue-generating operations.",
+      "Companies seeking consistent, timely financial statements without the overhead of an internal accounting department.",
+      "Organizations with backlogged accounts requiring an immediate, structured cleanup.",
+      "Growing businesses that need reliable books to support financing, investor review, or year-end tax filings.",
     ],
     testimonials: [
       {
@@ -203,7 +203,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     buttonText: "REQUEST CFO CONSULTATION",
     servicesHeading: "Our CFO Advisory Services Include",
     servicesSubheading:
-      "Forward-looking financial expertise engineered to help your leadership team scale smartly and protect profit margins.",
+      "Executive-level financial strategy and operational visibility to support key decisions and capital management.",
     services: [
       {
         title: "Financial Strategy & Planning",
@@ -258,12 +258,11 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     ],
     targetProfilesHeading: "Our CFO Advisory Services Are Ideal for Organizations That:",
     targetProfiles: [
-      "Have growing revenue but inconsistent profitability across business units.",
-      "Need forward-looking forecasts and reliable, multi-week cash-flow visibility.",
-      "Have dependable bookkeeping in place but need executive-level financial guidance.",
-      "Are actively preparing for capital expansion, commercial financing, or business acquisition.",
-      "Are not ready to incur the $300k+ annual overhead of a full-time, in-house CFO.",
-      "Want senior-level strategic counsel to achieve ambitious long-term milestones.",
+      "Have growing revenue but inconsistent margins or unclear profitability across business units.",
+      "Need rolling forecasts and multi-week cash flow visibility to manage working capital.",
+      "Have reliable day-to-day bookkeeping in place but lack strategic financial guidance.",
+      "Are actively preparing for capital expansion, commercial borrowing, or business acquisition.",
+      "Seek high-level financial leadership without incurring the cost of a full-time executive.",
     ],
     testimonials: [
       {

@@ -15,19 +15,19 @@ function BookkeepingPage() {
   return (
     <SolutionPageLayout
       data={data}
-      philosophyBlurb="When bookkeeping falls behind, financial reports become unreliable, tax season becomes stressful, and business owners lose confidence in their numbers. Our role is to restore order, provide clarity, and give you accurate financial information so you can make decisions with confidence. Don't wait until tax season or a financing opportunity exposes problems in your books."
+      philosophyBlurb="When bookkeeping falls behind, financial reports become unreliable, tax season becomes stressful, and owners lose confidence in their numbers. Our role is to restore order and deliver accurate, timely financials so you can lead your business with clarity."
       philosophyCards={[
         {
           heading: "Financial Clarity",
-          body: "Your financial reports should help you make decisions—not create more questions or confusion.",
+          body: "Clean financial statements that give you an honest, transparent view of business performance.",
         },
         {
-          heading: "Timely Monthly Reporting",
-          body: "Gain greater confidence that your financial information is complete, timely, accurate, and ready for review.",
+          heading: "Timely Monthly Cadence",
+          body: "Dependable reconciliations and reporting closed on schedule each month—never delayed until tax time.",
         },
         {
-          heading: "Experienced Professionals",
-          body: "We often tell clients that clean bookkeeping isn't the ultimate goal—better business decisions are.",
+          heading: "Actionable Insights",
+          body: "Organized data structured to help leadership evaluate costs, manage cash flow, and plan future growth.",
         },
       ]}
       successStoryBadge="Bookkeeping Success Story"
