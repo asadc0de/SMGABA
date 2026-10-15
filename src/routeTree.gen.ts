@@ -34,6 +34,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyPolicy2RouteImport } from './routes/privacy-policy-2'
 import { Route as RealEstateRouteImport } from './routes/real-estate'
 import { Route as RetailRouteImport } from './routes/retail'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
 import { Route as ApiContactRouteImport } from './routes/api/contact'
@@ -185,6 +186,11 @@ const RealEstateRoute = RealEstateRouteImport.update({
 const RetailRoute = RetailRouteImport.update({
   id: '/retail',
   path: '/retail',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TestimonialsRoute = TestimonialsRouteImport.update({
@@ -351,6 +357,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/retail': typeof RetailRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/api/contact': typeof ApiContactRoute
@@ -405,6 +412,7 @@ export interface FileRoutesByTo {
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/retail': typeof RetailRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/api/contact': typeof ApiContactRoute
@@ -460,6 +468,7 @@ export interface FileRoutesById {
   '/privacy-policy-2': typeof PrivacyPolicy2Route
   '/real-estate': typeof RealEstateRoute
   '/retail': typeof RetailRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/api/contact': typeof ApiContactRoute
@@ -516,6 +525,7 @@ export interface FileRouteTypes {
     | '/privacy-policy-2'
     | '/real-estate'
     | '/retail'
+    | '/sitemap.xml'
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/api/contact'
@@ -570,6 +580,7 @@ export interface FileRouteTypes {
     | '/privacy-policy-2'
     | '/real-estate'
     | '/retail'
+    | '/sitemap.xml'
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/api/contact'
@@ -624,6 +635,7 @@ export interface FileRouteTypes {
     | '/privacy-policy-2'
     | '/real-estate'
     | '/retail'
+    | '/sitemap.xml'
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/api/contact'
@@ -679,6 +691,7 @@ export interface RootRouteChildren {
   PrivacyPolicy2Route: typeof PrivacyPolicy2Route
   RealEstateRoute: typeof RealEstateRoute
   RetailRoute: typeof RetailRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
   ApiContactRoute: typeof ApiContactRoute
@@ -883,6 +896,13 @@ declare module '@tanstack/react-router' {
       path: '/retail'
       fullPath: '/retail'
       preLoaderRoute: typeof RetailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/testimonials': {
@@ -1103,6 +1123,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicy2Route: PrivacyPolicy2Route,
   RealEstateRoute: RealEstateRoute,
   RetailRoute: RetailRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
   ApiContactRoute: ApiContactRoute,

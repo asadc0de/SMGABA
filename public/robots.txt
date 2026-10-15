@@ -17,3 +17,5 @@ Allow: /
 User-agent: *
 Disallow: /docs
 Allow: /
+
+Sitemap: https://www.smgaba.com/sitemap.xml

@@ -22,17 +22,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const Route = createFileRoute("/careers")({
   head: () => ({
     meta: [
-      { title: "Careers | SMG ABA" },
+      { title: "Careers & Opportunities | SMG Accounting & Advisory" },
       {
         name: "description",
         content:
-          "Explore career opportunities at SMG ABA. Join our team of accountants, bookkeepers, and advisors.",
+          "Explore career opportunities at SMG ABA. Join our growing team of dedicated accountants, bookkeepers, and advisors in New York and Florida.",
       },
-      { property: "og:title", content: "Careers | SMG ABA" },
+      { property: "og:title", content: "Careers & Opportunities | SMG Accounting & Advisory" },
       {
         property: "og:description",
         content:
-          "Explore career opportunities at SMG ABA. Join our team of accountants, bookkeepers, and advisors.",
+          "Explore career opportunities at SMG ABA. Join our growing team of dedicated accountants, bookkeepers, and advisors in New York and Florida.",
       },
     ],
   }),

@@ -44,7 +44,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Automotive & Dealerships",
     metaTitle: "Automotive Accounting & Dealership Advisory | SMG",
     metaDescription:
-      "Specialized accounting, tax strategy, and financial management for auto dealerships and repair facilities. Departmental P&Ls, labor analysis, and operating expense control.",
+      "Specialized accounting, tax strategy, and financial management for auto dealerships and repair facilities. Departmental P&Ls, labor analysis, and expense control.",
     heroBg:
       "/images/stock/unsplash-photo-1503376780353-7e6692767b70.jpg",
     eyebrow: "Industry Practice",
@@ -109,7 +109,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Construction & Contractors",
     metaTitle: "Construction Accounting & Contractor Advisory | SMG",
     metaDescription:
-      "Specialized financial management for general contractors, specialty subcontractors, and civil builders. Job costing assistance, WIP reporting, and cash flow management.",
+      "Specialized financial management for contractors and builders. Job costing assistance, WIP reporting, project profitability, and proactive cash flow planning.",
     heroBg:
       "/images/stock/unsplash-photo-1504307651254-35680f356dfd.jpg",
     eyebrow: "Industry Practice",
@@ -175,7 +175,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Healthcare & Medical Practices",
     metaTitle: "Healthcare & Medical Practice Accounting | SMG",
     metaDescription:
-      "Specialized accounting, tax strategy, and practice financial reporting for medical practices, dental clinics, and surgical centers. Cash flow, physician comp, and profitability.",
+      "Specialized accounting, tax strategy, and practice financial reporting for medical and dental groups. Cash flow optimization, physician comp, and profitability.",
     heroBg:
       "/images/stock/unsplash-photo-1576091160399-112ba8d25d1d.jpg",
     eyebrow: "Industry Practice",
@@ -303,7 +303,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Legal Professionals & Law Firms",
     metaTitle: "Legal Accounting & Law Firm Advisory | SMG",
     metaDescription:
-      "Specialized financial management for law firms, solo attorneys, and legal practices. Realization reporting, attorney utilization rates, partner compensation, and tax planning.",
+      "Specialized financial management for law firms and legal practices. Realization reporting, attorney utilization, partner compensation, and tax planning.",
     heroBg:
       "/images/stock/unsplash-photo-1589829545856-d10d557cf95f.jpg",
     eyebrow: "Industry Practice",
@@ -430,7 +430,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Real Estate & Development",
     metaTitle: "Real Estate Accounting & Advisory | SMG",
     metaDescription:
-      "Comprehensive accounting, tax planning, and financial reporting for property developers, syndicators, and real estate management firms. 1031 exchanges, CAM reconciliations, and partnership returns.",
+      "Comprehensive accounting, tax planning, and reporting for real estate developers, syndicators, and managers. 1031 exchanges and partnership returns.",
     heroBg:
       "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     eyebrow: "Industry Practice",

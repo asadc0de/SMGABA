@@ -193,7 +193,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     title: "CFO Advisory Services",
     metaTitle: "CFO Advisory Services | SMG ABA",
     metaDescription:
-      "Gain the financial clarity, forecasting, and executive guidance you need to make smarter business decisions, improve profitability, and confidently grow your business.",
+      "Gain the financial clarity, forecasting, and executive guidance you need to make smarter business decisions, improve margins, and grow your business.",
     heroBg:
       "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
     eyebrow: "Solutions / CFO Advisory",
@@ -290,9 +290,9 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     id: "tax",
     href: "/solutions/tax",
     title: "Tax Services",
-    metaTitle: "Tax Services | SMG ABA",
+    metaTitle: "Tax Services & Strategic Planning | SMG ABA",
     metaDescription:
-      "Stay ahead of tax deadlines, reduce costly surprises, and make confident financial decisions with year-round tax planning and preparation tailored to your business.",
+      "Stay ahead of tax deadlines, reduce surprises, and make confident decisions with year-round tax planning and preparation tailored to your business.",
     heroBg:
       "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
     eyebrow: "Solutions / Tax Services",
