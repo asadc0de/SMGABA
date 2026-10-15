@@ -80,7 +80,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     "role": "Senior Tax Director",
     "category": "Directors & Executive Advisory",
     "email": "KLevine@smgaba.com",
-    "avatar": "/images/team/kevin-levine-scaled.jpg",
+    "avatar": "/images/team/kevin-levine-scaled.png",
     "bio": "Kevin advises clients across a wide range of business sectors, including real estate, professional services, sports and entertainment, apparel manufacturing, hospitality and food service and many others. Working closely with clients and their professional teams, Kevin ensures that services and advice are fully coordinated for informed decision-making. Kevin has a deep knowledge in the areas of federal, state, and local tax planning and compliance. He works with an array of clients – including high net worth individuals and their families, trusts, and foundations, executives, and closely held businesses – on state and interstate tax issues. His expertise in this area includes guiding clients through tax controversies at every level. Kevin also has experience consulting on the US taxation of foreign nationals and foreign-owned corporations. For clients looking at retirement, he consults on approaches to maximize wealth transfer to descendants through tax deferral and other strategies. Kevin has also spoken at various tax conferences including programs on Tax and Estate Planning Issues for US Residents and Nonresident Aliens and the Immigration Law Foundation’s Annual Conference. He is also a member of the American Institute of Certified Public Accountants and the New York State Society of Certified Public Accountants."
   },
   {
@@ -112,7 +112,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     "role": CYNTHIA_CORTES_TITLE,
     "category": "Accounting & Client Services",
     "email": "CCortes@smgaba.com",
-    "avatar": "/images/team/cynthia-cortes-scaled.jpeg",
+    "avatar": "/images/team/cynthia-cortes-scaled.png",
     "bio": "Cynthia joined the SMG team 8 years ago as a Bookkeeper. She has over 15 years of experience working in Office Management where she grew the skills necessary to understand the discipline of managing the operations of a business. Her passion to learn, overall care for clients and team, and dedication to the firm's goals led to her growth within SMG, where she now serves as Onboarding Manager. Cynthia is a team leader who ensures everyone is productive while caring deeply for team and client wellbeing. Clients who have had the pleasure of working with Cynthia continually request and rely on her. Beyond her hard work and can-do attitude, she is actively involved in the betterment of her community, reflecting her genuine care for others."
   },
   {
@@ -120,7 +120,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
     "role": "Supervisor",
     "category": "Accounting & Client Services",
     "email": "JFleming@smgaba.com",
-    "avatar": "/images/team/james-fleming.jpeg-scaled.jpg",
+    "avatar": "/images/team/jamed-fleming.png",
     "bio": "James Fleming has been with SMG for 8 years, where he plays a key role in both individual and business tax services. Known for his steady approach and deep technical knowledge, he works closely with clients to help navigate complex tax matters and ensure accuracy, compliance, and clarity throughout the process."
   },
   {
