@@ -38,7 +38,7 @@ const FIVE_BENEFITS = [
   "Industry Specialists",
   "Seasoned By Trend & Technology By Day",
   "Advanced Tech Systems",
-  "Long-Term Partners",
+  "The SMG Guarantee",
 ];
 
 const TESTIMONIALS = [

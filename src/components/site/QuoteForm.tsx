@@ -43,21 +43,48 @@ export function QuoteForm() {
             </a>
           </div>
 
-          {/* Clean authentic feature highlights */}
-          <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-slate-100 max-w-3xl mx-auto">
-            <div className="flex items-center justify-center gap-2.5 text-slate-600">
-              <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
-              <span className="text-xs font-semibold">No long-term contracts</span>
+          {/* Authentic feature highlights / benefits */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 pt-8 border-t border-slate-100 max-w-4xl mx-auto text-left">
+            {/* 1. The SMG Guarantee (Prominent benefit item) */}
+            <div className="relative rounded-2xl border-2 border-[#1b4e94]/40 bg-gradient-to-b from-blue-50/70 to-white p-5 shadow-sm transition-all hover:border-[#1b4e94] hover:shadow-md">
+              <div className="flex items-center gap-2.5 text-[#1b4e94]">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-[#1b4e94] text-white shrink-0 shadow-xs">
+                  <Shield className="size-4.5 stroke-[2.2]" />
+                </div>
+                <h3 className="text-sm font-bold tracking-tight text-navy">The SMG Guarantee</h3>
+              </div>
+              <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
+                We do what we promise, follow our proven process, and communicate with care and responsiveness. If we fall short, we will own it, correct it, and make it right—at no additional professional fee to you.
+              </p>
+              <p className="mt-2 text-[11px] font-semibold text-[#1b4e94] italic leading-snug">
+                “If it's ours to own, we own it. If it's ours to correct, we correct it.”
+              </p>
             </div>
 
-            <div className="flex items-center justify-center gap-2.5 text-slate-600">
-              <Clock className="size-4 text-[#1b4e94] shrink-0" />
-              <span className="text-xs font-semibold">Same-day response</span>
+            {/* 2. Same-Day Response */}
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm">
+              <div className="flex items-center gap-2.5 text-slate-800">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-navy/10 text-navy shrink-0">
+                  <Clock className="size-4.5 stroke-[2]" />
+                </div>
+                <h3 className="text-sm font-bold tracking-tight text-navy">Same-Day Response</h3>
+              </div>
+              <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
+                Direct, rapid communication when you need it most. Our advisory team prioritizes responsiveness for every time-sensitive question and tax deadline.
+              </p>
             </div>
 
-            <div className="flex items-center justify-center gap-2.5 text-slate-600">
-              <Shield className="size-4 text-indigo-600 shrink-0" />
-              <span className="text-xs font-semibold">Dedicated specialist</span>
+            {/* 3. Dedicated Specialists */}
+            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm">
+              <div className="flex items-center gap-2.5 text-slate-800">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 shrink-0">
+                  <CheckCircle2 className="size-4.5 stroke-[2]" />
+                </div>
+                <h3 className="text-sm font-bold tracking-tight text-navy">Dedicated Specialists</h3>
+              </div>
+              <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
+                Experienced accounting professionals and industry specialists dedicated to understanding your operations and long-term financial objectives.
+              </p>
             </div>
           </div>
         </div>

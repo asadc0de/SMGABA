@@ -44,63 +44,63 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Automotive & Dealerships",
     metaTitle: "Automotive Accounting & Dealership Advisory | SMG",
     metaDescription:
-      "Specialized accounting for auto dealerships, collision centers, and repair facilities. Floor plan audits, parts inventory, and warranty claims accounting.",
+      "Specialized accounting, tax strategy, and financial management for auto dealerships and repair facilities. Departmental P&Ls, labor analysis, and operating expense control.",
     heroBg:
       "/images/stock/unsplash-photo-1503376780353-7e6692767b70.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Automotive & Dealerships",
     heroDescription:
-      "Precision accounting, floor plan financing reconciliations, and tax planning for franchised auto dealerships, pre-owned lots, collision repair centers, and fleet operators.",
+      "Precision accounting, departmental P&L reporting, labor efficiency analysis, and tax strategy for franchised auto dealerships, pre-owned lots, collision repair centers, and fleet operators.",
     expertise: {
       heading: "Driving Profitability",
-      subheading: "Optimizing Dealer Margins & Inventory Cash Flow",
+      subheading: "Departmental P&L Reporting, Labor Analysis & Operating Profitability",
       paragraphs: [
-        "Automotive businesses manage massive capital requirements, high transaction volume, and tight floor plan interest rates. Standard accounting software often fails to capture the complexity of DMS integrations, warranty holdbacks, and tiered commission plans.",
-        "SMG provides clear, timely financial intelligence to dealership principals and general managers, helping you optimize cash turnaround on trade-ins, parts inventory, and service bays.",
+        "Automotive businesses operate with substantial capital, high transaction volume, and tight margins across multiple operating departments. Standard accounting often fails to capture the true drivers of service bay profitability, overhead costs, and tiered commission plans.",
+        "SMG delivers clear departmental P&L reporting, technician labor analysis, and operating expense oversight so dealership principals and managers can control costs, protect margins, and optimize overall cash flow.",
       ],
       image: "/images/solutions/smg-back-office-1.jpeg",
     },
     servicesTitle: "Automotive Advisory Services",
     servicesDescription:
-      "Purpose-built dealer accounting designed to control floor plan expense and ensure audit-ready compliance.",
+      "Comprehensive automotive financial advisory designed to improve departmental profitability and control operating expenses.",
     services: [
       {
-        title: "Floor Plan Financing & Audits",
-        desc: "Daily floor plan tracking, interest calculation audits, and automated reconciliation between DMS systems and bank credit lines.",
+        title: "Departmental P&L Reporting",
+        desc: "Granular monthly operating statements separating New Vehicle, Used Vehicle, F&I, Service, and Body Shop departmental performance.",
       },
       {
-        title: "Parts & Service Inventory Valuation",
-        desc: "LIFO/FIFO inventory optimization, obsolescence reserves, and periodic physical count reconciliation.",
+        title: "Labor Efficiency & Technician Analysis",
+        desc: "Tracking effective labor rates, technician billable efficiency, unapplied time, and labor cost ratios to maximize service bay profitability.",
       },
       {
-        title: "Warranty & Factory Receivables",
-        desc: "Tracking pending manufacturer warranty submissions, incentive credits, and holdback reconciliation.",
+        title: "Operating Expense & Overhead Control",
+        desc: "Benchmarking and auditing recurring facility expenses, advertising spend, vendor contracts, and administrative overhead to protect net profit.",
       },
       {
-        title: "Multi-Location Dealership P&Ls",
-        desc: "Departmental breakdown across New Vehicles, Used Vehicles, F&I, Service, and Body Shop operations.",
+        title: "Multi-Location Dealership Financials",
+        desc: "Consolidated and entity-level financial statements, intercompany eliminations, and regional performance reporting across multiple rooftops.",
       },
       {
         title: "Sales & Excise Tax Compliance",
-        desc: "Multi-county and out-of-state vehicle registration tax compliance and audit defense.",
+        desc: "Multi-county and out-of-state vehicle registration tax compliance, local surcharge reporting, and sales tax audit defense.",
       },
       {
-        title: "F&I Profitability & Commission Audits",
-        desc: "Reconciling finance reserves, insurance product margins, and sales rep commission schedules.",
+        title: "F&I Profitability & Commission Accounting",
+        desc: "Reconciling finance reserves, warranty product margins, and sales rep commission schedules to ensure accurate payouts and margin retention.",
       },
     ],
     form: {
       heading: "Let's Talk Automotive",
       subheading: "Book a consultation with our automotive dealership advisors.",
       businessFieldPlaceholder: "Dealership / Shop Name",
-      notesPlaceholder: "Tell us about your dealership rooftops, inventory volume, or DMS...",
+      notesPlaceholder: "Tell us about your locations, service bays, or operating structure...",
       thankYouMessage:
         "Your automotive consultation request has been received. We will contact you shortly.",
     },
     highlights: [
-      "Floor Plan Reconciliations",
-      "DMS & Parts Inventory",
-      "Departmental P&L Breakdown",
+      "Departmental P&L Reporting",
+      "Labor Analysis & Efficiency",
+      "Operating Expense Control",
     ],
     iconName: "Car",
   },
@@ -109,19 +109,19 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Construction & Contractors",
     metaTitle: "Construction Accounting & Contractor Advisory | SMG",
     metaDescription:
-      "Specialized financial management for general contractors, specialty subcontractors, and civil builders. Job costing, AIA progress billing, and bonding capacity.",
+      "Specialized financial management for general contractors, specialty subcontractors, and civil builders. Job costing assistance, WIP reporting, and cash flow management.",
     heroBg:
       "/images/stock/unsplash-photo-1504307651254-35680f356dfd.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Construction & Contractors",
     heroDescription:
-      "Job costing, WIP reporting, AIA progress billing, and surety bonding advisory for general contractors, commercial builders, and trade subcontractors.",
+      "Job costing assistance, WIP reporting, project profitability analysis, and cash flow management for general contractors, commercial builders, and trade subcontractors.",
     expertise: {
       heading: "Building Financial Strength",
-      subheading: "True Job Costing & Bonding Support",
+      subheading: "Job Costing Assistance, WIP Reporting & Project Profitability",
       paragraphs: [
-        "In the construction sector, winning profitable bids and securing high-limit surety bonds depends entirely on accurate Work-in-Progress (WIP) schedules and timely job cost tracking.",
-        "SMG bridges the gap between the field job site and executive ledger. We integrate your project management tools (Procore, Buildertrend, Foundation) with your books, ensuring every change order and retainage dollar is accounted for.",
+        "In the construction sector, winning profitable projects and protecting margins depends entirely on accurate Work-in-Progress (WIP) schedules, disciplined job costing, and proactive cash flow planning.",
+        "SMG bridges the gap between field operations and executive management. We connect your project management systems (Procore, Buildertrend, Foundation) with your books, ensuring every change order and project cost is accurately tracked.",
       ],
       image: "/images/solutions/smg-back-office-1.jpeg",
     },
@@ -130,28 +130,28 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       "Engineered for general contractors, civil engineering, and trade specialists.",
     services: [
       {
-        title: "Job Costing & Work-in-Progress (WIP)",
-        desc: "Tracking direct labor, material, equipment, and subcontracts per job. Over/under billing schedules to reflect true project profitability.",
+        title: "Job Costing Assistance & Setup",
+        desc: "Tracking direct labor, material allocations, equipment usage, and subcontractor expenses per job to maintain accurate cost controls.",
       },
       {
-        title: "AIA Progress Billing & Retainage Tracking",
-        desc: "G702/G703 format billing, change order accounting, and managing contract retainage to accelerate cash collection.",
+        title: "Work-in-Progress (WIP) Reporting",
+        desc: "Preparing monthly WIP schedules, evaluating over and under billing positions, and reflecting true project profitability in real time.",
       },
       {
-        title: "Bonding Capacity & Bank Line Maximization",
-        desc: "Preparing reviewed/compiled financial statements formatted to satisfy surety underwriters and increase your bonding threshold.",
+        title: "Project Profitability & Margin Analysis",
+        desc: "Analyzing bid-versus-actual job margins, overhead absorption rates, and change order financial impact to protect project profit margins.",
       },
       {
-        title: "Prevailing Wage & Certified Payroll",
-        desc: "Handling public works Davis-Bacon compliance, certified payroll reporting, and union benefit fund reconciliations.",
+        title: "Construction Cash Flow Management",
+        desc: "Forecasting project disbursements, optimizing vendor payment schedules, and managing receivables to maintain healthy working capital.",
       },
       {
         title: "Heavy Equipment Asset Tracking & Section 179",
         desc: "Fleet depreciation optimization, equipment lease vs. buy analysis, and fuel tax credit maximization.",
       },
       {
-        title: "Subcontractor Lien Waivers & 1099 Filing",
-        desc: "Centralized compliance management collecting W-9s, COIs, conditional/unconditional lien waivers, and year-end 1099-NEC submissions.",
+        title: "Subcontractor Compliance & 1099 Filing",
+        desc: "Centralized compliance management collecting W-9s, COIs, independent contractor agreements, and year-end 1099-NEC submissions.",
       },
     ],
     form: {
@@ -159,14 +159,14 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       subheading: "Book a consultation with our construction financial advisory team.",
       businessFieldPlaceholder: "Contracting / Construction Company Name",
       notesPlaceholder:
-        "Tell us about your project types, current bonding needs, or WIP tracking...",
+        "Tell us about your project types, current cash flow needs, or WIP tracking...",
       thankYouMessage:
         "Your construction consultation request has been received. We will contact you shortly.",
     },
     highlights: [
-      "Job Costing & WIP Reports",
-      "AIA Progress Billing G702",
-      "Certified Payroll Compliance",
+      "Job Costing Assistance",
+      "WIP Reporting & Schedules",
+      "Project Profitability & Cash Flow",
     ],
     iconName: "HardHat",
   },
@@ -175,19 +175,19 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Healthcare & Medical Practices",
     metaTitle: "Healthcare & Medical Practice Accounting | SMG",
     metaDescription:
-      "Specialized financial management for medical practices, dental clinics, surgical centers, and healthcare providers. Physician comp, billing audits, and tax strategy.",
+      "Specialized accounting, tax strategy, and practice financial reporting for medical practices, dental clinics, and surgical centers. Cash flow, physician comp, and profitability.",
     heroBg:
       "/images/stock/unsplash-photo-1576091160399-112ba8d25d1d.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Healthcare & Medical Practices",
     heroDescription:
-      "Dedicated accounting, physician compensation structuring, and tax planning for medical groups, dental practices, surgical centers, and specialized healthcare clinics.",
+      "Dedicated accounting, tax planning, practice financial reporting, and cash flow optimization for medical groups, dental practices, surgical centers, and specialized clinics.",
     expertise: {
       heading: "Financial Health for Medical Providers",
-      subheading: "Clear Financial Guidance in Complex Clinical Environments",
+      subheading: "Practice Financial Reporting, Cash Flow & Tax Strategy",
       paragraphs: [
-        "Physicians and clinical executives navigate declining reimbursement rates, complex billing cycles, and heavy equipment overhead. Traditional bookkeeping firms rarely understand how to reconcile practice management billing with true cash receipts.",
-        "SMG handles the complete back-office accounting, payroll, and tax planning so your clinical team can concentrate on patient outcomes while enjoying predictable distributions and maximized tax write-offs.",
+        "Physicians and clinical executives navigate complex billing cycles, shifting fee schedules, and significant equipment overhead. Traditional bookkeeping firms rarely understand how to deliver actionable reporting on practice profitability and cash receipts.",
+        "SMG handles practice accounting, tax planning, and cash flow management so your clinical team can concentrate on patient outcomes while enjoying predictable distributions and optimized financial performance.",
       ],
       image: "/images/solutions/smg-bookkeeping-1.jpeg",
     },
@@ -200,24 +200,24 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         desc: "Structuring equitable productivity formulas (wRVU vs. collections), partner buy-ins, and multi-physician distribution schedules.",
       },
       {
+        title: "Practice Financial Reporting & Profitability",
+        desc: "Delivering monthly practice P&L statements, departmental margin reviews, overhead expense tracking, and cash flow analysis.",
+      },
+      {
         title: "Revenue Cycle & Billing Reconciliation",
-        desc: "Reconciling EHR / practice management billing with actual bank deposits, insurance write-offs, and patient copays.",
+        desc: "Reconciling EHR / practice management billing with actual bank deposits, insurance adjustments, and patient collections.",
       },
       {
         title: "Medical Equipment Leasing & Section 179",
         desc: "Maximizing tax deductions for MRI machines, dental chairs, robotic surgical equipment, and clinical IT systems.",
       },
       {
-        title: "Multi-Entity Group Practices",
-        desc: "Optimizing structure between clinical operating entities (PLLCs, PCs) and real estate holding companies.",
-      },
-      {
-        title: "Healthcare Regulatory & Compliance Audits",
-        desc: "Maintaining strict financial separation and Medicare/Medicaid reimbursement records.",
+        title: "Multi-Entity Group Practice Structuring",
+        desc: "Optimizing structure between clinical operating entities (PLLCs, PCs) and real estate holding companies for tax efficiency.",
       },
       {
         title: "Practice Valuation & M&A Due Diligence",
-        desc: "Preparing clean EBITDA presentations and quality of earnings (QofE) reports for private equity buyouts and hospital acquisitions.",
+        desc: "Preparing clean EBITDA presentations and quality of earnings (QofE) reports for private equity transactions and partner transitions.",
       },
     ],
     form: {
@@ -228,7 +228,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       thankYouMessage:
         "Your healthcare consultation request has been received. We will contact you shortly.",
     },
-    highlights: ["Physician Comp Modeling", "EHR Revenue Reconciliation", "Regulatory Compliance Records"],
+    highlights: ["Physician Comp Modeling", "EHR Revenue Reconciliation", "Practice Financial Reporting"],
     iconName: "Activity",
   },
   hospitality: {
@@ -303,45 +303,49 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Legal Professionals & Law Firms",
     metaTitle: "Legal Accounting & Law Firm Advisory | SMG",
     metaDescription:
-      "Specialized financial management for law firms, solo attorneys, and legal practices. Partner distributions, capital accounting, and billable realization analysis.",
+      "Specialized financial management for law firms, solo attorneys, and legal practices. Realization reporting, attorney utilization rates, partner compensation, and tax planning.",
     heroBg:
       "/images/stock/unsplash-photo-1589829545856-d10d557cf95f.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Legal Professionals & Law Firms",
     heroDescription:
-      "Partner equity distributions, capital accounting, and strategic financial advisory for boutique law firms, solo practitioners, and multi-partner legal practices.",
+      "Realization reporting, attorney utilization tracking, firm profitability, partner compensation, and strategic tax planning for boutique law firms and multi-partner practices.",
     expertise: {
       heading: "Protecting Your Practice",
-      subheading: "Partner Equity & Law Firm Financial Strategy",
+      subheading: "Partner Compensation, Realization Rates & Law Firm Profitability",
       paragraphs: [
-        "Law firms face unique financial challenges: complex operating overhead, multi-state partner tax filings, and distribution formulas that can create internal friction.",
-        "SMG tracks advanced client litigation costs, optimizes partner equity models, and provides managing partners with clear realization metrics to maximize law firm profitability.",
+        "Law firms face distinct financial complexities: balancing associate overhead, multi-state partner pass-through taxation, and distribution formulas that demand clear financial leadership.",
+        "SMG optimizes partner compensation models, analyzes attorney utilization rates, and provides managing partners with actionable realization reporting to drive firm profitability and tax efficiency.",
       ],
       image: "/images/solutions/smg-tax-services-1.jpeg",
     },
     servicesTitle: "Legal Advisory Services",
     servicesDescription:
-      "Meticulous financial oversight tailored for legal professionals and bar compliance.",
+      "Strategic financial leadership and tax advisory tailored to maximize law firm profitability.",
     services: [
       {
-        title: "Partner Compensation & Capital Accounts",
-        desc: "Structuring partner draws, tiered equity distribution models, origination bonuses, and capital buy-in tracking.",
+        title: "Partner Compensation & Capital Accounting",
+        desc: "Structuring partner draws, tiered equity distribution models, origination formulas, and capital buy-in tracking.",
       },
       {
-        title: "Billable Hour Realization & WIP Tracking",
-        desc: "Analyzing work-in-progress (WIP), realization rates by practice group, and aging unbilled disbursements.",
+        title: "Billable Realization Reporting & WIP",
+        desc: "Analyzing billing realization rates, work-in-progress (WIP), collection efficiency, and practice group metrics.",
       },
       {
-        title: "Client Cost Advanced (CCA) Accounting",
-        desc: "Properly segregating reimbursable case expenses vs. operating overhead to ensure compliant tax treatment under IRS guidelines.",
+        title: "Attorney Utilization & Productivity Analysis",
+        desc: "Monitoring associate and partner billable hours, fee-earner capacity, and overhead allocation to maximize practice margins.",
+      },
+      {
+        title: "Firm Profitability & Cash Flow Advisory",
+        desc: "Delivering departmental operating statements, cash flow forecasting, expense benchmarking, and retainer fee analysis.",
       },
       {
         title: "Practice Management Software Sync",
-        desc: "Seamless integration between Clio, MyCase, PracticePanther, TimeSolv, and your core accounting ledger.",
+        desc: "Seamless data synchronization between Clio, MyCase, PracticePanther, TimeSolv, and your core accounting ledger.",
       },
       {
-        title: "Multi-State Tax Planning for Law Firms",
-        desc: "Filing entity returns (LLPs, PLLCs, PCs), handling multi-state partner pass-through withholding, and year-end tax optimization.",
+        title: "Strategic Tax Planning for Law Firms",
+        desc: "Entity tax optimization for LLPs, PLLCs, and PCs, handling multi-state partner pass-through withholding, and year-end tax minimization.",
       },
     ],
     form: {
@@ -354,9 +358,9 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         "Your legal practice consultation request has been received. We will contact you shortly.",
     },
     highlights: [
-      "Client Cost Accounting (CCA)",
-      "Partner Draw Schedules",
-      "Clio & Practice Software Sync",
+      "Realization & Utilization Reports",
+      "Partner Compensation Models",
+      "Firm Profitability & Tax Planning",
     ],
     iconName: "Scale",
   },
@@ -365,19 +369,19 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     title: "Manufacturers & Distributors",
     metaTitle: "Manufacturing & Distribution Accounting | SMG",
     metaDescription:
-      "Specialized cost accounting for manufacturers, assemblers, and wholesale distributors. Bill of Materials costing, supply chain cash flow, and R&D tax credits.",
+      "Specialized accounting, gross-margin analysis, and financial reporting for manufacturers and wholesale distributors. COGS analysis, cash flow, and tax planning.",
     heroBg:
       "/images/stock/unsplash-photo-1581091226825-a6a2a5aee158.jpg",
     eyebrow: "Industry Practice",
     heroTitle: "Manufacturers & Distributors",
     heroDescription:
-      "Cost accounting, inventory valuation, and tax credit strategies for industrial manufacturers, consumer goods producers, and wholesale supply chain distributors.",
+      "Financial reporting, gross-margin and COGS analysis, working capital cash flow management, and proactive tax planning for manufacturers and wholesale distributors.",
     expertise: {
       heading: "Mastering Plant Floor Margins",
-      subheading: "Accurate Cost Accounting & Inventory Intelligence",
+      subheading: "Gross-Margin Optimization, COGS Analysis & Financial Reporting",
       paragraphs: [
-        "Manufacturing businesses thrive or falter on unit economics. A slight miscalculation in overhead absorption or raw material scrap rates can distort profitability across hundreds of thousands of units.",
-        "SMG provides production-floor cost accounting that links your ERP, inventory scanners, and general ledger, empowering leadership to eliminate unprofitable SKUs and claim substantial R&D tax credits.",
+        "Manufacturing businesses thrive or falter on unit economics and operational margins. Without precise cost of goods sold (COGS) tracking and inventory cost visibility, leadership risks mispricing products and eroding profitability.",
+        "SMG delivers robust financial reporting, rigorous gross-margin and COGS analysis, and cash flow forecasting so manufacturing executives can monitor operating margins, preserve liquidity, and execute proactive tax planning.",
       ],
       image: "/images/solutions/smg-bookkeeping-1.jpeg",
     },
@@ -386,28 +390,28 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       "Engineered for discrete manufacturers, batch processors, and wholesale distributors.",
     services: [
       {
-        title: "Bill of Materials (BOM) & Standard Costing",
-        desc: "Calculating direct raw material, direct labor, and manufacturing overhead absorption rates per finished SKU.",
+        title: "Financial Reporting & Management Dashboards",
+        desc: "Delivering customized monthly financial statements, plant-level reporting, and executive KPI dashboards to guide strategic operational decisions.",
       },
       {
-        title: "Inventory Valuation & Cycle Count Audits",
-        desc: "LIFO, FIFO, and weighted-average costing models, WIP tracking on the plant floor, and inventory shrinkage mitigation.",
+        title: "Gross-Margin & COGS Analysis",
+        desc: "Evaluating direct cost allocations, material variances, freight adjustments, and product-line gross margins to identify profit drivers.",
       },
       {
-        title: "R&D Tax Credit Maximization (Section 41)",
-        desc: "Documenting qualified research expenses (QREs) for product redesigns, process automation, and prototyping to yield six-figure federal tax offsets.",
+        title: "Inventory Costing & Valuation",
+        desc: "Implementing FIFO, weighted-average, and lower-of-cost-or-market valuation models to ensure accurate balance sheet reporting and healthy margin visibility.",
+      },
+      {
+        title: "Manufacturing Cash Flow Forecasting",
+        desc: "13-week rolling cash flow projections designed to manage raw material purchasing cycles, supplier payment terms, and working capital needs.",
+      },
+      {
+        title: "Strategic Tax Planning for Manufacturers",
+        desc: "Optimizing multi-state tax positioning, Section 179 and bonus depreciation for plant machinery, and entity-level tax minimization strategies.",
       },
       {
         title: "Supply Chain & Multi-Warehouse Reconciliations",
         desc: "Tracking goods-in-transit, customs duties, freight-in capitalization, and multi-location warehouse valuation.",
-      },
-      {
-        title: "Capacity Planning & Margin Analysis",
-        desc: "Unit contribution margin analysis, machine downtime cost allocation, and volume break-even forecasting.",
-      },
-      {
-        title: "State & Local Nexus (SALT) for Distributors",
-        desc: "Economic nexus determination, marketplace facilitator compliance, and wholesale resale certificate management.",
       },
     ],
     form: {
@@ -418,7 +422,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
       thankYouMessage:
         "Your manufacturing consultation request has been received. We will contact you shortly.",
     },
-    highlights: ["BOM & Standard Costing", "R&D Tax Credits (Sec. 41)", "Inventory Cycle Counts"],
+    highlights: ["Gross-Margin & COGS Analysis", "Financial Reporting Dashboards", "Cash Flow & Tax Planning"],
     iconName: "Factory",
   },
   "real-estate": {

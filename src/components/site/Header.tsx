@@ -91,25 +91,25 @@ const NAV: NavItem[] = [
       {
         label: "Automotive",
         href: "/automotive",
-        desc: "Floor plan inventory, multi-dealership audits & sales tax.",
+        desc: "Departmental P&L reporting, labor analysis & profitability.",
         icon: Car,
       },
       {
         label: "Healthcare",
         href: "/healthcare",
-        desc: "Medical practice billing, physician comp & financial advisory.",
+        desc: "Medical practice accounting, physician comp & cash flow.",
         icon: Activity,
       },
       {
         label: "Legal Professionals",
         href: "/legal-professionals",
-        desc: "Partner draws, equity distribution & billable realization.",
+        desc: "Partner compensation, realization reporting & tax planning.",
         icon: Scale,
       },
       {
         label: "Construction",
         href: "/construction",
-        desc: "Job costing, progress billing & prevailing wage compliance.",
+        desc: "Job costing assistance, WIP reporting & project profitability.",
         icon: HardHat,
       },
       {

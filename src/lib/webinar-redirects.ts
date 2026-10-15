@@ -40,7 +40,7 @@ function cleanPw(str: string): string {
 }
 
 function isAuthorized(inputPw?: string, expectedPw?: string): boolean {
-  if (!expectedPw) return true;
+  if (!expectedPw) return false;
   return cleanPw(inputPw || "") === cleanPw(expectedPw);
 }
 
@@ -51,8 +51,19 @@ export const verifyAdminPassword = createServerFn({ method: "POST" })
   .validator((input: any) => {
     return extractStringValue(input);
   })
-  .handler(async () => {
-    return { authorized: true };
+  .handler(async ({ data }) => {
+    const expectedPassword = getEnvVar("INTERNAL_ADMIN_PASSWORD");
+    const inputPassword = typeof data === "string" ? data : extractStringValue(data);
+
+    if (!expectedPassword) {
+      return { authorized: false, error: "Admin password not configured on server." };
+    }
+
+    const authorized = isAuthorized(inputPassword, expectedPassword);
+    return {
+      authorized,
+      error: authorized ? undefined : "Incorrect password.",
+    };
   });
 
 /**

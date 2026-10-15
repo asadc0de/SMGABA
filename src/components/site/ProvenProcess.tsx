@@ -71,7 +71,7 @@ const STEPS: ProcessStep[] = [
     stepNum: 5,
     letter: "S",
     title: "SUCCEED",
-    subtitle: "Optimized & Grow",
+    subtitle: "Optimize & Grow",
     body: "We help your business improve, scale, and achieve long-term success.",
     icon: TrendingUp,
     cx: 131.3,
@@ -390,8 +390,11 @@ export function ProvenProcess() {
           
           {/* SMG Guarantee Paragraph & Bold Subline */}
           <div className="space-y-4 max-w-3xl mx-auto px-4">
+            <h3 className="font-serif-hero text-2xl sm:text-3xl font-bold text-navy tracking-tight">
+              The SMG Guarantee
+            </h3>
             <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
-              We provide the SMG Guarantee: We do what we promise, follow our proven process, and communicate with care and responsiveness. If we fall short, we will own it, correct it, and make it right—at no additional professional fee to you.
+              We do what we promise, follow our proven process, and communicate with care and responsiveness. If we fall short, we will own it, correct it, and make it right—at no additional professional fee to you.
             </p>
             <p className="text-base sm:text-lg md:text-xl font-bold text-navy tracking-tight">
               If it's ours to own, we own it. If it's ours to correct, we correct it.
