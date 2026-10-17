@@ -36,6 +36,7 @@ export const STATIC_ROUTE_SLUGS: readonly string[] = [
   "tools",
   "api",
   "admin",
+  "onboarding",
   "sitemap",
   "robots",
   "favicon",

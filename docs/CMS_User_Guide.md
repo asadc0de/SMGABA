@@ -699,3 +699,16 @@ In this section, features that are not currently part of the CMS are listed for 
 - **Real-Time Multi-User Simultaneous Editing**: Multiple users cannot edit the exact same page at the exact same second (like Google Docs). Edits are saved on a per-version basis.
 - **Custom Credit Card Payment Gateway Blocks**: Direct credit card processing blocks are not built into the visual canvas. Use button links to your organization's secure donation or registration portal.
 - **Custom SQL Database Builder**: The CMS is designed for visual layout and content management, not arbitrary database schema creation.
+
+---
+
+## 13. Updating the Onboarding Guides
+
+The unlisted client onboarding "Account Access Guide" pages (`/onboarding/ny` and `/onboarding/fl`) are code-managed (not edited through the visual CMS canvas) to ensure strict formatting, security compliance, and copy-to-clipboard functionality.
+
+- **File to Edit**: `src/data/onboardingGuides.ts`
+- **Detailed Instructions**: See full guide in [`docs/ONBOARDING_GUIDES.md`](./ONBOARDING_GUIDES.md).
+- **Adding a Provider**: Copy an existing provider object under `sections.bank`, `sections.payroll`, or `sections.pos`, supply a unique URL-safe `id` (e.g. `chase`), and populate `steps`.
+- **Updating Guest Credentials**: Edit the `guestInfo` block under `ny` or `fl`.
+- **Deploying**: Commit the file and push to the connected git branch; Vercel deploys automatically.
+

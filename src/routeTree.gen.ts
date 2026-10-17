@@ -45,6 +45,7 @@ import { Route as CmsNewRouteImport } from './routes/cms/new'
 import { Route as InternalRedirectsRouteImport } from './routes/internal/redirects'
 import { Route as InternalSettingsRouteImport } from './routes/internal/settings'
 import { Route as InternalWebinarLinksRouteImport } from './routes/internal/webinar-links'
+import { Route as OnboardingOfficeRouteImport } from './routes/onboarding.$office'
 import { Route as ResourcesIndexRouteImport } from './routes/resources/index'
 import { Route as ResourcesSlugRouteImport } from './routes/resources/$slug'
 import { Route as SolutionsIndexRouteImport } from './routes/solutions/index'
@@ -243,6 +244,11 @@ const InternalWebinarLinksRoute = InternalWebinarLinksRouteImport.update({
   path: '/internal/webinar-links',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingOfficeRoute = OnboardingOfficeRouteImport.update({
+  id: '/onboarding/$office',
+  path: '/onboarding/$office',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ResourcesIndexRoute = ResourcesIndexRouteImport.update({
   id: '/resources/',
   path: '/resources/',
@@ -366,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
+  '/onboarding/$office': typeof OnboardingOfficeRoute
   '/resources/$slug': typeof ResourcesSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -421,6 +428,7 @@ export interface FileRoutesByTo {
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
+  '/onboarding/$office': typeof OnboardingOfficeRoute
   '/resources/$slug': typeof ResourcesSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -477,6 +485,7 @@ export interface FileRoutesById {
   '/internal/redirects': typeof InternalRedirectsRoute
   '/internal/settings': typeof InternalSettingsRoute
   '/internal/webinar-links': typeof InternalWebinarLinksRoute
+  '/onboarding/$office': typeof OnboardingOfficeRoute
   '/resources/$slug': typeof ResourcesSlugRoute
   '/solutions/bookkeeping': typeof SolutionsBookkeepingRoute
   '/solutions/cfo-advisory-services': typeof SolutionsCfoAdvisoryServicesRoute
@@ -534,6 +543,7 @@ export interface FileRouteTypes {
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
+    | '/onboarding/$office'
     | '/resources/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -589,6 +599,7 @@ export interface FileRouteTypes {
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
+    | '/onboarding/$office'
     | '/resources/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -644,6 +655,7 @@ export interface FileRouteTypes {
     | '/internal/redirects'
     | '/internal/settings'
     | '/internal/webinar-links'
+    | '/onboarding/$office'
     | '/resources/$slug'
     | '/solutions/bookkeeping'
     | '/solutions/cfo-advisory-services'
@@ -700,6 +712,7 @@ export interface RootRouteChildren {
   InternalRedirectsRoute: typeof InternalRedirectsRoute
   InternalSettingsRoute: typeof InternalSettingsRoute
   InternalWebinarLinksRoute: typeof InternalWebinarLinksRoute
+  OnboardingOfficeRoute: typeof OnboardingOfficeRoute
   ResourcesSlugRoute: typeof ResourcesSlugRoute
   SolutionsBookkeepingRoute: typeof SolutionsBookkeepingRoute
   SolutionsCfoAdvisoryServicesRoute: typeof SolutionsCfoAdvisoryServicesRoute
@@ -975,6 +988,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalWebinarLinksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/$office': {
+      id: '/onboarding/$office'
+      path: '/onboarding/$office'
+      fullPath: '/onboarding/$office'
+      preLoaderRoute: typeof OnboardingOfficeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/resources/': {
       id: '/resources/'
       path: '/resources'
@@ -1132,6 +1152,7 @@ const rootRouteChildren: RootRouteChildren = {
   InternalRedirectsRoute: InternalRedirectsRoute,
   InternalSettingsRoute: InternalSettingsRoute,
   InternalWebinarLinksRoute: InternalWebinarLinksRoute,
+  OnboardingOfficeRoute: OnboardingOfficeRoute,
   ResourcesSlugRoute: ResourcesSlugRoute,
   SolutionsBookkeepingRoute: SolutionsBookkeepingRoute,
   SolutionsCfoAdvisoryServicesRoute: SolutionsCfoAdvisoryServicesRoute,
