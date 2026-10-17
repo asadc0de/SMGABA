@@ -190,17 +190,36 @@ function EventCard({ event }: { event: EventItem }) {
           </div>
 
           {/* Host Speaker */}
-          <div className="flex items-center gap-2 text-xs text-navy font-semibold">
-            <div className="flex size-6 items-center justify-center rounded-full bg-navy/10 text-navy">
-              <User className="size-3" />
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 text-xs text-navy font-semibold">
+              <div className="flex size-6 items-center justify-center rounded-full bg-navy/10 text-navy">
+                <User className="size-3" />
+              </div>
+              <div>
+                <span className="text-muted-foreground font-normal">Presented by </span>
+                <span className="font-bold text-navy">
+                  {event.host}
+                  {event.host_title && `, ${event.host_title}`}
+                </span>
+              </div>
             </div>
-            <div>
-              <span className="text-muted-foreground font-normal">Presented by </span>
-              <span className="font-bold text-navy">
-                {event.host}
-                {event.host_title && `, ${event.host_title}`}
-              </span>
-            </div>
+
+            {event.guest_name && (
+              <div className="flex items-center gap-2 text-xs text-navy font-semibold">
+                <div className="flex size-6 items-center justify-center rounded-full bg-navy/10 text-navy">
+                  <User className="size-3" />
+                </div>
+                <div>
+                  <span className="text-muted-foreground font-normal">
+                    {event.guest_role ? `${event.guest_role} ` : "Guest Speaker "}
+                  </span>
+                  <span className="font-bold text-navy">
+                    {event.guest_name}
+                    {event.guest_title && `, ${event.guest_title}`}
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Description */}

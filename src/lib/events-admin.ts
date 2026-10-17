@@ -50,10 +50,10 @@ export const getEventsAdminList = createServerFn({ method: "GET" }).handler(
     const events = await fetchAllEvents();
     const isConfigured = Boolean(
       getEnvVar("SUPABASE_URL") &&
-        (getEnvVar("SUPABASE_SERVICE_ROLE_KEY") || getEnvVar("SUPABASE_SERVICE_KEY"))
+      (getEnvVar("SUPABASE_SERVICE_ROLE_KEY") || getEnvVar("SUPABASE_SERVICE_KEY")),
     );
     return { events, isConfigured };
-  }
+  },
 );
 
 /**
@@ -76,9 +76,37 @@ export const saveEvent = createServerFn({ method: "POST" })
     const eventData: Partial<EventItem> & { id: string } = {
       id: String(payload.id || ""),
       title: String(payload.title || ""),
-      subtitle: payload.subtitle ? String(payload.subtitle) : null,
+      subtitle:
+        payload.subtitle !== undefined
+          ? payload.subtitle
+            ? String(payload.subtitle)
+            : null
+          : undefined,
       host: String(payload.host || ""),
-      host_title: payload.host_title ? String(payload.host_title) : null,
+      host_title:
+        payload.host_title !== undefined
+          ? payload.host_title
+            ? String(payload.host_title)
+            : null
+          : undefined,
+      guest_role:
+        payload.guest_role !== undefined
+          ? payload.guest_role
+            ? String(payload.guest_role)
+            : null
+          : undefined,
+      guest_name:
+        payload.guest_name !== undefined
+          ? payload.guest_name
+            ? String(payload.guest_name)
+            : null
+          : undefined,
+      guest_title:
+        payload.guest_title !== undefined
+          ? payload.guest_title
+            ? String(payload.guest_title)
+            : null
+          : undefined,
       event_date: String(payload.event_date || ""),
       time_range: String(payload.time_range || ""),
       description: String(payload.description || ""),
@@ -156,5 +184,5 @@ export const getPublicEventsFeed = createServerFn({ method: "GET" }).handler(
   async (): Promise<{ events: EventItem[] }> => {
     const events = await fetchAllEvents();
     return { events };
-  }
+  },
 );

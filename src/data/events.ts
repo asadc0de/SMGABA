@@ -9,6 +9,9 @@ export interface EventItem {
   subtitle?: string;
   host: string;
   host_title?: string;
+  guest_role?: string | null;
+  guest_name?: string | null;
+  guest_title?: string | null;
   event_date: string; // ISO date "YYYY-MM-DD"
   time_range: string; // e.g. "2:00 - 3:00 PM"
   time_zone?: string; // e.g. "ET"
@@ -111,10 +114,7 @@ export function getEventStatus(
 /**
  * Returns upcoming events sorted in ascending order (soonest event first).
  */
-export function getUpcomingEvents(
-  events: EventItem[],
-  referenceDate = new Date(),
-): EventItem[] {
+export function getUpcomingEvents(events: EventItem[], referenceDate = new Date()): EventItem[] {
   return events
     .filter((e) => getEventStatus(e, referenceDate) === "upcoming")
     .sort((a, b) => a.event_date.localeCompare(b.event_date));
@@ -123,10 +123,7 @@ export function getUpcomingEvents(
 /**
  * Returns past events sorted in descending order (most recently passed event first).
  */
-export function getPastEvents(
-  events: EventItem[],
-  referenceDate = new Date(),
-): EventItem[] {
+export function getPastEvents(events: EventItem[], referenceDate = new Date()): EventItem[] {
   return events
     .filter((e) => getEventStatus(e, referenceDate) === "past")
     .sort((a, b) => b.event_date.localeCompare(a.event_date));

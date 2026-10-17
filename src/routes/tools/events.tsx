@@ -119,6 +119,9 @@ function EventsAdminPage() {
   const [subtitle, setSubtitle] = useState<string>("");
   const [host, setHost] = useState<string>("");
   const [hostTitle, setHostTitle] = useState<string>("");
+  const [guestRole, setGuestRole] = useState<string>("Guest Speaker");
+  const [guestName, setGuestName] = useState<string>("");
+  const [guestTitle, setGuestTitle] = useState<string>("");
   const [eventDate, setEventDate] = useState<string>("");
   const [timeRange, setTimeRange] = useState<string>("");
   const [description, setDescription] = useState<string>("");
@@ -213,6 +216,9 @@ function EventsAdminPage() {
     setSubtitle("");
     setHost("");
     setHostTitle("");
+    setGuestRole("Guest Speaker");
+    setGuestName("");
+    setGuestTitle("");
     setEventDate("");
     setTimeRange("");
     setDescription("");
@@ -230,6 +236,9 @@ function EventsAdminPage() {
     setSubtitle(event.subtitle || "");
     setHost(event.host);
     setHostTitle(event.host_title || "");
+    setGuestRole(event.guest_role || "Guest Speaker");
+    setGuestName(event.guest_name || "");
+    setGuestTitle(event.guest_title || "");
     setEventDate(event.event_date ? event.event_date.slice(0, 10) : "");
     setTimeRange(event.time_range);
     setDescription(event.description);
@@ -331,6 +340,9 @@ function EventsAdminPage() {
           subtitle: subtitle.trim() || null,
           host: host.trim(),
           host_title: hostTitle.trim() || null,
+          guest_role: guestName.trim() ? guestRole.trim() || "Guest Speaker" : null,
+          guest_name: guestName.trim() || null,
+          guest_title: guestName.trim() ? guestTitle.trim() || null : null,
           event_date: eventDate.trim(),
           time_range: timeRange.trim(),
           description: description.trim(),
@@ -436,6 +448,7 @@ function EventsAdminPage() {
         e.title.toLowerCase().includes(q) ||
         e.id.toLowerCase().includes(q) ||
         e.host.toLowerCase().includes(q) ||
+        (e.guest_name && e.guest_name.toLowerCase().includes(q)) ||
         (e.description && e.description.toLowerCase().includes(q))
     );
   }, [events, searchQuery, statusFilter, todayStr]);
@@ -690,6 +703,57 @@ function EventsAdminPage() {
                         onChange={(e) => setHostTitle(e.target.value)}
                         className="mt-1.5 rounded-xl text-sm"
                       />
+                    </div>
+                  </div>
+
+                  {/* Row: Guest Speaker / Co-Presenter (Optional) */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-navy">
+                      Guest Speaker / Co-Presenter <span className="text-muted-foreground font-normal">(Optional)</span>
+                    </Label>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label htmlFor="event-guest-role" className="text-[11px] font-medium text-navy/70">
+                          Role
+                        </Label>
+                        <select
+                          id="event-guest-role"
+                          value={guestRole}
+                          onChange={(e) => setGuestRole(e.target.value)}
+                          className="mt-1.5 h-9 w-full rounded-xl border border-input bg-background px-3 py-1.5 text-sm shadow-xs outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                        >
+                          <option value="Guest Speaker">Guest Speaker</option>
+                          <option value="Co-Presenter">Co-Presenter</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="event-guest-name" className="text-[11px] font-medium text-navy/70">
+                          Name
+                        </Label>
+                        <Input
+                          id="event-guest-name"
+                          type="text"
+                          placeholder="e.g. Jane Doe"
+                          value={guestName}
+                          onChange={(e) => setGuestName(e.target.value)}
+                          className="mt-1.5 rounded-xl text-sm"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="event-guest-title" className="text-[11px] font-medium text-navy/70">
+                          Title / Credentials
+                        </Label>
+                        <Input
+                          id="event-guest-title"
+                          type="text"
+                          placeholder="e.g. CPA, Partner at XYZ"
+                          value={guestTitle}
+                          onChange={(e) => setGuestTitle(e.target.value)}
+                          className="mt-1.5 rounded-xl text-sm"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -982,6 +1046,20 @@ function EventsAdminPage() {
                                       )}
                                     </span>
                                   </div>
+                                  {item.guest_name && (
+                                    <div className="text-xs text-navy/80 font-medium flex items-center gap-1.5 pt-0.5">
+                                      <User className="size-3 text-muted-foreground" />
+                                      <span>
+                                        <span className="text-muted-foreground">
+                                          {item.guest_role || "Guest Speaker"}:{" "}
+                                        </span>
+                                        {item.guest_name}
+                                        {item.guest_title && (
+                                          <span className="text-muted-foreground">, {item.guest_title}</span>
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
                                   <div className="text-[11px] font-mono text-muted-foreground truncate pt-0.5">
                                     Slug: <code className="text-navy font-semibold">{item.id}</code>
                                   </div>

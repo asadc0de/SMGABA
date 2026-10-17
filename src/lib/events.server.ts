@@ -1,8 +1,4 @@
-import {
-  getSupabaseServerClient,
-  cleanSlug,
-  cleanTargetUrl,
-} from "./supabase.server";
+import { getSupabaseServerClient, cleanSlug, cleanTargetUrl } from "./supabase.server";
 import { EVENTS, type EventItem } from "../data/events";
 
 export type { EventItem };
@@ -30,6 +26,15 @@ export function normalizeEventInput(event: Partial<EventItem>): Partial<EventIte
   if (normalized.host_title !== undefined) {
     normalized.host_title = normalized.host_title ? normalized.host_title.trim() : null;
   }
+  if (normalized.guest_role !== undefined) {
+    normalized.guest_role = normalized.guest_role ? normalized.guest_role.trim() : null;
+  }
+  if (normalized.guest_name !== undefined) {
+    normalized.guest_name = normalized.guest_name ? normalized.guest_name.trim() : null;
+  }
+  if (normalized.guest_title !== undefined) {
+    normalized.guest_title = normalized.guest_title ? normalized.guest_title.trim() : null;
+  }
   if (normalized.event_date) {
     normalized.event_date = normalized.event_date.trim();
   }
@@ -48,9 +53,7 @@ export function normalizeEventInput(event: Partial<EventItem>): Partial<EventIte
       : null;
   }
   if (normalized.thumbnail_url !== undefined) {
-    normalized.thumbnail_url = normalized.thumbnail_url
-      ? normalized.thumbnail_url.trim()
-      : null;
+    normalized.thumbnail_url = normalized.thumbnail_url ? normalized.thumbnail_url.trim() : null;
   }
   return normalized;
 }
@@ -79,7 +82,7 @@ export async function fetchAllEvents(): Promise<EventItem[]> {
       const { data, error } = await client
         .from("events")
         .select(
-          "id, title, subtitle, host, host_title, event_date, time_range, description, registration_link, recording_link, thumbnail_url, created_at, updated_at"
+          "id, title, subtitle, host, host_title, guest_role, guest_name, guest_title, event_date, time_range, description, registration_link, recording_link, thumbnail_url, created_at, updated_at",
         )
         .order("event_date", { ascending: true });
 
@@ -111,11 +114,7 @@ export async function lookupEventById(rawId: string): Promise<EventItem | null> 
   const client = await getSupabaseServerClient();
   if (client) {
     try {
-      const { data, error } = await client
-        .from("events")
-        .select("*")
-        .eq("id", id)
-        .maybeSingle();
+      const { data, error } = await client.from("events").select("*").eq("id", id).maybeSingle();
 
       if (!error && data) {
         return data as EventItem;
@@ -139,7 +138,7 @@ export async function lookupEventById(rawId: string): Promise<EventItem | null> 
  * by merging with existing data.
  */
 export async function upsertEventRecord(
-  rawEvent: Partial<EventItem> & { id: string }
+  rawEvent: Partial<EventItem> & { id: string },
 ): Promise<{ success: boolean; data?: EventItem; error?: string }> {
   const normalized = normalizeEventInput(rawEvent);
   const id = normalized.id;
@@ -158,11 +157,16 @@ export async function upsertEventRecord(
     host: normalized.host || existing?.host || "",
     host_title:
       normalized.host_title !== undefined ? normalized.host_title : existing?.host_title || null,
+    guest_role:
+      normalized.guest_role !== undefined ? normalized.guest_role : existing?.guest_role || null,
+    guest_name:
+      normalized.guest_name !== undefined ? normalized.guest_name : existing?.guest_name || null,
+    guest_title:
+      normalized.guest_title !== undefined ? normalized.guest_title : existing?.guest_title || null,
     event_date: normalized.event_date || existing?.event_date || "",
     time_range: normalized.time_range || existing?.time_range || "",
     description: normalized.description || existing?.description || "",
-    registration_link:
-      normalized.registration_link || existing?.registration_link || "",
+    registration_link: normalized.registration_link || existing?.registration_link || "",
     recording_link:
       normalized.recording_link !== undefined
         ? normalized.recording_link
@@ -174,6 +178,13 @@ export async function upsertEventRecord(
     created_at: existing?.created_at || new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
+
+  // If guest_name is empty, force guest_role and guest_title to null
+  if (!mergedRecord.guest_name) {
+    mergedRecord.guest_name = null;
+    mergedRecord.guest_role = null;
+    mergedRecord.guest_title = null;
+  }
 
   // Validate mandatory fields
   if (!mergedRecord.title) return { success: false, error: "Title is required." };
@@ -214,7 +225,7 @@ export async function upsertEventRecord(
  * Deletes an event by slug ID.
  */
 export async function deleteEventRecord(
-  rawId: string
+  rawId: string,
 ): Promise<{ success: boolean; error?: string }> {
   const id = cleanSlug(rawId);
   if (!id) return { success: false, error: "Event ID is required." };
@@ -240,7 +251,7 @@ export async function deleteEventRecord(
 export async function uploadEventImage(
   fileName: string,
   contentType: string,
-  base64Data: string
+  base64Data: string,
 ): Promise<{ success: boolean; url?: string; error?: string }> {
   const client = await getSupabaseServerClient();
   if (!client) {
