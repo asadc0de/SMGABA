@@ -85,8 +85,8 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         desc: "Multi-county and out-of-state vehicle registration tax compliance, local surcharge reporting, and sales tax audit defense.",
       },
       {
-        title: "F&I Profitability & Commission Accounting",
-        desc: "Reconciling finance reserves, warranty product margins, and sales rep commission schedules to ensure accurate payouts and margin retention.",
+        title: "Floor Plan & Inventory Reconciliation",
+        desc: "Monthly reconciliation of floor plan financing, new and used vehicle inventory, and curtailment payments to the general ledger to protect margins and catch discrepancies early.",
       },
     ],
     form: {
@@ -409,14 +409,10 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         title: "Strategic Tax Planning for Manufacturers",
         desc: "Optimizing multi-state tax positioning, Section 179 and bonus depreciation for plant machinery, and entity-level tax minimization strategies.",
       },
-      {
-        title: "Supply Chain & Multi-Warehouse Reconciliations",
-        desc: "Tracking goods-in-transit, customs duties, freight-in capitalization, and multi-location warehouse valuation.",
-      },
     ],
     form: {
       heading: "Let's Talk Manufacturing",
-      subheading: "Book a consultation with our manufacturing & supply chain advisory team.",
+      subheading: "Book a consultation with our manufacturing advisory team.",
       businessFieldPlaceholder: "Manufacturing / Distribution Facility Name",
       notesPlaceholder: "Tell us about your production lines, warehouses, or inventory turnover...",
       thankYouMessage:
@@ -459,8 +455,8 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         desc: "Tracking like-kind exchange timelines, replacement property capital accounts, and deferred gain calculations in coordination with a qualified intermediary to defer capital gains tax.",
       },
       {
-        title: "Depreciation Planning",
-        desc: "Evaluating bonus depreciation opportunities and coordinating with outside engineering specialists on cost segregation studies where appropriate. Results depend on the property and your individual tax situation.",
+        title: "Cost Segregation",
+        desc: "Evaluating cost segregation studies to accelerate depreciation deductions, coordinating with outside engineering specialists where appropriate. Results depend on the property and your individual tax situation.",
       },
       {
         title: "Partnership Capital Accounting",
@@ -487,7 +483,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     highlights: [
       "Property-Level P&Ls",
       "1031 Exchange Timelines",
-      "Depreciation Planning",
+      "Cost Segregation",
     ],
     iconName: "Building2",
   },
