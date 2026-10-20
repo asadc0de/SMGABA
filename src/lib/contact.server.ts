@@ -8,6 +8,7 @@ import {
 export interface ContactSubmissionPayload {
   name: string;
   email: string;
+  toEmail?: string;
   phone?: string;
   message: string;
   source?: string;
@@ -246,6 +247,7 @@ export async function processContactSubmission(
       subject: payload.subject || `New ${formType}: ${trimmedName || trimmedEmail}`,
       name: trimmedName,
       email: trimmedEmail,
+      toEmail: payload.toEmail,
       phone: trimmedPhone || undefined,
       companyName: payload.companyName,
       officePreference: payload.officePreference,

@@ -54,7 +54,7 @@ export function BlogPostView({
   // Find related posts (excluding archived) from the relevant pool
   const candidatePool = isResource ? RESOURCE_POSTS : BLOG_POSTS;
   const relatedPosts = candidatePool
-    .filter((p) => !p.archived && p.slug !== post.slug)
+    .filter((p) => !p.archived && p.slug !== post.slug && p.slug !== "obbba-summary")
     .sort((a, b) => (a.category === post.category ? -1 : 1))
     .slice(0, 3);
 
@@ -233,6 +233,56 @@ export function BlogPostView({
                     >
                       <p className="text-lg leading-relaxed font-medium">"{block.text}"</p>
                     </blockquote>
+                  );
+                }
+
+                if (block.type === "table") {
+                  const hasHeaders = block.hasHeader !== false && Array.isArray(block.headers) && block.headers.length > 0;
+                  const rows = block.rows || [];
+                  return (
+                    <div
+                      key={idx}
+                      className="my-8 w-full overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm"
+                    >
+                      <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+                        <table className="w-full min-w-[540px] border-collapse text-left text-sm sm:text-base">
+                          {hasHeaders && (
+                            <thead className="bg-[#0e1b36] text-white font-serif-hero">
+                              <tr>
+                                {block.headers!.map((header, hIdx) => (
+                                  <th
+                                    key={hIdx}
+                                    className="px-4 py-3.5 sm:px-6 sm:py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-100 border-b border-navy-light/20"
+                                    dangerouslySetInnerHTML={{ __html: header }}
+                                  />
+                                ))}
+                              </tr>
+                            </thead>
+                          )}
+                          <tbody className="divide-y divide-border/60 bg-white">
+                            {rows.map((row, rIdx) => (
+                              <tr
+                                key={rIdx}
+                                className="transition-colors hover:bg-slate-50/80 even:bg-slate-50/40"
+                              >
+                                {row.map((cell, cIdx) => (
+                                  <td
+                                    key={cIdx}
+                                    className="px-4 py-3.5 sm:px-6 sm:py-4 text-slate-700 align-top leading-relaxed"
+                                    dangerouslySetInnerHTML={{ __html: cell }}
+                                  />
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                      {block.caption && (
+                        <div className="bg-slate-50 px-4 py-2 text-xs text-muted-foreground italic border-t border-border/40">
+                          {block.caption}
+                        </div>
+                      )}
+                    </div>
                   );
                 }
 

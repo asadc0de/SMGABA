@@ -45,6 +45,7 @@ export const Route = createFileRoute("/onboarding/$office")({
     if (!isOfficeKey(rawOffice)) {
       throw notFound();
     }
+
     const guide = ONBOARDING_GUIDES[rawOffice];
     return { office: rawOffice as OfficeKey, guide };
   },
@@ -57,6 +58,14 @@ export const Route = createFileRoute("/onboarding/$office")({
       },
       {
         name: "robots",
+        content: "noindex, nofollow, noarchive",
+      },
+      {
+        name: "googlebot",
+        content: "noindex, nofollow, noarchive",
+      },
+      {
+        name: "bingbot",
         content: "noindex, nofollow, noarchive",
       },
     ],

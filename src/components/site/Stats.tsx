@@ -133,12 +133,12 @@ export function Stats() {
           {STATS.map((s) => (
             <div
               key={s.label}
-              className="flex flex-col items-center gap-3 border-primary-foreground/15 text-center sm:not-last:border-r"
+              className="flex min-w-0 flex-col items-center gap-3 border-primary-foreground/15 px-3 sm:px-4 text-center sm:not-last:border-r"
             >
               {s.type === "counter" ? (
                 <Counter value={s.value} suffix={s.suffix} active={active} />
               ) : (
-                <span className="font-display text-5xl font-extrabold tabular-nums text-navy-foreground md:text-6xl">
+                <span className="font-display text-[clamp(2.25rem,1.5rem+1.5vw,2.85rem)] font-extrabold tracking-tight tabular-nums text-navy-foreground whitespace-nowrap">
                   {s.text}
                 </span>
               )}

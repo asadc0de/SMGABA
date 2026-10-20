@@ -197,9 +197,11 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                   <h3 className="mt-5 font-serif-hero text-xl font-bold text-[#14284b]">
                     {service.title}
                   </h3>
-                  <p className="mt-2.5 text-sm text-slate-600 leading-relaxed font-normal">
-                    {service.desc}
-                  </p>
+                  {service.desc && (
+                    <p className="mt-2.5 text-sm text-slate-600 leading-relaxed font-normal">
+                      {service.desc}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

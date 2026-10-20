@@ -210,16 +210,25 @@ export const Route = createFileRoute("/api/chatbase-lead")({
         const result = await createNoCrmLead({
           name: extracted.name,
           email: extracted.email,
+          toEmail: "Sales@smgaba.com",
+          formType: "Chatbot AI Lead",
           phone: extracted.phone,
           source: "Chatbot",
           description: leadDescription,
           tags: ["chatbot"],
         });
 
+        console.log(
+          `[Chatbase Webhook] Processing result: success=${result.success}, error=${result.error || "none"}`,
+        );
+
         if (!result.success) {
-          console.error("[Chatbase Webhook] noCRM lead creation failed:", result.error);
+          console.error(
+            "[Chatbase Webhook] Lead processing failed:",
+            result.error,
+          );
           return Response.json(
-            { error: "Failed to create lead in noCRM" },
+            { error: "Failed to process lead", details: result.error },
             { status: 502 },
           );
         }

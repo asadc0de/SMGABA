@@ -42,6 +42,7 @@ type TestimonialItem = {
   role: string;
   location: string;
   stars: number;
+  hidden?: boolean;
 };
 
 const ALL_TESTIMONIALS: TestimonialItem[] = [
@@ -84,6 +85,7 @@ const ALL_TESTIMONIALS: TestimonialItem[] = [
     location: "Southampton & NYC",
     stars: 5,
   },
+  // TODO: pending verification from client
   {
     name: "JRM Construction Management",
     category: "real-estate",
@@ -96,6 +98,7 @@ const ALL_TESTIMONIALS: TestimonialItem[] = [
     role: "Principal",
     location: "New York, NY",
     stars: 5,
+    hidden: true,
   },
   {
     name: "Doughnut Plant",
@@ -333,6 +336,8 @@ const ALL_TESTIMONIALS: TestimonialItem[] = [
   },
 ];
 
+const VISIBLE_TESTIMONIALS = ALL_TESTIMONIALS.filter((t) => !t.hidden);
+
 function TestimonialsPage() {
   const [filter, setFilter] = useState<"all" | "hospitality" | "real-estate" | "business">("all");
   const [submitted, setSubmitted] = useState(false);
@@ -348,8 +353,8 @@ function TestimonialsPage() {
 
   const filteredTestimonials =
     filter === "all"
-      ? ALL_TESTIMONIALS
-      : ALL_TESTIMONIALS.filter((t) => t.category === filter);
+      ? VISIBLE_TESTIMONIALS
+      : VISIBLE_TESTIMONIALS.filter((t) => t.category === filter);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -438,7 +443,7 @@ function TestimonialsPage() {
                       : "bg-white text-slate-600 border border-stone-200 hover:bg-slate-50"
                   }`}
                 >
-                  All Clients ({ALL_TESTIMONIALS.length})
+                  All Clients ({VISIBLE_TESTIMONIALS.length})
                 </button>
                 <button
                   type="button"

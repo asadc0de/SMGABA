@@ -35,6 +35,7 @@ export const RESOURCE_POSTS: ResourcePost[] = [
     "image": "/images/resources/one-big-beautiful-act.png",
     "readTime": "4 min read",
     "excerpt": "Explore a comprehensive summary of \"The One Big Beautiful Bill\". Learn how these permanent and temporary tax reform provisions impact you.",
+    "archived": true,
     "blocks": [
       {
         "type": "h3",

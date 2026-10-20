@@ -23,6 +23,14 @@ export const Route = createFileRoute("/$slug")({
       return;
     }
 
+    const isProduction =
+      (typeof import.meta !== "undefined" && Boolean(import.meta.env?.PROD)) ||
+      (typeof process !== "undefined" && process.env?.NODE_ENV === "production");
+
+    if (params.slug === "obbba-summary" && isProduction) {
+      throw notFound();
+    }
+
     // 2. If this slug is a known resource post, 301 to the canonical /resources/<slug> URL.
     if (LEGACY_RESOURCE_SLUGS.has(params.slug)) {
       throw redirect({ to: `/resources/${params.slug}`, statusCode: 301 });

@@ -84,10 +84,6 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
         title: "Sales & Excise Tax Compliance",
         desc: "Multi-county and out-of-state vehicle registration tax compliance, local surcharge reporting, and sales tax audit defense.",
       },
-      {
-        title: "Floor Plan & Inventory Reconciliation",
-        desc: "Monthly reconciliation of floor plan financing, new and used vehicle inventory, and curtailment payments to the general ledger to protect margins and catch discrepancies early.",
-      },
     ],
     form: {
       heading: "Let's Talk Automotive",
@@ -259,7 +255,8 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     services: [
       {
         title: "Weekly Prime Cost Tracking",
-        desc: "Labor and Cost of Goods Sold (COGS) are calculated and benchmarked weekly to maintain a healthy operating margin below 60%.",
+        // TODO awaiting Greg's approved wording
+        desc: "",
       },
       {
         title: "Tipped Payroll & FICA Compliance",

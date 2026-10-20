@@ -22,6 +22,9 @@ import {
   AlignLeft,
   List,
   Quote,
+  Table as TableIcon,
+  Columns3,
+  Rows3,
   Image as ImageIcon,
   Save,
   ArrowLeft,
@@ -400,22 +403,52 @@ function BlogsEditorPage() {
 
   // Content Block Management
   const handleAddBlock = (type: ContentBlock["type"]) => {
-    const newBlock: ContentBlock =
-      type === "ul"
-        ? { type, items: ["First actionable checkpoint", "Second key takeaway"] }
-        : type === "blockquote"
-        ? { type, text: "Highlight a pivotal takeaway, executive quote, or industry advisory principle here." }
-        : type === "h2"
-        ? { type, text: "New Section Heading" }
-        : type === "h3"
-        ? { type, text: "Sub-section Heading" }
-        : { type: "p", text: "Write your article paragraph here. Explain the key financial concepts in clear, client-friendly terms." };
+    let newBlock: ContentBlock;
+    if (type === "ul") {
+      newBlock = { type, items: ["First actionable checkpoint", "Second key takeaway"] };
+    } else if (type === "blockquote") {
+      newBlock = {
+        type,
+        text: "Highlight a pivotal takeaway, executive quote, or industry advisory principle here.",
+      };
+    } else if (type === "h2") {
+      newBlock = { type, text: "New Section Heading" };
+    } else if (type === "h3") {
+      newBlock = { type, text: "Sub-section Heading" };
+    } else if (type === "table") {
+      newBlock = {
+        type: "table",
+        hasHeader: true,
+        headers: ["Column 1", "Column 2", "Column 3"],
+        rows: [
+          ["Row 1, Cell 1", "Row 1, Cell 2", "Row 1, Cell 3"],
+          ["Row 2, Cell 1", "Row 2, Cell 2", "Row 2, Cell 3"],
+        ],
+      };
+    } else {
+      newBlock = {
+        type: "p",
+        text: "Write your article paragraph here. Explain the key financial concepts in clear, client-friendly terms.",
+      };
+    }
 
     setCurrentPost((prev) => ({
       ...prev,
       blocks: [...prev.blocks, newBlock],
     }));
-    toast.success(`Added ${type === "h2" ? "Heading" : type === "p" ? "Paragraph" : type === "ul" ? "Bullet List" : "Quote"} block`);
+    toast.success(
+      `Added ${
+        type === "h2"
+          ? "Heading"
+          : type === "p"
+          ? "Paragraph"
+          : type === "ul"
+          ? "Bullet List"
+          : type === "blockquote"
+          ? "Quote"
+          : "Table"
+      } block`
+    );
   };
 
   const handleUpdateBlock = (index: number, updated: Partial<ContentBlock>) => {
@@ -443,6 +476,125 @@ function BlogsEditorPage() {
       ...prev,
       blocks: prev.blocks.filter((_, i) => i !== index),
     }));
+  };
+
+  // Table Block Management Helpers
+  const handleToggleTableHeader = (blockIdx: number) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        const currentHasHeader = block.hasHeader !== false;
+        nextBlocks[blockIdx] = {
+          ...block,
+          hasHeader: !currentHasHeader,
+        };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
+  };
+
+  const handleUpdateTableHeader = (blockIdx: number, colIdx: number, value: string) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        const nextHeaders = [...(block.headers || [])];
+        nextHeaders[colIdx] = value;
+        nextBlocks[blockIdx] = { ...block, headers: nextHeaders };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
+  };
+
+  const handleUpdateTableCell = (
+    blockIdx: number,
+    rowIdx: number,
+    colIdx: number,
+    value: string
+  ) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        const nextRows = (block.rows || []).map((r, rI) => {
+          if (rI !== rowIdx) return r;
+          const nextRow = [...r];
+          nextRow[colIdx] = value;
+          return nextRow;
+        });
+        nextBlocks[blockIdx] = { ...block, rows: nextRows };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
+  };
+
+  const handleAddTableRow = (blockIdx: number) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        const colCount = block.headers?.length || block.rows?.[0]?.length || 2;
+        const newRow = new Array(colCount).fill("");
+        nextBlocks[blockIdx] = {
+          ...block,
+          rows: [...(block.rows || []), newRow],
+        };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
+    toast.success("Added table row");
+  };
+
+  const handleDeleteTableRow = (blockIdx: number, rowIdx: number) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        const nextRows = (block.rows || []).filter((_, i) => i !== rowIdx);
+        if (nextRows.length === 0) return prev;
+        nextBlocks[blockIdx] = { ...block, rows: nextRows };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
+  };
+
+  const handleAddTableColumn = (blockIdx: number) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        const nextHeaders = [...(block.headers || [])];
+        const newColIndex = nextHeaders.length + 1;
+        nextHeaders.push(`Column ${newColIndex}`);
+        const nextRows = (block.rows || []).map((row) => [...row, ""]);
+        nextBlocks[blockIdx] = {
+          ...block,
+          headers: nextHeaders,
+          rows: nextRows,
+        };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
+    toast.success("Added table column");
+  };
+
+  const handleDeleteTableColumn = (blockIdx: number, colIdx: number) => {
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      const block = nextBlocks[blockIdx];
+      if (block && block.type === "table") {
+        if ((block.headers || []).length <= 1) return prev;
+        const nextHeaders = (block.headers || []).filter((_, i) => i !== colIdx);
+        const nextRows = (block.rows || []).map((row) => row.filter((_, i) => i !== colIdx));
+        nextBlocks[blockIdx] = {
+          ...block,
+          headers: nextHeaders,
+          rows: nextRows,
+        };
+      }
+      return { ...prev, blocks: nextBlocks };
+    });
   };
 
   // Handler: Save Post
@@ -1480,6 +1632,7 @@ function BlogsEditorPage() {
                           {block.type === "p" && "✍️ Paragraph"}
                           {block.type === "ul" && "📋 Bullet Points"}
                           {block.type === "blockquote" && "💬 Highlight Quote"}
+                          {block.type === "table" && "📊 Data Table"}
                         </div>
 
                         {/* Block Editor Input */}
@@ -1548,6 +1701,130 @@ function BlogsEditorPage() {
                               <Plus className="size-3" /> Add bullet point
                             </button>
                           </div>
+                        ) : block.type === "table" ? (
+                          <div className="space-y-3">
+                            {/* Table Control Bar */}
+                            <div className="flex flex-wrap items-center justify-between gap-2 bg-slate-100/90 p-2.5 rounded-xl border border-slate-200">
+                              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
+                                <input
+                                  type="checkbox"
+                                  checked={block.hasHeader !== false}
+                                  onChange={() => handleToggleTableHeader(idx)}
+                                  className="size-4 rounded border-slate-300 text-navy focus:ring-navy"
+                                />
+                                <span>Include Header Row</span>
+                              </label>
+
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddTableColumn(idx)}
+                                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy transition shadow-2xs"
+                                >
+                                  <Columns3 className="size-3 text-primary" /> + Add Column
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleAddTableRow(idx)}
+                                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy transition shadow-2xs"
+                                >
+                                  <Rows3 className="size-3 text-primary" /> + Add Row
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Horizontally Scrollable Table Canvas Styled to Match Site */}
+                            <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-2xs -webkit-overflow-scrolling-touch">
+                              <table className="w-full min-w-[500px] border-collapse text-left text-xs sm:text-sm">
+                                {block.hasHeader !== false && (
+                                  <thead className="bg-[#0e1b36] text-white">
+                                    <tr>
+                                      {(block.headers || []).map((header, colIdx) => (
+                                        <th
+                                          key={colIdx}
+                                          className="p-2 border-r border-slate-700/60 last:border-r-0 relative group/th"
+                                        >
+                                          <div className="flex items-center gap-1">
+                                            <input
+                                              type="text"
+                                              value={header}
+                                              placeholder={`Column ${colIdx + 1}`}
+                                              onChange={(e) =>
+                                                handleUpdateTableHeader(idx, colIdx, e.target.value)
+                                              }
+                                              className="w-full bg-transparent font-serif-hero text-xs sm:text-sm font-semibold text-white placeholder:text-slate-400 border border-transparent focus:border-blue-400 rounded px-2 py-1 outline-none"
+                                            />
+                                            {(block.headers || []).length > 1 && (
+                                              <button
+                                                type="button"
+                                                onClick={() => handleDeleteTableColumn(idx, colIdx)}
+                                                title="Delete Column"
+                                                className="opacity-0 group-hover/th:opacity-100 size-5 rounded text-slate-300 hover:text-red-400 hover:bg-slate-800 flex items-center justify-center shrink-0 transition"
+                                              >
+                                                <X className="size-3" />
+                                              </button>
+                                            )}
+                                          </div>
+                                        </th>
+                                      ))}
+                                      <th className="w-8 p-1"></th>
+                                    </tr>
+                                  </thead>
+                                )}
+                                <tbody className="divide-y divide-slate-100">
+                                  {(block.rows || []).map((row, rowIdx) => (
+                                    <tr
+                                      key={rowIdx}
+                                      className="hover:bg-slate-50/60 transition group/tr"
+                                    >
+                                      {row.map((cell, colIdx) => (
+                                        <td
+                                          key={colIdx}
+                                          className="p-2 border-r border-slate-100 last:border-r-0"
+                                        >
+                                          <textarea
+                                            rows={1}
+                                            value={cell}
+                                            placeholder="Enter text..."
+                                            onChange={(e) =>
+                                              handleUpdateTableCell(
+                                                idx,
+                                                rowIdx,
+                                                colIdx,
+                                                e.target.value
+                                              )
+                                            }
+                                            className="w-full text-xs sm:text-sm text-slate-800 bg-transparent border border-transparent focus:border-navy focus:bg-white rounded px-2 py-1 outline-none resize-y"
+                                          />
+                                        </td>
+                                      ))}
+                                      <td className="w-8 p-1 text-center align-middle">
+                                        {(block.rows || []).length > 1 && (
+                                          <button
+                                            type="button"
+                                            onClick={() => handleDeleteTableRow(idx, rowIdx)}
+                                            title="Delete Row"
+                                            className="opacity-0 group-hover/tr:opacity-100 size-6 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 inline-flex items-center justify-center transition"
+                                          >
+                                            <Trash2 className="size-3" />
+                                          </button>
+                                        )}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+
+                            {/* Optional Caption */}
+                            <input
+                              type="text"
+                              value={block.caption || ""}
+                              placeholder="Optional table caption or source note..."
+                              onChange={(e) => handleUpdateBlock(idx, { caption: e.target.value })}
+                              className="w-full text-xs italic text-slate-500 bg-transparent border-b border-dashed border-slate-200 focus:border-navy outline-none px-1 py-1"
+                            />
+                          </div>
                         ) : (
                           <textarea
                             rows={3}
@@ -1602,6 +1879,15 @@ function BlogsEditorPage() {
                         className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
                       >
                         <Quote className="size-3.5 mr-1 text-primary" /> Quote Highlight
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleAddBlock("table")}
+                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
+                      >
+                        <TableIcon className="size-3.5 mr-1 text-primary" /> Table
                       </Button>
                     </div>
                   </div>

@@ -1,7 +1,35 @@
+import { useState } from "react";
 import { ArrowRight, CheckCircle2, Clock, Shield } from "lucide-react";
 import { BOOKING_ROUTE } from "@/data/calendly";
 
+const BENEFIT_CARDS = [
+  {
+    id: "guarantee",
+    title: "The SMG Guarantee",
+    icon: Shield,
+    iconStroke: 2.2,
+    body: "We do what we promise, follow our proven process, and communicate with care and responsiveness. If we fall short, we will own it, correct it, and make it right—at no additional professional fee to you.",
+    quote: "“If it's ours to own, we own it. If it's ours to correct, we correct it.”",
+  },
+  {
+    id: "response",
+    title: "Same-Day Response",
+    icon: Clock,
+    iconStroke: 2,
+    body: "Direct, rapid communication when you need it most. Our advisory team prioritizes responsiveness for every time-sensitive question and tax deadline.",
+  },
+  {
+    id: "specialists",
+    title: "Dedicated Specialists",
+    icon: CheckCircle2,
+    iconStroke: 2,
+    body: "Experienced accounting professionals and industry specialists dedicated to understanding your operations and long-term financial objectives.",
+  },
+];
+
 export function QuoteForm() {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
   return (
     <section className="py-16 sm:py-24 bg-[#f8f9fb] px-4 sm:px-6 lg:px-8">
       <div className="relative mx-auto max-w-5xl overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-8 sm:p-14 lg:p-16 shadow-xl shadow-slate-200/60 text-center">
@@ -45,47 +73,54 @@ export function QuoteForm() {
 
           {/* Authentic feature highlights / benefits */}
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-5 pt-8 border-t border-slate-100 max-w-4xl mx-auto text-left">
-            {/* 1. The SMG Guarantee (Prominent benefit item) */}
-            <div className="relative rounded-2xl border-2 border-[#1b4e94]/40 bg-gradient-to-b from-blue-50/70 to-white p-5 shadow-sm transition-all hover:border-[#1b4e94] hover:shadow-md">
-              <div className="flex items-center gap-2.5 text-[#1b4e94]">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-[#1b4e94] text-white shrink-0 shadow-xs">
-                  <Shield className="size-4.5 stroke-[2.2]" />
-                </div>
-                <h3 className="text-sm font-bold tracking-tight text-navy">The SMG Guarantee</h3>
-              </div>
-              <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
-                We do what we promise, follow our proven process, and communicate with care and responsiveness. If we fall short, we will own it, correct it, and make it right—at no additional professional fee to you.
-              </p>
-              <p className="mt-2 text-[11px] font-semibold text-[#1b4e94] italic leading-snug">
-                “If it's ours to own, we own it. If it's ours to correct, we correct it.”
-              </p>
-            </div>
+            {BENEFIT_CARDS.map((card, idx) => {
+              const isSelected = selectedIndex === idx;
+              const Icon = card.icon;
 
-            {/* 2. Same-Day Response */}
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm">
-              <div className="flex items-center gap-2.5 text-slate-800">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-navy/10 text-navy shrink-0">
-                  <Clock className="size-4.5 stroke-[2]" />
+              return (
+                <div
+                  key={card.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  onClick={() => setSelectedIndex(idx)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setSelectedIndex(idx);
+                    }
+                  }}
+                  className={`relative rounded-2xl p-5 text-left cursor-pointer transition-all duration-300 ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1b4e94] focus-visible:ring-offset-2 ${
+                    isSelected
+                      ? "border-2 border-[#1b4e94]/50 bg-gradient-to-b from-blue-50/70 to-white shadow-md"
+                      : "border-2 border-slate-200/90 bg-white shadow-xs hover:border-slate-300 hover:shadow-sm"
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <div
+                      className={`flex size-8 items-center justify-center rounded-lg shrink-0 shadow-xs transition-colors duration-300 ${
+                        isSelected
+                          ? "bg-[#1b4e94] text-white"
+                          : "bg-navy/10 text-navy"
+                      }`}
+                    >
+                      <Icon className="size-4.5" strokeWidth={card.iconStroke} />
+                    </div>
+                    <h3 className="text-sm font-bold tracking-tight text-navy">
+                      {card.title}
+                    </h3>
+                  </div>
+                  <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
+                    {card.body}
+                  </p>
+                  {card.quote && (
+                    <p className="mt-2 text-[11px] font-semibold text-[#1b4e94] italic leading-snug">
+                      {card.quote}
+                    </p>
+                  )}
                 </div>
-                <h3 className="text-sm font-bold tracking-tight text-navy">Same-Day Response</h3>
-              </div>
-              <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
-                Direct, rapid communication when you need it most. Our advisory team prioritizes responsiveness for every time-sensitive question and tax deadline.
-              </p>
-            </div>
-
-            {/* 3. Dedicated Specialists */}
-            <div className="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-xs transition-all hover:border-slate-300 hover:shadow-sm">
-              <div className="flex items-center gap-2.5 text-slate-800">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 shrink-0">
-                  <CheckCircle2 className="size-4.5 stroke-[2]" />
-                </div>
-                <h3 className="text-sm font-bold tracking-tight text-navy">Dedicated Specialists</h3>
-              </div>
-              <p className="mt-2.5 text-xs leading-relaxed text-slate-600">
-                Experienced accounting professionals and industry specialists dedicated to understanding your operations and long-term financial objectives.
-              </p>
-            </div>
+              );
+            })}
           </div>
         </div>
       </div>

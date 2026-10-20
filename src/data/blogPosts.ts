@@ -1,9 +1,13 @@
 // Structured real blog posts from smgaba.com
 export interface ContentBlock {
-  type: "h2" | "h3" | "h4" | "p" | "ul" | "ol" | "blockquote";
+  type: "h2" | "h3" | "h4" | "p" | "ul" | "ol" | "blockquote" | "table";
   text?: string;
   html?: string;
   items?: string[];
+  hasHeader?: boolean;
+  headers?: string[];
+  rows?: string[][];
+  caption?: string;
 }
 
 export interface BlogPost {
@@ -4771,69 +4775,30 @@ export const BLOG_POSTS: BlogPost[] = [
         "html": "When reviewed together, these three financial reports provide the financial visibility needed to identify trends, make proactive decisions, and plan for sustainable growth."
       },
       {
-        "type": "p",
-        "text": "Financial Report",
-        "html": "<b>Financial Report</b>"
-      },
-      {
-        "type": "p",
-        "text": "Primary Purpose",
-        "html": "<b>Primary Purpose</b>"
-      },
-      {
-        "type": "p",
-        "text": "Questions It Answers",
-        "html": "</td> <td data-celllook=\"0\"> <p style=\"text-align: center;\"><b>Questions It Answers</b>"
-      },
-      {
-        "type": "p",
-        "text": "Profit and Loss Statement",
-        "html": "<b>Profit and Loss Statement</b>"
-      },
-      {
-        "type": "p",
-        "text": "Measures profitability",
-        "html": "Measures profitability"
-      },
-      {
-        "type": "p",
-        "text": "Is my business making money?",
-        "html": "Is my business making money?"
-      },
-      {
-        "type": "p",
-        "text": "Balance Sheet",
-        "html": "<b>Balance Sheet</b>"
-      },
-      {
-        "type": "p",
-        "text": "Measures financial position",
-        "html": "Measures financial position"
-      },
-      {
-        "type": "p",
-        "text": "What does my business own and owe?",
-        "html": "What does my business own and owe?"
-      },
-      {
-        "type": "p",
-        "text": "Cash Flow Statement",
-        "html": "<b>Cash Flow Statement</b>"
-      },
-      {
-        "type": "p",
-        "text": "Measures cash movement",
-        "html": "Measures cash movement"
-      },
-      {
-        "type": "p",
-        "text": "How did cash move through the business during the",
-        "html": "How did cash move through the business during the"
-      },
-      {
-        "type": "p",
-        "text": "reporting period?",
-        "html": "reporting period?"
+        "type": "table",
+        "hasHeader": true,
+        "headers": [
+          "Financial Report",
+          "Primary Purpose",
+          "Questions It Answers"
+        ],
+        "rows": [
+          [
+            "Profit and Loss Statement",
+            "Measures profitability",
+            "Is my business making money?"
+          ],
+          [
+            "Balance Sheet",
+            "Measures financial position",
+            "What does my business own and owe?"
+          ],
+          [
+            "Cash Flow Statement",
+            "Measures cash movement",
+            "How did cash move through the business during the reporting period?"
+          ]
+        ]
       },
       {
         "type": "p",

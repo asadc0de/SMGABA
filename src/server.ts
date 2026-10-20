@@ -50,6 +50,14 @@ export default {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
+      try {
+        const url = new URL(request.url);
+        if (url.pathname.startsWith("/onboarding/")) {
+          response.headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");
+        }
+      } catch {
+        // ignore url parse failure
+      }
       return await normalizeCatastrophicSsrResponse(response);
     } catch (error) {
       console.error(error);

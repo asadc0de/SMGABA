@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, notFound } from "@tanstack/react-router";
 import { getBlogPost } from "@/lib/blogs.server";
 import { LEGACY_RESOURCE_SLUGS } from "@/data/legacyRedirects";
 import { BlogPostView } from "@/components/site/BlogPostView";
@@ -9,15 +9,26 @@ import { ArrowLeft, BookOpen } from "lucide-react";
 
 export const Route = createFileRoute("/blog/$slug")({
   beforeLoad: ({ params }) => {
+    const isProduction =
+      (typeof import.meta !== "undefined" && Boolean(import.meta.env?.PROD)) ||
+      (typeof process !== "undefined" && process.env?.NODE_ENV === "production");
+
+    if (params.slug === "obbba-summary" && isProduction) {
+      throw notFound();
+    }
     if (LEGACY_RESOURCE_SLUGS.has(params.slug)) {
       throw redirect({ to: `/resources/${params.slug}`, statusCode: 301 });
     }
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     const post = loaderData?.post;
-    if (!post) {
+    const isObbba = params.slug === "obbba-summary";
+    if (!post || isObbba) {
       return {
-        meta: [{ title: "Article Not Found | SMG ABA" }],
+        meta: [
+          { title: "Article Not Found | SMG ABA" },
+          { name: "robots", content: "noindex, nofollow" },
+        ],
         links: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
       };
     }

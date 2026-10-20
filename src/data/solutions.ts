@@ -17,6 +17,7 @@ export interface Testimonial {
   quote: string;
   author: string;
   title: string;
+  hidden?: boolean;
 }
 
 export interface TrustStat {
@@ -347,7 +348,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
       },
       {
         title: "Missed Credits and Deductions",
-        desc: "Leaving money on the table due to unfamiliarity with Section 179 depreciation, R&D credits, or pass-through entity tax deductions.",
+        desc: "Leaving money on the table due to unfamiliarity with Section 179 depreciation or pass-through entity tax deductions.",
         iconName: "Coins",
       },
       {
@@ -449,11 +450,13 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
         author: "Frances K.",
         title: "Growth Enterprise",
       },
+      // TODO: pending verification from client
       {
         quote:
           "SMG has handled both our business and personal accounting for years. I can't imagine not having them in our corner, SMG provides peace of mind.",
         author: "James M.",
         title: "Executive Client",
+        hidden: true,
       },
     ],
   },

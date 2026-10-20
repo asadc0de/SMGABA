@@ -122,7 +122,11 @@ function ResourcesPage() {
   // Normalize categories for filter bar
   const categories = useMemo(() => {
     const rawCategories = Array.from(
-      new Set(RESOURCE_POSTS.map((p) => p.category).filter(Boolean))
+      new Set(
+        RESOURCE_POSTS.filter((p) => !p.archived && p.slug !== "obbba-summary")
+          .map((p) => p.category)
+          .filter(Boolean)
+      )
     );
     // Ensure "News & Updates" is prominently available as a sensible category
     return ["All", "News & Updates", ...rawCategories.filter((c) => c !== "News & Updates")];
@@ -131,6 +135,7 @@ function ResourcesPage() {
   // Filter resource posts
   const filteredPosts = useMemo(() => {
     return RESOURCE_POSTS.filter((post) => {
+      if (post.archived || post.slug === "obbba-summary") return false;
       let matchesCategory = true;
       if (activeCategory === "News & Updates") {
         matchesCategory =

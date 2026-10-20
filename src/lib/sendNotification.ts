@@ -6,6 +6,7 @@ export interface NotificationPayload {
   subject?: string;
   name: string;
   email: string;
+  toEmail?: string; // Explicit destination email override (defaults to NOTIFY_EMAIL / CONTACT_TO_EMAIL / Sales@smgaba.com)
   phone?: string;
   companyName?: string;
   officePreference?: string;
@@ -83,23 +84,34 @@ export async function sendNotification(
     process.env.RESEND_API_KEY ||
     "";
 
+  // Prioritize explicit toEmail override, then NOTIFY_EMAIL, then CONTACT_TO_EMAIL, then Sales@smgaba.com
   const notifyEmail =
+    payload.toEmail ||
     getEnvVar("NOTIFY_EMAIL") ||
     process.env.NOTIFY_EMAIL ||
     getEnvVar("CONTACT_TO_EMAIL") ||
     process.env.CONTACT_TO_EMAIL ||
-    "smgmarketing@smgaba.com";
+    "Sales@smgaba.com";
 
-  const fromEmail =
+  let fromEmail =
     getEnvVar("RESEND_FROM") ||
     process.env.RESEND_FROM ||
     getEnvVar("CONTACT_FROM_EMAIL") ||
     process.env.CONTACT_FROM_EMAIL ||
-    "SMG Cares <no-reply@smgaba.com>";
+    "SMG Notifications <no-reply@smgaba.com>";
+
+  // Safeguard: Resend blocks emails from onboarding@resend.dev to any non-owner address (HTTP 403).
+  // Automatically sanitize to the verified domain no-reply@smgaba.com so notifications always deliver.
+  if (fromEmail.includes("@resend.dev")) {
+    console.warn(
+      `[Resend Safeguard] fromEmail was set to "${fromEmail}" (test sandbox). Overriding to verified domain "SMG Notifications <no-reply@smgaba.com>" to ensure delivery to ${notifyEmail}.`,
+    );
+    fromEmail = "SMG Notifications <no-reply@smgaba.com>";
+  }
 
   if (!apiKey || !apiKey.trim()) {
-    console.warn(
-      "[Resend Warning] RESEND_API_KEY is not configured in server environment. Skipping email notification.",
+    console.error(
+      "[Resend Configuration Error] RESEND_API_KEY is not configured in server environment. Skipping email notification.",
     );
     return { success: false, error: "RESEND_API_KEY not configured" };
   }
@@ -236,6 +248,15 @@ Reply-To: ${payload.email}
 
   // 7. Dispatch via Resend SDK
   try {
+    console.log(
+      `[Resend Dispatch] Attempting notification dispatch:\n` +
+      `  • Destination (To): ${notifyEmail.trim()}\n` +
+      `  • Sender (From): ${fromEmail.trim()}\n` +
+      `  • Subject: "${subject}"\n` +
+      `  • Lead: ${safeName} <${safeEmail}>\n` +
+      `  • Form Type: ${safeFormType}`,
+    );
+
     const { data, error } = await resend.emails.send({
       from: fromEmail.trim(),
       to: [notifyEmail.trim()],
@@ -246,17 +267,31 @@ Reply-To: ${payload.email}
     });
 
     if (error) {
-      console.error("[Resend SDK Error]:", error);
-      return { success: false, error: error.message };
+      console.error(
+        `[Resend Delivery Failure] Resend API returned an error:\n` +
+        `  • Status Code: ${(error as any).statusCode || "N/A"}\n` +
+        `  • Error Name: ${error.name}\n` +
+        `  • Error Message: ${error.message}\n` +
+        `  • Recipient: ${notifyEmail.trim()}\n` +
+        `  • Sender: ${fromEmail.trim()}`,
+      );
+      return { success: false, error: `${error.name}: ${error.message}` };
     }
 
     console.log(
-      `[Resend Success] Notification email sent successfully (ID: ${data?.id}) to ${notifyEmail.trim()}`,
+      `[Resend Success] Notification email successfully sent! (Message ID: ${data?.id}) to ${notifyEmail.trim()}`,
     );
     return { success: true, id: data?.id };
   } catch (err: unknown) {
     const errorMsg = err instanceof Error ? err.message : String(err);
-    console.error("[Resend Network Exception]:", errorMsg);
+    const stack = err instanceof Error ? err.stack : "";
+    console.error(
+      `[Resend Network Exception] Exception thrown while contacting Resend:\n` +
+      `  • Recipient: ${notifyEmail.trim()}\n` +
+      `  • Sender: ${fromEmail.trim()}\n` +
+      `  • Error: ${errorMsg}\n` +
+      `  • Stack: ${stack}`,
+    );
     return { success: false, error: errorMsg };
   }
 }

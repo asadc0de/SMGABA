@@ -3,7 +3,13 @@ import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const TESTIMONIALS = [
+interface TestimonialItem {
+  quote: string;
+  author: string;
+  hidden?: boolean;
+}
+
+const ALL_TESTIMONIALS: TestimonialItem[] = [
   {
     quote:
       "I have been working with Wesley for 5 or 6 years now. While I have always been satisfied with the firm's counsel and support, I will forever be grateful to the team for its assistance in navigating the last year and a half - no doubt the most challenging of our business' existence.",
@@ -24,12 +30,16 @@ const TESTIMONIALS = [
       "Been working with SMG for years and it was one of the best business decisions we have ever made. The team is knowledgeable, hyper responsive and act as an extension of our company.",
     author: "Experiences by Hampstons",
   },
+  // TODO: pending verification from client
   {
     quote:
       "SMG has handled both our business and personal accounting for years. I can't imagine not having them in our corner, SMG provides peace of mind.",
     author: "James M.",
+    hidden: true,
   },
 ];
+
+const TESTIMONIALS = ALL_TESTIMONIALS.filter((t) => !t.hidden);
 
 export function Testimonials() {
   const [index, setIndex] = useState(0);

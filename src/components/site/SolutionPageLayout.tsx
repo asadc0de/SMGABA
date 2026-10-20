@@ -333,36 +333,51 @@ export function SolutionPageLayout({
         </section>
 
         {/* ── Testimonials ──────────────────────────────────────────────── */}
-        <section className="py-20 sm:py-28 bg-[#0b172e] text-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <div className="text-center mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-blue-300">
-                Client Feedback
-              </span>
-              <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl font-bold text-white">
-                Here's Why We're Recommended
-              </h2>
-            </div>
+        {(() => {
+          const visibleTestimonials = (data.testimonials || []).filter((t) => !t.hidden);
+          if (visibleTestimonials.length === 0) return null;
 
-            <div className="grid gap-8 md:grid-cols-3">
-              {data.testimonials.map((t) => (
-                <div
-                  key={t.author}
-                  className="flex flex-col justify-between rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm"
-                >
-                  <div>
-                    <Quote className="size-8 text-blue-400 mb-4 opacity-50" />
-                    <p className="text-sm text-slate-200 italic leading-relaxed">"{t.quote}"</p>
-                  </div>
-                  <div className="mt-6 pt-4 border-t border-white/10">
-                    <p className="text-sm font-bold text-white">{t.author}</p>
-                    <p className="text-xs text-blue-300">{t.title}</p>
-                  </div>
+          return (
+            <section className="py-20 sm:py-28 bg-[#0b172e] text-white">
+              <div className="mx-auto max-w-7xl px-6 lg:px-10">
+                <div className="text-center mb-16">
+                  <span className="text-xs font-bold uppercase tracking-widest text-blue-300">
+                    Client Feedback
+                  </span>
+                  <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl font-bold text-white">
+                    Here's Why We're Recommended
+                  </h2>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
+
+                <div
+                  className={`grid gap-8 ${
+                    visibleTestimonials.length === 1
+                      ? "max-w-xl mx-auto"
+                      : visibleTestimonials.length === 2
+                      ? "max-w-4xl mx-auto md:grid-cols-2"
+                      : "md:grid-cols-3"
+                  }`}
+                >
+                  {visibleTestimonials.map((t) => (
+                    <div
+                      key={t.author}
+                      className="flex flex-col justify-between rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm"
+                    >
+                      <div>
+                        <Quote className="size-8 text-blue-400 mb-4 opacity-50" />
+                        <p className="text-sm text-slate-200 italic leading-relaxed">"{t.quote}"</p>
+                      </div>
+                      <div className="mt-6 pt-4 border-t border-white/10">
+                        <p className="text-sm font-bold text-white">{t.author}</p>
+                        <p className="text-xs text-blue-300">{t.title}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* ── Quote Form ────────────────────────────────────────────────── */}
         <div id="contact-form">

@@ -53,6 +53,8 @@ function normalizePayload(input: unknown): ContactSubmissionPayload {
 export interface CreateNoCrmLeadInput {
   name?: string;
   email?: string;
+  toEmail?: string;
+  formType?: string;
   phone?: string;
   companyName?: string;
   source?: string;
@@ -76,6 +78,8 @@ export async function createNoCrmLead(
     {
       name: payload.name || "Lead",
       email: payload.email || "no-reply@smgaba.com",
+      toEmail: payload.toEmail,
+      formType: payload.formType || "Website Lead",
       phone: payload.phone,
       message: payload.description || payload.message || "Lead submitted",
       source: payload.source || "Website",

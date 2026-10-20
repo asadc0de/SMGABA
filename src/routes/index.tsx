@@ -37,22 +37,22 @@ export const Route = createFileRoute("/")({
 const SOLUTIONS = [
   {
     title: "Outsourced Bookkeeping",
-    href: "/solutions#outsourced-bookkeeping",
+    href: "/solutions#bookkeeping",
     img: "/images/solutions/smg-bookkeeping-1.jpeg",
   },
   {
     title: "CFO on the Go",
-    href: "/solutions#cfo-on-the-go",
+    href: "/solutions#cfo-advisory",
     img: "/images/solutions/adobestock-201950021-1.jpeg",
   },
   {
     title: "Tax Services",
-    href: "/solutions#tax-services",
+    href: "/solutions#tax",
     img: "/images/solutions/smg-tax-services-1.jpeg",
   },
   {
     title: "Back Office",
-    href: "/solutions#back-office",
+    href: "/solutions#wealth-management",
     img: "/images/solutions/smg-back-office-1.jpeg",
   },
 ];
@@ -163,7 +163,7 @@ function Index() {
         </section>
 
         {/* 5 — Our Solutions */}
-        <section className="section-y" id="solutions">
+        <section className="pt-8 pb-[4.5rem] md:pb-[7rem]" id="solutions">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <p className="eyebrow">What we do</p>
@@ -297,7 +297,7 @@ function Index() {
                 </p>
               </div>
               <Button asChild size="lg" className="shrink-0">
-                <a href="/solutions#outsourced-bookkeeping">
+                <a href="/solutions#bookkeeping">
                   Get Started <ArrowRight />
                 </a>
               </Button>

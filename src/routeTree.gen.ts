@@ -38,6 +38,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as ApiChatbaseLeadRouteImport } from './routes/api/chatbase-lead'
 import { Route as ApiContactRouteImport } from './routes/api/contact'
+import { Route as ApiTestEmailRouteImport } from './routes/api/test-email'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as CmsIndexRouteImport } from './routes/cms/index'
@@ -209,6 +210,11 @@ const ApiContactRoute = ApiContactRouteImport.update({
   path: '/api/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTestEmailRoute = ApiTestEmailRouteImport.update({
+  id: '/api/test-email',
+  path: '/api/test-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -367,6 +373,7 @@ export interface FileRoutesByFullPath {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/api/contact': typeof ApiContactRoute
+  '/api/test-email': typeof ApiTestEmailRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cms/new': typeof CmsNewRoute
   '/internal/redirects': typeof InternalRedirectsRoute
@@ -423,6 +430,7 @@ export interface FileRoutesByTo {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/api/contact': typeof ApiContactRoute
+  '/api/test-email': typeof ApiTestEmailRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cms/new': typeof CmsNewRoute
   '/internal/redirects': typeof InternalRedirectsRoute
@@ -480,6 +488,7 @@ export interface FileRoutesById {
   '/testimonials': typeof TestimonialsRoute
   '/api/chatbase-lead': typeof ApiChatbaseLeadRoute
   '/api/contact': typeof ApiContactRoute
+  '/api/test-email': typeof ApiTestEmailRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/cms/new': typeof CmsNewRoute
   '/internal/redirects': typeof InternalRedirectsRoute
@@ -538,6 +547,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/api/contact'
+    | '/api/test-email'
     | '/blog/$slug'
     | '/cms/new'
     | '/internal/redirects'
@@ -594,6 +604,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/api/contact'
+    | '/api/test-email'
     | '/blog/$slug'
     | '/cms/new'
     | '/internal/redirects'
@@ -650,6 +661,7 @@ export interface FileRouteTypes {
     | '/testimonials'
     | '/api/chatbase-lead'
     | '/api/contact'
+    | '/api/test-email'
     | '/blog/$slug'
     | '/cms/new'
     | '/internal/redirects'
@@ -707,6 +719,7 @@ export interface RootRouteChildren {
   TestimonialsRoute: typeof TestimonialsRoute
   ApiChatbaseLeadRoute: typeof ApiChatbaseLeadRoute
   ApiContactRoute: typeof ApiContactRoute
+  ApiTestEmailRoute: typeof ApiTestEmailRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CmsNewRoute: typeof CmsNewRoute
   InternalRedirectsRoute: typeof InternalRedirectsRoute
@@ -939,6 +952,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/test-email': {
+      id: '/api/test-email'
+      path: '/api/test-email'
+      fullPath: '/api/test-email'
+      preLoaderRoute: typeof ApiTestEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/': {
       id: '/blog/'
       path: '/blog'
@@ -1147,6 +1167,7 @@ const rootRouteChildren: RootRouteChildren = {
   TestimonialsRoute: TestimonialsRoute,
   ApiChatbaseLeadRoute: ApiChatbaseLeadRoute,
   ApiContactRoute: ApiContactRoute,
+  ApiTestEmailRoute: ApiTestEmailRoute,
   BlogSlugRoute: BlogSlugRoute,
   CmsNewRoute: CmsNewRoute,
   InternalRedirectsRoute: InternalRedirectsRoute,

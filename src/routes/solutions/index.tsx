@@ -110,13 +110,23 @@ const SOLUTIONS_DATA = [
   },
 ];
 
-const TESTIMONIALS = [
+type SolutionTestimonialItem = {
+  quote: string;
+  author: string;
+  company: string;
+  subtitle: string;
+  hidden?: boolean;
+};
+
+const ALL_TESTIMONIALS: SolutionTestimonialItem[] = [
+  // TODO: pending verification from client
   {
     quote:
       "SMG has provided our business and personal accounting for years. I can't imagine not having them in our corner. SMG provides peace of mind.",
     author: "Michael M.",
     company: "JRM",
     subtitle: "JRM Construction Management",
+    hidden: true,
   },
   {
     quote:
@@ -133,6 +143,8 @@ const TESTIMONIALS = [
     subtitle: "Tri-State Development",
   },
 ];
+
+const TESTIMONIALS = ALL_TESTIMONIALS.filter((t) => !t.hidden);
 
 function SolutionsIndexPage() {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
@@ -319,54 +331,65 @@ function SolutionsIndexPage() {
         {/* =========================================================================
             3. TESTIMONIALS SLIDER SECTION
            ========================================================================= */}
-        <section className="py-20 sm:py-28 bg-[#142340] text-white">
-          <div className="mx-auto max-w-4xl px-6 lg:px-8 text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300">
-              Client Stories
-            </span>
-            <h2 className="mt-2 font-serif-hero text-3xl sm:text-4xl font-bold text-white">
-              Trusted by Growing Businesses
-            </h2>
+        {TESTIMONIALS.length > 0 && (
+          <section className="py-20 sm:py-28 bg-[#142340] text-white">
+            <div className="mx-auto max-w-4xl px-6 lg:px-8 text-center">
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-blue-300">
+                Client Stories
+              </span>
+              <h2 className="mt-2 font-serif-hero text-3xl sm:text-4xl font-bold text-white">
+                Trusted by Growing Businesses
+              </h2>
 
-            <div className="relative my-10 min-h-[160px] flex items-center justify-center">
-              <p className="font-serif-hero text-lg sm:text-xl md:text-2xl italic text-slate-100 leading-relaxed max-w-2xl mx-auto transition-all duration-300">
-                "{TESTIMONIALS[activeTestimonial].quote}"
-              </p>
-            </div>
+              {(() => {
+                const current = TESTIMONIALS[activeTestimonial] || TESTIMONIALS[0];
+                if (!current) return null;
+                return (
+                  <>
+                    <div className="relative my-10 min-h-[160px] flex items-center justify-center">
+                      <p className="font-serif-hero text-lg sm:text-xl md:text-2xl italic text-slate-100 leading-relaxed max-w-2xl mx-auto transition-all duration-300">
+                        "{current.quote}"
+                      </p>
+                    </div>
 
-            <div className="text-sm font-bold text-white">
-              {TESTIMONIALS[activeTestimonial].author} &bull;{" "}
-              {TESTIMONIALS[activeTestimonial].subtitle}
-            </div>
-            <div className="text-xs text-blue-200/80 uppercase tracking-widest mt-1">
-              {TESTIMONIALS[activeTestimonial].company}
-            </div>
+                    <div className="text-sm font-bold text-white">
+                      {current.author} &bull; {current.subtitle}
+                    </div>
+                    <div className="text-xs text-blue-200/80 uppercase tracking-widest mt-1">
+                      {current.company}
+                    </div>
+                  </>
+                );
+              })()}
 
-            {/* Testimonial navigation dots */}
-            <div className="mt-8 flex justify-center gap-2">
-              {TESTIMONIALS.map((_, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => setActiveTestimonial(idx)}
-                  className={`size-2.5 rounded-full transition-all ${
-                    activeTestimonial === idx ? "w-8 bg-blue-400" : "bg-white/20 hover:bg-white/40"
-                  }`}
-                  aria-label={`Go to slide ${idx + 1}`}
-                />
-              ))}
-            </div>
+              {/* Testimonial navigation dots */}
+              {TESTIMONIALS.length > 1 && (
+                <div className="mt-8 flex justify-center gap-2">
+                  {TESTIMONIALS.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveTestimonial(idx)}
+                      className={`size-2.5 rounded-full transition-all ${
+                        activeTestimonial === idx ? "w-8 bg-blue-400" : "bg-white/20 hover:bg-white/40"
+                      }`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
 
-            <div className="mt-12">
-              <a
-                href="/testimonials"
-                className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0f2142] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95"
-              >
-                SEE ALL TESTIMONIALS
-              </a>
+              <div className="mt-12">
+                <a
+                  href="/testimonials"
+                  className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0f2142] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95"
+                >
+                  SEE ALL TESTIMONIALS
+                </a>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* =========================================================================
             4. LET'S TALK

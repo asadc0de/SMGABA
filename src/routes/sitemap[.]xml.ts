@@ -69,7 +69,7 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         // 3. Resource Posts
         for (const post of RESOURCE_POSTS) {
-          if (!post.archived && post.slug) {
+          if (!post.archived && post.slug && post.slug !== "obbba-summary") {
             urls.push({
               loc: `${siteUrl}/resources/${post.slug}`,
               changefreq: "monthly",
