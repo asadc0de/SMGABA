@@ -29,6 +29,7 @@ import { Route as IslandiaLocationRouteImport } from './routes/islandia-location
 import { Route as LegalProfessionalsRouteImport } from './routes/legal-professionals'
 import { Route as ManufacturersRouteImport } from './routes/manufacturers'
 import { Route as NewYorkCityLocationRouteImport } from './routes/new-york-city-location'
+import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as OurTeamRouteImport } from './routes/our-team'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as PrivacyPolicy2RouteImport } from './routes/privacy-policy-2'
@@ -163,6 +164,11 @@ const ManufacturersRoute = ManufacturersRouteImport.update({
 const NewYorkCityLocationRoute = NewYorkCityLocationRouteImport.update({
   id: '/new-york-city-location',
   path: '/new-york-city-location',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurStoryRoute = OurStoryRouteImport.update({
+  id: '/our-story',
+  path: '/our-story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OurTeamRoute = OurTeamRouteImport.update({
@@ -364,6 +370,7 @@ export interface FileRoutesByFullPath {
   '/legal-professionals': typeof LegalProfessionalsRoute
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
+  '/our-story': typeof OurStoryRoute
   '/our-team': typeof OurTeamRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
@@ -421,6 +428,7 @@ export interface FileRoutesByTo {
   '/legal-professionals': typeof LegalProfessionalsRoute
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
+  '/our-story': typeof OurStoryRoute
   '/our-team': typeof OurTeamRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
@@ -479,6 +487,7 @@ export interface FileRoutesById {
   '/legal-professionals': typeof LegalProfessionalsRoute
   '/manufacturers': typeof ManufacturersRoute
   '/new-york-city-location': typeof NewYorkCityLocationRoute
+  '/our-story': typeof OurStoryRoute
   '/our-team': typeof OurTeamRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/privacy-policy-2': typeof PrivacyPolicy2Route
@@ -538,6 +547,7 @@ export interface FileRouteTypes {
     | '/legal-professionals'
     | '/manufacturers'
     | '/new-york-city-location'
+    | '/our-story'
     | '/our-team'
     | '/privacy-policy'
     | '/privacy-policy-2'
@@ -595,6 +605,7 @@ export interface FileRouteTypes {
     | '/legal-professionals'
     | '/manufacturers'
     | '/new-york-city-location'
+    | '/our-story'
     | '/our-team'
     | '/privacy-policy'
     | '/privacy-policy-2'
@@ -652,6 +663,7 @@ export interface FileRouteTypes {
     | '/legal-professionals'
     | '/manufacturers'
     | '/new-york-city-location'
+    | '/our-story'
     | '/our-team'
     | '/privacy-policy'
     | '/privacy-policy-2'
@@ -710,6 +722,7 @@ export interface RootRouteChildren {
   LegalProfessionalsRoute: typeof LegalProfessionalsRoute
   ManufacturersRoute: typeof ManufacturersRoute
   NewYorkCityLocationRoute: typeof NewYorkCityLocationRoute
+  OurStoryRoute: typeof OurStoryRoute
   OurTeamRoute: typeof OurTeamRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   PrivacyPolicy2Route: typeof PrivacyPolicy2Route
@@ -887,6 +900,13 @@ declare module '@tanstack/react-router' {
       path: '/new-york-city-location'
       fullPath: '/new-york-city-location'
       preLoaderRoute: typeof NewYorkCityLocationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-story': {
+      id: '/our-story'
+      path: '/our-story'
+      fullPath: '/our-story'
+      preLoaderRoute: typeof OurStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/our-team': {
@@ -1158,6 +1178,7 @@ const rootRouteChildren: RootRouteChildren = {
   LegalProfessionalsRoute: LegalProfessionalsRoute,
   ManufacturersRoute: ManufacturersRoute,
   NewYorkCityLocationRoute: NewYorkCityLocationRoute,
+  OurStoryRoute: OurStoryRoute,
   OurTeamRoute: OurTeamRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   PrivacyPolicy2Route: PrivacyPolicy2Route,

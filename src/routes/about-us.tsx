@@ -18,6 +18,7 @@ import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { CoreValues } from "@/components/site/CoreValues";
 import { IntegrationsMarquee } from "@/components/site/IntegrationsMarquee";
+import { Timeline } from "@/components/site/Timeline";
 import { BOOKING_ROUTE } from "@/data/calendly";
 
 export const Route = createFileRoute("/about-us")({
@@ -113,6 +114,13 @@ function AboutUsPage() {
             </div>
           </div>
         </section>
+
+        {/* =========================================================================
+            OUR STORY / TIMELINE SECTION
+           ========================================================================= */}
+        <div className="border-t border-slate-100 bg-slate-50/40">
+          <Timeline />
+        </div>
 
         {/* =========================================================================
             INTEGRATIONS MARQUEE

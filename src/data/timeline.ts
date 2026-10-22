@@ -13,52 +13,52 @@ export type TimelineItem = {
 
 export const TIMELINE_ITEMS: TimelineItem[] = [
   {
-    dateLabel: "Oct 2015",
+    dateLabel: "OCT 2015",
     isoDate: "2015-10",
     title: "SMG begins",
     description: "The start of the firm.",
   },
   {
-    dateLabel: "Jan 2018",
+    dateLabel: "JAN 2018",
     isoDate: "2018-01",
     title: "Islandia HQ",
     description: "Moves into its headquarters.",
   },
   {
-    dateLabel: "Nov 2021",
+    dateLabel: "NOV 2021",
     isoDate: "2021-11",
-    title: "Florida expansion",
-    description: "Lori Hornby's practice joins SMG.",
+    title: "St. Petersburg",
+    description: "Lori Hornby acquisition expands SMG into Florida.",
   },
   {
     dateLabel: "2022",
     isoDate: "2022",
-    title: "St. Pete expansion",
-    description: "Expanded regional office facilities.",
+    title: "Florida office",
+    description: "Expands to 5,000 sq. ft.",
   },
   {
-    dateLabel: "Aug 2025",
+    dateLabel: "AUG 2025",
     isoDate: "2025-08",
-    title: "Continued growth",
-    description: "Lynn Mark's practice joins SMG.",
+    title: "Lynn Mark",
+    description: "Acquisition adds to SMG's growth.",
   },
   {
-    dateLabel: "Mar 2026",
+    dateLabel: "MAR 2026",
     isoDate: "2026-03",
-    title: "HQ expansion",
-    description: "Islandia headquarters expansion.",
+    title: "Islandia HQ",
+    description: "Headquarters acquired and expanded.",
   },
   {
-    dateLabel: "Oct 2030",
+    dateLabel: "OCT 2030",
     isoDate: "2030-10",
     title: "15 years",
-    description: "Our next milestone.",
+    description: "Our 15-year milestone ahead in 2030.",
     future: true,
   },
 ];
 
 export const TIMELINE_INTRO = {
-  eyebrow: "SMG ABA · Our Story",
+  eyebrow: "SMG ABA · OUR STORY",
   heading: "Built on relationships. Growing with purpose.",
   subheading: "A decade of growth, with our 15-year milestone ahead in 2030.",
 };

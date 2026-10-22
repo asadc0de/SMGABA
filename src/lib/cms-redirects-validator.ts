@@ -8,6 +8,7 @@ export type RedirectStatusCode = (typeof ALLOWED_STATUS_CODES)[number];
 export const KNOWN_STATIC_ROUTES = new Set([
   "/",
   "/about-us",
+  "/our-story",
   "/contact",
   "/careers",
   "/testimonials",

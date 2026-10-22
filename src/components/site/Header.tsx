@@ -22,6 +22,7 @@ import {
   ArrowRight,
   Sparkles,
   MapPin,
+  Clock,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BOOKING_ROUTE } from "@/data/calendly";
@@ -41,7 +42,24 @@ type NavItem = {
 
 const NAV: NavItem[] = [
   { label: "HOME", href: "/" },
-  { label: "ABOUT US", href: "/about-us" },
+  {
+    label: "ABOUT US",
+    href: "/about-us",
+    children: [
+      {
+        label: "About Us",
+        href: "/about-us",
+        desc: "Firm overview, mission & core values.",
+        icon: Building2,
+      },
+      {
+        label: "Our Story",
+        href: "/our-story",
+        desc: "A decade of growth, milestones & purpose.",
+        icon: Clock,
+      },
+    ],
+  },
   {
     label: "SOLUTIONS",
     href: "/solutions",
@@ -192,6 +210,8 @@ const SUB_ICON_MAP: Record<string, React.ElementType> = {
   "/islandia-location": Building2,
   "/new-york-city-location": Building2,
   "/florida-location": MapPin,
+  "/about-us": Building2,
+  "/our-story": Clock,
 };
 
 import { type CmsSiteSettings } from "@/lib/cms-settings";
@@ -227,6 +247,9 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
     const cleanHref = item.href.split("#")[0].replace(/\/$/, "") || "/";
     if (item.label === "HOME") {
       return pathname === "/";
+    }
+    if (item.label === "ABOUT US") {
+      return pathname === "/about-us" || pathname === "/our-story";
     }
     if (item.label === "INDUSTRIES") {
       const industryPaths = [
@@ -414,7 +437,12 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
                       </a>
 
                       {item.children && item.children.length > 0 && (
-                        <div className="invisible absolute left-1/2 -translate-x-1/2 top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 w-72">
+                        <div
+                          className={cn(
+                            "invisible absolute top-full pt-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100 w-72",
+                            item.label === "ABOUT US" ? "left-0" : "left-1/2 -translate-x-1/2"
+                          )}
+                        >
                           <div className="overflow-hidden rounded-xl border border-white/10 bg-[#0c1a32]/98 p-1.5 shadow-2xl backdrop-blur-2xl">
                             <ul className="space-y-0.5">
                               {item.children.filter((c) => c.enabled !== false).map((child) => {
@@ -609,6 +637,8 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
                               ? "All Insights & Blog"
                               : item.label === "CONTACT"
                               ? "All Contact & Locations"
+                              : item.label === "ABOUT US"
+                              ? "About Us & Our Story"
                               : `All ${item.label}`}
                           </span>
                           <ArrowRight className="size-3.5" />

@@ -2,7 +2,12 @@ import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { TIMELINE_ITEMS, TIMELINE_INTRO, type TimelineItem } from "@/data/timeline";
 
-export function Timeline() {
+interface TimelineProps {
+  showHeader?: boolean;
+  className?: string;
+}
+
+export function Timeline({ showHeader = true, className }: TimelineProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,104 +48,86 @@ export function Timeline() {
 
   return (
     <section
+      id="our-story"
       aria-labelledby="our-story-heading"
-      className="py-20 sm:py-28 bg-white overflow-hidden"
+      className={cn("py-8 sm:py-12 bg-white", className)}
     >
-      <div className="mx-auto max-w-5xl px-6 lg:px-8">
+      <div className="mx-auto max-w-xl px-6 sm:px-8">
         {/* Header Block */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-primary mb-3">
-            {TIMELINE_INTRO.eyebrow}
-          </p>
-          <h2
-            id="our-story-heading"
-            className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight"
-          >
-            {TIMELINE_INTRO.heading}
-          </h2>
-          <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed font-normal">
-            {TIMELINE_INTRO.subheading}
-          </p>
-        </div>
+        {showHeader && (
+          <div className="mb-7 sm:mb-9 text-left">
+            <p className="text-[0.72rem] sm:text-xs font-bold uppercase tracking-[0.16em] text-[#2563eb] mb-2">
+              {TIMELINE_INTRO.eyebrow}
+            </p>
+            <h2
+              id="our-story-heading"
+              className="font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-[#142340] tracking-tight leading-tight"
+            >
+              {TIMELINE_INTRO.heading}
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-slate-500 leading-relaxed font-normal">
+              {TIMELINE_INTRO.subheading}
+            </p>
+          </div>
+        )}
 
-        {/* Timeline Container (Max Width 900px on desktop) */}
-        <div ref={containerRef} className="relative mx-auto max-w-[900px]">
-          {/* Vertical Line: Left on mobile, Centered on desktop */}
+        {/* Minimal Timeline Container */}
+        <div ref={containerRef} className="relative pl-1">
+          {/* Continuous vertical line on the left */}
           <div
             aria-hidden="true"
-            className="absolute left-[7px] lg:left-1/2 top-2 bottom-2 w-0.5 -translate-x-1/2 bg-primary/20"
+            className="absolute left-[7px] top-2 bottom-3 w-[2px] bg-blue-100"
           />
 
           {/* Ordered Milestone List */}
-          <ol className="relative space-y-8 lg:space-y-12 list-none p-0 m-0">
-            {TIMELINE_ITEMS.map((item: TimelineItem, index: number) => {
-              const isEven = index % 2 === 0;
-
-              return (
-                <li
-                  key={`${item.isoDate}-${item.title}`}
-                  data-timeline-item
+          <ol className="relative space-y-6 sm:space-y-6.5 list-none p-0 m-0">
+            {TIMELINE_ITEMS.map((item: TimelineItem) => (
+              <li
+                key={`${item.isoDate}-${item.title}`}
+                data-timeline-item
+                className="relative flex items-start group"
+              >
+                {/* Timeline Dot (centered on the 2px line) */}
+                <div
+                  aria-hidden="true"
                   className={cn(
-                    "relative flex flex-col transition-all duration-700",
-                    /* Desktop alternating left/right layout */
-                    "lg:flex-row lg:items-center",
-                    isEven ? "lg:justify-start" : "lg:justify-end"
+                    "absolute left-[7px] top-1 size-3.5 -translate-x-1/2 rounded-full transition-all duration-200 z-10",
+                    item.future
+                      ? "bg-white border-2 border-[#2563eb] ring-2 ring-blue-100"
+                      : "bg-[#2563eb] ring-3 ring-blue-100 group-hover:scale-125 group-hover:bg-[#1d4ed8]"
                   )}
-                >
-                  {/* Timeline Dot (16px circle centered on the 2px line with a ring) */}
-                  <div
-                    aria-hidden="true"
-                    className={cn(
-                      "absolute left-[7px] top-1.5 size-4 -translate-x-1/2 rounded-full ring-4 shadow-xs transition-transform duration-300",
-                      "lg:left-1/2",
-                      item.future
-                        ? "bg-white border-2 border-primary ring-primary/15"
-                        : "bg-primary ring-primary/20"
-                    )}
-                  />
+                />
 
-                  {/* Milestone Content Card */}
-                  <div
+                {/* Milestone Content: Clean minimal typography right beside the line */}
+                <div className="pl-7 sm:pl-8">
+                  <time
+                    dateTime={item.isoDate}
                     className={cn(
-                      /* Mobile: 24px gap right of line (line at 7px + 16px dot + 24px = pl-12) */
-                      "pl-12",
-                      /* Desktop: 50% width, padded away from central line */
-                      "lg:w-1/2 lg:pl-0",
-                      isEven
-                        ? "lg:pr-12 lg:text-right"
-                        : "lg:pl-12 lg:text-left",
-                      item.future && "opacity-85"
+                      "block text-[0.68rem] sm:text-[0.72rem] font-bold uppercase tracking-wider text-[#2563eb]",
+                      item.future && "text-blue-600 font-extrabold"
                     )}
                   >
-                    <time
-                      dateTime={item.isoDate}
-                      className={cn(
-                        "block text-xs font-bold uppercase tracking-wider text-primary mb-1",
-                        item.future && "text-muted-foreground"
-                      )}
-                    >
-                      {item.dateLabel}
-                    </time>
-                    <h3
-                      className={cn(
-                        "font-serif-hero text-lg sm:text-xl font-bold text-navy leading-snug",
-                        item.future && "text-navy/80"
-                      )}
-                    >
-                      {item.title}
-                    </h3>
-                    <p
-                      className={cn(
-                        "mt-1 text-sm sm:text-base text-muted-foreground leading-relaxed",
-                        item.future && "text-muted-foreground/80"
-                      )}
-                    >
-                      {item.description}
-                    </p>
-                  </div>
-                </li>
-              );
-            })}
+                    {item.dateLabel}
+                  </time>
+                  <h3
+                    className={cn(
+                      "font-serif-hero text-base sm:text-lg font-bold text-[#142340] leading-snug mt-0.5",
+                      item.future && "text-[#1e3a6d]"
+                    )}
+                  >
+                    {item.title}
+                  </h3>
+                  <p
+                    className={cn(
+                      "text-xs sm:text-sm text-slate-500 leading-relaxed mt-0.5 font-normal",
+                      item.future && "text-slate-400 font-medium"
+                    )}
+                  >
+                    {item.description}
+                  </p>
+                </div>
+              </li>
+            ))}
           </ol>
         </div>
       </div>

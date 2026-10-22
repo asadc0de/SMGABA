@@ -222,7 +222,28 @@ export const DEFAULT_SITE_SETTINGS: CmsSiteSettings = {
     },
     navItems: [
       { id: "nav-1", label: "HOME", href: "/", enabled: true },
-      { id: "nav-2", label: "ABOUT US", href: "/about-us", enabled: true },
+      {
+        id: "nav-2",
+        label: "ABOUT US",
+        href: "/about-us",
+        enabled: true,
+        children: [
+          {
+            id: "sub-abt-1",
+            label: "About Us",
+            href: "/about-us",
+            desc: "Firm overview, mission & core values.",
+            enabled: true,
+          },
+          {
+            id: "sub-abt-2",
+            label: "Our Story",
+            href: "/our-story",
+            desc: "A decade of growth, milestones & purpose.",
+            enabled: true,
+          },
+        ],
+      },
       {
         id: "nav-3",
         label: "SOLUTIONS",
@@ -400,6 +421,7 @@ export const DEFAULT_SITE_SETTINGS: CmsSiteSettings = {
         title: "Company",
         links: [
           { id: "fl-1", label: "About Us", href: "/about-us", enabled: true },
+          { id: "fl-story", label: "Our Story", href: "/our-story", enabled: true },
           { id: "fl-2", label: "Our Team", href: "/our-team", enabled: true },
           { id: "fl-3", label: "Careers", href: "/careers", enabled: true },
           { id: "fl-4", label: "Testimonials", href: "/testimonials", enabled: true },

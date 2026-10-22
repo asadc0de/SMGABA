@@ -15,6 +15,7 @@ const SOCIAL_ICON_MAP: Record<string, any> = {
 
 const COMPANY_LINKS = [
   { label: "About Us", href: "/about-us" },
+  { label: "Our Story", href: "/our-story" },
   { label: "Our Team", href: "/our-team" },
   { label: "Careers", href: "/careers" },
   { label: "Testimonials", href: "/testimonials" },

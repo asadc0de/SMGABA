@@ -9,6 +9,7 @@ export type LinkType = "page" | "external" | "email" | "phone";
 const DEFAULT_SITE_PAGES = [
   { label: "Home Page", path: "/" },
   { label: "About Us", path: "/about-us" },
+  { label: "Our Story", path: "/our-story" },
   { label: "Solutions / Services", path: "/solutions" },
   { label: "Book an Appointment", path: "/bookanappointment" },
   { label: "Contact Us", path: "/contact" },
