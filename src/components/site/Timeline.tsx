@@ -52,10 +52,10 @@ export function Timeline({ showHeader = true, className }: TimelineProps = {}) {
       aria-labelledby="our-story-heading"
       className={cn("py-8 sm:py-12 bg-white", className)}
     >
-      <div className="mx-auto max-w-xl px-6 sm:px-8">
+      <div className="mx-auto max-w-5xl lg:max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header Block */}
         {showHeader && (
-          <div className="mb-7 sm:mb-9 text-left">
+          <div className="mb-10 sm:mb-12 text-center max-w-3xl mx-auto">
             <p className="text-[0.72rem] sm:text-xs font-bold uppercase tracking-[0.16em] text-[#2563eb] mb-2">
               {TIMELINE_INTRO.eyebrow}
             </p>
@@ -71,63 +71,88 @@ export function Timeline({ showHeader = true, className }: TimelineProps = {}) {
           </div>
         )}
 
-        {/* Minimal Timeline Container */}
-        <div ref={containerRef} className="relative pl-1">
-          {/* Continuous vertical line on the left */}
+        {/* Alternating Left / Right Timeline Container */}
+        <div ref={containerRef} className="relative">
+          {/* Continuous vertical line: left on mobile, centered on desktop */}
           <div
             aria-hidden="true"
-            className="absolute left-[7px] top-2 bottom-3 w-[2px] bg-blue-100"
+            className="absolute left-[15px] md:left-1/2 top-4 bottom-4 w-[2px] -translate-x-1/2 bg-gradient-to-b from-[#2563eb] via-[#3b82f6]/40 to-[#93c5fd]/30"
           />
 
           {/* Ordered Milestone List */}
-          <ol className="relative space-y-6 sm:space-y-6.5 list-none p-0 m-0">
-            {TIMELINE_ITEMS.map((item: TimelineItem) => (
-              <li
-                key={`${item.isoDate}-${item.title}`}
-                data-timeline-item
-                className="relative flex items-start group"
-              >
-                {/* Timeline Dot (centered on the 2px line) */}
-                <div
-                  aria-hidden="true"
-                  className={cn(
-                    "absolute left-[7px] top-1 size-3.5 -translate-x-1/2 rounded-full transition-all duration-200 z-10",
-                    item.future
-                      ? "bg-white border-2 border-[#2563eb] ring-2 ring-blue-100"
-                      : "bg-[#2563eb] ring-3 ring-blue-100 group-hover:scale-125 group-hover:bg-[#1d4ed8]"
-                  )}
-                />
+          <ol className="relative space-y-6 md:space-y-8 list-none p-0 m-0">
+            {TIMELINE_ITEMS.map((item: TimelineItem, index: number) => {
+              const isEven = index % 2 === 0;
 
-                {/* Milestone Content: Clean minimal typography right beside the line */}
-                <div className="pl-7 sm:pl-8">
-                  <time
-                    dateTime={item.isoDate}
+              return (
+                <li
+                  key={`${item.isoDate}-${item.title}`}
+                  data-timeline-item
+                  className={cn(
+                    "relative flex items-center group",
+                    /* Desktop alternating: even on left, odd on right */
+                    isEven ? "md:justify-start" : "md:justify-end"
+                  )}
+                >
+                  {/* Timeline Dot (left on mobile, dead center on desktop) */}
+                  <div
+                    aria-hidden="true"
                     className={cn(
-                      "block text-[0.68rem] sm:text-[0.72rem] font-bold uppercase tracking-wider text-[#2563eb]",
-                      item.future && "text-blue-600 font-extrabold"
+                      "absolute left-[15px] md:left-1/2 top-4 md:top-1/2 size-4 -translate-x-1/2 -translate-y-0 md:-translate-y-1/2 rounded-full transition-all duration-300 z-10",
+                      item.future
+                        ? "bg-white border-2 border-[#2563eb] ring-2 ring-blue-100 shadow-sm"
+                        : "bg-[#2563eb] border-2 border-white ring-4 ring-blue-100 shadow-sm group-hover:scale-125 group-hover:bg-[#1d4ed8]"
+                    )}
+                  />
+
+                  {/* Milestone Tab Card */}
+                  <div
+                    className={cn(
+                      /* Mobile: padding right of left line */
+                      "pl-10 w-full",
+                      /* Desktop: 50% width, padded away from central line */
+                      "md:w-1/2 md:pl-0",
+                      isEven ? "md:pr-10" : "md:pl-10"
                     )}
                   >
-                    {item.dateLabel}
-                  </time>
-                  <h3
-                    className={cn(
-                      "font-serif-hero text-base sm:text-lg font-bold text-[#142340] leading-snug mt-0.5",
-                      item.future && "text-[#1e3a6d]"
-                    )}
-                  >
-                    {item.title}
-                  </h3>
-                  <p
-                    className={cn(
-                      "text-xs sm:text-sm text-slate-500 leading-relaxed mt-0.5 font-normal",
-                      item.future && "text-slate-400 font-medium"
-                    )}
-                  >
-                    {item.description}
-                  </p>
-                </div>
-              </li>
-            ))}
+                    <div
+                      className={cn(
+                        "rounded-xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-[0_2px_10px_rgba(0,0,0,0.03)] transition-all duration-300 hover:border-blue-300 hover:shadow-[0_8px_20px_rgba(37,99,235,0.08)] hover:-translate-y-0.5 text-left",
+                        item.future && "border-dashed border-blue-300 bg-blue-50/20",
+                        isEven ? "md:ml-auto md:mr-0" : "md:mr-auto md:ml-0",
+                        "max-w-md"
+                      )}
+                    >
+                      <time
+                        dateTime={item.isoDate}
+                        className={cn(
+                          "inline-block text-[0.7rem] sm:text-xs font-bold uppercase tracking-wider text-[#2563eb]",
+                          item.future && "text-blue-600 font-extrabold"
+                        )}
+                      >
+                        {item.dateLabel}
+                      </time>
+                      <h3
+                        className={cn(
+                          "font-serif-hero text-base sm:text-lg md:text-xl font-bold text-[#142340] leading-snug mt-1",
+                          item.future && "text-[#1e3a6d]"
+                        )}
+                      >
+                        {item.title}
+                      </h3>
+                      <p
+                        className={cn(
+                          "text-xs sm:text-sm text-slate-600 leading-relaxed mt-1 font-normal",
+                          item.future && "text-slate-500 font-medium"
+                        )}
+                      >
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
         </div>
       </div>
