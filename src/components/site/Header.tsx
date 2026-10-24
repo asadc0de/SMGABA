@@ -328,14 +328,18 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
                 <img
                   src={logoUrl}
                   alt={logoAlt}
-                  className="h-10 sm:h-11 lg:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+                  width={263}
+                  height={130}
+                  className="h-10 sm:h-11 lg:h-12 w-auto aspect-[263/130] object-contain transition-transform duration-300 group-hover:scale-[1.03]"
                 />
               ) : (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   xmlnsXlink="http://www.w3.org/1999/xlink"
                   viewBox="0 0 263 129.65"
-                  className="h-10 sm:h-11 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-[1.03]"
+                  width="263"
+                  height="130"
+                  className="h-10 sm:h-11 lg:h-12 w-auto aspect-[263/130] transition-transform duration-300 group-hover:scale-[1.03]"
                 >
                 <defs>
                   <style>{`

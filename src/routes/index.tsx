@@ -10,10 +10,21 @@ import { QuoteForm } from "@/components/site/QuoteForm";
 import { LogoMarquee } from "@/components/site/LogoMarquee";
 import { ProvenProcess } from "@/components/site/ProvenProcess";
 
-const HERO_IMAGE = "/images/blog/smg-wallpaper.jpg";
+const HERO_IMAGE = "/images/blog/smg-wallpaper.webp";
+const OG_IMAGE = "/images/blog/smg-wallpaper.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [
+      {
+        rel: "preload",
+        as: "image",
+        href: HERO_IMAGE,
+        type: "image/webp",
+        // @ts-expect-error modern browsers support fetchpriority
+        fetchpriority: "high",
+      },
+    ],
     meta: [
       { title: "SMG | Accounting, Bookkeeping & Advisory for Growing Businesses" },
       {
@@ -27,8 +38,8 @@ export const Route = createFileRoute("/")({
         content:
           "Building relationships with passion, care & responsiveness. Outsourced bookkeeping, CFO on the Go, tax services and back office support.",
       },
-      { property: "og:image", content: HERO_IMAGE },
-      { name: "twitter:image", content: HERO_IMAGE },
+      { property: "og:image", content: OG_IMAGE },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
   }),
   component: Index,
@@ -186,6 +197,8 @@ function Index() {
                         src={s.img}
                         alt={s.title}
                         loading="lazy"
+                        width={400}
+                        height={300}
                         className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     </div>
@@ -252,6 +265,8 @@ function Index() {
                       src={l.src}
                       alt={l.alt}
                       loading="lazy"
+                      width={144}
+                      height={80}
                       className="max-h-full max-w-full object-contain"
                     />
                   </div>

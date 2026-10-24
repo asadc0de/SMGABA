@@ -97,19 +97,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Building relationships with passion, care & responsiveness. Outsourced bookkeeping, CFO advisory, tax services and back office support.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "/images/blog/smg-wallpaper.jpg" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@SMGABALLC" },
+      { name: "twitter:image", content: "/images/blog/smg-wallpaper.jpg" },
     ],
     links: [
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
-        rel: "preconnect",
-        href: "https://fonts.gstatic.com",
+        rel: "preload",
+        href: "/fonts/PlayfairDisplay-700-normal.woff2",
+        as: "font",
+        type: "font/woff2",
         crossOrigin: "anonymous",
-      },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
       },
       {
         rel: "stylesheet",
@@ -187,12 +186,58 @@ function ChatbaseWidget() {
       return;
     }
     if ((window as any).__chatbaseInjected) return;
-    (window as any).__chatbaseInjected = true;
 
-    // Inject as a <script> element so the code runs outside the module's strict mode
-    const bootstrapScript = document.createElement("script");
-    bootstrapScript.textContent = '(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="w2wTSCgQzP7JI9lkHfkm7";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();';
-    document.body.appendChild(bootstrapScript);
+    let triggered = false;
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    let idleId: number | null = null;
+
+    const injectScript = () => {
+      if (triggered || (window as any).__chatbaseInjected) return;
+      triggered = true;
+      (window as any).__chatbaseInjected = true;
+      cleanup();
+
+      const bootstrapScript = document.createElement("script");
+      bootstrapScript.textContent =
+        '(function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="w2wTSCgQzP7JI9lkHfkm7";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();';
+      document.body.appendChild(bootstrapScript);
+    };
+
+    const userEvents: Array<keyof WindowEventMap> = [
+      "scroll",
+      "keydown",
+      "touchstart",
+      "mousemove",
+      "click",
+    ];
+
+    const onUserInteraction = () => {
+      injectScript();
+    };
+
+    const cleanup = () => {
+      userEvents.forEach((evt) => {
+        window.removeEventListener(evt, onUserInteraction);
+      });
+      if (timerId) clearTimeout(timerId);
+      if (idleId && "cancelIdleCallback" in window) {
+        (window as any).cancelIdleCallback(idleId);
+      }
+    };
+
+    userEvents.forEach((evt) => {
+      window.addEventListener(evt, onUserInteraction, { once: true, passive: true });
+    });
+
+    if ("requestIdleCallback" in window) {
+      idleId = (window as any).requestIdleCallback(injectScript, { timeout: 4500 });
+    } else {
+      timerId = setTimeout(injectScript, 4500);
+    }
+
+    return () => {
+      cleanup();
+    };
   }, [location.pathname]);
 
   return null;

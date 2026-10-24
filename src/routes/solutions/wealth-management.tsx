@@ -107,7 +107,7 @@ function WealthManagementPage() {
           <div
             className="absolute inset-0 opacity-15 mix-blend-overlay pointer-events-none"
             style={{
-              backgroundImage: "url('/images/blog/smg-wallpaper.jpg')",
+              backgroundImage: "url('/images/blog/smg-wallpaper.webp')",
               backgroundSize: "cover",
             }}
           />

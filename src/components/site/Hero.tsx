@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { BOOKING_ROUTE } from "@/data/calendly";
 
-const HERO_IMAGE = "/images/blog/smg-wallpaper.jpg";
+const HERO_IMAGE = "/images/blog/smg-wallpaper.webp";
 
 export function Hero() {
   return (
@@ -11,6 +11,12 @@ export function Hero() {
         src={HERO_IMAGE}
         alt="SMG Accounting & Advisory Wallpaper"
         aria-hidden="true"
+        width={1300}
+        height={468}
+        // @ts-expect-error modern browsers support fetchPriority
+        fetchPriority="high"
+        loading="eager"
+        decoding="sync"
         className="absolute inset-0 size-full object-cover object-center"
       />
 

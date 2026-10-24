@@ -1,5 +1,3 @@
-import { BLOG_POSTS } from "@/data/blogPosts";
-import { RESOURCE_POSTS } from "@/data/resourcePosts";
 import { LEGACY_BLOG_SLUGS, LEGACY_RESOURCE_SLUGS, STALE_SITEMAP_REDIRECTS } from "@/data/legacyRedirects";
 import { WEBINAR_REDIRECTS } from "@/data/webinarRedirects";
 
@@ -90,26 +88,12 @@ export function getAllReservedSlugs(): Set<string> {
     reserved.add(slug.toLowerCase());
   }
 
-  // 2. Static blog posts
-  for (const post of BLOG_POSTS) {
-    if (post.slug) {
-      reserved.add(post.slug.toLowerCase());
-    }
-  }
-
-  // 2b. Static resource posts
-  for (const post of RESOURCE_POSTS) {
-    if (post.slug) {
-      reserved.add(post.slug.toLowerCase());
-    }
-  }
-
-  // 3. Legacy blog post slugs
+  // 2. Legacy and static blog post slugs
   for (const slug of LEGACY_BLOG_SLUGS) {
     reserved.add(slug.toLowerCase());
   }
 
-  // 3b. Legacy resource post slugs
+  // 2b. Legacy and static resource post slugs
   for (const slug of LEGACY_RESOURCE_SLUGS) {
     reserved.add(slug.toLowerCase());
   }

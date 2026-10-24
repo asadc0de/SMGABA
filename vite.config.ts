@@ -12,12 +12,25 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  nitro: {
+    routeRules: {
+      "/assets/**": { headers: { "cache-control": "public, max-age=31536000, immutable" } },
+      "/fonts/**": { headers: { "cache-control": "public, max-age=31536000, immutable" } },
+      "/images/**": { headers: { "cache-control": "public, max-age=31536000, immutable" } },
+    },
+  },
   vite: {
     build: {
       chunkSizeWarningLimit: 1000,
       rollupOptions: {
         output: {
           manualChunks(id) {
+            if (id.includes("blogPosts")) {
+              return "blog-posts-data";
+            }
+            if (id.includes("resourcePosts")) {
+              return "resource-posts-data";
+            }
             if (id.includes("node_modules")) {
               if (id.includes("@puckeditor")) {
                 return "puck-vendor";

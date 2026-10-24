@@ -2,6 +2,71 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* Self-hosted WOFF2 fonts with font-display: swap */
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/InstrumentSerif-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/InstrumentSerif-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/PlayfairDisplay-700-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/PlusJakartaSans-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/PlusJakartaSans-500-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/PlusJakartaSans-600-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/PlusJakartaSans-700-normal.woff2') format('woff2');
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -113,8 +178,8 @@
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
 
-  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", "Manrope", ui-sans-serif, system-ui, sans-serif;
 
   --gradient-navy: linear-gradient(135deg, oklch(0.38 0.1 267.5), oklch(0.52 0.09 266));
   --gradient-mist: linear-gradient(180deg, oklch(0.985 0.006 265), oklch(0.945 0.02 265.8));

@@ -1,6 +1,7 @@
 import { createFileRoute, redirect, notFound } from "@tanstack/react-router";
 import { getBlogPost } from "@/lib/blogs.server";
 import { LEGACY_RESOURCE_SLUGS } from "@/data/legacyRedirects";
+import { BLOG_POSTS } from "@/data/blogPosts";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -83,5 +84,18 @@ function BlogSlugPage() {
     );
   }
 
-  return <BlogPostView post={post} />;
+  const relatedPosts = BLOG_POSTS
+    .filter((p) => !p.archived && p.slug !== post.slug && p.slug !== "obbba-summary")
+    .sort((a, b) => (a.category === post.category ? -1 : 1))
+    .slice(0, 3);
+
+  return (
+    <BlogPostView
+      post={post}
+      relatedPosts={relatedPosts}
+      isResource={false}
+      parentLabel="Blog"
+      parentHref="/blog"
+    />
+  );
 }

@@ -5,6 +5,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
+import { MapFacade } from "@/components/site/MapFacade";
 import { BOOKING_ROUTE } from "@/data/calendly";
 
 export const Route = createFileRoute("/florida-location")({
@@ -125,14 +126,11 @@ function FloridaLocationPage() {
               </div>
 
               <div className="lg:col-span-6 flex flex-col justify-between gap-8">
-                <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl border border-border shadow-xl">
-                  <iframe
-                    title="SMG Florida Location Map"
-                    src="https://maps.google.com/maps?q=646+94th+Ave+N+St+Petersburg+FL+33702&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                    className="size-full border-0"
-                    loading="lazy"
-                  />
-                </div>
+                <MapFacade
+                  title="SMG Florida Location Map"
+                  src="https://maps.google.com/maps?q=646+94th+Ave+N+St+Petersburg+FL+33702&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                  address="646 94th Ave N, St. Petersburg, FL 33702"
+                />
 
                 <div className="grid gap-4 sm:grid-cols-3">
                   {HIGHLIGHTS.map((item) => {

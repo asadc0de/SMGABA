@@ -7,14 +7,11 @@ import {
   ChevronRight,
   ArrowLeft,
   Check,
-  Facebook,
-  Twitter,
-  Linkedin,
   ArrowRight,
   BookOpen,
 } from "lucide-react";
-import { BlogPost, BLOG_POSTS } from "@/data/blogPosts";
-import { RESOURCE_POSTS, type ResourcePost } from "@/data/resourcePosts";
+import type { BlogPost } from "@/data/blogPosts";
+import type { ResourcePost } from "@/data/resourcePosts";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -25,6 +22,7 @@ interface BlogPostViewProps {
   isResource?: boolean;
   parentLabel?: string;
   parentHref?: string;
+  relatedPosts?: Array<BlogPost | ResourcePost>;
 }
 
 export function BlogPostView({
@@ -32,13 +30,14 @@ export function BlogPostView({
   isResource: explicitIsResource,
   parentLabel: customParentLabel,
   parentHref: customParentHref,
+  relatedPosts: customRelatedPosts,
 }: BlogPostViewProps) {
   const [copied, setCopied] = useState(false);
 
   const isResource =
     explicitIsResource !== undefined
       ? explicitIsResource
-      : RESOURCE_POSTS.some((r) => r.slug === post.slug);
+      : Boolean((post as any)?.isResource);
 
   const parentLabel = customParentLabel || (isResource ? "Resources" : "Blog");
   const parentHref = customParentHref || (isResource ? "/resources" : "/blog");
@@ -51,12 +50,7 @@ export function BlogPostView({
     }
   };
 
-  // Find related posts (excluding archived) from the relevant pool
-  const candidatePool = isResource ? RESOURCE_POSTS : BLOG_POSTS;
-  const relatedPosts = candidatePool
-    .filter((p) => !p.archived && p.slug !== post.slug && p.slug !== "obbba-summary")
-    .sort((a, b) => (a.category === post.category ? -1 : 1))
-    .slice(0, 3);
+  const relatedPosts = customRelatedPosts || [];
 
   return (
     <div className="min-h-screen bg-background text-foreground">

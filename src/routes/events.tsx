@@ -435,7 +435,7 @@ function EventsPage() {
       <main className="flex-1">
         {/* Subpage Hero */}
         <SubpageHero
-          bgImage="/images/blog/smg-wallpaper.jpg"
+          bgImage="/images/blog/smg-wallpaper.webp"
           eyebrow="Knowledge & Insights"
           title="Events & Webinars"
           description="Join SMG ABA partners and accounting leaders for live executive webinars, practical structuring workshops, and on-demand financial masterclasses."

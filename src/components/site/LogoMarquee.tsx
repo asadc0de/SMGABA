@@ -52,6 +52,8 @@ export function LogoMarquee() {
                   src={logo.src}
                   alt={logo.alt}
                   loading="lazy"
+                  width={176}
+                  height={112}
                   className="max-h-full max-w-full object-contain"
                 />
               </div>

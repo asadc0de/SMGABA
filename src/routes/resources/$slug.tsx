@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { getResourcePostBySlug } from "@/data/resourcePosts";
+import { getResourcePostBySlug, RESOURCE_POSTS } from "@/data/resourcePosts";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -92,5 +92,18 @@ function ResourceSlugPage() {
     return <ResourceNotFoundComponent />;
   }
 
-  return <BlogPostView post={post} isResource={true} />;
+  const relatedPosts = RESOURCE_POSTS
+    .filter((p) => !p.archived && p.slug !== post.slug && p.slug !== "obbba-summary")
+    .sort((a, b) => (a.category === post.category ? -1 : 1))
+    .slice(0, 3);
+
+  return (
+    <BlogPostView
+      post={post}
+      isResource={true}
+      relatedPosts={relatedPosts}
+      parentLabel="Resources"
+      parentHref="/resources"
+    />
+  );
 }

@@ -8,7 +8,10 @@ import { lookupPublishedCmsPage, getCmsSiteSettings, type CmsPage } from "@/lib/
 import { type CmsSiteSettings } from "@/lib/cms-settings";
 import { type CmsRootProps, isValidCanonicalUrl } from "@/cms/root";
 import { isValidImageUrl } from "@/cms/blocks/Image";
-import { Render } from "@puckeditor/core/rsc";
+import { lazy, Suspense } from "react";
+const PuckRender = lazy(() =>
+  import("@puckeditor/core/rsc").then((m) => ({ default: m.Render }))
+);
 import { puckRenderConfig } from "@/cms/render.config";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
@@ -222,7 +225,9 @@ function DynamicSlugPage() {
       <div className="min-h-screen bg-background flex flex-col justify-between">
         <Header settings={settings} />
         <main className={`flex-1 overflow-x-clip ${hasHero ? "pb-16" : "pt-28 sm:pt-36 pb-16"}`}>
-          <Render config={puckRenderConfig} data={preparedData} />
+          <Suspense fallback={<div className="min-h-[40vh]" />}>
+            <PuckRender config={puckRenderConfig} data={preparedData} />
+          </Suspense>
         </main>
         <Footer settings={settings} />
       </div>
