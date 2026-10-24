@@ -414,7 +414,7 @@ function TestimonialsPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.jpg"
+          bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.webp"
           title="Testimonials"
           description="What our clients have to say about us. We take immense pride in our 99%+ retention rate and the enduring partnerships we build across industries."
         />

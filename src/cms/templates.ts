@@ -356,19 +356,19 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             showCaptions: true,
             items: [
               {
-                url: "/images/stock/unsplash-photo-1511578314322-379afb476865.jpg",
+                url: "/images/stock/unsplash-photo-1511578314322-379afb476865.webp",
                 title: "Annual Executive Conference",
                 caption: "Leadership roundtable and financial presentation.",
                 alt: "Conference summit",
               },
               {
-                url: "/images/stock/unsplash-photo-1517245386807-bb43f82c33c4.jpg",
+                url: "/images/stock/unsplash-photo-1517245386807-bb43f82c33c4.webp",
                 title: "Advisory Team Workshop",
                 caption: "Collaborative tax and accounting strategy session.",
                 alt: "Team strategy",
               },
               {
-                url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
+                url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
                 title: "Corporate Headquarters",
                 caption: "Our New York City and Islandia offices.",
                 alt: "Office building",

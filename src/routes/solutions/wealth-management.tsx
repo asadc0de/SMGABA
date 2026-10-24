@@ -87,7 +87,7 @@ function WealthManagementPage() {
         <section className="relative isolate overflow-hidden bg-[#0e1d3a] pt-36 pb-20 sm:pt-44 sm:pb-28 lg:pt-48 lg:pb-32 text-white">
           {/* Photographic background matching site theme */}
           <img
-            src="/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.jpg"
+            src="/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.webp"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 size-full object-cover object-center"

@@ -74,37 +74,37 @@ export const defaultImageGalleryProps: ImageGalleryProps = {
   paddingBottom: { base: "none", md: "none", lg: "none" },
   items: [
     {
-      url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
+      url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
       title: "Executive Strategic Advisory",
       caption: "Financial structuring & board consultation.",
       alt: "Modern office towers",
     },
     {
-      url: "/images/stock/unsplash-photo-1551836022-d5d88e9218df.jpg",
+      url: "/images/stock/unsplash-photo-1551836022-d5d88e9218df.webp",
       title: "Real-Time FP&A Insights",
       caption: "Custom KPI dashboards & cash flow forecast models.",
       alt: "Analytics graph on screen",
     },
     {
-      url: "/images/stock/unsplash-photo-1573496359142-b8d87734a5a2.jpg",
+      url: "/images/stock/unsplash-photo-1573496359142-b8d87734a5a2.webp",
       title: "Collaborative Tax Optimization",
       caption: "Multi-entity tax planning and proactive filing.",
       alt: "Advisory team meeting",
     },
     {
-      url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
+      url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
       title: "Commercial Asset Management",
       caption: "Hospitality & enterprise portfolio tracking.",
       alt: "Modern architectural exterior",
     },
     {
-      url: "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
+      url: "/images/stock/unsplash-photo-1450133064473-71024230f91b.webp",
       title: "Audit & Risk Compliance",
       caption: "Comprehensive governance and assurance.",
       alt: "Reviewing financial balance sheets",
     },
     {
-      url: "/images/stock/unsplash-photo-1522071820081-009f0129c71c.jpg",
+      url: "/images/stock/unsplash-photo-1522071820081-009f0129c71c.webp",
       title: "High-Growth Team Scaling",
       caption: "Fractional CFO support through rapid expansion.",
       alt: "Leadership team brainstorming",

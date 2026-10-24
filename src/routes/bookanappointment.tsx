@@ -39,7 +39,7 @@ function BookAnAppointmentPage() {
             1. SUBPAGE HERO
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.jpg"
+          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.webp"
           eyebrow="Direct Expert Access"
           title="Book an Appointment"
           description="Schedule a complimentary discovery call or advisory session with SMG's accounting, tax, and CFO specialists to plan smarter for the future."

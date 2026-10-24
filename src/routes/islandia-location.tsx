@@ -28,7 +28,7 @@ function IslandiaLocationPage() {
 
       <main>
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg"
+          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"
           eyebrow="Corporate Headquarters"
           title="Long Island, NY"
           description="Conveniently situated in Corporate Plaza in Islandia, NY, serving businesses across Long Island, Nassau, and Suffolk counties."

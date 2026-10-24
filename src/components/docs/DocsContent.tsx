@@ -543,7 +543,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                   <div
                     onClick={() =>
                       setLightboxImage({
-                        src: "/docs-screenshots/SS-001_dashboard-overview.png",
+                        src: "/docs-screenshots/.webp",
                         alt: "Admin Command Center showing quick stats and workspace module cards",
                         caption: "Screenshot SS-001: Admin Command Center with CMS Visual Page Builder card highlighted.",
                       })
@@ -551,7 +551,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     className="group relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm transition-all hover:border-blue-400 hover:shadow-md"
                   >
                     <img
-                      src="/docs-screenshots/SS-001_dashboard-overview.png"
+                      src="/docs-screenshots/.webp"
                       alt="Admin Command Center showing quick stats and workspace module cards"
                       loading="lazy"
                       className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-[1.01]"
@@ -634,7 +634,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         <div
                           onClick={() =>
                             setLightboxImage({
-                              src: "/docs-screenshots/SS-002_cms-pages-list.png",
+                              src: "/docs-screenshots/.webp",
                               alt: "CMS page directory showing list of pages with draft and published badges",
                               caption: "Screenshot SS-002: CMS page directory showing list of pages with draft and published badges.",
                             })
@@ -642,7 +642,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                           className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200 bg-white"
                         >
                           <img
-                            src="/docs-screenshots/SS-002_cms-pages-list.png"
+                            src="/docs-screenshots/.webp"
                             alt="CMS page directory"
                             loading="lazy"
                             className="w-full h-36 object-cover object-top"
@@ -660,7 +660,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         <div
                           onClick={() =>
                             setLightboxImage({
-                              src: "/docs-screenshots/SS-003_create-new-page-templates.png",
+                              src: "/docs-screenshots/.webp",
                               alt: "Create new page screen with title input, URL slug, and starter template cards",
                               caption: "Screenshot SS-003: Create new page screen with title input, URL slug, and starter template cards.",
                             })
@@ -668,7 +668,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                           className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200 bg-white"
                         >
                           <img
-                            src="/docs-screenshots/SS-003_create-new-page-templates.png"
+                            src="/docs-screenshots/.webp"
                             alt="Create new page templates"
                             loading="lazy"
                             className="w-full h-36 object-cover object-top"
@@ -756,7 +756,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                   <div
                     onClick={() =>
                       setLightboxImage({
-                        src: "/docs-screenshots/SS-004_visual-editor-layout.png",
+                        src: "/docs-screenshots/.webp",
                         alt: "Visual editor showing top bar, left block drawer, canvas, and right settings panel",
                         caption: "Screenshot SS-004: Visual Editor layout with numbered badges 1â€“4 (top bar, drawer, canvas, panel).",
                       })
@@ -764,7 +764,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     className="group relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-slate-100 shadow-sm transition-all hover:border-blue-400"
                   >
                     <img
-                      src="/docs-screenshots/SS-004_visual-editor-layout.png"
+                      src="/docs-screenshots/.webp"
                       alt="Visual editor showing top bar, left block drawer, canvas, and right settings panel"
                       loading="lazy"
                       className="w-full h-auto object-cover"
@@ -793,7 +793,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     <div
                       onClick={() =>
                         setLightboxImage({
-                          src: "/docs-screenshots/SS-005_top-bar-controls.png",
+                          src: "/docs-screenshots/.webp",
                           alt: "Top bar with device viewports, undo/redo, save draft, and publish controls",
                           caption: "Screenshot SS-005: Top bar close-up with device viewports, undo/redo, save draft, and publish controls.",
                         })
@@ -801,7 +801,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                     >
                       <img
-                        src="/docs-screenshots/SS-005_top-bar-controls.png"
+                        src="/docs-screenshots/.webp"
                         alt="Top bar controls"
                         loading="lazy"
                         className="w-full h-auto"
@@ -864,7 +864,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       <div
                         onClick={() =>
                           setLightboxImage({
-                            src: "/docs-screenshots/SS-006_left-blocks-drawer.png",
+                            src: "/docs-screenshots/.webp",
                             alt: "Left block drawer with search box and block categories",
                             caption: "Screenshot SS-006: Left block drawer with search box and block categories.",
                           })
@@ -872,7 +872,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                       >
                         <img
-                          src="/docs-screenshots/SS-006_left-blocks-drawer.png"
+                          src="/docs-screenshots/.webp"
                           alt="Left block drawer"
                           loading="lazy"
                           className="w-full h-auto max-h-64 object-cover object-top"
@@ -923,7 +923,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     <div
                       onClick={() =>
                         setLightboxImage({
-                          src: "/docs-screenshots/SS-007_canvas-selection-toolbar.png",
+                          src: "/docs-screenshots/.webp",
                           alt: "Canvas showing selected Cards Grid block with floating action toolbar",
                           caption: "Screenshot SS-007: Selected block on the canvas with floating action toolbar.",
                         })
@@ -931,7 +931,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                     >
                       <img
-                        src="/docs-screenshots/SS-007_canvas-selection-toolbar.png"
+                        src="/docs-screenshots/.webp"
                         alt="Canvas selection toolbar"
                         loading="lazy"
                         className="w-full h-auto"
@@ -955,7 +955,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       <div
                         onClick={() =>
                           setLightboxImage({
-                            src: "/docs-screenshots/SS-008_right-settings-panel.png",
+                            src: "/docs-screenshots/.webp",
                             alt: "Right settings panel showing Content, Style, Layout, and Motion tabs",
                             caption: "Screenshot SS-008: Right settings panel with tabs for Content, Style, Layout, and Motion.",
                           })
@@ -963,7 +963,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                       >
                         <img
-                          src="/docs-screenshots/SS-008_right-settings-panel.png"
+                          src="/docs-screenshots/.webp"
                           alt="Right settings panel"
                           loading="lazy"
                           className="w-full h-auto max-h-72 object-cover object-top"
@@ -1008,7 +1008,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       <div
                         onClick={() =>
                           setLightboxImage({
-                            src: "/docs-screenshots/SS-009_empty-state-page-settings.png",
+                            src: "/docs-screenshots/.webp",
                             alt: "Right panel empty state showing page-level settings",
                             caption: "Screenshot SS-009: Right panel empty state with Page Title, SEO Metadata, and Header Banner settings.",
                           })
@@ -1016,7 +1016,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                       >
                         <img
-                          src="/docs-screenshots/SS-009_empty-state-page-settings.png"
+                          src="/docs-screenshots/.webp"
                           alt="Empty state page settings"
                           loading="lazy"
                           className="w-full h-auto max-h-64 object-cover object-top"
@@ -1136,7 +1136,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         <div
                           onClick={() =>
                             setLightboxImage({
-                              src: "/docs-screenshots/SS-010_hero-banner-settings.png",
+                              src: "/docs-screenshots/.webp",
                               alt: "Top Banner block selected with Content settings in the right panel",
                               caption: "Screenshot SS-010: Top Banner block settings in the right panel.",
                             })
@@ -1144,7 +1144,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                           className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-300 bg-white"
                         >
                           <img
-                            src="/docs-screenshots/SS-010_hero-banner-settings.png"
+                            src="/docs-screenshots/.webp"
                             alt="Hero banner settings"
                             loading="lazy"
                             className="w-full h-28 object-cover object-top"
@@ -1273,7 +1273,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     <div
                       onClick={() =>
                         setLightboxImage({
-                          src: "/docs-screenshots/SS-011_media-gallery-picker.png",
+                          src: "/docs-screenshots/.webp",
                           alt: "Media Library and Gallery picker modal",
                           caption: "Screenshot SS-011: Media Library modal with Upload New and thumbnail picker highlighted.",
                         })
@@ -1281,7 +1281,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-300 bg-white"
                     >
                       <img
-                        src="/docs-screenshots/SS-011_media-gallery-picker.png"
+                        src="/docs-screenshots/.webp"
                         alt="Media gallery picker modal"
                         loading="lazy"
                         className="w-full h-auto"
@@ -1329,7 +1329,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       <div
                         onClick={() =>
                           setLightboxImage({
-                            src: "/docs-screenshots/SS-012_mobile-viewport-preview.png",
+                            src: "/docs-screenshots/.webp",
                             alt: "Editor in Phone (390px) mobile preview mode",
                             caption: "Screenshot SS-012: Phone (390px) preview mode with Phone button highlighted.",
                           })
@@ -1337,7 +1337,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                       >
                         <img
-                          src="/docs-screenshots/SS-012_mobile-viewport-preview.png"
+                          src="/docs-screenshots/.webp"
                           alt="Mobile preview mode"
                           loading="lazy"
                           className="w-full h-auto max-h-60 object-cover object-top"
@@ -1369,7 +1369,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       <div
                         onClick={() =>
                           setLightboxImage({
-                            src: "/docs-screenshots/SS-013_version-history-drawer.png",
+                            src: "/docs-screenshots/.webp",
                             alt: "Revision History modal with snapshots and Restore buttons",
                             caption: "Screenshot SS-013: Revision History modal with Restore button highlighted.",
                           })
@@ -1377,7 +1377,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                         className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                       >
                         <img
-                          src="/docs-screenshots/SS-013_version-history-drawer.png"
+                          src="/docs-screenshots/.webp"
                           alt="Revision History modal"
                           loading="lazy"
                           className="w-full h-auto max-h-56 object-cover object-top"
@@ -1442,7 +1442,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     <div
                       onClick={() =>
                         setLightboxImage({
-                          src: "/docs-screenshots/SS-014_link-picker-segmented.png",
+                          src: "/docs-screenshots/.webp",
                           alt: "Link destination picker with Page, Website, and Email options",
                           caption: "Screenshot SS-014: Link destination picker with Page, Website, Email, and Phone options.",
                         })
@@ -1450,7 +1450,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                     >
                       <img
-                        src="/docs-screenshots/SS-014_link-picker-segmented.png"
+                        src="/docs-screenshots/.webp"
                         alt="Link picker segmented"
                         loading="lazy"
                         className="w-full h-auto"
@@ -1504,7 +1504,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                   <div
                     onClick={() =>
                       setLightboxImage({
-                        src: "/docs-screenshots/SS-015_color-swatches-palette.png",
+                        src: "/docs-screenshots/.webp",
                         alt: "Brand color swatches in the Style tab",
                         caption: "Screenshot SS-015: Brand color swatches in the Style tab.",
                       })
@@ -1512,7 +1512,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                   >
                     <img
-                      src="/docs-screenshots/SS-015_color-swatches-palette.png"
+                      src="/docs-screenshots/.webp"
                       alt="Brand color swatches"
                       loading="lazy"
                       className="w-full h-auto max-h-48 object-cover object-top"
@@ -1601,7 +1601,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                     <div
                       onClick={() =>
                         setLightboxImage({
-                          src: "/docs-screenshots/SS-016_publish-safety-check.png",
+                          src: "/docs-screenshots/.webp",
                           alt: "Publish Page Live confirmation dialog",
                           caption: "Screenshot SS-016: Publish Page Live dialog with Confirm & Go Live button highlighted.",
                         })
@@ -1609,7 +1609,7 @@ export default function DocsPageContent({ onLogout }: { onLogout?: () => void })
                       className="group relative cursor-pointer overflow-hidden rounded-lg border border-slate-200"
                     >
                       <img
-                        src="/docs-screenshots/SS-016_publish-safety-check.png"
+                        src="/docs-screenshots/.webp"
                         alt="Publish confirmation dialog"
                         loading="lazy"
                         className="w-full h-auto max-h-72 object-cover object-top"

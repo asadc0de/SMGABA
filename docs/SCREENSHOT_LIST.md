@@ -83,8 +83,8 @@ To minimize screen setup time, capture screenshots in the following 5 logical ba
 ## Replacement Instructions for Muse.ai
 
 When screenshots have been captured and saved to `docs/screenshots/`:
-1. Save each image file matching the exact path listed in the request comment (e.g. `docs/screenshots/SS-001_dashboard-overview.png`).
+1. Save each image file matching the exact path listed in the request comment (e.g. `docs/screenshots/SS-.webp`).
 2. Replace each `[SCREENSHOT SS-XXX: ...]` block and its accompanying `<!-- SCREENSHOT-REQUEST ... -->` comment in `CMS_User_Guide.md` with standard markdown image syntax:
    ```markdown
-   ![Alt text describing the screenshot](screenshots/SS-001_dashboard-overview.png)
+   ![Alt text describing the screenshot](screenshots/SS-.webp)
    ```

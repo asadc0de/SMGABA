@@ -191,7 +191,7 @@ function ResourcesPage() {
       <main>
         {/* Page Hero */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg"
+          bgImage="/images/stock/unsplash-photo-1450133064473-71024230f91b.webp"
           eyebrow="SMG Insights & Updates"
           title="Resources & Newsletters"
           description="Discover practical strategies, legislative updates, firm news, and executive financial frameworks to help your business thrive."

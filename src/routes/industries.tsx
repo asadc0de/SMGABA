@@ -52,7 +52,7 @@ function IndustriesPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg"
+          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"
           eyebrow="Industry Specializations"
           title="Industries We Serve"
           description="Generic accounting fails when applied to specialized businesses. At SMG, our dedicated accounting teams have deep vertical expertise in the specific regulations, KPIs, and tax codes governing your industry."

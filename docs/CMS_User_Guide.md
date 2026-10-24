@@ -46,7 +46,7 @@ The SMG ABA Content Management System is a visual website builder designed speci
 [SCREENSHOT SS-001: Admin Command Center Overview]
 <!-- SCREENSHOT-REQUEST
 ID: SS-001
-FILE: docs/screenshots/SS-001_dashboard-overview.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /dashboard
 BEFORE CAPTURE (setup): Unlock dashboard with admin password, ensure CMS pages, blogs, and short links are populated.
 WHAT TO SHOW: Full overview of the Admin Command Center showing workspace module cards and quick statistics.
@@ -74,7 +74,7 @@ In this section, you will learn the 5 basic steps to create a new page, customiz
 [SCREENSHOT SS-002: CMS Page Management Directory]
 <!-- SCREENSHOT-REQUEST
 ID: SS-002
-FILE: docs/screenshots/SS-002_cms-pages-list.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms
 BEFORE CAPTURE (setup): Unlock CMS, ensure list displays 3-5 pages with published and draft badges.
 WHAT TO SHOW: Page management directory showing search bar, status badges, and top-right action buttons.
@@ -93,7 +93,7 @@ USED IN: Section 2. Quick Start
 [SCREENSHOT SS-003: Create New Page Template Selection]
 <!-- SCREENSHOT-REQUEST
 ID: SS-003
-FILE: docs/screenshots/SS-003_create-new-page-templates.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/new
 BEFORE CAPTURE (setup): Open /cms/new with title "Annual Charity Golf Outing" typed into the title box.
 WHAT TO SHOW: Template selection grid displaying template preview cards and the Create Page button.
@@ -131,7 +131,7 @@ In this section, you will learn about the four main areas of the Visual Editor: 
 [SCREENSHOT SS-004: Visual Editor Workspace Tour]
 <!-- SCREENSHOT-REQUEST
 ID: SS-004
-FILE: docs/screenshots/SS-004_visual-editor-layout.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Open an active page with Top Banner, Text, and CardGrid blocks loaded.
 WHAT TO SHOW: Complete visual editor window showing Top Bar, Left Block Drawer, Center Canvas, and Right Settings Panel.
@@ -148,7 +148,7 @@ The sticky bar at the very top of your screen contains your primary page control
 [SCREENSHOT SS-005: Top Bar Controls Close-Up]
 <!-- SCREENSHOT-REQUEST
 ID: SS-005
-FILE: docs/screenshots/SS-005_top-bar-controls.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Load any page in the editor.
 WHAT TO SHOW: Detailed view of the sticky top bar from left to right.
@@ -178,7 +178,7 @@ The left panel contains all the building blocks you can add to your page.
 [SCREENSHOT SS-006: Left Block Drawer]
 <!-- SCREENSHOT-REQUEST
 ID: SS-006
-FILE: docs/screenshots/SS-006_left-blocks-drawer.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Open visual editor, ensure left drawer is open and search box is empty.
 WHAT TO SHOW: Left panel drawer displaying search box and the three collapsible categories (Basics, Sections, Advanced).
@@ -205,7 +205,7 @@ The center canvas is your live interactive preview area:
 [SCREENSHOT SS-007: Canvas Selection and Action Toolbar]
 <!-- SCREENSHOT-REQUEST
 ID: SS-007
-FILE: docs/screenshots/SS-007_canvas-selection-toolbar.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Select a Button or CardGrid block on the canvas.
 WHAT TO SHOW: Selected block with solid blue border, floating action toolbar above it, and hover divider below it.
@@ -222,7 +222,7 @@ The right panel contains the customizable properties of whichever block is selec
 [SCREENSHOT SS-008: Right Settings Panel Tabs]
 <!-- SCREENSHOT-REQUEST
 ID: SS-008
-FILE: docs/screenshots/SS-008_right-settings-panel.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Select a Button block to reveal all 4 settings tabs.
 WHAT TO SHOW: Right panel showing Breadcrumbs, Action icons, Search box, Simple/Adv toggle, and the 4 tabs (Content, Style, Layout, Motion).
@@ -251,7 +251,7 @@ When no block on the canvas is selected, the right panel automatically shows pag
 [SCREENSHOT SS-009: Right Panel Empty State]
 <!-- SCREENSHOT-REQUEST
 ID: SS-009
-FILE: docs/screenshots/SS-009_empty-state-page-settings.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Deselect all blocks by clicking outside or pressing Escape key.
 WHAT TO SHOW: Right settings panel in empty state showing "No Element Selected" message and 3 quick page cards.
@@ -340,7 +340,7 @@ In this section, you will learn about all 21 blocks available in the CMS, when t
 [SCREENSHOT SS-010: Top Banner Block Settings]
 <!-- SCREENSHOT-REQUEST
 ID: SS-010
-FILE: docs/screenshots/SS-010_hero-banner-settings.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Select a Top Banner (Hero) block on the canvas.
 WHAT TO SHOW: Top Banner block in canvas alongside the Content tab in the right settings panel.
@@ -441,7 +441,7 @@ In this section, you will learn step-by-step instructions for the most common up
 [SCREENSHOT SS-011: Media Gallery and Image Upload Popup]
 <!-- SCREENSHOT-REQUEST
 ID: SS-011
-FILE: docs/screenshots/SS-011_media-gallery-picker.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Select an Image block and click the "Upload & Media Gallery" button to open the modal.
 WHAT TO SHOW: Open Media Gallery modal showing Upload tab, Site Assets grid, and Select button.
@@ -477,7 +477,7 @@ USED IN: Section 5.2 How to Upload and Replace an Image
 [SCREENSHOT SS-012: Mobile Viewport 375px Preview]
 <!-- SCREENSHOT-REQUEST
 ID: SS-012
-FILE: docs/screenshots/SS-012_mobile-viewport-preview.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Click the 375px mobile phone icon in the top bar.
 WHAT TO SHOW: Editor canvas resized to 375px mobile phone width showing responsive layout.
@@ -498,7 +498,7 @@ If you made changes that you want to undo completely:
 [SCREENSHOT SS-013: Version History Slide-Out Drawer]
 <!-- SCREENSHOT-REQUEST
 ID: SS-013
-FILE: docs/screenshots/SS-013_version-history-drawer.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Click the "Versions" button in the top bar to open the version history list.
 WHAT TO SHOW: Slide-out drawer on right listing version numbers, save dates, and Restore buttons.
@@ -532,7 +532,7 @@ Whenever you edit a button or link field in the CMS, you will see a simple segme
 [SCREENSHOT SS-014: Link Destination Picker]
 <!-- SCREENSHOT-REQUEST
 ID: SS-014
-FILE: docs/screenshots/SS-014_link-picker-segmented.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Select any Button block and expand the Links & Buttons subgroup in the right panel.
 WHAT TO SHOW: The 4-segment Link Picker control (Page, External, Email, Phone) and the destination field.
@@ -572,7 +572,7 @@ To keep the website looking clean and professional, the CMS includes preset bran
 [SCREENSHOT SS-015: Brand Color Swatches in Right Panel]
 <!-- SCREENSHOT-REQUEST
 ID: SS-015
-FILE: docs/screenshots/SS-015_color-swatches-palette.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Select a Button or Section block and expand the Colors & Swatches group in the Style tab.
 WHAT TO SHOW: The 6 circular brand color swatch dots and the "+" custom color picker button.
@@ -612,7 +612,7 @@ In this section, you will learn how the publishing process works, how safety che
 [SCREENSHOT SS-016: Pre-Publish Safety Scan Dialog]
 <!-- SCREENSHOT-REQUEST
 ID: SS-016
-FILE: docs/screenshots/SS-016_publish-safety-check.png
+FILE: docs/screenshots/SS-.webp
 PAGE/ROUTE: /cms/$id/edit
 BEFORE CAPTURE (setup): Create a test page with one unconfigured button link and click the Publish button.
 WHAT TO SHOW: Safety Check dialog window listing detected warnings (e.g. empty link, placeholder text) and action buttons.

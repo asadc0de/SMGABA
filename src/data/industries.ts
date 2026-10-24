@@ -46,7 +46,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized accounting, tax strategy, and financial management for auto dealerships and repair facilities. Departmental P&Ls, labor analysis, and expense control.",
     heroBg:
-      "/images/stock/unsplash-photo-1503376780353-7e6692767b70.jpg",
+      "/images/stock/unsplash-photo-1503376780353-7e6692767b70.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Automotive & Dealerships",
     heroDescription:
@@ -107,7 +107,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for contractors and builders. Job costing assistance, WIP reporting, project profitability, and proactive cash flow planning.",
     heroBg:
-      "/images/stock/unsplash-photo-1504307651254-35680f356dfd.jpg",
+      "/images/stock/unsplash-photo-1504307651254-35680f356dfd.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Construction & Contractors",
     heroDescription:
@@ -173,7 +173,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized accounting, tax strategy, and practice financial reporting for medical and dental groups. Cash flow optimization, physician comp, and profitability.",
     heroBg:
-      "/images/stock/unsplash-photo-1576091160399-112ba8d25d1d.jpg",
+      "/images/stock/unsplash-photo-1576091160399-112ba8d25d1d.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Healthcare & Medical Practices",
     heroDescription:
@@ -234,7 +234,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized restaurant, bar, and hospitality accounting. Weekly prime cost control, tipped payroll compliance, and POS integrations.",
     heroBg:
-      "/images/stock/unsplash-photo-1517248135467-4c7edcad34c4.jpg",
+      "/images/stock/unsplash-photo-1517248135467-4c7edcad34c4.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Hospitality & Restaurants",
     heroDescription:
@@ -302,7 +302,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for law firms and legal practices. Realization reporting, attorney utilization, partner compensation, and tax planning.",
     heroBg:
-      "/images/stock/unsplash-photo-1589829545856-d10d557cf95f.jpg",
+      "/images/stock/unsplash-photo-1589829545856-d10d557cf95f.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Legal Professionals & Law Firms",
     heroDescription:
@@ -368,7 +368,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized accounting, gross-margin analysis, and financial reporting for manufacturers and wholesale distributors. COGS analysis, cash flow, and tax planning.",
     heroBg:
-      "/images/stock/unsplash-photo-1581091226825-a6a2a5aee158.jpg",
+      "/images/stock/unsplash-photo-1581091226825-a6a2a5aee158.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Manufacturers & Distributors",
     heroDescription:
@@ -425,7 +425,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Comprehensive accounting, tax planning, and reporting for real estate developers, syndicators, and managers. 1031 exchanges and partnership returns.",
     heroBg:
-      "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
+      "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Real Estate & Development",
     heroDescription:
@@ -491,7 +491,7 @@ export const INDUSTRIES_DATA: Record<string, IndustryData> = {
     metaDescription:
       "Specialized financial management for retail stores, boutique chains, franchises, and omni-channel e-commerce. POS sync, inventory turns, and multi-state sales tax.",
     heroBg:
-      "/images/stock/unsplash-photo-1441986300917-64674bd600d8.jpg",
+      "/images/stock/unsplash-photo-1441986300917-64674bd600d8.webp",
     eyebrow: "Industry Practice",
     heroTitle: "Retail & Omni-Channel Commerce",
     heroDescription:

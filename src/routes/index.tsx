@@ -236,7 +236,7 @@ function Index() {
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 {[
                   {
-                    src: "/images/blog/nyc-hospitality-logo.png",
+                    src: "/images/blog/nyc-hospitality-logo.webp",
                     alt: "NYC Restaurant Alliance Logo",
                   },
                   {
@@ -267,7 +267,7 @@ function Index() {
 
             <div className="order-1 lg:order-2">
               <img
-                src="/images/blog/szngsfqqjkih5cqdjdk-ja-e1635541793896.jpg"
+                src="/images/blog/szngsfqqjkih5cqdjdk-ja-e1635541793896.webp"
                 alt="Hospitality accounting clients"
                 loading="lazy"
                 className="aspect-4/5 w-full rounded-3xl object-cover shadow-[var(--shadow-card-hover)]"

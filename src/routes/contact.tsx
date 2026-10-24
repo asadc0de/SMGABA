@@ -171,7 +171,7 @@ function ContactPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg"
+          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"
           eyebrow="Get In Touch"
           title="Contact SMG ABA"
           description="We're here to answer questions, explore opportunities, and build long-term partnerships. Reach our advisory team across New York and Florida or schedule a direct consultation."

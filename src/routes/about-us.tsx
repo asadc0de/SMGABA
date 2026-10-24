@@ -73,7 +73,7 @@ function AboutUsPage() {
             1. HERO SECTION (Photographic background + blue gradient overlay + CTA)
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.jpg"
+          bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.webp"
           title="About Us"
           description="Get a customized accounting, bookkeeping, tax and advisory plan that is accurate, responsive and built around you and your business. We focus on long-term client relationships."
           buttonText="MEET OUR TEAM"

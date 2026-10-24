@@ -164,7 +164,7 @@ function OnboardingGuidePage() {
             1. SUBPAGE HERO
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.jpg"
+          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.webp"
           eyebrow={`Client Onboarding • ${guide.label} Office`}
           title={guide.welcomeTitle}
           description={guide.subtitle}

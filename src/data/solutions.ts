@@ -98,7 +98,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Accurate, timely bookkeeping backed by responsive professionals who help you stay organized, make confident decisions, and focus on growing your business.",
     heroBg:
-      "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.jpg",
+      "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.webp",
     eyebrow: "Solutions / Bookkeeping",
     heroTitle: "Bookkeeping That Brings Clarity to Your Business",
     heroDescription:
@@ -196,7 +196,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Gain the financial clarity, forecasting, and executive guidance you need to make smarter business decisions, improve margins, and grow your business.",
     heroBg:
-      "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
+      "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
     eyebrow: "Solutions / CFO Advisory",
     heroTitle: "Strategic CFO Guidance That Drives Growth and Profitability",
     heroDescription:
@@ -295,7 +295,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Stay ahead of tax deadlines, reduce surprises, and make confident decisions with year-round tax planning and preparation tailored to your business.",
     heroBg:
-      "/images/stock/unsplash-photo-1450133064473-71024230f91b.jpg",
+      "/images/stock/unsplash-photo-1450133064473-71024230f91b.webp",
     eyebrow: "Solutions / Tax Services",
     heroTitle: "Proactive Tax Planning & Preparation for Growing Businesses",
     heroDescription:
@@ -395,7 +395,7 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     metaDescription:
       "Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management.",
     heroBg:
-      "/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.jpg",
+      "/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.webp",
     eyebrow: "Solutions / Wealth Management",
     heroTitle: "Wealth Management",
     heroDescription:

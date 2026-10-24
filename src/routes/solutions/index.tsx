@@ -232,7 +232,7 @@ function SolutionsIndexPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.jpg"
+          bgImage="/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.webp"
           eyebrow="Our Solutions"
           title="Financial Solutions Built for Growth"
           description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy and wealth management—tailored to give your business clarity and momentum."

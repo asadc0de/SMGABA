@@ -98,27 +98,27 @@ const DEFAULT_CATEGORIES = [
 const SAMPLE_IMAGES = [
   {
     label: "Accounting & Financial Advisory",
-    url: "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.jpg",
+    url: "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.webp",
   },
   {
     label: "Executive Strategic Planning",
-    url: "/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.jpg",
+    url: "/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.webp",
   },
   {
     label: "Financial Analytics & Charts",
-    url: "/images/stock/unsplash-photo-1460925895917-afdab827c52f.jpg",
+    url: "/images/stock/unsplash-photo-1460925895917-afdab827c52f.webp",
   },
   {
     label: "Hospitality & Restaurant Finance",
-    url: "/images/stock/unsplash-photo-1517248135467-4c7edcad34c4.jpg",
+    url: "/images/stock/unsplash-photo-1517248135467-4c7edcad34c4.webp",
   },
   {
     label: "Corporate Office & Real Estate",
-    url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.jpg",
+    url: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
   },
   {
     label: "Tax Planning & Compliance",
-    url: "/images/stock/unsplash-photo-1586486855514-8c633cc6fd38.jpg",
+    url: "/images/stock/unsplash-photo-1586486855514-8c633cc6fd38.webp",
   },
 ];
 
