@@ -281,16 +281,16 @@ function WealthManagementPage() {
             </h2>
 
             {/* Badges Row */}
-            <div className="my-12 flex flex-wrap items-center justify-center gap-5 sm:gap-6">
+            <div className="my-12 flex flex-wrap items-center justify-center gap-4 sm:gap-6 md:gap-7">
               {BADGES.map((badge) => (
                 <div
                   key={badge.alt}
-                  className="flex h-24 items-center justify-center rounded-2xl bg-white px-5 py-4 shadow-lg transition duration-200 hover:scale-105"
+                  className="flex h-24 sm:h-28 md:h-32 items-center justify-center rounded-2xl bg-white px-5 sm:px-7 py-3 sm:py-4 shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-2xl"
                 >
                   <img
                     src={badge.src}
                     alt={badge.alt}
-                    className="max-h-16 w-auto object-contain"
+                    className="h-16 sm:h-20 md:h-24 w-auto object-contain"
                   />
                 </div>
               ))}
