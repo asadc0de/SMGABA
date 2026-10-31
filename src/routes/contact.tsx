@@ -554,7 +554,7 @@ function ContactPage() {
         </section>
       </main>
 
-      <WealthDisclosure />
+      <WealthDisclosure variant="light" />
 
       <Footer />
     </div>
