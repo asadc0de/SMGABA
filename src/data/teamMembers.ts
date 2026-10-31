@@ -100,6 +100,22 @@ export const TEAM_MEMBERS: TeamMember[] = [
     "bio": "Corey has spent his career providing comprehensive tax planning, compliance, and advisory services to business owners, high-income individuals, family offices, and real estate investors. He takes a holistic approach that integrates tax strategy and financial planning to help clients minimize taxes and build long-term wealth. Corey is known for his proactive communication and ability to simplify complex tax matters, providing clients with confidence and clarity in their financial decisions. He earned a Bachelor’s degree in Finance and Accounting from the University of South Florida and is credentialed as both a Certified Public Accountant and Certified Financial Planner™."
   },
   {
+    "name": "James Fleming",
+    "role": "Supervisor",
+    "category": "Tax & Compliance",
+    "email": "JFleming@smgaba.com",
+    "avatar": "/images/team/jamed.webp",
+    "bio": "James Fleming has been with SMG for 8 years, where he plays a key role in both individual and business tax services. Known for his steady approach and deep technical knowledge, he works closely with clients to help navigate complex tax matters and ensure accuracy, compliance, and clarity throughout the process."
+  },
+  {
+    "name": "Dominic Savino",
+    "role": "Supervisor",
+    "category": "Tax & Compliance",
+    "email": "DSavino@smgaba.com",
+    "avatar": "/images/team/dominic.webp",
+    "bio": "Dominic Savino has been with SMG for 5 years, specializing in CFO services and tax strategy. He also leads the firm’s technology and integration efforts, helping streamline systems and improve efficiency across operations. His work bridges finance and innovation, supporting both clients and internal teams with smarter solutions."
+  },
+  {
     "name": "Kinshuk Sharma",
     "role": "Accounting Manager",
     "category": "Accounting & Client Services",
@@ -114,22 +130,6 @@ export const TEAM_MEMBERS: TeamMember[] = [
     "email": "CCortes@smgaba.com",
     "avatar": "/images/team/cynthia.webp",
     "bio": "Cynthia joined the SMG team 8 years ago as a Bookkeeper. She has over 15 years of experience working in Office Management where she grew the skills necessary to understand the discipline of managing the operations of a business. Her passion to learn, overall care for clients and team, and dedication to the firm's goals led to her growth within SMG, where she now serves as Onboarding Manager. Cynthia is a team leader who ensures everyone is productive while caring deeply for team and client wellbeing. Clients who have had the pleasure of working with Cynthia continually request and rely on her. Beyond her hard work and can-do attitude, she is actively involved in the betterment of her community, reflecting her genuine care for others."
-  },
-  {
-    "name": "James Fleming",
-    "role": "Supervisor",
-    "category": "Accounting & Client Services",
-    "email": "JFleming@smgaba.com",
-    "avatar": "/images/team/jamed.webp",
-    "bio": "James Fleming has been with SMG for 8 years, where he plays a key role in both individual and business tax services. Known for his steady approach and deep technical knowledge, he works closely with clients to help navigate complex tax matters and ensure accuracy, compliance, and clarity throughout the process."
-  },
-  {
-    "name": "Dominic Savino",
-    "role": "Supervisor",
-    "category": "Accounting & Client Services",
-    "email": "DSavino@smgaba.com",
-    "avatar": "/images/team/dominic.webp",
-    "bio": "Dominic Savino has been with SMG for 5 years, specializing in CFO services and tax strategy. He also leads the firm’s technology and integration efforts, helping streamline systems and improve efficiency across operations. His work bridges finance and innovation, supporting both clients and internal teams with smarter solutions."
   },
   {
     "name": "Alejandro García Díaz, MBA",
