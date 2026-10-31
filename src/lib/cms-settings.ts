@@ -275,7 +275,7 @@ export const DEFAULT_SITE_SETTINGS: CmsSiteSettings = {
             id: "sub-sol-4",
             label: "Wealth Management",
             href: "/solutions/wealth-management",
-            desc: "Retirement planning, asset protection & legacy strategy.",
+            desc: "Offered through our partner, Kuttin Wealth Management.",
             enabled: true,
           },
         ],

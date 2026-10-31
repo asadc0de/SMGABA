@@ -85,7 +85,7 @@ const NAV: NavItem[] = [
       {
         label: "Wealth Management",
         href: "/solutions/wealth-management",
-        desc: "Retirement planning, asset protection & legacy strategy.",
+        desc: "Offered through our partner, Kuttin Wealth Management.",
         icon: Layers,
       },
     ],

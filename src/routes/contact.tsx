@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { WealthDisclosure } from "@/components/site/WealthDisclosure";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { Button } from "@/components/ui/button";
 import { submitNoCrmLead } from "@/lib/leads.server";
@@ -196,7 +197,7 @@ function ContactPage() {
                     How Can We Support Your Business?
                   </h2>
                   <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-                    Whether you are seeking outsourced bookkeeping, strategic tax planning, CFO advisory, or wealth management counsel, our team is responsive, attentive, and ready to help.
+                    Whether you are seeking outsourced bookkeeping, strategic tax planning, CFO advisory, or an introduction to wealth management through our partner, Kuttin Wealth Management, our team is responsive, attentive, and ready to help.
                   </p>
                 </div>
 
@@ -552,6 +553,8 @@ function ContactPage() {
           </div>
         </section>
       </main>
+
+      <WealthDisclosure />
 
       <Footer />
     </div>

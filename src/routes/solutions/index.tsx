@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
+import { WealthDisclosure } from "@/components/site/WealthDisclosure";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { submitNoCrmLead } from "@/lib/leads.server";
 import { BOOKING_ROUTE } from "@/data/calendly";
@@ -93,17 +94,11 @@ const SOLUTIONS_DATA = [
     id: "wealth-management",
     href: "/solutions/wealth-management",
     title: "Wealth Management",
+    partnerNote: "Offered through our partner, Kuttin Wealth Management.",
     subtitle:
-      "Comprehensive wealth management, retirement planning, and financial strategies to protect and grow your legacy.",
+      "Through our strategic partner, Kuttin Wealth Management, clients have access to comprehensive wealth management, retirement planning, and financial strategies to protect and grow their legacy.",
     icon: Landmark,
-    points: [
-      "Retirement Planning & Income Strategies",
-      "Point-in-Time & Ongoing Investment Advice",
-      "Wealth Preservation & Risk Management",
-      "Insurance & Asset Protection Solutions",
-      "Legacy, Estate, Trust & Philanthropy Strategies",
-      "Business Transition & Exit Planning",
-    ],
+    points: [] as string[],
     image: "/images/solutions/smg-back-office-1.jpeg",
     reverse: true,
     bgClass: "bg-[#faf9f6]",
@@ -235,7 +230,7 @@ function SolutionsIndexPage() {
           bgImage="/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.webp"
           eyebrow="Our Solutions"
           title="Financial Solutions Built for Growth"
-          description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy and wealth management—tailored to give your business clarity and momentum."
+          description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy, with wealth management available through our strategic partner, Kuttin Wealth Management—tailored to give your business clarity and momentum."
           buttonText="SCHEDULE A CONSULTATION"
           buttonHref={BOOKING_ROUTE}
         />
@@ -282,22 +277,30 @@ function SolutionsIndexPage() {
                         {sol.title}
                       </h2>
 
+                      {"partnerNote" in sol && sol.partnerNote && (
+                        <p className="mt-2 text-xs sm:text-sm font-medium italic text-slate-500">
+                          {sol.partnerNote}
+                        </p>
+                      )}
+
                       <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">
                         {sol.subtitle}
                       </p>
 
-                      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        {sol.points.map((point) => (
-                          <div key={point} className="flex items-start gap-2.5">
-                            <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                              <Check className="size-2.5 stroke-[3]" />
+                      {sol.points.length > 0 && (
+                        <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                          {sol.points.map((point) => (
+                            <div key={point} className="flex items-start gap-2.5">
+                              <div className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                                <Check className="size-2.5 stroke-[3]" />
+                              </div>
+                              <span className="text-xs sm:text-sm text-slate-700 font-medium leading-snug">
+                                {point}
+                              </span>
                             </div>
-                            <span className="text-xs sm:text-sm text-slate-700 font-medium leading-snug">
-                              {point}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
 
                       <div className="mt-8">
                         <a
@@ -529,7 +532,9 @@ function SolutionsIndexPage() {
                     <option value="Bookkeeping">Bookkeeping Services</option>
                     <option value="CFO Advisory">CFO Advisory Services</option>
                     <option value="Tax Services">Tax Planning & Preparation</option>
-                    <option value="Wealth Management">Wealth Management</option>
+                    <option value="Wealth Management (via Kuttin Wealth Management)">
+                      Wealth Management (via Kuttin Wealth Management)
+                    </option>
                   </select>
                 </div>
 
@@ -600,6 +605,8 @@ function SolutionsIndexPage() {
           </div>
         </section>
       </main>
+
+      <WealthDisclosure />
 
       <Footer />
     </div>
