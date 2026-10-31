@@ -28,16 +28,20 @@ const BADGES = [
     alt: "Barron's Hall of Fame Advisor",
   },
   {
-    src: "/images/wealth/barrons-top-1200-financial-advisors-2025.png",
-    alt: "Barron's Top 1200 Financial Advisors 2025",
+    src: "/images/wealth/barrons-top-100-financial-advisors-2026.png",
+    alt: "Barron's Top 100 Financial Advisors 2026",
   },
   {
-    src: "/images/wealth/barrons-top-100-financial-advisors-2025.png",
-    alt: "Barron's Top 100 Financial Advisors 2025",
+    src: "/images/wealth/barrons-top-1500-financial-advisors-2026.png",
+    alt: "Barron's Top 1500 Financial Advisors 2026",
   },
   {
-    src: "/images/wealth/barrons-top-100-independent-advisors-2025.jpeg",
-    alt: "Barron's Top 100 Independent Advisors 2025",
+    src: "/images/wealth/barrons-top-100-independent-advisors-2026.png",
+    alt: "Barron's Top 100 Independent Advisors 2026",
+  },
+  {
+    src: "/images/wealth/barrons-top-250-private-wealth-management-teams-2026.png",
+    alt: "Barron's Top 250 Private Wealth Management Teams 2026",
   },
   {
     src: "/images/wealth/forbes-best-in-state-wealth-management-teams-2025.png",
@@ -281,7 +285,7 @@ function WealthManagementPage() {
               {BADGES.map((badge) => (
                 <div
                   key={badge.alt}
-                  className="flex items-center justify-center rounded-2xl bg-white p-4 shadow-lg transition duration-200 hover:scale-105"
+                  className="flex h-24 items-center justify-center rounded-2xl bg-white px-5 py-4 shadow-lg transition duration-200 hover:scale-105"
                 >
                   <img
                     src={badge.src}
