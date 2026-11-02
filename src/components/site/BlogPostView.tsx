@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { BlogPost } from "@/data/blogPosts";
 import type { ResourcePost } from "@/data/resourcePosts";
+import { linksToHtml } from "@/lib/blogLinks";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -180,12 +181,19 @@ export function BlogPostView({
                 }
 
                 if (block.type === "p") {
-                  if (block.html && block.html.includes("<")) {
+                  const renderedHtml =
+                    block.html && block.html.includes("<")
+                      ? block.html
+                      : block.text && block.text.includes("[") && block.text.includes("](")
+                        ? linksToHtml(block.text)
+                        : null;
+
+                  if (renderedHtml) {
                     return (
                       <p
                         key={idx}
                         className="text-foreground/90 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: block.html }}
+                        dangerouslySetInnerHTML={{ __html: renderedHtml }}
                       />
                     );
                   }
@@ -199,12 +207,15 @@ export function BlogPostView({
                 if (block.type === "ul") {
                   return (
                     <ul key={idx} className="my-6 space-y-3 pl-2">
-                      {block.items?.map((item, i) => (
-                        <li key={i} className="flex items-start gap-3 text-foreground/90">
-                          <span className="mt-2 size-2 shrink-0 rounded-full bg-blue-600" />
-                          <span dangerouslySetInnerHTML={{ __html: item }} />
-                        </li>
-                      ))}
+                      {block.items?.map((item, i) => {
+                        const itemHtml = item && item.includes("[") && item.includes("](") ? linksToHtml(item) : item;
+                        return (
+                          <li key={i} className="flex items-start gap-3 text-foreground/90">
+                            <span className="mt-2 size-2 shrink-0 rounded-full bg-blue-600" />
+                            <span dangerouslySetInnerHTML={{ __html: itemHtml }} />
+                          </li>
+                        );
+                      })}
                     </ul>
                   );
                 }
@@ -212,9 +223,12 @@ export function BlogPostView({
                 if (block.type === "ol") {
                   return (
                     <ol key={idx} className="my-6 space-y-3 list-decimal pl-6 text-foreground/90">
-                      {block.items?.map((item, i) => (
-                        <li key={i} className="pl-1" dangerouslySetInnerHTML={{ __html: item }} />
-                      ))}
+                      {block.items?.map((item, i) => {
+                        const itemHtml = item && item.includes("[") && item.includes("](") ? linksToHtml(item) : item;
+                        return (
+                          <li key={i} className="pl-1" dangerouslySetInnerHTML={{ __html: itemHtml }} />
+                        );
+                      })}
                     </ol>
                   );
                 }
@@ -243,13 +257,16 @@ export function BlogPostView({
                           {hasHeaders && (
                             <thead className="bg-[#0e1b36] text-white font-serif-hero">
                               <tr>
-                                {block.headers!.map((header, hIdx) => (
-                                  <th
-                                    key={hIdx}
-                                    className="px-4 py-3.5 sm:px-6 sm:py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-100 border-b border-navy-light/20"
-                                    dangerouslySetInnerHTML={{ __html: header }}
-                                  />
-                                ))}
+                                {block.headers!.map((header, hIdx) => {
+                                  const headerHtml = header && header.includes("[") && header.includes("](") ? linksToHtml(header) : header;
+                                  return (
+                                    <th
+                                      key={hIdx}
+                                      className="px-4 py-3.5 sm:px-6 sm:py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-100 border-b border-navy-light/20"
+                                      dangerouslySetInnerHTML={{ __html: headerHtml }}
+                                    />
+                                  );
+                                })}
                               </tr>
                             </thead>
                           )}
@@ -259,13 +276,16 @@ export function BlogPostView({
                                 key={rIdx}
                                 className="transition-colors hover:bg-slate-50/80 even:bg-slate-50/40"
                               >
-                                {row.map((cell, cIdx) => (
-                                  <td
-                                    key={cIdx}
-                                    className="px-4 py-3.5 sm:px-6 sm:py-4 text-slate-700 align-top leading-relaxed"
-                                    dangerouslySetInnerHTML={{ __html: cell }}
-                                  />
-                                ))}
+                                {row.map((cell, cIdx) => {
+                                  const cellHtml = cell && cell.includes("[") && cell.includes("](") ? linksToHtml(cell) : cell;
+                                  return (
+                                    <td
+                                      key={cIdx}
+                                      className="px-4 py-3.5 sm:px-6 sm:py-4 text-slate-700 align-top leading-relaxed"
+                                      dangerouslySetInnerHTML={{ __html: cellHtml }}
+                                    />
+                                  );
+                                })}
                               </tr>
                             ))}
                           </tbody>

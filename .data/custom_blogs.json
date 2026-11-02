@@ -1,1 +1,54 @@
-[]
+[
+  {
+    "id": "896d27dc-104e-4211-a628-bedbaa633af5",
+    "slug": "mahama",
+    "title": "Mahama",
+    "metaTitle": "M | SMG ABA",
+    "metaDescription": "",
+    "h1": "Mahama",
+    "date": "Nov 2, 2026",
+    "publishDate": "2026-11-09T10:38:00+00:00",
+    "author": "SMG Advisory Team",
+    "category": "Bookkeeping",
+    "image": "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.webp",
+    "readTime": "4 min read",
+    "excerpt": "",
+    "status": "published",
+    "archived": false,
+    "blocks": [
+      {
+        "text": "1. Key Industry Insights & Strategic Analysis",
+        "type": "h2"
+      },
+      {
+        "html": "<a href=\"mahamdev.com\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">Maham ALi</a> Dive into the actionable details. Provide data, real-world benchmarks, and clear explanations that assist business owners in making informed financial decisions.",
+        "text": "[Maham ALi](mahamdev.com) Dive into the actionable details. Provide data, real-world benchmarks, and clear explanations that assist business owners in making informed financial decisions.",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Strategic compliance checkpoints and regulatory advantages",
+          "Cash flow optimization tips and outsourced CFO guidance",
+          "Quarterly tax mitigation planning cadence"
+        ]
+      },
+      {
+        "text": "Proactive financial advisory isn't just about reviewing historical numbers—it's about anticipating upcoming market shifts and positioning your business for sustainable profitability.",
+        "type": "blockquote"
+      },
+      {
+        "text": "Conclusion & Strategic Next Steps",
+        "type": "h2"
+      },
+      {
+        "html": "Summarize the key takeaways and invite readers to schedule a consultation with the SMG Advisory Team.",
+        "text": "Summarize the key takeaways and invite readers to schedule a consultation with the SMG Advisory Team.",
+        "type": "p"
+      }
+    ],
+    "isCustom": true,
+    "createdAt": "2026-11-02T10:39:03.57545+00:00",
+    "updatedAt": "2026-11-02T10:40:56.268Z"
+  }
+]

@@ -42,6 +42,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ArrowRight,
+  Link2,
 } from "lucide-react";
 import {
   getAdminBlogs,
@@ -51,6 +52,7 @@ import {
 } from "@/lib/blogs.server";
 import { uploadCmsImage } from "@/lib/cms.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
+import { linksToHtml, htmlToLinks } from "@/lib/blogLinks";
 import { type ContentBlock } from "@/data/blogPosts";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,6 +124,37 @@ const SAMPLE_IMAGES = [
   },
 ];
 
+function preparePostForEditor(post: ExtendedBlogPost): ExtendedBlogPost {
+  const cloned: ExtendedBlogPost = JSON.parse(JSON.stringify(post));
+  if (Array.isArray(cloned.blocks)) {
+    cloned.blocks = cloned.blocks.map((block) => {
+      if (block.type === "p") {
+        let text = block.text || "";
+        // When loading a post, if block.html has <a> tags and text lacks them, initialise the textarea from htmlToLinks(block.html)
+        if (block.html && /<a\b/i.test(block.html) && !/\[.*?\]\(.*?\)/.test(text)) {
+          text = htmlToLinks(block.html);
+        }
+        return {
+          ...block,
+          text,
+          html: linksToHtml(text),
+        };
+      }
+      if (block.type === "ul" || block.type === "ol") {
+        const items = (block.items || []).map((item) => htmlToLinks(item));
+        return { ...block, items };
+      }
+      if (block.type === "table") {
+        const headers = (block.headers || []).map((h) => htmlToLinks(h));
+        const rows = (block.rows || []).map((row) => row.map((cell) => htmlToLinks(cell)));
+        return { ...block, headers, rows };
+      }
+      return block;
+    });
+  }
+  return cloned;
+}
+
 function createBlankPost(): ExtendedBlogPost {
   const today = new Date();
   const dateFormatted = today.toLocaleDateString("en-US", {
@@ -131,6 +164,9 @@ function createBlankPost(): ExtendedBlogPost {
   });
 
   const nextWeekIso = new Date(Date.now() + 86400000 * 7).toISOString().slice(0, 16);
+
+  const introText = "Introduce the key strategic topic or financial challenge your clients are facing. Explain why this insight is critical for proactive business leadership.";
+  const detailsText = "Dive into the actionable details. Provide data, real-world benchmarks, and clear explanations that assist business owners in making informed financial decisions.";
 
   return {
     id: `blog-${Date.now()}`,
@@ -152,7 +188,8 @@ function createBlankPost(): ExtendedBlogPost {
     blocks: [
       {
         type: "p",
-        text: "Introduce the key strategic topic or financial challenge your clients are facing. Explain why this insight is critical for proactive business leadership.",
+        text: introText,
+        html: linksToHtml(introText),
       },
       {
         type: "h2",
@@ -160,7 +197,8 @@ function createBlankPost(): ExtendedBlogPost {
       },
       {
         type: "p",
-        text: "Dive into the actionable details. Provide data, real-world benchmarks, and clear explanations that assist business owners in making informed financial decisions.",
+        text: detailsText,
+        html: linksToHtml(detailsText),
       },
       {
         type: "ul",
@@ -205,6 +243,204 @@ function BlogsEditorPage() {
   const [customCoverUrl, setCustomCoverUrl] = useState("");
   const coverFileInputRef = useRef<HTMLInputElement>(null);
   const settingsFileInputRef = useRef<HTMLInputElement>(null);
+
+  // Link Insertion Modal State
+  const [linkModal, setLinkModal] = useState<{
+    isOpen: boolean;
+    blockIndex: number;
+    subType: "p" | "ul" | "table" | "table-header";
+    itemIndex?: number;
+    rowIndex?: number;
+    colIndex?: number;
+    linkText: string;
+    linkUrl: string;
+    selectionStart?: number;
+    selectionEnd?: number;
+  }>({
+    isOpen: false,
+    blockIndex: 0,
+    subType: "p",
+    linkText: "",
+    linkUrl: "",
+  });
+
+  const openInsertLinkForParagraph = (blockIdx: number, textareaEl: HTMLTextAreaElement | null) => {
+    let selected = "";
+    let start: number | undefined;
+    let end: number | undefined;
+    if (textareaEl) {
+      start = textareaEl.selectionStart;
+      end = textareaEl.selectionEnd;
+      if (start !== undefined && end !== undefined && start !== end) {
+        selected = textareaEl.value.substring(start, end);
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: blockIdx,
+      subType: "p",
+      linkText: selected,
+      linkUrl: "",
+      selectionStart: start,
+      selectionEnd: end,
+    });
+  };
+
+  const openInsertLinkForBullet = (blockIdx: number, itemIdx: number, inputEl: HTMLInputElement | null) => {
+    let selected = "";
+    let start: number | undefined;
+    let end: number | undefined;
+    if (inputEl) {
+      start = inputEl.selectionStart ?? undefined;
+      end = inputEl.selectionEnd ?? undefined;
+      if (start !== undefined && end !== undefined && start !== end) {
+        selected = inputEl.value.substring(start, end);
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: blockIdx,
+      subType: "ul",
+      itemIndex: itemIdx,
+      linkText: selected,
+      linkUrl: "",
+      selectionStart: start,
+      selectionEnd: end,
+    });
+  };
+
+  const openInsertLinkForTableCell = (
+    blockIdx: number,
+    rowIdx: number,
+    colIdx: number,
+    textareaEl: HTMLTextAreaElement | null,
+  ) => {
+    let selected = "";
+    let start: number | undefined;
+    let end: number | undefined;
+    if (textareaEl) {
+      start = textareaEl.selectionStart;
+      end = textareaEl.selectionEnd;
+      if (start !== undefined && end !== undefined && start !== end) {
+        selected = textareaEl.value.substring(start, end);
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: blockIdx,
+      subType: "table",
+      rowIndex: rowIdx,
+      colIndex: colIdx,
+      linkText: selected,
+      linkUrl: "",
+      selectionStart: start,
+      selectionEnd: end,
+    });
+  };
+
+  const openInsertLinkForTableHeader = (
+    blockIdx: number,
+    colIdx: number,
+    inputEl: HTMLInputElement | null,
+  ) => {
+    let selected = "";
+    let start: number | undefined;
+    let end: number | undefined;
+    if (inputEl) {
+      start = inputEl.selectionStart ?? undefined;
+      end = inputEl.selectionEnd ?? undefined;
+      if (start !== undefined && end !== undefined && start !== end) {
+        selected = inputEl.value.substring(start, end);
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: blockIdx,
+      subType: "table-header",
+      colIndex: colIdx,
+      linkText: selected,
+      linkUrl: "",
+      selectionStart: start,
+      selectionEnd: end,
+    });
+  };
+
+  const handleApplyLink = () => {
+    const {
+      blockIndex,
+      subType,
+      itemIndex,
+      rowIndex,
+      colIndex,
+      linkText,
+      linkUrl,
+      selectionStart,
+      selectionEnd,
+    } = linkModal;
+
+    const url = linkUrl.trim();
+    if (!url) {
+      toast.error("Please enter a link URL (e.g. /solutions/tax or https://...)");
+      return;
+    }
+
+    const label = linkText.trim() || url;
+    const markdownLink = `[${label}](${url})`;
+
+    if (subType === "p") {
+      const currentText = currentPost.blocks[blockIndex]?.text || "";
+      let newText = "";
+      if (selectionStart !== undefined && selectionEnd !== undefined && selectionStart !== selectionEnd) {
+        newText = currentText.substring(0, selectionStart) + markdownLink + currentText.substring(selectionEnd);
+      } else if (selectionStart !== undefined) {
+        newText = currentText.substring(0, selectionStart) + markdownLink + currentText.substring(selectionStart);
+      } else {
+        newText = currentText ? `${currentText} ${markdownLink}` : markdownLink;
+      }
+      handleUpdateBlock(blockIndex, { text: newText, html: linksToHtml(newText) });
+    } else if (subType === "ul" && itemIndex !== undefined) {
+      const block = currentPost.blocks[blockIndex];
+      const nextItems = [...(block.items || [])];
+      const currentItem = nextItems[itemIndex] || "";
+      let newItem = "";
+      if (selectionStart !== undefined && selectionEnd !== undefined && selectionStart !== selectionEnd) {
+        newItem = currentItem.substring(0, selectionStart) + markdownLink + currentItem.substring(selectionEnd);
+      } else if (selectionStart !== undefined) {
+        newItem = currentItem.substring(0, selectionStart) + markdownLink + currentItem.substring(selectionStart);
+      } else {
+        newItem = currentItem ? `${currentItem} ${markdownLink}` : markdownLink;
+      }
+      nextItems[itemIndex] = newItem;
+      handleUpdateBlock(blockIndex, { items: nextItems });
+    } else if (subType === "table" && rowIndex !== undefined && colIndex !== undefined) {
+      const block = currentPost.blocks[blockIndex];
+      const currentCell = block.rows?.[rowIndex]?.[colIndex] || "";
+      let newCell = "";
+      if (selectionStart !== undefined && selectionEnd !== undefined && selectionStart !== selectionEnd) {
+        newCell = currentCell.substring(0, selectionStart) + markdownLink + currentCell.substring(selectionEnd);
+      } else if (selectionStart !== undefined) {
+        newCell = currentCell.substring(0, selectionStart) + markdownLink + currentCell.substring(selectionStart);
+      } else {
+        newCell = currentCell ? `${currentCell} ${markdownLink}` : markdownLink;
+      }
+      handleUpdateTableCell(blockIndex, rowIndex, colIndex, newCell);
+    } else if (subType === "table-header" && colIndex !== undefined) {
+      const block = currentPost.blocks[blockIndex];
+      const currentHeader = block.headers?.[colIndex] || "";
+      let newHeader = "";
+      if (selectionStart !== undefined && selectionEnd !== undefined && selectionStart !== selectionEnd) {
+        newHeader = currentHeader.substring(0, selectionStart) + markdownLink + currentHeader.substring(selectionEnd);
+      } else if (selectionStart !== undefined) {
+        newHeader = currentHeader.substring(0, selectionStart) + markdownLink + currentHeader.substring(selectionStart);
+      } else {
+        newHeader = currentHeader ? `${currentHeader} ${markdownLink}` : markdownLink;
+      }
+      handleUpdateTableHeader(blockIndex, colIndex, newHeader);
+    }
+
+    setLinkModal((prev) => ({ ...prev, isOpen: false }));
+    toast.success("Hyperlink inserted successfully!");
+  };
 
   async function handleCoverFileUpload(file: File) {
     if (!file) return;
@@ -340,7 +576,7 @@ function BlogsEditorPage() {
 
   // Handler: Edit Post
   const handleEditPost = (post: ExtendedBlogPost) => {
-    setCurrentPost(JSON.parse(JSON.stringify(post)));
+    setCurrentPost(preparePostForEditor(post));
     setIsCustomSlugUnlocked(true);
     setEditorSubTab("write");
     setActiveTab("edit");
@@ -349,8 +585,9 @@ function BlogsEditorPage() {
 
   // Handler: Duplicate Post
   const handleDuplicatePost = (post: ExtendedBlogPost) => {
+    const prepared = preparePostForEditor(post);
     const duplicated: ExtendedBlogPost = {
-      ...JSON.parse(JSON.stringify(post)),
+      ...prepared,
       id: `blog-${Date.now()}`,
       title: `${post.title} (Copy)`,
       slug: `${post.slug}-copy`,
@@ -454,7 +691,12 @@ function BlogsEditorPage() {
   const handleUpdateBlock = (index: number, updated: Partial<ContentBlock>) => {
     setCurrentPost((prev) => {
       const nextBlocks = [...prev.blocks];
-      nextBlocks[index] = { ...nextBlocks[index], ...updated };
+      const targetBlock = nextBlocks[index];
+      let nextUpdated = { ...updated };
+      if (targetBlock?.type === "p" && typeof updated.text === "string") {
+        nextUpdated.html = linksToHtml(updated.text);
+      }
+      nextBlocks[index] = { ...targetBlock, ...nextUpdated };
       return { ...prev, blocks: nextBlocks };
     });
   };
@@ -608,6 +850,31 @@ function BlogsEditorPage() {
     setIsSaving(true);
 
     try {
+      const normalizedBlocks = (currentPost.blocks || []).map((block) => {
+        if (block.type === "p") {
+          const text = block.text || "";
+          return {
+            ...block,
+            text,
+            html: linksToHtml(text),
+          };
+        }
+        if (block.type === "ul" || block.type === "ol") {
+          return {
+            ...block,
+            items: (block.items || []).map((item) => linksToHtml(item)),
+          };
+        }
+        if (block.type === "table") {
+          return {
+            ...block,
+            headers: (block.headers || []).map((h) => linksToHtml(h)),
+            rows: (block.rows || []).map((row) => row.map((cell) => linksToHtml(cell))),
+          };
+        }
+        return block;
+      });
+
       const postToSave: ExtendedBlogPost = {
         ...currentPost,
         status: effectiveStatus,
@@ -617,6 +884,7 @@ function BlogsEditorPage() {
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, "-")
             .replace(/^-+|-+$/g, ""),
+        blocks: normalizedBlocks,
       };
 
       const res = await saveBlogPost({ data: postToSave });
@@ -637,7 +905,7 @@ function BlogsEditorPage() {
           return [postToSave, ...filtered];
         });
 
-        setCurrentPost(postToSave);
+        setCurrentPost(preparePostForEditor(postToSave));
       } else {
         toast.error(res.error || "Failed to save blog post.");
       }
@@ -1668,6 +1936,7 @@ function BlogsEditorPage() {
                               <div key={itemIdx} className="flex items-center gap-2">
                                 <span className="size-2 rounded-full bg-blue-600 shrink-0" />
                                 <input
+                                  id={`block-ul-${idx}-${itemIdx}`}
                                   type="text"
                                   value={item}
                                   onChange={(e) => {
@@ -1679,11 +1948,23 @@ function BlogsEditorPage() {
                                 />
                                 <button
                                   type="button"
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() => {
+                                    const input = document.getElementById(`block-ul-${idx}-${itemIdx}`) as HTMLInputElement | null;
+                                    openInsertLinkForBullet(idx, itemIdx, input);
+                                  }}
+                                  title="Insert link into bullet point"
+                                  className="size-7 rounded text-slate-400 hover:text-blue-700 hover:bg-blue-50 flex items-center justify-center shrink-0 border border-slate-200 transition cursor-pointer"
+                                >
+                                  <Link2 className="size-3" />
+                                </button>
+                                <button
+                                  type="button"
                                   onClick={() => {
                                     const nextItems = (block.items || []).filter((_, i) => i !== itemIdx);
                                     handleUpdateBlock(idx, { items: nextItems });
                                   }}
-                                  className="size-7 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center shrink-0"
+                                  className="size-7 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center shrink-0 cursor-pointer"
                                 >
                                   <X className="size-3.5" />
                                 </button>
@@ -1696,7 +1977,7 @@ function BlogsEditorPage() {
                                 const nextItems = [...(block.items || []), "New bullet point"];
                                 handleUpdateBlock(idx, { items: nextItems });
                               }}
-                              className="text-xs font-semibold text-navy hover:underline mt-1 inline-flex items-center gap-1"
+                              className="text-xs font-semibold text-navy hover:underline mt-1 inline-flex items-center gap-1 cursor-pointer"
                             >
                               <Plus className="size-3" /> Add bullet point
                             </button>
@@ -1719,14 +2000,14 @@ function BlogsEditorPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleAddTableColumn(idx)}
-                                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy transition shadow-2xs"
+                                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy transition shadow-2xs cursor-pointer"
                                 >
                                   <Columns3 className="size-3 text-primary" /> + Add Column
                                 </button>
                                 <button
                                   type="button"
                                   onClick={() => handleAddTableRow(idx)}
-                                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy transition shadow-2xs"
+                                  className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 hover:text-navy transition shadow-2xs cursor-pointer"
                                 >
                                   <Rows3 className="size-3 text-primary" /> + Add Row
                                 </button>
@@ -1746,6 +2027,7 @@ function BlogsEditorPage() {
                                         >
                                           <div className="flex items-center gap-1">
                                             <input
+                                              id={`block-table-header-${idx}-${colIdx}`}
                                               type="text"
                                               value={header}
                                               placeholder={`Column ${colIdx + 1}`}
@@ -1754,12 +2036,24 @@ function BlogsEditorPage() {
                                               }
                                               className="w-full bg-transparent font-serif-hero text-xs sm:text-sm font-semibold text-white placeholder:text-slate-400 border border-transparent focus:border-blue-400 rounded px-2 py-1 outline-none"
                                             />
+                                            <button
+                                              type="button"
+                                              onMouseDown={(e) => e.preventDefault()}
+                                              onClick={() => {
+                                                const input = document.getElementById(`block-table-header-${idx}-${colIdx}`) as HTMLInputElement | null;
+                                                openInsertLinkForTableHeader(idx, colIdx, input);
+                                              }}
+                                              title="Insert link into header"
+                                              className="opacity-0 group-hover/th:opacity-100 size-5 rounded text-slate-300 hover:text-blue-300 hover:bg-slate-800 flex items-center justify-center shrink-0 transition cursor-pointer"
+                                            >
+                                              <Link2 className="size-3" />
+                                            </button>
                                             {(block.headers || []).length > 1 && (
                                               <button
                                                 type="button"
                                                 onClick={() => handleDeleteTableColumn(idx, colIdx)}
                                                 title="Delete Column"
-                                                className="opacity-0 group-hover/th:opacity-100 size-5 rounded text-slate-300 hover:text-red-400 hover:bg-slate-800 flex items-center justify-center shrink-0 transition"
+                                                className="opacity-0 group-hover/th:opacity-100 size-5 rounded text-slate-300 hover:text-red-400 hover:bg-slate-800 flex items-center justify-center shrink-0 transition cursor-pointer"
                                               >
                                                 <X className="size-3" />
                                               </button>
@@ -1780,22 +2074,37 @@ function BlogsEditorPage() {
                                       {row.map((cell, colIdx) => (
                                         <td
                                           key={colIdx}
-                                          className="p-2 border-r border-slate-100 last:border-r-0"
+                                          className="p-2 border-r border-slate-100 last:border-r-0 relative group/cell"
                                         >
-                                          <textarea
-                                            rows={1}
-                                            value={cell}
-                                            placeholder="Enter text..."
-                                            onChange={(e) =>
-                                              handleUpdateTableCell(
-                                                idx,
-                                                rowIdx,
-                                                colIdx,
-                                                e.target.value
-                                              )
-                                            }
-                                            className="w-full text-xs sm:text-sm text-slate-800 bg-transparent border border-transparent focus:border-navy focus:bg-white rounded px-2 py-1 outline-none resize-y"
-                                          />
+                                          <div className="flex items-start gap-1">
+                                            <textarea
+                                              id={`block-table-${idx}-${rowIdx}-${colIdx}`}
+                                              rows={1}
+                                              value={cell}
+                                              placeholder="Enter text..."
+                                              onChange={(e) =>
+                                                handleUpdateTableCell(
+                                                  idx,
+                                                  rowIdx,
+                                                  colIdx,
+                                                  e.target.value
+                                                )
+                                              }
+                                              className="w-full text-xs sm:text-sm text-slate-800 bg-transparent border border-transparent focus:border-navy focus:bg-white rounded px-2 py-1 outline-none resize-y"
+                                            />
+                                            <button
+                                              type="button"
+                                              onMouseDown={(e) => e.preventDefault()}
+                                              onClick={() => {
+                                                const textarea = document.getElementById(`block-table-${idx}-${rowIdx}-${colIdx}`) as HTMLTextAreaElement | null;
+                                                openInsertLinkForTableCell(idx, rowIdx, colIdx, textarea);
+                                              }}
+                                              title="Insert link into cell"
+                                              className="size-6 opacity-0 group-hover/cell:opacity-100 focus:opacity-100 rounded text-slate-400 hover:text-blue-700 hover:bg-blue-50 flex items-center justify-center shrink-0 transition cursor-pointer"
+                                            >
+                                              <Link2 className="size-3" />
+                                            </button>
+                                          </div>
                                         </td>
                                       ))}
                                       <td className="w-8 p-1 text-center align-middle">
@@ -1804,7 +2113,7 @@ function BlogsEditorPage() {
                                             type="button"
                                             onClick={() => handleDeleteTableRow(idx, rowIdx)}
                                             title="Delete Row"
-                                            className="opacity-0 group-hover/tr:opacity-100 size-6 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 inline-flex items-center justify-center transition"
+                                            className="opacity-0 group-hover/tr:opacity-100 size-6 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 inline-flex items-center justify-center transition cursor-pointer"
                                           >
                                             <Trash2 className="size-3" />
                                           </button>
@@ -1826,13 +2135,37 @@ function BlogsEditorPage() {
                             />
                           </div>
                         ) : (
-                          <textarea
-                            rows={3}
-                            placeholder="Write your paragraph content..."
-                            value={block.text || ""}
-                            onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
-                            className="w-full text-sm sm:text-base text-slate-800 bg-transparent border-none outline-none focus:ring-0 resize-none leading-relaxed"
-                          />
+                          <div className="space-y-1.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-slate-400 font-medium">
+                                Use markdown <code className="bg-slate-100 text-slate-700 px-1 py-0.5 rounded text-[10px]">[text](url)</code> or click Insert link:
+                              </span>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => {
+                                  const textarea = document.getElementById(`block-p-${idx}`) as HTMLTextAreaElement | null;
+                                  openInsertLinkForParagraph(idx, textarea);
+                                }}
+                                className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md px-2 py-0.5 transition cursor-pointer"
+                                title="Insert hyperlink into paragraph"
+                              >
+                                <Link2 className="size-3" />
+                                <span>Insert link</span>
+                              </button>
+                            </div>
+                            <textarea
+                              id={`block-p-${idx}`}
+                              rows={3}
+                              placeholder="Write your paragraph content..."
+                              value={block.text || ""}
+                              onChange={(e) => {
+                                const val = e.target.value;
+                                handleUpdateBlock(idx, { text: val, html: linksToHtml(val) });
+                              }}
+                              className="w-full text-sm sm:text-base text-slate-800 bg-transparent border-none outline-none focus:ring-0 resize-none leading-relaxed"
+                            />
+                          </div>
                         )}
                       </div>
                     ))}
@@ -2233,6 +2566,103 @@ function BlogsEditorPage() {
             {/* Render Exact BlogPostView */}
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
               <BlogPostView post={currentPost} />
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* LINK INSERTION MODAL */}
+        {/* ========================================================================= */}
+        {linkModal.isOpen && (
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="size-8 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center">
+                    <Link2 className="size-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-[#0f2142]">Insert Hyperlink</h3>
+                    <p className="text-[11px] text-slate-400">
+                      Add an internal page or external web link
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setLinkModal((prev) => ({ ...prev, isOpen: false }))}
+                  className="text-slate-400 hover:text-slate-600 rounded-lg p-1 hover:bg-slate-100 transition cursor-pointer"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleApplyLink();
+                }}
+                className="space-y-4"
+              >
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Display Text
+                  </label>
+                  <Input
+                    value={linkModal.linkText}
+                    onChange={(e) =>
+                      setLinkModal((prev) => ({ ...prev, linkText: e.target.value }))
+                    }
+                    placeholder="Text to display (e.g. Tax Advisory Services)"
+                    className="text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-slate-700 block mb-1">
+                    Link Destination (URL)
+                  </label>
+                  <Input
+                    value={linkModal.linkUrl}
+                    onChange={(e) =>
+                      setLinkModal((prev) => ({ ...prev, linkUrl: e.target.value }))
+                    }
+                    placeholder="/solutions/tax or https://..."
+                    className="text-xs font-mono"
+                    autoFocus
+                  />
+                  <div className="mt-2 p-2.5 rounded-xl bg-blue-50/70 border border-blue-100 text-[11px] text-[#142340] space-y-1">
+                    <div className="font-semibold text-blue-700">Quick URL Guidelines:</div>
+                    <ul className="list-disc list-inside space-y-0.5 text-slate-600">
+                      <li>
+                        <strong>Internal:</strong> Use <code className="bg-white px-1 py-0.5 rounded text-blue-800 font-mono text-[10px]">/solutions/tax</code>, <code className="bg-white px-1 py-0.5 rounded text-blue-800 font-mono text-[10px]">/contact</code>, etc. (opens in same tab).
+                      </li>
+                      <li>
+                        <strong>External:</strong> Use full URL <code className="bg-white px-1 py-0.5 rounded text-blue-800 font-mono text-[10px]">https://...</code> (opens securely in new tab).
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setLinkModal((prev) => ({ ...prev, isOpen: false }))}
+                    className="text-xs h-8"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    className="bg-[#0f2142] hover:bg-blue-700 text-white font-bold text-xs h-8 px-4"
+                  >
+                    Insert Link
+                  </Button>
+                </div>
+              </form>
             </div>
           </div>
         )}
