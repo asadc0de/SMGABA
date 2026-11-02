@@ -58,6 +58,7 @@ import { Route as SolutionsWealthManagementRouteImport } from './routes/solution
 import { Route as ToolsIndexRouteImport } from './routes/tools/index'
 import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
+import { Route as ToolsOnboardingRouteImport } from './routes/tools/onboarding'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
 import { Route as CmsIdEditRouteImport } from './routes/cms/$id/edit'
 import { Route as CmsIdPreviewRouteImport } from './routes/cms/$id/preview'
@@ -313,6 +314,11 @@ const ToolsLinksRoute = ToolsLinksRouteImport.update({
   path: '/tools/links',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsOnboardingRoute = ToolsOnboardingRouteImport.update({
+  id: '/tools/onboarding',
+  path: '/tools/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRedirectionsRoute = ToolsRedirectionsRouteImport.update({
   id: '/tools/redirections',
   path: '/tools/redirections',
@@ -394,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
   '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
+  '/tools/onboarding': typeof ToolsOnboardingRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
@@ -452,6 +459,7 @@ export interface FileRoutesByTo {
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
   '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
+  '/tools/onboarding': typeof ToolsOnboardingRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog': typeof BlogIndexRoute
   '/cms': typeof CmsIndexRoute
@@ -511,6 +519,7 @@ export interface FileRoutesById {
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
   '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
+  '/tools/onboarding': typeof ToolsOnboardingRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
@@ -571,6 +580,7 @@ export interface FileRouteTypes {
     | '/solutions/wealth-management'
     | '/tools/events'
     | '/tools/links'
+    | '/tools/onboarding'
     | '/tools/redirections'
     | '/blog/'
     | '/cms/'
@@ -629,6 +639,7 @@ export interface FileRouteTypes {
     | '/solutions/wealth-management'
     | '/tools/events'
     | '/tools/links'
+    | '/tools/onboarding'
     | '/tools/redirections'
     | '/blog'
     | '/cms'
@@ -687,6 +698,7 @@ export interface FileRouteTypes {
     | '/solutions/wealth-management'
     | '/tools/events'
     | '/tools/links'
+    | '/tools/onboarding'
     | '/tools/redirections'
     | '/blog/'
     | '/cms/'
@@ -746,6 +758,7 @@ export interface RootRouteChildren {
   SolutionsWealthManagementRoute: typeof SolutionsWealthManagementRoute
   ToolsEventsRoute: typeof ToolsEventsRoute
   ToolsLinksRoute: typeof ToolsLinksRoute
+  ToolsOnboardingRoute: typeof ToolsOnboardingRoute
   ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CmsIndexRoute: typeof CmsIndexRoute
@@ -1105,6 +1118,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsLinksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/onboarding': {
+      id: '/tools/onboarding'
+      path: '/tools/onboarding'
+      fullPath: '/tools/onboarding'
+      preLoaderRoute: typeof ToolsOnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/redirections': {
       id: '/tools/redirections'
       path: '/tools/redirections'
@@ -1202,6 +1222,7 @@ const rootRouteChildren: RootRouteChildren = {
   SolutionsWealthManagementRoute: SolutionsWealthManagementRoute,
   ToolsEventsRoute: ToolsEventsRoute,
   ToolsLinksRoute: ToolsLinksRoute,
+  ToolsOnboardingRoute: ToolsOnboardingRoute,
   ToolsRedirectionsRoute: ToolsRedirectionsRoute,
   BlogIndexRoute: BlogIndexRoute,
   CmsIndexRoute: CmsIndexRoute,

@@ -1,113 +1,70 @@
 # Updating the Client Onboarding Account Access Guides
 
-This document explains how to update the unlisted client onboarding "Account Access Guide" pages for the New York (`/onboarding/ny`) and Florida (`/onboarding/fl`) offices.
+This document explains how to update the client onboarding "Account Access Guide" pages for the New York (`/onboarding/ny`) and Florida (`/onboarding/fl`) offices.
 
 ---
 
-## 1. Which File to Edit
+## 1. Primary Method: Online Admin Editor (Recommended)
 
-All guide content, guest credentials, and provider setup instructions are driven by a single data file:
+Non-developers and onboarding managers can update all guide content, contact details, and provider instructions in real time with **no code changes and no redeploys required**.
 
-```
-src/data/onboardingGuides.ts
-```
-
-Do not edit layout or route files unless you are changing visual structure. Changing `src/data/onboardingGuides.ts` will automatically update both the NY and FL pages.
-
----
-
-## 2. Data Shape & Structure
-
-The file exports `ONBOARDING_GUIDES`, keyed by office (`ny` and `fl`). Each office configuration contains:
-
-- `label`: Display label for the office (`New York` or `Florida`).
-- `welcomeTitle`: Hero title (e.g., `"Welcome to SMG ABA NY"`).
-- `pageTitle`: Subheading title.
-- `subtitle`: Hero description.
-- `introParagraphs`: Introductory instructions.
-- `beforeYouBegin`: Checklist items for the client.
-- `guestInfo`: Official guest credentials displayed in the copy-to-clipboard card (`name`, `email`, `phone`, `usernameHint`, `quickBooksOnline`, `helpfulTip`).
-- `sections`: Categorized provider sections (`bank`, `payroll`, `pos`).
-  - Each section has `title`, `shortTitle`, `intro`, and an array of `providers`.
-
-### Example Provider Object:
-
-```ts
-{
-  id: "chase", // URL-safe slug used for deep linking (#chase)
-  name: "Chase Bank",
-  steps: [
-    "Go to Account Management.",
-    "Open Access & Security Manager.",
-    "Select Add Authorized User and enter the SMG ABA guest access information.",
-    "Select Third-Party Access.",
-    "Choose the bank and credit card accounts SMG ABA needs to access.",
-    "Set the access level to See Activity and Transaction.",
-  ],
-  notes: [
-    "Optional callout note displayed with an info banner."
-  ],
-  requiredAccess: ["Reports", "General Ledger"], // Optional badges
-}
-```
-
----
-
-## 3. How to Add a New Provider
-
-1. Open `src/data/onboardingGuides.ts`.
-2. Find the target section under the respective office (`bank`, `payroll`, or `pos`):
-   - Remember to add it to **both** `ny` and `fl` if the provider applies to both offices.
-3. Copy an existing provider object and paste it into the `providers` list.
-4. Set a unique, URL-safe slug for `id` (e.g., `"gusto"`, `"mercury-bank"`, `"clover"`).
-   - This slug allows clients to jump directly to this provider using a hash link (e.g., `/onboarding/ny#gusto`).
-5. Set `name` to the platform's proper name.
-6. Add the ordered `steps` as an array of strings.
-7. (Optional) Add `notes: ["..."]` for callout boxes or `requiredAccess: ["..."]` for permission badges.
-8. Save the file.
-
----
-
-## 4. How to Change Guest Contact Information
-
-When office contact details, phone numbers, or email addresses change:
-
-1. Open `src/data/onboardingGuides.ts`.
-2. Locate the `guestInfo` object under `ny` or `fl`:
-   ```ts
-   guestInfo: {
-     name: "Gregory Scotto",
-     email: "Bookkeeper@smgaba.com", // or accountantfl@smgaba.com for FL
-     phone: "631-804-8257",          // or 727-420-1835 for FL
-     usernameHint: "If prompted to create a username, use YourCompanyNameCPA1 (example: SMGABACPA1).",
-     quickBooksOnline: "Add SMG ABA as the Accounting Firm User using Onboarding@smgaba.com",
-     helpfulTip: "When a bank or payroll platform sends SMG ABA an invitation email, our team will complete the remaining login setup on our end.",
-   }
+### Accessing the Editor:
+1. Navigate to:
    ```
-3. Update the required fields.
-4. If the email or phone differs within specific bank or POS instructions (such as Truist or Regions), update those step strings as well.
+   https://smgaba.com/tools/onboarding
+   ```
+   (Or click the **Onboarding Guides** card on the `/dashboard` command center).
+2. Enter the internal admin password when prompted.
+
+### How to Edit:
+1. **Choose Office**: Click the **New York (NY)** or **Florida (FL)** tab at the top.
+2. **General & Guest Credentials**:
+   - Update welcome titles, subtitles, intro paragraphs, and checklist items.
+   - Edit official guest access details: Name, Email, Phone, Username format, and QuickBooks Online setup email.
+3. **Provider Instructions (Bank, Payroll, POS)**:
+   - Select the respective section tab (**Bank & Cards**, **Payroll**, or **POS Systems**).
+   - **Add Provider**: Click `+ Add Provider`. Enter the provider name (slug is auto-generated).
+   - **Edit Steps**: Add, edit, or reorder step-by-step numbered instructions.
+   - **Reorder Providers**: Use the Up / Down arrows to position providers alphabetically or by priority.
+   - **Copy to Other Office**: Click **"Copy to FL"** (or **"Copy to NY"**) to quickly copy a provider's setup instructions to the other office without retyping.
+   - **Delete Provider**: Click the trash icon (a confirmation prompt will appear).
+4. **Save Changes**:
+   - Click **"Save NY Guide"** (or **"Save FL Guide"**).
+   - The changes are instantly live at `/onboarding/ny` or `/onboarding/fl`.
+5. **Rollback / Version History**:
+   - If an error was made, click **"Version History"** to inspect and restore any of the last 20 saved versions with a single click.
+   - Click **"Reset to Default"** if you need to restore the original static codebase template.
+
+### Security Guard & Passwords Policy:
+- **Never enter passwords, PINs, or confidential codes in the editor.**
+- The editor includes an automated **Security Guard** that scans content before saving. If words like "password", "passcode", "pin", or numbers resembling access codes are detected, a warning prompt will require explicit confirmation.
+- Clients must share all passwords or sensitive 2FA codes through our secure ShareFile link.
 
 ---
 
-## 5. Security Guidelines
+## 2. Technical Architecture & Database Sync
 
-- **Never include raw client or internal passwords or PINs** in `src/data/onboardingGuides.ts`.
-- The global `SECURITY_NOTICE` at the top of the file reminds clients never to send passwords over email or text, directing them to the secure ShareFile portal instead.
-- If a provider uses an internal invitation code (like Square), instruct the client that the team will provide the code directly rather than embedding live codes into code.
+- **Live Data Source**: Stored in Supabase in table `public.onboarding_guides` (keyed by `'ny'` and `'fl'`).
+- **Version History**: Recorded automatically in `public.onboarding_guide_versions` upon every save (maintaining the latest 20 snapshots per office).
+- **Public Fallback**: If Supabase is unconfigured, offline, or returns an error, the public pages automatically fall back to the static seed in `src/data/onboardingGuides.ts`. Public pages will never render blank or crash.
+- **Security & Access Control**: Row Level Security (RLS) is enabled with no public read/write policies. All reads and mutations occur via authenticated TanStack Start server functions using the Supabase service role key.
 
 ---
 
-## 6. How to Deploy Changes
+## Appendix: Direct Codebase Fallback (For Developers)
 
-1. Save your changes to `src/data/onboardingGuides.ts`.
-2. Verify the project builds cleanly:
+If updating the static fallback seed directly in the repository:
+
+1. Open `src/data/onboardingGuides.ts`.
+2. Locate `ONBOARDING_GUIDES.ny` or `ONBOARDING_GUIDES.fl`.
+3. Update provider steps, guest credentials, or section descriptions as needed.
+4. Verify the build passes:
    ```bash
    npm run build
    ```
-3. Commit and push your changes to `main`:
+5. Commit and push:
    ```bash
    git add src/data/onboardingGuides.ts
-   git commit -m "Update onboarding guide instructions"
+   git commit -m "content(onboarding): update default guide seed"
    git push origin main
    ```
-4. Vercel automatically detects the push and deploys the changes to production.

@@ -390,7 +390,7 @@ function DashboardPage() {
           </div>
 
           {/* Quick Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mt-8 pt-6 border-t border-slate-100">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 mt-8 pt-6 border-t border-slate-100">
             {/* 1. CMS Pages */}
             <Link
               to="/cms"
@@ -454,6 +454,23 @@ function DashboardPage() {
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="text-2xl font-black text-[#0f2142]">{stats.totalEvents}</span>
                 <span className="text-[11px] font-semibold text-slate-500">Scheduled</span>
+              </div>
+            </Link>
+
+            {/* 5. Onboarding Guides */}
+            <Link
+              to="/tools/onboarding"
+              className="p-4 rounded-2xl bg-slate-50/80 hover:bg-indigo-50/40 border border-slate-200/70 hover:border-indigo-200 transition-all group col-span-2 sm:col-span-1"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-500 group-hover:text-indigo-700">Onboarding</span>
+                <ShieldCheck className="size-4 text-indigo-600" />
+              </div>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-2xl font-black text-[#0f2142]">2</span>
+                <span className="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded-md">
+                  NY & FL
+                </span>
               </div>
             </Link>
           </div>
@@ -651,6 +668,54 @@ function DashboardPage() {
                       <Globe className="size-3.5 mr-1" />
                       <span>Live Events</span>
                     </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Module 5: Client Onboarding Guides */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-900/5 transition-all duration-200 flex flex-col justify-between group md:col-span-2">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="size-12 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <ShieldCheck className="size-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+                    NY & FL Offices
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                    <span>Client Onboarding Account Access Guides</span>
+                    <ArrowUpRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Edit account access setup guides for bank, credit card, payroll, and POS providers with version history, secret guard scanning, and instant publishing.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-indigo-700 text-white font-bold text-xs px-4">
+                  <Link to="/tools/onboarding">
+                    <span>Manage Onboarding Guides</span>
+                    <ArrowRight className="size-3.5 ml-1" />
+                  </Link>
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  <Button asChild variant="outline" size="sm" className="rounded-full text-xs font-semibold">
+                    <a href="/onboarding/ny" target="_blank" rel="noreferrer">
+                      <Globe className="size-3.5 mr-1" />
+                      <span>Live NY Guide</span>
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" size="sm" className="rounded-full text-xs font-semibold">
+                    <a href="/onboarding/fl" target="_blank" rel="noreferrer">
+                      <Globe className="size-3.5 mr-1" />
+                      <span>Live FL Guide</span>
+                    </a>
                   </Button>
                 </div>
               </div>

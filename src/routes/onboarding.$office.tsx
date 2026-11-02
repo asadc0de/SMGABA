@@ -11,6 +11,7 @@ import {
   type OnboardingGuide,
   type OnboardingProvider,
 } from "@/data/onboardingGuides";
+import { getPublicOnboardingGuide } from "@/lib/onboarding-admin";
 import {
   Accordion,
   AccordionContent,
@@ -40,14 +41,23 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/onboarding/$office")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const rawOffice = params.office?.toLowerCase();
     if (!isOfficeKey(rawOffice)) {
       throw notFound();
     }
 
-    const guide = ONBOARDING_GUIDES[rawOffice];
-    return { office: rawOffice as OfficeKey, guide };
+    try {
+      const res = await getPublicOnboardingGuide({ data: rawOffice });
+      if (res && res.guide) {
+        return res;
+      }
+    } catch (err) {
+      console.error("Failed to load onboarding guide from server:", err);
+    }
+
+    const fallbackGuide = ONBOARDING_GUIDES[rawOffice as OfficeKey];
+    return { office: rawOffice as OfficeKey, guide: fallbackGuide };
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -303,7 +313,14 @@ function OnboardingGuidePage() {
                     <Building className="h-3.5 w-3.5 text-slate-500" />
                     QuickBooks Online Setup
                   </div>
-                  <CopyButton text="Onboarding@smgaba.com" label="QBO Email" />
+                  <CopyButton
+                    text={
+                      guide.guestInfo.qboEmail ||
+                      guide.guestInfo.quickBooksOnline.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/)?.[0] ||
+                      "Onboarding@smgaba.com"
+                    }
+                    label="QBO Email"
+                  />
                 </div>
                 <div className="text-sm sm:text-base font-semibold text-[#142340]">
                   {guide.guestInfo.quickBooksOnline}

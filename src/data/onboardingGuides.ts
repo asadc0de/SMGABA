@@ -23,6 +23,7 @@ export interface GuestInfo {
   phone: string;
   usernameHint: string;
   quickBooksOnline: string;
+  qboEmail?: string;
   helpfulTip?: string;
 }
 
@@ -75,6 +76,7 @@ export const ONBOARDING_GUIDES: Record<OfficeKey, OnboardingGuide> = {
       usernameHint:
         "If prompted to create a username, use YourCompanyNameCPA1 (example: SMGABACPA1).",
       quickBooksOnline: "Add SMG ABA as the Accounting Firm User using Onboarding@smgaba.com",
+      qboEmail: "Onboarding@smgaba.com",
       helpfulTip:
         "When a bank or payroll platform sends SMG ABA an invitation email, our team will complete the remaining login setup on our end.",
     },
@@ -360,6 +362,7 @@ export const ONBOARDING_GUIDES: Record<OfficeKey, OnboardingGuide> = {
       phone: "727-420-1835",
       usernameHint: "If prompted to create a username, use YourCompanyName1 (example: SMGABA1).",
       quickBooksOnline: "Add SMG ABA as the Accounting Firm User using Onboarding@smgaba.com",
+      qboEmail: "Onboarding@smgaba.com",
       helpfulTip:
         "When a bank or payroll platform sends SMG ABA an invitation email, our team will complete the remaining login setup on our end.",
     },
