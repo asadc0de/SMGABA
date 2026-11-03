@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getSupabaseServerClient } from "./supabase.server";
 import { BLOG_POSTS, type BlogPost, type ContentBlock } from "@/data/blogPosts";
+import { isPublicBlogVisible } from "./blog-visibility";
 
 export interface ExtendedBlogPost extends BlogPost {
   id?: string;
@@ -81,16 +82,7 @@ export function normalizeBlogSlug(raw: string): string {
 /**
  * Checks if a scheduled post should be considered live for public view.
  */
-export function isBlogLive(post: ExtendedBlogPost): boolean {
-  if (post.archived) return false;
-  if (post.status === "draft") return false;
-  if (post.status === "scheduled" && post.publishDate) {
-    const scheduledTime = new Date(post.publishDate).getTime();
-    const now = Date.now();
-    return now >= scheduledTime;
-  }
-  return true;
-}
+export const isBlogLive = isPublicBlogVisible;
 
 /**
  * Fetches all dynamic blogs from Supabase or fallback.
@@ -142,14 +134,14 @@ async function fetchDynamicBlogs(): Promise<ExtendedBlogPost[]> {
 }
 
 /**
- * Public Server Function: Returns all public live blogs (static + active custom/scheduled).
+ * Public Server Function: Returns all publicly eligible blogs.
  */
 export const getPublicBlogs = createServerFn({ method: "GET" }).handler(
   async (): Promise<ExtendedBlogPost[]> => {
     const dynamicBlogs = await fetchDynamicBlogs();
     
-    // Filter dynamic blogs that are live
-    const liveDynamic = dynamicBlogs.filter(isBlogLive);
+    // Exclude drafts, archived posts, and posts that are not yet published.
+    const liveDynamic = dynamicBlogs.filter(isPublicBlogVisible);
     
     // Map static blogs with metadata
     const staticBlogs: ExtendedBlogPost[] = BLOG_POSTS.map((p) => ({
@@ -167,7 +159,7 @@ export const getPublicBlogs = createServerFn({ method: "GET" }).handler(
       map.set(post.slug.toLowerCase(), post);
     }
 
-    return Array.from(map.values()).sort((a, b) => {
+    return Array.from(map.values()).filter(isPublicBlogVisible).sort((a, b) => {
       const timeA = a.publishDate ? new Date(a.publishDate).getTime() : new Date(a.date).getTime() || 0;
       const timeB = b.publishDate ? new Date(b.publishDate).getTime() : new Date(b.date).getTime() || 0;
       return timeB - timeA;

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { getBlogPost } from "@/lib/blogs.server";
+import { isPublicBlogVisible } from "@/lib/blog-visibility";
 import { publicJson, publicOptions } from "@/lib/api/cors.server";
 
 function toPublicBlogPost(post: Awaited<ReturnType<typeof getBlogPost>>) {
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/api/public/blogs/$slug")({
       OPTIONS: ({ request }) => publicOptions(request),
       GET: async ({ request, params }) => {
         const post = await getBlogPost({ data: params.slug });
-        if (!post || post.archived || post.status === "draft") {
+        if (!post || !isPublicBlogVisible(post)) {
           return publicJson(request, { post: null }, { status: 404 });
         }
 
