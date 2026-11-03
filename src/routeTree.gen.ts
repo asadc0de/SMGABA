@@ -60,12 +60,20 @@ import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
 import { Route as ToolsOnboardingRouteImport } from './routes/tools/onboarding'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
+import { Route as ApiPublicCareersRouteImport } from './routes/api/public/careers'
+import { Route as ApiPublicEventsRouteImport } from './routes/api/public/events'
 import { Route as CmsIdEditRouteImport } from './routes/cms/$id/edit'
 import { Route as CmsIdPreviewRouteImport } from './routes/cms/$id/preview'
 import { Route as InternalPagesIndexRouteImport } from './routes/internal/pages/index'
 import { Route as InternalPagesNewRouteImport } from './routes/internal/pages/new'
+import { Route as ApiPublicBlogsIndexRouteImport } from './routes/api/public/blogs/index'
+import { Route as ApiPublicBlogsSlugRouteImport } from './routes/api/public/blogs/$slug'
+import { Route as ApiPublicOnboardingOfficeRouteImport } from './routes/api/public/onboarding/$office'
+import { Route as ApiPublicRedirectsResolveRouteImport } from './routes/api/public/redirects/resolve'
+import { Route as ApiPublicWebinarRedirectsSlugRouteImport } from './routes/api/public/webinar-redirects/$slug'
 import { Route as InternalPagesIdEditRouteImport } from './routes/internal/pages/$id/edit'
 import { Route as InternalPagesIdPreviewRouteImport } from './routes/internal/pages/$id/preview'
+import { Route as ApiPublicCmsPagesSlugRouteImport } from './routes/api/public/cms/pages/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -324,6 +332,16 @@ const ToolsRedirectionsRoute = ToolsRedirectionsRouteImport.update({
   path: '/tools/redirections',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicCareersRoute = ApiPublicCareersRouteImport.update({
+  id: '/api/public/careers',
+  path: '/api/public/careers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicEventsRoute = ApiPublicEventsRouteImport.update({
+  id: '/api/public/events',
+  path: '/api/public/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CmsIdEditRoute = CmsIdEditRouteImport.update({
   id: '/cms/$id/edit',
   path: '/cms/$id/edit',
@@ -344,6 +362,34 @@ const InternalPagesNewRoute = InternalPagesNewRouteImport.update({
   path: '/internal/pages/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBlogsIndexRoute = ApiPublicBlogsIndexRouteImport.update({
+  id: '/api/public/blogs/',
+  path: '/api/public/blogs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicBlogsSlugRoute = ApiPublicBlogsSlugRouteImport.update({
+  id: '/api/public/blogs/$slug',
+  path: '/api/public/blogs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicOnboardingOfficeRoute =
+  ApiPublicOnboardingOfficeRouteImport.update({
+    id: '/api/public/onboarding/$office',
+    path: '/api/public/onboarding/$office',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicRedirectsResolveRoute =
+  ApiPublicRedirectsResolveRouteImport.update({
+    id: '/api/public/redirects/resolve',
+    path: '/api/public/redirects/resolve',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicWebinarRedirectsSlugRoute =
+  ApiPublicWebinarRedirectsSlugRouteImport.update({
+    id: '/api/public/webinar-redirects/$slug',
+    path: '/api/public/webinar-redirects/$slug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const InternalPagesIdEditRoute = InternalPagesIdEditRouteImport.update({
   id: '/internal/pages/$id/edit',
   path: '/internal/pages/$id/edit',
@@ -352,6 +398,11 @@ const InternalPagesIdEditRoute = InternalPagesIdEditRouteImport.update({
 const InternalPagesIdPreviewRoute = InternalPagesIdPreviewRouteImport.update({
   id: '/internal/pages/$id/preview',
   path: '/internal/pages/$id/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicCmsPagesSlugRoute = ApiPublicCmsPagesSlugRouteImport.update({
+  id: '/api/public/cms/pages/$slug',
+  path: '/api/public/cms/pages/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -407,12 +458,20 @@ export interface FileRoutesByFullPath {
   '/resources/': typeof ResourcesIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
   '/tools/': typeof ToolsIndexRoute
+  '/api/public/careers': typeof ApiPublicCareersRoute
+  '/api/public/events': typeof ApiPublicEventsRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
   '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages/': typeof InternalPagesIndexRoute
+  '/api/public/blogs/$slug': typeof ApiPublicBlogsSlugRoute
+  '/api/public/onboarding/$office': typeof ApiPublicOnboardingOfficeRoute
+  '/api/public/redirects/resolve': typeof ApiPublicRedirectsResolveRoute
+  '/api/public/webinar-redirects/$slug': typeof ApiPublicWebinarRedirectsSlugRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
   '/internal/pages/$id/preview': typeof InternalPagesIdPreviewRoute
+  '/api/public/blogs/': typeof ApiPublicBlogsIndexRoute
+  '/api/public/cms/pages/$slug': typeof ApiPublicCmsPagesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -466,12 +525,20 @@ export interface FileRoutesByTo {
   '/resources': typeof ResourcesIndexRoute
   '/solutions': typeof SolutionsIndexRoute
   '/tools': typeof ToolsIndexRoute
+  '/api/public/careers': typeof ApiPublicCareersRoute
+  '/api/public/events': typeof ApiPublicEventsRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
   '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages': typeof InternalPagesIndexRoute
+  '/api/public/blogs/$slug': typeof ApiPublicBlogsSlugRoute
+  '/api/public/onboarding/$office': typeof ApiPublicOnboardingOfficeRoute
+  '/api/public/redirects/resolve': typeof ApiPublicRedirectsResolveRoute
+  '/api/public/webinar-redirects/$slug': typeof ApiPublicWebinarRedirectsSlugRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
   '/internal/pages/$id/preview': typeof InternalPagesIdPreviewRoute
+  '/api/public/blogs': typeof ApiPublicBlogsIndexRoute
+  '/api/public/cms/pages/$slug': typeof ApiPublicCmsPagesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -526,12 +593,20 @@ export interface FileRoutesById {
   '/resources/': typeof ResourcesIndexRoute
   '/solutions/': typeof SolutionsIndexRoute
   '/tools/': typeof ToolsIndexRoute
+  '/api/public/careers': typeof ApiPublicCareersRoute
+  '/api/public/events': typeof ApiPublicEventsRoute
   '/cms/$id/edit': typeof CmsIdEditRoute
   '/cms/$id/preview': typeof CmsIdPreviewRoute
   '/internal/pages/new': typeof InternalPagesNewRoute
   '/internal/pages/': typeof InternalPagesIndexRoute
+  '/api/public/blogs/$slug': typeof ApiPublicBlogsSlugRoute
+  '/api/public/onboarding/$office': typeof ApiPublicOnboardingOfficeRoute
+  '/api/public/redirects/resolve': typeof ApiPublicRedirectsResolveRoute
+  '/api/public/webinar-redirects/$slug': typeof ApiPublicWebinarRedirectsSlugRoute
   '/internal/pages/$id/edit': typeof InternalPagesIdEditRoute
   '/internal/pages/$id/preview': typeof InternalPagesIdPreviewRoute
+  '/api/public/blogs/': typeof ApiPublicBlogsIndexRoute
+  '/api/public/cms/pages/$slug': typeof ApiPublicCmsPagesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -587,12 +662,20 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/solutions/'
     | '/tools/'
+    | '/api/public/careers'
+    | '/api/public/events'
     | '/cms/$id/edit'
     | '/cms/$id/preview'
     | '/internal/pages/new'
     | '/internal/pages/'
+    | '/api/public/blogs/$slug'
+    | '/api/public/onboarding/$office'
+    | '/api/public/redirects/resolve'
+    | '/api/public/webinar-redirects/$slug'
     | '/internal/pages/$id/edit'
     | '/internal/pages/$id/preview'
+    | '/api/public/blogs/'
+    | '/api/public/cms/pages/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -646,12 +729,20 @@ export interface FileRouteTypes {
     | '/resources'
     | '/solutions'
     | '/tools'
+    | '/api/public/careers'
+    | '/api/public/events'
     | '/cms/$id/edit'
     | '/cms/$id/preview'
     | '/internal/pages/new'
     | '/internal/pages'
+    | '/api/public/blogs/$slug'
+    | '/api/public/onboarding/$office'
+    | '/api/public/redirects/resolve'
+    | '/api/public/webinar-redirects/$slug'
     | '/internal/pages/$id/edit'
     | '/internal/pages/$id/preview'
+    | '/api/public/blogs'
+    | '/api/public/cms/pages/$slug'
   id:
     | '__root__'
     | '/'
@@ -705,12 +796,20 @@ export interface FileRouteTypes {
     | '/resources/'
     | '/solutions/'
     | '/tools/'
+    | '/api/public/careers'
+    | '/api/public/events'
     | '/cms/$id/edit'
     | '/cms/$id/preview'
     | '/internal/pages/new'
     | '/internal/pages/'
+    | '/api/public/blogs/$slug'
+    | '/api/public/onboarding/$office'
+    | '/api/public/redirects/resolve'
+    | '/api/public/webinar-redirects/$slug'
     | '/internal/pages/$id/edit'
     | '/internal/pages/$id/preview'
+    | '/api/public/blogs/'
+    | '/api/public/cms/pages/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -765,12 +864,20 @@ export interface RootRouteChildren {
   ResourcesIndexRoute: typeof ResourcesIndexRoute
   SolutionsIndexRoute: typeof SolutionsIndexRoute
   ToolsIndexRoute: typeof ToolsIndexRoute
+  ApiPublicCareersRoute: typeof ApiPublicCareersRoute
+  ApiPublicEventsRoute: typeof ApiPublicEventsRoute
   CmsIdEditRoute: typeof CmsIdEditRoute
   CmsIdPreviewRoute: typeof CmsIdPreviewRoute
   InternalPagesNewRoute: typeof InternalPagesNewRoute
   InternalPagesIndexRoute: typeof InternalPagesIndexRoute
+  ApiPublicBlogsSlugRoute: typeof ApiPublicBlogsSlugRoute
+  ApiPublicOnboardingOfficeRoute: typeof ApiPublicOnboardingOfficeRoute
+  ApiPublicRedirectsResolveRoute: typeof ApiPublicRedirectsResolveRoute
+  ApiPublicWebinarRedirectsSlugRoute: typeof ApiPublicWebinarRedirectsSlugRoute
   InternalPagesIdEditRoute: typeof InternalPagesIdEditRoute
   InternalPagesIdPreviewRoute: typeof InternalPagesIdPreviewRoute
+  ApiPublicBlogsIndexRoute: typeof ApiPublicBlogsIndexRoute
+  ApiPublicCmsPagesSlugRoute: typeof ApiPublicCmsPagesSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1132,6 +1239,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsRedirectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/careers': {
+      id: '/api/public/careers'
+      path: '/api/public/careers'
+      fullPath: '/api/public/careers'
+      preLoaderRoute: typeof ApiPublicCareersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/events': {
+      id: '/api/public/events'
+      path: '/api/public/events'
+      fullPath: '/api/public/events'
+      preLoaderRoute: typeof ApiPublicEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cms/$id/edit': {
       id: '/cms/$id/edit'
       path: '/cms/$id/edit'
@@ -1160,6 +1281,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InternalPagesNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/blogs/': {
+      id: '/api/public/blogs/'
+      path: '/api/public/blogs'
+      fullPath: '/api/public/blogs/'
+      preLoaderRoute: typeof ApiPublicBlogsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/blogs/$slug': {
+      id: '/api/public/blogs/$slug'
+      path: '/api/public/blogs/$slug'
+      fullPath: '/api/public/blogs/$slug'
+      preLoaderRoute: typeof ApiPublicBlogsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/onboarding/$office': {
+      id: '/api/public/onboarding/$office'
+      path: '/api/public/onboarding/$office'
+      fullPath: '/api/public/onboarding/$office'
+      preLoaderRoute: typeof ApiPublicOnboardingOfficeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/redirects/resolve': {
+      id: '/api/public/redirects/resolve'
+      path: '/api/public/redirects/resolve'
+      fullPath: '/api/public/redirects/resolve'
+      preLoaderRoute: typeof ApiPublicRedirectsResolveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/webinar-redirects/$slug': {
+      id: '/api/public/webinar-redirects/$slug'
+      path: '/api/public/webinar-redirects/$slug'
+      fullPath: '/api/public/webinar-redirects/$slug'
+      preLoaderRoute: typeof ApiPublicWebinarRedirectsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/internal/pages/$id/edit': {
       id: '/internal/pages/$id/edit'
       path: '/internal/pages/$id/edit'
@@ -1172,6 +1328,13 @@ declare module '@tanstack/react-router' {
       path: '/internal/pages/$id/preview'
       fullPath: '/internal/pages/$id/preview'
       preLoaderRoute: typeof InternalPagesIdPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/cms/pages/$slug': {
+      id: '/api/public/cms/pages/$slug'
+      path: '/api/public/cms/pages/$slug'
+      fullPath: '/api/public/cms/pages/$slug'
+      preLoaderRoute: typeof ApiPublicCmsPagesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -1229,12 +1392,20 @@ const rootRouteChildren: RootRouteChildren = {
   ResourcesIndexRoute: ResourcesIndexRoute,
   SolutionsIndexRoute: SolutionsIndexRoute,
   ToolsIndexRoute: ToolsIndexRoute,
+  ApiPublicCareersRoute: ApiPublicCareersRoute,
+  ApiPublicEventsRoute: ApiPublicEventsRoute,
   CmsIdEditRoute: CmsIdEditRoute,
   CmsIdPreviewRoute: CmsIdPreviewRoute,
   InternalPagesNewRoute: InternalPagesNewRoute,
   InternalPagesIndexRoute: InternalPagesIndexRoute,
+  ApiPublicBlogsSlugRoute: ApiPublicBlogsSlugRoute,
+  ApiPublicOnboardingOfficeRoute: ApiPublicOnboardingOfficeRoute,
+  ApiPublicRedirectsResolveRoute: ApiPublicRedirectsResolveRoute,
+  ApiPublicWebinarRedirectsSlugRoute: ApiPublicWebinarRedirectsSlugRoute,
   InternalPagesIdEditRoute: InternalPagesIdEditRoute,
   InternalPagesIdPreviewRoute: InternalPagesIdPreviewRoute,
+  ApiPublicBlogsIndexRoute: ApiPublicBlogsIndexRoute,
+  ApiPublicCmsPagesSlugRoute: ApiPublicCmsPagesSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
