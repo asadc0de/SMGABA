@@ -4,6 +4,7 @@ import {
   verifyAdminPassword,
   getWebinarRedirectsList,
   deleteWebinarRedirect,
+  SITE_URL,
 } from "@/lib/webinar-redirects";
 import type { WebinarRedirect } from "@/lib/supabase.server";
 import { Header } from "@/components/site/Header";
@@ -183,8 +184,7 @@ function AllLinksPage() {
   }
 
   function copyToClipboard(slug: string) {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://smgaba.com";
-    const fullUrl = `${origin}/${slug}`;
+    const fullUrl = `${SITE_URL}/${slug}`;
     navigator.clipboard.writeText(fullUrl);
     setCopiedSlug(slug);
     toast.success(`Copied: ${fullUrl}`);
@@ -370,12 +370,19 @@ function AllLinksPage() {
                             {/* Shortlink Slug */}
                             <td className="py-3.5 px-4 sm:px-6 align-middle font-mono">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-navy bg-navy/5 px-2 py-1 rounded-md text-xs sm:text-sm">
-                                  /{item.slug}
-                                </span>
+                                <a
+                                  href={`${SITE_URL}/${item.slug}`}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  title={`Preview ${SITE_URL}/${item.slug}`}
+                                  className="font-bold text-navy hover:text-primary bg-navy/5 hover:bg-navy/10 px-2 py-1 rounded-md text-xs sm:text-sm transition-colors inline-flex items-center gap-1 group/link"
+                                >
+                                  <span>/{item.slug}</span>
+                                  <ExternalLink className="size-2.5 opacity-40 group-hover/link:opacity-80" />
+                                </a>
                                 <button
                                   onClick={() => copyToClipboard(item.slug)}
-                                  title="Copy shortlink to clipboard"
+                                  title={`Copy ${SITE_URL}/${item.slug}`}
                                   className="inline-flex items-center gap-1 text-[11px] font-medium text-navy/70 hover:text-navy px-2 py-1 rounded hover:bg-navy/10 border border-border/40 hover:border-border transition-colors"
                                 >
                                   {copiedSlug === item.slug ? (

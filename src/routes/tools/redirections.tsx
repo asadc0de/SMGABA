@@ -5,6 +5,7 @@ import {
   verifyAdminPassword,
   getWebinarRedirectsList,
   saveWebinarRedirect,
+  SITE_URL,
 } from "@/lib/webinar-redirects";
 import type { WebinarRedirect } from "@/lib/supabase.server";
 import { Header } from "@/components/site/Header";
@@ -234,8 +235,7 @@ function CreateRedirectPage() {
   }
 
   function copyToClipboard(slug: string) {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://smgaba.com";
-    const fullUrl = `${origin}/${slug}`;
+    const fullUrl = `${SITE_URL}/${slug}`;
     navigator.clipboard.writeText(fullUrl);
     setCopiedSlug(slug);
     toast.success(`Copied: ${fullUrl}`);
@@ -322,7 +322,16 @@ function CreateRedirectPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-xl bg-background border border-border/80">
                   <div className="space-y-0.5 min-w-0">
                     <div className="font-mono font-bold text-sm text-navy truncate">
-                      https://smgaba.com/{lastCreated.slug}
+                      <a
+                        href={`${SITE_URL}/${lastCreated.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:underline hover:text-primary inline-flex items-center gap-1.5"
+                        title={`Open ${SITE_URL}/${lastCreated.slug}`}
+                      >
+                        <span>{SITE_URL}/{lastCreated.slug}</span>
+                        <ExternalLink className="size-3.5 opacity-60" />
+                      </a>
                     </div>
                     <div className="text-xs text-muted-foreground font-mono truncate">
                       &rarr; {lastCreated.target_url}
@@ -401,7 +410,7 @@ function CreateRedirectPage() {
                   </Label>
                   <div className="mt-1.5 flex rounded-xl border border-input focus-within:ring-2 focus-within:ring-primary bg-background overflow-hidden shadow-xs">
                     <span className="inline-flex items-center px-3.5 bg-secondary text-xs text-muted-foreground border-r font-mono font-medium">
-                      smgaba.com/
+                      {SITE_URL.replace(/^https?:\/\//, "")}/
                     </span>
                     <Input
                       id="slug-input"
@@ -418,9 +427,15 @@ function CreateRedirectPage() {
                   <div className="flex items-center justify-between gap-2 mt-1.5 text-[11.5px] text-muted-foreground">
                     <span>
                       Live Shortlink:{" "}
-                      <code className="font-mono text-primary font-bold">
-                        smgaba.com/{slugInput || "your-slug"}
-                      </code>
+                      <a
+                        href={`${SITE_URL}/${slugInput || "your-slug"}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-mono text-primary font-bold hover:underline"
+                        title={`Preview ${SITE_URL}/${slugInput || "your-slug"}`}
+                      >
+                        {SITE_URL}/{slugInput || "your-slug"}
+                      </a>
                     </span>
                     <span className="text-[11px] opacity-80">Lowercase letters, numbers, hyphens</span>
                   </div>
