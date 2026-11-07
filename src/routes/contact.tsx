@@ -20,6 +20,8 @@ import { SubpageHero } from "@/components/site/SubpageHero";
 import { Button } from "@/components/ui/button";
 import { submitNoCrmLead } from "@/lib/leads.server";
 import { BOOKING_ROUTE } from "@/data/calendly";
+import { OFFICES, type OfficeItem } from "@/data/offices";
+import { getOfficesServer } from "@/lib/site-content.server";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -32,52 +34,20 @@ export const Route = createFileRoute("/contact")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      const offices = await getOfficesServer();
+      return { offices };
+    } catch {
+      return { offices: OFFICES };
+    }
+  },
   component: ContactPage,
 });
 
-const OFFICES = [
-  {
-    id: "islandia",
-    name: "Long Island Headquarters",
-    eyebrow: "Corporate Headquarters",
-    addressLine1: "300 Corporate Plaza",
-    addressLine2: "Islandia, NY 11749",
-    phone: "(631) 481-8600",
-    phoneRaw: "6314818600",
-    fax: "(631) 481-8601",
-    hours: "Mon – Fri: 8:30am – 5:30pm",
-    taxHours: "Sat*: 9:00am – 5:00pm (*Jan 1 – Apr 15)",
-    href: "/islandia-location",
-  },
-  {
-    id: "manhattan",
-    name: "Manhattan Regional Office",
-    eyebrow: "Manhattan Practice",
-    addressLine1: "561 Seventh Avenue, 9th Floor",
-    addressLine2: "New York, NY 10018",
-    phone: "(212) 203-4700",
-    phoneRaw: "2122034700",
-    fax: "(631) 481-8601",
-    hours: "Mon – Fri: 8:30am – 5:30pm",
-    taxHours: "Sat*: 9:00am – 5:00pm (*Jan 1 – Apr 15)",
-    href: "/new-york-city-location",
-  },
-  {
-    id: "florida",
-    name: "Florida Regional Office",
-    eyebrow: "Gulf Coast Practice",
-    addressLine1: "646 94th Ave N",
-    addressLine2: "St. Petersburg, FL 33702",
-    phone: "(727) 388-3378",
-    phoneRaw: "7273883378",
-    fax: "(727) 318-4096",
-    hours: "Mon – Fri: 9:00am – 5:00pm",
-    taxHours: null,
-    href: "/florida-location",
-  },
-];
-
 function ContactPage() {
+  const loaderData = Route.useLoaderData();
+  const officesList = loaderData?.offices || OFFICES;
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -469,7 +439,7 @@ function ContactPage() {
             </div>
 
             <div className="grid gap-8 md:grid-cols-3">
-              {OFFICES.map((office) => (
+              {officesList.map((office) => (
                 <div
                   key={office.id}
                   className="flex flex-col justify-between rounded-3xl border border-stone-200/80 bg-[#fdfdfd] p-8 shadow-sm transition-all duration-300 hover:shadow-xl hover:border-blue-300 hover:-translate-y-1"

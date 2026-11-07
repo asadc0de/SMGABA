@@ -72,6 +72,7 @@ export const verifyAdminPassword = createServerFn({ method: "POST" })
     const authorized = isAuthorized(inputPassword, expectedPassword);
     return {
       authorized,
+      valid: authorized,
       error: authorized ? undefined : "Incorrect password.",
     };
   });

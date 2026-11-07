@@ -20,6 +20,8 @@ import { CoreValues } from "@/components/site/CoreValues";
 import { IntegrationsMarquee } from "@/components/site/IntegrationsMarquee";
 import { Timeline } from "@/components/site/Timeline";
 import { BOOKING_ROUTE } from "@/data/calendly";
+import { getAboutPageContentServer, getStoryPageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_ABOUT_PAGE_CONTENT, DEFAULT_STORY_PAGE_CONTENT } from "@/data/pageContent";
 
 export const Route = createFileRoute("/about-us")({
   head: () => ({
@@ -32,6 +34,17 @@ export const Route = createFileRoute("/about-us")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      const [about, story] = await Promise.all([
+        getAboutPageContentServer().catch(() => DEFAULT_ABOUT_PAGE_CONTENT),
+        getStoryPageContentServer().catch(() => DEFAULT_STORY_PAGE_CONTENT),
+      ]);
+      return { about, story };
+    } catch {
+      return { about: DEFAULT_ABOUT_PAGE_CONTENT, story: DEFAULT_STORY_PAGE_CONTENT };
+    }
+  },
   component: AboutUsPage,
 });
 
@@ -62,7 +75,14 @@ const TESTIMONIALS = [
 ];
 
 function AboutUsPage() {
+  const loaderData = Route.useLoaderData();
+  const about = loaderData?.about || DEFAULT_ABOUT_PAGE_CONTENT;
+  const story = loaderData?.story || DEFAULT_STORY_PAGE_CONTENT;
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  const benefitsList = about.whyWorkWithUs?.benefits && about.whyWorkWithUs.benefits.length > 0
+    ? about.whyWorkWithUs.benefits
+    : FIVE_BENEFITS;
 
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
@@ -73,11 +93,14 @@ function AboutUsPage() {
             1. HERO SECTION (Photographic background + blue gradient overlay + CTA)
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1521737711867-e3b97375f902.webp"
-          title="About Us"
-          description="Get a customized accounting, bookkeeping, tax and advisory plan that is accurate, responsive and built around you and your business. We focus on long-term client relationships."
-          buttonText="MEET OUR TEAM"
-          buttonHref="/our-team"
+          bgImage={about.hero.bgImage || "/images/stock/unsplash-photo-1521737711867-e3b97375f902.webp"}
+          title={about.hero.title || "About Us"}
+          description={
+            about.hero.description ||
+            "Get a customized accounting, bookkeeping, tax and advisory plan that is accurate, responsive and built around you and your business. We focus on long-term client relationships."
+          }
+          buttonText={about.hero.buttonText || "MEET OUR TEAM"}
+          buttonHref={about.hero.buttonHref || "/our-team"}
         />
 
         {/* =========================================================================
@@ -86,30 +109,36 @@ function AboutUsPage() {
         <section className="py-20 sm:py-28 bg-white">
           <div className="mx-auto max-w-6xl px-6 lg:px-12 text-center">
             <h2 className="font-serif-hero text-2xl sm:text-3xl font-bold text-[#142340] tracking-tight">
-              The SMG Advantage
+              {about.advantage.eyebrow || "The SMG Advantage"}
             </h2>
             <h3 className="mt-2 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#1e3a6d]">
-              Changing the Game
+              {about.advantage.headline || "Changing the Game"}
             </h3>
 
             <div className="mt-10 space-y-6 text-left text-base sm:text-lg leading-relaxed text-slate-600 font-normal">
-              <p>
-                SMG provides accounting, bookkeeping, tax and advisory services to businesses, non-profits and individuals. Our mission is to give you accurate, timely financial information and responsive guidance, so you understand where you stand today and can plan with confidence for what comes next.
-              </p>
-              <p>
-                We focus on long-term, high-quality client relationships built on trust. We take the time to know you, your employees and your operations, so our guidance grows with your business while saving you time and money.
-              </p>
-              <p>
-                Many business challenges stem from inefficient bookkeeping, poor cash management, inadequate reporting or reactive tax planning. We address the short, mid and long term—so you can focus on running your business with confidence that your accounting is handled.
-              </p>
+              {about.advantage.paragraphs && about.advantage.paragraphs.length > 0 ? (
+                about.advantage.paragraphs.map((p, i) => <p key={i}>{p}</p>)
+              ) : (
+                <>
+                  <p>
+                    SMG provides accounting, bookkeeping, tax and advisory services to businesses, non-profits and individuals. Our mission is to give you accurate, timely financial information and responsive guidance, so you understand where you stand today and can plan with confidence for what comes next.
+                  </p>
+                  <p>
+                    We focus on long-term, high-quality client relationships built on trust. We take the time to know you, your employees and your operations, so our guidance grows with your business while saving you time and money.
+                  </p>
+                  <p>
+                    Many business challenges stem from inefficient bookkeeping, poor cash management, inadequate reporting or reactive tax planning. We address the short, mid and long term—so you can focus on running your business with confidence that your accounting is handled.
+                  </p>
+                </>
+              )}
             </div>
 
             <div className="mt-10">
               <a
-                href="/contact"
+                href={about.advantage.buttonHref || "/contact"}
                 className="inline-flex items-center justify-center rounded-full bg-[#1b2d4f] px-9 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-white shadow-lg transition-all hover:bg-[#243c68] hover:scale-105 active:scale-95"
               >
-                WORK WITH US
+                {about.advantage.buttonText || "WORK WITH US"}
               </a>
             </div>
           </div>
@@ -119,7 +148,7 @@ function AboutUsPage() {
             OUR STORY / TIMELINE SECTION
            ========================================================================= */}
         <div className="border-t border-slate-100 bg-slate-50/40">
-          <Timeline />
+          <Timeline items={story.milestones} intro={story.intro} />
         </div>
 
         {/* =========================================================================
@@ -132,24 +161,23 @@ function AboutUsPage() {
            ========================================================================= */}
         <CoreValues />
 
-
         {/* =========================================================================
             4. OUR MISSION (Royal Blue Ribbon Banner)
            ========================================================================= */}
         <section className="bg-gradient-to-r from-[#17488c] via-[#1d57a8] to-[#17488c] py-16 text-center text-white shadow-inner">
           <div className="mx-auto max-w-4xl px-6">
             <h2 className="font-serif-hero text-3xl sm:text-4xl font-bold text-white">
-              Our Mission
+              {about.mission.headline || "Our Mission"}
             </h2>
             <p className="mt-3 text-lg sm:text-xl text-blue-50 font-normal">
-              Building Relationships with Passion, Care, & Responsiveness.
+              {about.mission.subheading || "Building Relationships with Passion, Care, & Responsiveness."}
             </p>
             <div className="mt-8">
               <a
-                href={BOOKING_ROUTE}
+                href={about.mission.buttonHref || BOOKING_ROUTE}
                 className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#17488c] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95"
               >
-                SCHEDULE A CONSULTATION
+                {about.mission.buttonText || "SCHEDULE A CONSULTATION"}
               </a>
             </div>
           </div>
@@ -162,7 +190,7 @@ function AboutUsPage() {
           <div className="mx-auto max-w-6xl px-6 lg:px-12">
             <div className="text-center mb-16">
               <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
-                Why Work With Us
+                {about.whyWorkWithUs?.title || "Why Work With Us"}
               </h2>
             </div>
 
@@ -170,11 +198,11 @@ function AboutUsPage() {
               {/* Left List */}
               <div className="lg:col-span-7">
                 <h3 className="font-serif-hero text-2xl sm:text-3xl font-bold text-[#1a335c]">
-                  Five Benefits of Adding Us to Your Trusted Team
+                  {about.whyWorkWithUs?.benefitsHeading || "Five Benefits of Adding Us to Your Trusted Team"}
                 </h3>
 
                 <ul className="mt-8 space-y-5">
-                  {FIVE_BENEFITS.map((benefit) => (
+                  {benefitsList.map((benefit) => (
                     <li key={benefit} className="flex items-center gap-3.5">
                       <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#1b4e94] text-white">
                         <Check className="size-3.5 stroke-[3]" />
@@ -191,7 +219,7 @@ function AboutUsPage() {
               <div className="lg:col-span-5 flex justify-center">
                 <div className="relative size-72 sm:size-84 overflow-hidden rounded-full border-4 border-[#3b82f6]/20 p-2 shadow-2xl">
                   <img
-                    src="/images/solutions/home-feature-hospitality.jpg"
+                    src={about.whyWorkWithUs?.image || "/images/solutions/home-feature-hospitality.jpg"}
                     alt="SMG Partnership"
                     className="size-full rounded-full object-cover"
                   />

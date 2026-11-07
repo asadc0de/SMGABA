@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getSupabaseServerClient } from "./supabase.server";
 import { BLOG_POSTS, type BlogPost, type ContentBlock } from "@/data/blogPosts";
+import { RESOURCE_POSTS, type ResourcePost } from "@/data/resourcePosts";
 import { isPublicBlogVisible } from "./blog-visibility";
 
 export interface ExtendedBlogPost extends BlogPost {
@@ -8,6 +9,7 @@ export interface ExtendedBlogPost extends BlogPost {
   status?: "draft" | "published" | "scheduled";
   publishDate?: string; // ISO string for scheduled future publishing
   isCustom?: boolean;
+  destination?: "blog" | "resource" | "both";
   createdAt?: string;
   updatedAt?: string;
 }
@@ -23,6 +25,36 @@ async function getFsModule() {
     return { fs: fs.default || fs, path: path.default || path };
   } catch {
     return null;
+  }
+}
+
+// Load destinations map from Supabase cms_settings
+async function getDestinationsMap(supabase: any): Promise<Record<string, "blog" | "resource" | "both">> {
+  if (!supabase) return {};
+  try {
+    const { data } = await supabase.from("cms_settings").select("data").eq("key", "blog_destinations").maybeSingle();
+    if (data?.data && typeof data.data === "object") {
+      return data.data;
+    }
+  } catch (err) {
+    // ignore
+  }
+  return {};
+}
+
+// Save destination mapping to Supabase cms_settings
+async function saveDestination(supabase: any, slug: string, destination: "blog" | "resource" | "both") {
+  if (!supabase) return;
+  try {
+    const map = await getDestinationsMap(supabase);
+    map[slug] = destination;
+    await supabase.from("cms_settings").upsert({
+      key: "blog_destinations",
+      data: map,
+      updated_at: new Date().toISOString(),
+    });
+  } catch (err) {
+    console.warn("[blogs.server] Could not save destination to cms_settings:", err);
   }
 }
 
@@ -100,27 +132,40 @@ async function fetchDynamicBlogs(): Promise<ExtendedBlogPost[]> {
         .order("created_at", { ascending: false });
 
       if (!error && Array.isArray(data)) {
-        return data.map((row) => ({
-          id: row.id,
-          slug: row.slug,
-          title: row.title,
-          metaTitle: row.meta_title || row.title,
-          metaDescription: row.meta_description || row.excerpt || "",
-          h1: row.h1 || row.title,
-          date: row.date || new Date(row.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-          publishDate: row.publish_date || undefined,
-          author: row.author || "SMG Advisory Team",
-          category: row.category || "General",
-          image: row.image || "",
-          readTime: row.read_time || "4 min read",
-          excerpt: row.excerpt || "",
-          status: (row.status as "draft" | "published" | "scheduled") || "published",
-          archived: Boolean(row.archived),
-          blocks: (row.blocks as ContentBlock[]) || [],
-          isCustom: true,
-          createdAt: row.created_at,
-          updatedAt: row.updated_at,
-        }));
+        const destMap = await getDestinationsMap(supabase);
+        return data.map((row) => {
+          const fallback = localFallbackBlogs.get(row.slug.toLowerCase());
+          const destination =
+            destMap[row.slug] || fallback?.destination || (row as any).destination || "blog";
+          return {
+            id: row.id,
+            slug: row.slug,
+            title: row.title,
+            metaTitle: row.meta_title || row.title,
+            metaDescription: row.meta_description || row.excerpt || "",
+            h1: row.h1 || row.title,
+            date:
+              row.date ||
+              new Date(row.created_at).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+                year: "numeric",
+              }),
+            publishDate: row.publish_date || undefined,
+            author: row.author || "SMG Advisory Team",
+            category: row.category || "General",
+            image: row.image || "",
+            readTime: row.read_time || "4 min read",
+            excerpt: row.excerpt || "",
+            status: (row.status as "draft" | "published" | "scheduled") || "published",
+            archived: Boolean(row.archived),
+            destination,
+            blocks: (row.blocks as ContentBlock[]) || [],
+            isCustom: true,
+            createdAt: row.created_at,
+            updatedAt: row.updated_at,
+          };
+        });
       }
       if (error) {
         console.warn("[blogs.server] Supabase fetch error (falling back to disk):", error.message);
@@ -141,12 +186,18 @@ export const getPublicBlogs = createServerFn({ method: "GET" }).handler(
     const dynamicBlogs = await fetchDynamicBlogs();
     
     // Exclude drafts, archived posts, and posts that are not yet published.
-    const liveDynamic = dynamicBlogs.filter(isPublicBlogVisible);
+    // Also only include blogs designated for Blog or Both (not Resource-only)
+    const liveDynamic = dynamicBlogs.filter(
+      (b) =>
+        isPublicBlogVisible(b) &&
+        (b.destination === "blog" || b.destination === "both" || !b.destination)
+    );
     
     // Map static blogs with metadata
     const staticBlogs: ExtendedBlogPost[] = BLOG_POSTS.map((p) => ({
       ...p,
       status: "published",
+      destination: "blog",
       isCustom: false,
     }));
 
@@ -168,6 +219,47 @@ export const getPublicBlogs = createServerFn({ method: "GET" }).handler(
 );
 
 /**
+ * Public Server Function: Returns all publicly eligible resources.
+ * Combines static RESOURCE_POSTS and any dynamic custom articles where destination is "resource" or "both".
+ */
+export const getPublicResources = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExtendedBlogPost[]> => {
+    const dynamicBlogs = await fetchDynamicBlogs();
+
+    // Dynamic articles designated for Resources that are live and visible
+    const liveDynamic = dynamicBlogs.filter(
+      (b) =>
+        isPublicBlogVisible(b) &&
+        (b.destination === "resource" || b.destination === "both")
+    );
+
+    // Map static resources
+    const staticResources: ExtendedBlogPost[] = RESOURCE_POSTS.filter(
+      (p) => !p.archived && p.slug !== "obbba-summary"
+    ).map((p) => ({
+      ...p,
+      status: "published",
+      destination: "resource",
+      isCustom: false,
+    }));
+
+    const map = new Map<string, ExtendedBlogPost>();
+    for (const post of staticResources) {
+      map.set(post.slug.toLowerCase(), post);
+    }
+    for (const post of liveDynamic) {
+      map.set(post.slug.toLowerCase(), post);
+    }
+
+    return Array.from(map.values()).sort((a, b) => {
+      const timeA = a.publishDate ? new Date(a.publishDate).getTime() : new Date(a.date).getTime() || 0;
+      const timeB = b.publishDate ? new Date(b.publishDate).getTime() : new Date(b.date).getTime() || 0;
+      return timeB - timeA;
+    });
+  },
+);
+
+/**
  * Admin Server Function: Returns ALL blogs (including drafts and future scheduled posts) for the Blog Editor Studio.
  */
 export const getAdminBlogs = createServerFn({ method: "GET" }).handler(
@@ -177,6 +269,7 @@ export const getAdminBlogs = createServerFn({ method: "GET" }).handler(
     const staticBlogs: ExtendedBlogPost[] = BLOG_POSTS.map((p) => ({
       ...p,
       status: "published",
+      destination: "blog",
       isCustom: false,
     }));
 
@@ -228,8 +321,49 @@ export const getBlogPost = createServerFn({ method: "GET" })
       return {
         ...staticMatch,
         status: "published",
+        destination: "blog",
         isCustom: false,
       };
+    }
+
+    return null;
+  });
+
+/**
+ * Server Function: Looks up a resource post by slug for /resources/$slug.
+ */
+export const getUnifiedResourcePost = createServerFn({ method: "GET" })
+  .validator((slug: string) => slug)
+  .handler(async ({ data: rawSlug }): Promise<ExtendedBlogPost | null> => {
+    const slug = normalizeBlogSlug(rawSlug);
+    if (!slug) return null;
+
+    // 1. Check dynamic blogs designated for resources or both
+    const dynamicBlogs = await fetchDynamicBlogs();
+    const customMatch = dynamicBlogs.find(
+      (b) =>
+        b.slug.toLowerCase() === slug &&
+        (b.destination === "resource" || b.destination === "both")
+    );
+    if (customMatch) {
+      return customMatch;
+    }
+
+    // 2. Check static resources
+    const staticMatch = RESOURCE_POSTS.find((b) => b.slug.toLowerCase() === slug);
+    if (staticMatch) {
+      return {
+        ...staticMatch,
+        status: "published",
+        destination: "resource",
+        isCustom: false,
+      };
+    }
+
+    // 3. Fallback: check any dynamic blog with this slug
+    const anyDynamic = dynamicBlogs.find((b) => b.slug.toLowerCase() === slug);
+    if (anyDynamic) {
+      return anyDynamic;
     }
 
     return null;
@@ -260,6 +394,7 @@ export const saveBlogPost = createServerFn({ method: "POST" })
         year: "numeric",
       });
 
+    const destination = input.destination || "blog";
     const record: ExtendedBlogPost = {
       id: input.id || `blog-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
       slug,
@@ -276,6 +411,7 @@ export const saveBlogPost = createServerFn({ method: "POST" })
       excerpt: (input.excerpt || "").trim(),
       status,
       archived: Boolean(input.archived),
+      destination,
       blocks: Array.isArray(input.blocks) ? input.blocks : [],
       isCustom: true,
       createdAt: input.createdAt || nowIso,
@@ -316,6 +452,9 @@ export const saveBlogPost = createServerFn({ method: "POST" })
         if (upsertError) {
           console.warn("[blogs.server] Supabase upsert error (using local fallback):", upsertError.message);
         }
+
+        // Also save destination mapping to cms_settings
+        await saveDestination(supabase, slug, destination);
       } catch (err) {
         console.warn("[blogs.server] Supabase write exception:", err);
       }
@@ -340,6 +479,15 @@ export const deleteBlogPost = createServerFn({ method: "POST" })
     if (supabase) {
       try {
         await supabase.from("blog_posts").delete().eq("slug", slug);
+        const map = await getDestinationsMap(supabase);
+        if (map[slug]) {
+          delete map[slug];
+          await supabase.from("cms_settings").upsert({
+            key: "blog_destinations",
+            data: map,
+            updated_at: new Date().toISOString(),
+          });
+        }
       } catch {
         // ignore
       }

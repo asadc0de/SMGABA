@@ -8,6 +8,7 @@ import {
 import { getEventsAdminList, type EventItem } from "@/lib/events-admin";
 import { getAllCmsPages, type CmsPage } from "@/lib/cms.server";
 import { getAdminBlogs, type ExtendedBlogPost } from "@/lib/blogs.server";
+import { getDashboardSiteMetricsAdmin } from "@/lib/site-content-admin";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,10 @@ import {
   Compass,
   ArrowUpRight,
   Zap,
+  Users,
+  Quote,
+  MapPin,
+  BarChart3,
 } from "lucide-react";
 
 export const Route = createFileRoute("/dashboard")({
@@ -51,10 +56,17 @@ export const Route = createFileRoute("/dashboard")({
   }),
   loader: async () => {
     try {
-      const [blogsRes, redirectsRes, eventsRes] = await Promise.all([
+      const [blogsRes, redirectsRes, eventsRes, siteMetricsRes] = await Promise.all([
         getAdminBlogs().catch(() => ({ blogs: [] })),
         getWebinarRedirectsList().catch(() => ({ redirects: [], isConfigured: false })),
         getEventsAdminList().catch(() => ({ events: [], isConfigured: false })),
+        getDashboardSiteMetricsAdmin().catch(() => ({
+          totalTeam: 17,
+          totalTestimonials: 22,
+          totalOffices: 3,
+          totalStats: 4,
+          totalCategories: 7,
+        })),
       ]);
 
       return {
@@ -62,6 +74,13 @@ export const Route = createFileRoute("/dashboard")({
         blogs: blogsRes?.blogs || [],
         redirects: redirectsRes?.redirects || [],
         events: eventsRes?.events || [],
+        siteMetrics: siteMetricsRes || {
+          totalTeam: 17,
+          totalTestimonials: 22,
+          totalOffices: 3,
+          totalStats: 4,
+          totalCategories: 7,
+        },
       };
     } catch (err) {
       console.error("Dashboard loader error:", err);
@@ -70,6 +89,13 @@ export const Route = createFileRoute("/dashboard")({
         blogs: [],
         redirects: [],
         events: [],
+        siteMetrics: {
+          totalTeam: 17,
+          totalTestimonials: 22,
+          totalOffices: 3,
+          totalStats: 4,
+          totalCategories: 7,
+        },
       };
     }
   },
@@ -99,6 +125,15 @@ function DashboardPage() {
   const [blogs, setBlogs] = useState<ExtendedBlogPost[]>(loaderData.blogs || []);
   const [redirects, setRedirects] = useState<WebinarRedirect[]>(loaderData.redirects || []);
   const [events, setEvents] = useState<EventItem[]>(loaderData.events || []);
+  const [siteMetrics, setSiteMetrics] = useState(
+    loaderData.siteMetrics || {
+      totalTeam: 17,
+      totalTestimonials: 22,
+      totalOffices: 3,
+      totalStats: 4,
+      totalCategories: 7,
+    },
+  );
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Check saved admin password on mount
@@ -170,17 +205,19 @@ function DashboardPage() {
     const activePw = pwdOverride || password || (typeof window !== "undefined" ? localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY) || "" : "");
     setIsRefreshing(true);
     try {
-      const [cmsRes, blogsRes, redirectsRes, eventsRes] = await Promise.all([
+      const [cmsRes, blogsRes, redirectsRes, eventsRes, siteMetricsRes] = await Promise.all([
         getAllCmsPages({ data: { adminPassword: activePw } }).catch(() => ({ success: false, pages: [] })),
         getAdminBlogs().catch(() => ({ blogs: [] })),
         getWebinarRedirectsList().catch(() => ({ redirects: [], isConfigured: false })),
         getEventsAdminList().catch(() => ({ events: [], isConfigured: false })),
+        getDashboardSiteMetricsAdmin().catch(() => null),
       ]);
 
       if (cmsRes?.pages) setCmsPages(cmsRes.pages);
       if (blogsRes?.blogs) setBlogs(blogsRes.blogs);
       if (redirectsRes?.redirects) setRedirects(redirectsRes.redirects);
       if (eventsRes?.events) setEvents(eventsRes.events);
+      if (siteMetricsRes) setSiteMetrics(siteMetricsRes);
     } catch (err) {
       console.error("Refresh error:", err);
       toast.error("Failed to refresh dashboard data");
@@ -551,11 +588,11 @@ function DashboardPage() {
 
                 <div>
                   <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-purple-700 transition-colors flex items-center gap-1.5">
-                    <span>Blog Studio & Post Creator</span>
+                    <span>Articles &amp; Resources Studio</span>
                     <ArrowUpRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </h3>
                   <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                    Write rich multi-block articles with headings, quotes, bullet lists, custom authors, reading times, SEO titles, and publish directly to /blog.
+                    Write rich multi-block articles with all headings (H2, H3, H4), inline images, advisory callout boxes, key stat cards, tables, and publish directly to /blog or /resources library.
                   </p>
                 </div>
               </div>
@@ -563,7 +600,7 @@ function DashboardPage() {
               <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
                 <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-purple-700 text-white font-bold text-xs px-4">
                   <Link to="/blogs-editor">
-                    <span>Open Blog Studio</span>
+                    <span>Open Article Studio</span>
                     <ArrowRight className="size-3.5 ml-1" />
                   </Link>
                 </Button>
@@ -572,13 +609,19 @@ function DashboardPage() {
                   <Button asChild variant="outline" size="sm" className="rounded-full text-xs font-semibold">
                     <Link to="/blogs-editor">
                       <Plus className="size-3.5 mr-1" />
-                      <span>Write New Post</span>
+                      <span>Write Article</span>
                     </Link>
                   </Button>
                   <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-slate-500">
                     <Link to="/blog">
                       <Globe className="size-3.5 mr-1" />
-                      <span>Live Blog</span>
+                      <span>Blog</span>
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-purple-700">
+                    <Link to="/resources">
+                      <BookOpen className="size-3.5 mr-1" />
+                      <span>Resources</span>
                     </Link>
                   </Button>
                 </div>
@@ -718,6 +761,222 @@ function DashboardPage() {
                     </a>
                   </Button>
                 </div>
+              </div>
+            </div>
+
+            {/* Module 6: Team Directory & Roster Manager */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-900/5 transition-all duration-200 flex flex-col justify-between group">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="size-12 rounded-2xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Users className="size-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200/60">
+                    {siteMetrics.totalTeam} Members
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-blue-700 transition-colors flex items-center gap-1.5">
+                    <span>Team Directory & Roster Manager</span>
+                    <ArrowUpRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Manage team member bios, roles, avatar images, credentials, department filter categories, and display ordering on /our-team.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-blue-700 text-white font-bold text-xs px-4">
+                  <Link to="/tools/team">
+                    <span>Manage Team</span>
+                    <ArrowRight className="size-3.5 ml-1" />
+                  </Link>
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  <Button asChild variant="outline" size="sm" className="rounded-full text-xs font-semibold">
+                    <Link to="/tools/team">
+                      <Plus className="size-3.5 mr-1" />
+                      <span>Add Member</span>
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-slate-500">
+                    <a href="/our-team" target="_blank" rel="noreferrer">
+                      <Globe className="size-3.5 mr-1" />
+                      <span>Live Team</span>
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Module 7: Client Testimonials & Endorsements */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 hover:border-amber-300 hover:shadow-xl hover:shadow-amber-900/5 transition-all duration-200 flex flex-col justify-between group">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="size-12 rounded-2xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Quote className="size-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200/60">
+                    {siteMetrics.totalTestimonials} Reviews
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-amber-700 transition-colors flex items-center gap-1.5">
+                    <span>Client Testimonials & Endorsements</span>
+                    <ArrowUpRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Manage client quotes, company logo styling, star ratings, and display order published on /testimonials with real-time preview.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-amber-700 text-white font-bold text-xs px-4">
+                  <Link to="/tools/testimonials">
+                    <span>Manage Testimonials</span>
+                    <ArrowRight className="size-3.5 ml-1" />
+                  </Link>
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  <Button asChild variant="outline" size="sm" className="rounded-full text-xs font-semibold">
+                    <Link to="/tools/testimonials">
+                      <Plus className="size-3.5 mr-1" />
+                      <span>Add Review</span>
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-slate-500">
+                    <a href="/testimonials" target="_blank" rel="noreferrer">
+                      <Globe className="size-3.5 mr-1" />
+                      <span>Live Page</span>
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Module 8: Office Locations Manager */}
+            <div className="bg-white rounded-3xl p-6 border border-emerald-300 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-900/5 transition-all duration-200 flex flex-col justify-between group">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="size-12 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <MapPin className="size-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+                    {siteMetrics.totalOffices} Offices
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-emerald-700 transition-colors flex items-center gap-1.5">
+                    <span>Office Locations Manager</span>
+                    <ArrowUpRight className="size-4 text-emerald-600 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Edit office names, addresses, phone numbers, hours, maps, and display order across Header, Footer, Contact, Location pages, and the homepage.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-emerald-700 text-white font-bold text-xs px-4">
+                  <Link to="/tools/offices">
+                    <span>Manage Offices</span>
+                    <ArrowRight className="size-3.5 ml-1" />
+                  </Link>
+                </Button>
+
+                <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-slate-500 hover:text-emerald-700">
+                  <a href="/contact" target="_blank" rel="noreferrer">
+                    <Globe className="size-3.5 mr-1" />
+                    <span>Live Contact</span>
+                  </a>
+                </Button>
+              </div>
+            </div>
+
+            {/* Module 9: Firm Statistics Editor */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 hover:border-rose-300 hover:shadow-xl hover:shadow-rose-900/5 transition-all duration-200 flex flex-col justify-between group">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="size-12 rounded-2xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <BarChart3 className="size-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200/60">
+                    4 Metrics
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-rose-700 transition-colors flex items-center gap-1.5">
+                    <span>Firm Statistics Editor</span>
+                    <ArrowUpRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Update headline numbers (40+ Professionals, 2,500+ Clients, Decades of Experience, 3 Offices) displayed across homepage, Our Story, Our Team, and solution pages.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-rose-700 text-white font-bold text-xs px-4">
+                  <Link to="/tools/stats">
+                    <span>Edit Stats</span>
+                    <ArrowRight className="size-3.5 ml-1" />
+                  </Link>
+                </Button>
+
+                <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-slate-500 hover:text-rose-700">
+                  <a href="/our-story" target="_blank" rel="noreferrer">
+                    <Globe className="size-3.5 mr-1" />
+                    <span>Live Stats</span>
+                  </a>
+                </Button>
+              </div>
+            </div>
+
+            {/* Module 10: Site Pages & Content Editor */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200/80 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-900/5 transition-all duration-200 flex flex-col justify-between group">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="size-12 rounded-2xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Layers className="size-6" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+                    All Site Pages
+                  </span>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-bold text-[#0f2142] group-hover:text-indigo-700 transition-colors flex items-center gap-1.5">
+                    <span>Site Pages &amp; Content Editor</span>
+                    <ArrowUpRight className="size-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                    Edit copy, heroes, milestones, and structured service cards across Home, About Us, Our Story, Solutions (Bookkeeping, CFO, Tax, Wealth), Industries (8 Verticals), and Careers.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-6 mt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+                <Button asChild size="sm" className="rounded-full bg-[#0f2142] hover:bg-indigo-700 text-white font-bold text-xs px-4">
+                  <Link to="/tools/pages">
+                    <span>Edit Pages</span>
+                    <ArrowRight className="size-3.5 ml-1" />
+                  </Link>
+                </Button>
+
+                <Button asChild variant="ghost" size="sm" className="rounded-full text-xs font-semibold text-slate-500 hover:text-indigo-700">
+                  <a href="/" target="_blank" rel="noreferrer">
+                    <Globe className="size-3.5 mr-1" />
+                    <span>Live Site</span>
+                  </a>
+                </Button>
               </div>
             </div>
           </div>

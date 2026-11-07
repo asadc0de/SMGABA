@@ -1,4 +1,13 @@
-export const FIRM_STATS = {
+export interface FirmStats {
+  professionals: number;
+  clients: number;
+  experienceText: string;
+  experienceLabel: string;
+  yearsExperience: string | number | null;
+  offices: number;
+}
+
+export const FIRM_STATS: FirmStats = {
   professionals: 40,
   clients: 2500,
   experienceText: "Decades",

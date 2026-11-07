@@ -9,6 +9,8 @@ import { Testimonials } from "@/components/site/Testimonials";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { LogoMarquee } from "@/components/site/LogoMarquee";
 import { ProvenProcess } from "@/components/site/ProvenProcess";
+import { getHomePageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_HOME_PAGE_CONTENT } from "@/data/pageContent";
 
 const HERO_IMAGE = "/images/blog/smg-wallpaper.webp";
 const OG_IMAGE = "/images/blog/smg-wallpaper.jpg";
@@ -42,6 +44,14 @@ export const Route = createFileRoute("/")({
       { name: "twitter:image", content: OG_IMAGE },
     ],
   }),
+  loader: async () => {
+    try {
+      const home = await getHomePageContentServer();
+      return { home };
+    } catch {
+      return { home: DEFAULT_HOME_PAGE_CONTENT };
+    }
+  },
   component: Index,
 });
 
@@ -96,13 +106,22 @@ const LOCATIONS = [
 ];
 
 function Index() {
+  const loaderData = Route.useLoaderData();
+  const home = loaderData?.home || DEFAULT_HOME_PAGE_CONTENT;
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
 
       <main>
         {/* 2 — Hero */}
-        <Hero />
+        <Hero
+          headline={home.hero?.headline}
+          subheading={home.hero?.subheading}
+          ctaText={home.hero?.ctaText}
+          ctaLink={home.hero?.ctaLink}
+          bgImage={home.hero?.bgImage}
+        />
 
         {/* 3 — Welcome / Intro */}
         <section className="section-y">
@@ -110,27 +129,26 @@ function Index() {
             <div className="relative">
               <div className="absolute -bottom-5 -left-5 hidden size-40 rounded-3xl bg-mist lg:block" />
               <img
-                src="/images/solutions/home-feature-hospitality.jpg"
+                src={home.welcome?.image || "/images/solutions/home-feature-hospitality.jpg"}
                 alt="SMG Home Feature Hospitality Accounting"
                 loading="lazy"
                 className="relative aspect-4/3 w-full rounded-3xl object-cover shadow-[var(--shadow-card-hover)]"
               />
             </div>
             <div>
-              <p className="eyebrow">Welcome to SMG</p>
+              <p className="eyebrow">{home.welcome?.eyebrow || "Welcome to SMG"}</p>
               <h2 className="mt-3 text-3xl md:text-4xl">
-                A full-service accounting, bookkeeping & advisory firm
+                {home.welcome?.title || "A full-service accounting, bookkeeping & advisory firm"}
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                SMG is a full-service accounting, bookkeeping, and advisory firm that provides services
-                to diverse businesses and individuals including hospitality companies, commercial and
-                residential real estate professionals and small business owners. We focus on long term,
-                high quality client relationships by creating strategic partnerships which grow on the
-                foundation of trust.
+                {home.welcome?.paragraph ||
+                  "SMG is a full-service accounting, bookkeeping, and advisory firm that provides services to diverse businesses and individuals including hospitality companies, commercial and residential real estate professionals and small business owners. We focus on long term, high quality client relationships by creating strategic partnerships which grow on the foundation of trust."}
               </p>
               <div className="mt-9">
                 <Button asChild size="lg" variant="outline">
-                  <a href="/about-us">Learn More</a>
+                  <a href={home.welcome?.ctaLink || "/about-us"}>
+                    {home.welcome?.ctaText || "Learn More"}
+                  </a>
                 </Button>
               </div>
             </div>
@@ -145,10 +163,12 @@ function Index() {
           >
             <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_auto]">
               <div className="max-w-2xl">
-                <h3 className="text-2xl text-primary-foreground md:text-3xl">Get the Latest Updates</h3>
+                <h3 className="text-2xl text-primary-foreground md:text-3xl">
+                  {home.newsletter?.title || "Get the Latest Updates"}
+                </h3>
                 <p className="mt-4 leading-relaxed text-primary-foreground/80">
-                  Subscribe to SMG's newsletter to discover up to date information and resources related
-                  to hospitality legislation, tips for cost management, tax updates and more.
+                  {home.newsletter?.description ||
+                    "Subscribe to SMG's newsletter to discover up to date information and resources related to hospitality legislation, tips for cost management, tax updates and more."}
                 </p>
               </div>
               <form
@@ -177,11 +197,13 @@ function Index() {
         <section className="pt-8 pb-[4.5rem] md:pb-[7rem]" id="solutions">
           <div className="mx-auto max-w-7xl px-5 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
-              <p className="eyebrow">What we do</p>
-              <h2 className="mt-3 text-3xl md:text-4xl">Our Solutions</h2>
+              <p className="eyebrow">{home.solutionsSection?.eyebrow || "What we do"}</p>
+              <h2 className="mt-3 text-3xl md:text-4xl">
+                {home.solutionsSection?.title || "Our Solutions"}
+              </h2>
               <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-                SMG works closely to bring out the best of our clients' businesses by concentrating our
-                efforts on each individual client's specific needs.
+                {home.solutionsSection?.description ||
+                  "SMG works closely to bring out the best of our clients' businesses by concentrating our efforts on each individual client's specific needs."}
               </p>
             </div>
 
@@ -229,21 +251,29 @@ function Index() {
         <section className="section-y bg-secondary">
           <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 lg:grid-cols-2 lg:gap-20 lg:px-8">
             <div className="order-2 lg:order-1">
-              <p className="eyebrow">Industry expertise</p>
-              <h2 className="mt-3 text-3xl md:text-4xl">We Know the Hospitality Industry</h2>
+              <p className="eyebrow">{home.hospitalitySection?.eyebrow || "Industry expertise"}</p>
+              <h2 className="mt-3 text-3xl md:text-4xl">
+                {home.hospitalitySection?.title || "We Know the Hospitality Industry"}
+              </h2>
               <div className="mt-6 space-y-5 text-lg leading-relaxed text-muted-foreground">
-                <p>
-                  SMG is a proud member of the New York State Restaurant Association, the New York City
-                  Hospitality Alliance and the National Restaurant Association. We work with numerous
-                  restaurants throughout the nation and understand the necessity for timely and accurate
-                  information in a highly competitive industry.
-                </p>
-                <p>
-                  Our goal is to increase your profitability while letting you do what you do best:
-                  manage your front of the house, run your kitchen, bake, bartend, or a little of
-                  everything!
-                </p>
-                <p>We'll show you how to refine the numbers so you can keep doing what you love.</p>
+                {home.hospitalitySection?.paragraphs && home.hospitalitySection.paragraphs.length > 0 ? (
+                  home.hospitalitySection.paragraphs.map((p, i) => <p key={i}>{p}</p>)
+                ) : (
+                  <>
+                    <p>
+                      SMG is a proud member of the New York State Restaurant Association, the New York City
+                      Hospitality Alliance and the National Restaurant Association. We work with numerous
+                      restaurants throughout the nation and understand the necessity for timely and accurate
+                      information in a highly competitive industry.
+                    </p>
+                    <p>
+                      Our goal is to increase your profitability while letting you do what you do best:
+                      manage your front of the house, run your kitchen, bake, bartend, or a little of
+                      everything!
+                    </p>
+                    <p>We'll show you how to refine the numbers so you can keep doing what you love.</p>
+                  </>
+                )}
               </div>
 
               <div className="mt-9 flex flex-wrap items-center gap-4">

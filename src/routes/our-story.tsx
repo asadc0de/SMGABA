@@ -4,6 +4,8 @@ import { Footer } from "@/components/site/Footer";
 import { Timeline } from "@/components/site/Timeline";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { FIRM_STATS } from "@/data/firmStats";
+import { getFirmStatsServer, getStoryPageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_STORY_PAGE_CONTENT } from "@/data/pageContent";
 import { BOOKING_ROUTE } from "@/data/calendly";
 
 export const Route = createFileRoute("/our-story")({
@@ -17,17 +19,35 @@ export const Route = createFileRoute("/our-story")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      const [stats, story] = await Promise.all([
+        getFirmStatsServer().catch(() => FIRM_STATS),
+        getStoryPageContentServer().catch(() => DEFAULT_STORY_PAGE_CONTENT),
+      ]);
+      return { stats, story };
+    } catch {
+      return { stats: FIRM_STATS, story: DEFAULT_STORY_PAGE_CONTENT };
+    }
+  },
   component: OurStoryPage,
 });
 
 function OurStoryPage() {
+  const loaderData = Route.useLoaderData();
+  const stats = loaderData?.stats || FIRM_STATS;
+  const story = loaderData?.story || DEFAULT_STORY_PAGE_CONTENT;
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
       <Header />
 
       <main className="pt-24 sm:pt-28 pb-16">
         {/* Minimal Our Story Timeline matching Greg's design */}
-        <Timeline className="pt-4 sm:pt-6 pb-12 sm:pb-14" />
+        <Timeline
+          className="pt-4 sm:pt-6 pb-12 sm:pb-14"
+          items={story.milestones}
+          intro={story.intro}
+        />
 
         {/* Firm Stats Bar */}
         <section className="bg-[#142340] py-14 text-white shadow-inner">
@@ -35,7 +55,7 @@ function OurStoryPage() {
             <div className="grid grid-cols-2 gap-8 lg:grid-cols-4 text-center">
               <div>
                 <div className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                  {FIRM_STATS.professionals}+
+                  {stats.professionals}+
                 </div>
                 <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-200">
                   Accounting & Tax Specialists
@@ -44,7 +64,7 @@ function OurStoryPage() {
 
               <div>
                 <div className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                  {FIRM_STATS.clients.toLocaleString()}+
+                  {stats.clients.toLocaleString()}+
                 </div>
                 <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-200">
                   Clients Served
@@ -53,7 +73,7 @@ function OurStoryPage() {
 
               <div>
                 <div className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                  {FIRM_STATS.experienceText || "Decades"}
+                  {stats.experienceText || "Decades"}
                 </div>
                 <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-200">
                   Combined Experience
@@ -62,7 +82,7 @@ function OurStoryPage() {
 
               <div>
                 <div className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
-                  {FIRM_STATS.offices}
+                  {stats.offices}
                 </div>
                 <p className="mt-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-blue-200">
                   Regional Offices (NY & FL)

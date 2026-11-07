@@ -3,12 +3,26 @@ import { BOOKING_ROUTE } from "@/data/calendly";
 
 const HERO_IMAGE = "/images/blog/smg-wallpaper.webp";
 
-export function Hero() {
+export interface HeroProps {
+  headline?: string;
+  subheading?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  bgImage?: string;
+}
+
+export function Hero({
+  headline = "Accounting, Bookkeeping & Advisory for Growing Businesses",
+  subheading = "We focus on long term, high quality client relationships by creating strategic partnerships which grow on the foundation of trust.",
+  ctaText = "SCHEDULE A CONSULTATION",
+  ctaLink = BOOKING_ROUTE,
+  bgImage = HERO_IMAGE,
+}: HeroProps = {}) {
   return (
     <section className="relative isolate min-h-[62vh] md:min-h-[70vh] flex items-center overflow-hidden">
       {/* Background Magnolia Floral Wallpaper */}
       <img
-        src={HERO_IMAGE}
+        src={bgImage || HERO_IMAGE}
         alt="SMG Accounting & Advisory Wallpaper"
         aria-hidden="true"
         width={1300}
@@ -40,22 +54,21 @@ export function Hero() {
 
           {/* Main Headline */}
           <h1 className="font-serif-hero text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.25rem] lg:leading-[1.16] drop-shadow-sm">
-            Accounting, Bookkeeping &amp; Advisory for Growing Businesses
+            {headline}
           </h1>
 
           {/* Subheading */}
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/95 sm:text-lg sm:leading-relaxed font-normal">
-            We focus on long term, high quality client relationships by creating strategic
-            partnerships which grow on the foundation of trust.
+            {subheading}
           </p>
 
           {/* Schedule a Consultation White Pill Button */}
           <div className="mt-8 sm:mt-10">
             <a
-              href={BOOKING_ROUTE}
+              href={ctaLink || BOOKING_ROUTE}
               className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3.5 text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#1e3a6d] shadow-lg shadow-black/20 transition-all duration-300 hover:bg-white/90 hover:shadow-xl hover:scale-[1.02] hover:-translate-y-0.5"
             >
-              SCHEDULE A CONSULTATION
+              {ctaText || "SCHEDULE A CONSULTATION"}
             </a>
           </div>
 

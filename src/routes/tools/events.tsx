@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { MediaImageInput } from "@/components/admin/MediaImagePickerModal";
 import {
   LayoutDashboard,
   Lock,
@@ -844,46 +845,14 @@ function EventsAdminPage() {
                     </div>
                   </div>
 
-                  {/* Thumbnail Image Upload */}
+                  {/* Thumbnail Image */}
                   <div>
-                    <Label className="text-xs font-semibold text-navy">
-                      Event Thumbnail Image <span className="text-muted-foreground font-normal">(Supabase Storage)</span>
-                    </Label>
-                    <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                      <label className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border/80 bg-secondary/50 hover:bg-secondary cursor-pointer text-xs font-semibold text-navy transition-colors">
-                        <UploadCloud className="size-4" />
-                        {isUploadingImage ? "Uploading to Supabase..." : "Choose Image (PNG/JPG/WEBP)"}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          disabled={isUploadingImage}
-                          className="hidden"
-                        />
-                      </label>
-
-                      {thumbnailUrl && (
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={thumbnailUrl}
-                            alt="Event thumbnail preview"
-                            className="size-12 rounded-lg object-cover border border-border shadow-xs"
-                          />
-                          <div className="text-xs">
-                            <span className="font-mono text-green-600 font-semibold flex items-center gap-1">
-                              <CheckCircle2 className="size-3.5" /> Uploaded
-                            </span>
-                            <button
-                              type="button"
-                              onClick={() => setThumbnailUrl("")}
-                              className="text-[11px] text-destructive hover:underline mt-0.5"
-                            >
-                              Remove
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                    <MediaImageInput
+                      label="Event Thumbnail Image (Upload from Device or Select from Gallery)"
+                      value={thumbnailUrl}
+                      onChange={(url) => setThumbnailUrl(url)}
+                      placeholder="/images/stock/... or https://..."
+                    />
                   </div>
 
                   {/* Submit Actions */}

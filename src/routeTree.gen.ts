@@ -58,8 +58,13 @@ import { Route as SolutionsWealthManagementRouteImport } from './routes/solution
 import { Route as ToolsIndexRouteImport } from './routes/tools/index'
 import { Route as ToolsEventsRouteImport } from './routes/tools/events'
 import { Route as ToolsLinksRouteImport } from './routes/tools/links'
+import { Route as ToolsOfficesRouteImport } from './routes/tools/offices'
 import { Route as ToolsOnboardingRouteImport } from './routes/tools/onboarding'
+import { Route as ToolsPagesRouteImport } from './routes/tools/pages'
 import { Route as ToolsRedirectionsRouteImport } from './routes/tools/redirections'
+import { Route as ToolsStatsRouteImport } from './routes/tools/stats'
+import { Route as ToolsTeamRouteImport } from './routes/tools/team'
+import { Route as ToolsTestimonialsRouteImport } from './routes/tools/testimonials'
 import { Route as ApiPublicCareersRouteImport } from './routes/api/public/careers'
 import { Route as ApiPublicEventsRouteImport } from './routes/api/public/events'
 import { Route as CmsIdEditRouteImport } from './routes/cms/$id/edit'
@@ -322,14 +327,39 @@ const ToolsLinksRoute = ToolsLinksRouteImport.update({
   path: '/tools/links',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsOfficesRoute = ToolsOfficesRouteImport.update({
+  id: '/tools/offices',
+  path: '/tools/offices',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsOnboardingRoute = ToolsOnboardingRouteImport.update({
   id: '/tools/onboarding',
   path: '/tools/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ToolsPagesRoute = ToolsPagesRouteImport.update({
+  id: '/tools/pages',
+  path: '/tools/pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ToolsRedirectionsRoute = ToolsRedirectionsRouteImport.update({
   id: '/tools/redirections',
   path: '/tools/redirections',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsStatsRoute = ToolsStatsRouteImport.update({
+  id: '/tools/stats',
+  path: '/tools/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsTeamRoute = ToolsTeamRouteImport.update({
+  id: '/tools/team',
+  path: '/tools/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ToolsTestimonialsRoute = ToolsTestimonialsRouteImport.update({
+  id: '/tools/testimonials',
+  path: '/tools/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicCareersRoute = ApiPublicCareersRouteImport.update({
@@ -451,8 +481,13 @@ export interface FileRoutesByFullPath {
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
   '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
+  '/tools/offices': typeof ToolsOfficesRoute
   '/tools/onboarding': typeof ToolsOnboardingRoute
+  '/tools/pages': typeof ToolsPagesRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
+  '/tools/stats': typeof ToolsStatsRoute
+  '/tools/team': typeof ToolsTeamRoute
+  '/tools/testimonials': typeof ToolsTestimonialsRoute
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -518,8 +553,13 @@ export interface FileRoutesByTo {
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
   '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
+  '/tools/offices': typeof ToolsOfficesRoute
   '/tools/onboarding': typeof ToolsOnboardingRoute
+  '/tools/pages': typeof ToolsPagesRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
+  '/tools/stats': typeof ToolsStatsRoute
+  '/tools/team': typeof ToolsTeamRoute
+  '/tools/testimonials': typeof ToolsTestimonialsRoute
   '/blog': typeof BlogIndexRoute
   '/cms': typeof CmsIndexRoute
   '/resources': typeof ResourcesIndexRoute
@@ -586,8 +626,13 @@ export interface FileRoutesById {
   '/solutions/wealth-management': typeof SolutionsWealthManagementRoute
   '/tools/events': typeof ToolsEventsRoute
   '/tools/links': typeof ToolsLinksRoute
+  '/tools/offices': typeof ToolsOfficesRoute
   '/tools/onboarding': typeof ToolsOnboardingRoute
+  '/tools/pages': typeof ToolsPagesRoute
   '/tools/redirections': typeof ToolsRedirectionsRoute
+  '/tools/stats': typeof ToolsStatsRoute
+  '/tools/team': typeof ToolsTeamRoute
+  '/tools/testimonials': typeof ToolsTestimonialsRoute
   '/blog/': typeof BlogIndexRoute
   '/cms/': typeof CmsIndexRoute
   '/resources/': typeof ResourcesIndexRoute
@@ -655,8 +700,13 @@ export interface FileRouteTypes {
     | '/solutions/wealth-management'
     | '/tools/events'
     | '/tools/links'
+    | '/tools/offices'
     | '/tools/onboarding'
+    | '/tools/pages'
     | '/tools/redirections'
+    | '/tools/stats'
+    | '/tools/team'
+    | '/tools/testimonials'
     | '/blog/'
     | '/cms/'
     | '/resources/'
@@ -722,8 +772,13 @@ export interface FileRouteTypes {
     | '/solutions/wealth-management'
     | '/tools/events'
     | '/tools/links'
+    | '/tools/offices'
     | '/tools/onboarding'
+    | '/tools/pages'
     | '/tools/redirections'
+    | '/tools/stats'
+    | '/tools/team'
+    | '/tools/testimonials'
     | '/blog'
     | '/cms'
     | '/resources'
@@ -789,8 +844,13 @@ export interface FileRouteTypes {
     | '/solutions/wealth-management'
     | '/tools/events'
     | '/tools/links'
+    | '/tools/offices'
     | '/tools/onboarding'
+    | '/tools/pages'
     | '/tools/redirections'
+    | '/tools/stats'
+    | '/tools/team'
+    | '/tools/testimonials'
     | '/blog/'
     | '/cms/'
     | '/resources/'
@@ -857,8 +917,13 @@ export interface RootRouteChildren {
   SolutionsWealthManagementRoute: typeof SolutionsWealthManagementRoute
   ToolsEventsRoute: typeof ToolsEventsRoute
   ToolsLinksRoute: typeof ToolsLinksRoute
+  ToolsOfficesRoute: typeof ToolsOfficesRoute
   ToolsOnboardingRoute: typeof ToolsOnboardingRoute
+  ToolsPagesRoute: typeof ToolsPagesRoute
   ToolsRedirectionsRoute: typeof ToolsRedirectionsRoute
+  ToolsStatsRoute: typeof ToolsStatsRoute
+  ToolsTeamRoute: typeof ToolsTeamRoute
+  ToolsTestimonialsRoute: typeof ToolsTestimonialsRoute
   BlogIndexRoute: typeof BlogIndexRoute
   CmsIndexRoute: typeof CmsIndexRoute
   ResourcesIndexRoute: typeof ResourcesIndexRoute
@@ -1225,6 +1290,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsLinksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/offices': {
+      id: '/tools/offices'
+      path: '/tools/offices'
+      fullPath: '/tools/offices'
+      preLoaderRoute: typeof ToolsOfficesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/onboarding': {
       id: '/tools/onboarding'
       path: '/tools/onboarding'
@@ -1232,11 +1304,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ToolsOnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tools/pages': {
+      id: '/tools/pages'
+      path: '/tools/pages'
+      fullPath: '/tools/pages'
+      preLoaderRoute: typeof ToolsPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tools/redirections': {
       id: '/tools/redirections'
       path: '/tools/redirections'
       fullPath: '/tools/redirections'
       preLoaderRoute: typeof ToolsRedirectionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/stats': {
+      id: '/tools/stats'
+      path: '/tools/stats'
+      fullPath: '/tools/stats'
+      preLoaderRoute: typeof ToolsStatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/team': {
+      id: '/tools/team'
+      path: '/tools/team'
+      fullPath: '/tools/team'
+      preLoaderRoute: typeof ToolsTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tools/testimonials': {
+      id: '/tools/testimonials'
+      path: '/tools/testimonials'
+      fullPath: '/tools/testimonials'
+      preLoaderRoute: typeof ToolsTestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/careers': {
@@ -1385,8 +1485,13 @@ const rootRouteChildren: RootRouteChildren = {
   SolutionsWealthManagementRoute: SolutionsWealthManagementRoute,
   ToolsEventsRoute: ToolsEventsRoute,
   ToolsLinksRoute: ToolsLinksRoute,
+  ToolsOfficesRoute: ToolsOfficesRoute,
   ToolsOnboardingRoute: ToolsOnboardingRoute,
+  ToolsPagesRoute: ToolsPagesRoute,
   ToolsRedirectionsRoute: ToolsRedirectionsRoute,
+  ToolsStatsRoute: ToolsStatsRoute,
+  ToolsTeamRoute: ToolsTeamRoute,
+  ToolsTestimonialsRoute: ToolsTestimonialsRoute,
   BlogIndexRoute: BlogIndexRoute,
   CmsIndexRoute: CmsIndexRoute,
   ResourcesIndexRoute: ResourcesIndexRoute,
