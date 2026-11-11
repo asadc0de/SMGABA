@@ -12,8 +12,21 @@ import { ProvenProcess } from "@/components/site/ProvenProcess";
 import { getHomePageContentServer } from "@/lib/site-content.server";
 import { DEFAULT_HOME_PAGE_CONTENT } from "@/data/pageContent";
 
-const HERO_IMAGE = "/images/blog/smg-wallpaper.webp";
+const HERO_IMAGE = "/images/blog/smg-wallpaper-optimized.webp";
 const OG_IMAGE = "/images/blog/smg-wallpaper.jpg";
+const OPTIMIZED_HOME_IMAGES: Record<string, string> = {
+  "/images/blog/smg-wallpaper.webp": HERO_IMAGE,
+  "/images/solutions/home-feature-hospitality.jpg": "/images/solutions/home-feature-hospitality.webp",
+  "/images/solutions/smg-bookkeeping-1.jpeg": "/images/solutions/smg-bookkeeping-1.webp",
+  "/images/solutions/adobestock-201950021-1.jpeg": "/images/solutions/adobestock-201950021-1.webp",
+  "/images/solutions/smg-tax-services-1.jpeg": "/images/solutions/smg-tax-services-1.webp",
+  "/images/solutions/smg-back-office-1.jpeg": "/images/solutions/smg-back-office-1.webp",
+};
+
+function getHomeImage(src?: string, fallback = ""): string {
+  const image = src || fallback;
+  return OPTIMIZED_HOME_IMAGES[image] || image;
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -59,22 +72,22 @@ const SOLUTIONS = [
   {
     title: "Outsourced Bookkeeping",
     href: "/solutions#bookkeeping",
-    img: "/images/solutions/smg-bookkeeping-1.jpeg",
+    img: "/images/solutions/smg-bookkeeping-1.webp",
   },
   {
     title: "CFO on the Go",
     href: "/solutions#cfo-advisory",
-    img: "/images/solutions/adobestock-201950021-1.jpeg",
+    img: "/images/solutions/adobestock-201950021-1.webp",
   },
   {
     title: "Tax Services",
     href: "/solutions#tax",
-    img: "/images/solutions/smg-tax-services-1.jpeg",
+    img: "/images/solutions/smg-tax-services-1.webp",
   },
   {
     title: "Back Office",
     href: "/solutions#wealth-management",
-    img: "/images/solutions/smg-back-office-1.jpeg",
+    img: "/images/solutions/smg-back-office-1.webp",
   },
 ];
 
@@ -120,7 +133,7 @@ function Index() {
           subheading={home.hero?.subheading}
           ctaText={home.hero?.ctaText}
           ctaLink={home.hero?.ctaLink}
-          bgImage={home.hero?.bgImage}
+          bgImage={getHomeImage(home.hero?.bgImage, HERO_IMAGE)}
         />
 
         {/* 3 — Welcome / Intro */}
@@ -129,7 +142,7 @@ function Index() {
             <div className="relative">
               <div className="absolute -bottom-5 -left-5 hidden size-40 rounded-3xl bg-mist lg:block" />
               <img
-                src={home.welcome?.image || "/images/solutions/home-feature-hospitality.jpg"}
+                src={getHomeImage(home.welcome?.image, "/images/solutions/home-feature-hospitality.jpg")}
                 alt="SMG Home Feature Hospitality Accounting"
                 loading="lazy"
                 decoding="async"
