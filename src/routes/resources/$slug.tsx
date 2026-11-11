@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { getResourcePostBySlug, RESOURCE_POSTS } from "@/data/resourcePosts";
+import type { ResourcePost } from "@/data/resourcePosts";
 import { getUnifiedResourcePost } from "@/lib/blogs.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
@@ -45,21 +45,17 @@ export const Route = createFileRoute("/resources/$slug")({
       throw notFound();
     }
 
-    let post = null;
+    let result = null;
     try {
-      post = await getUnifiedResourcePost({ data: params.slug });
+      result = await getUnifiedResourcePost({ data: params.slug });
     } catch {
       // fallback
     }
 
-    if (!post) {
-      post = (getResourcePostBySlug(params.slug) as any) || null;
-    }
-
-    if (!post) {
+    if (!result?.post) {
       throw notFound();
     }
-    return { post };
+    return { post: result.post, relatedPosts: result.relatedPosts || [] };
   },
   notFoundComponent: ResourceNotFoundComponent,
   component: ResourceSlugPage,
@@ -98,15 +94,11 @@ function ResourceNotFoundComponent() {
 function ResourceSlugPage() {
   const data = Route.useLoaderData();
   const post = data?.post;
+  const relatedPosts = data?.relatedPosts || [];
 
   if (!post) {
     return <ResourceNotFoundComponent />;
   }
-
-  const relatedPosts = RESOURCE_POSTS
-    .filter((p) => !p.archived && p.slug !== post.slug && p.slug !== "obbba-summary")
-    .sort((a, b) => (a.category === post.category ? -1 : 1))
-    .slice(0, 3);
 
   return (
     <BlogPostView

@@ -1,4 +1,6 @@
 import * as React from "react";
+import { isValidImageUrl } from "@/lib/cms-urls";
+export { isValidImageUrl };
 import {
   type BlockStyleProps,
   type Responsive,
@@ -34,57 +36,7 @@ export interface ImageBlockProps extends BlockStyleProps {
   borderColor?: string;
 }
 
-/**
- * Validates whether an image URL is safe and adheres to allowed protocols.
- *
- * Rules:
- * 1. Must be a non-empty string.
- * 2. Reject any URL containing whitespace (\s), backslashes (\), or control characters (\x00-\x1F, \x7F) anywhere.
- * 3. Reject protocol-relative URLs ("//...").
- * 4. Explicitly reject dangerous schemes: javascript:, data:, vbscript:, file:
- * 5. Allow:
- *    - "https://" (e.g. Supabase Storage public URLs, external HTTPS)
- *    - "http://" (e.g. local dev servers)
- *    - "/" (single-slash relative path)
- */
-export function isValidImageUrl(rawUrl: string): boolean {
-  if (!rawUrl || typeof rawUrl !== "string") return false;
-  const trimmed = rawUrl.trim();
-  if (!trimmed) return false;
 
-  // Reject any backslash, whitespace, or control characters anywhere
-  if (/[\s\\\x00-\x1F\x7F]/.test(trimmed)) {
-    return false;
-  }
-
-  // Reject protocol-relative URLs
-  if (trimmed.startsWith("//")) {
-    return false;
-  }
-
-  const lower = trimmed.toLowerCase();
-
-  // Explicitly reject dangerous and binary data schemes
-  if (
-    lower.startsWith("javascript:") ||
-    lower.startsWith("data:") ||
-    lower.startsWith("vbscript:") ||
-    lower.startsWith("file:")
-  ) {
-    return false;
-  }
-
-  // Allowed image sources
-  if (
-    lower.startsWith("https://") ||
-    lower.startsWith("http://") ||
-    (lower.startsWith("/") && !lower.startsWith("//"))
-  ) {
-    return true;
-  }
-
-  return false;
-}
 
 const WIDTH_CLASSES: Record<ImageWidth, string> = {
   full: "w-full",

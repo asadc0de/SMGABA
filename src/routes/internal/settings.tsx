@@ -10,7 +10,7 @@ import {
   DEFAULT_SITE_SETTINGS,
   isValidNavigationUrl,
 } from "@/lib/cms-settings";
-import { isValidImageUrl } from "@/cms/blocks/Image";
+import { isValidImageUrl } from "@/lib/cms-urls";
 import { verifyAdminPassword } from "@/lib/webinar-redirects";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";

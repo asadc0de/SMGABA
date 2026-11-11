@@ -10,7 +10,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { RESOURCE_POSTS, type ResourcePost } from "@/data/resourcePosts";
+import type { ResourcePost } from "@/data/resourcePosts";
 import { getPublicResources } from "@/lib/blogs.server";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,10 +87,7 @@ const STRATEGIC_GUIDES = [
 function ResourcesPage() {
   const loaderData = Route.useLoaderData();
   const allResources = useMemo(() => {
-    if (loaderData?.resources && loaderData.resources.length > 0) {
-      return loaderData.resources;
-    }
-    return RESOURCE_POSTS;
+    return loaderData?.resources || [];
   }, [loaderData?.resources]);
 
   const [activeCategory, setActiveCategory] = useState("All");

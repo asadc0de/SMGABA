@@ -25,25 +25,12 @@ export default defineConfig({
       rollupOptions: {
         output: {
           manualChunks(id) {
-            if (id.includes("blogPosts")) {
+            const normalizedId = id.replace(/\\/g, "/");
+            if (normalizedId.includes("/data/blogPosts")) {
               return "blog-posts-data";
             }
-            if (id.includes("resourcePosts")) {
+            if (normalizedId.includes("/data/resourcePosts")) {
               return "resource-posts-data";
-            }
-            if (id.includes("node_modules")) {
-              if (id.includes("@puckeditor")) {
-                return "puck-vendor";
-              }
-              if (id.includes("lucide-react")) {
-                return "icons-vendor";
-              }
-              if (id.includes("@radix-ui")) {
-                return "ui-vendor";
-              }
-              if (id.includes("recharts")) {
-                return "charts-vendor";
-              }
             }
           },
         },

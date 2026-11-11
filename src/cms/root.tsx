@@ -1,5 +1,6 @@
 import * as React from "react";
-import { isValidImageUrl } from "./blocks/Image";
+import { isValidImageUrl, isValidCanonicalUrl } from "@/lib/cms-urls";
+export { isValidImageUrl, isValidCanonicalUrl };
 
 export interface CmsRootProps {
   title?: string;
@@ -21,27 +22,7 @@ export interface CmsRootProps {
   children?: React.ReactNode;
 }
 
-/**
- * Validates canonical URL.
- * Only allows https://, http://, and / (relative).
- * Rejects javascript:, data:, vbscript:, file:, protocol-relative //, backslashes, and whitespace.
- */
-export function isValidCanonicalUrl(url?: string): boolean {
-  if (!url || typeof url !== "string") return false;
-  const s = url.trim().toLowerCase();
-  if (
-    s.startsWith("javascript:") ||
-    s.startsWith("data:") ||
-    s.startsWith("vbscript:") ||
-    s.startsWith("file:") ||
-    s.startsWith("//") ||
-    s.includes("\\") ||
-    /\s/.test(s)
-  ) {
-    return false;
-  }
-  return s.startsWith("https://") || s.startsWith("http://") || s.startsWith("/");
-}
+
 
 export function CmsRoot({
   title,

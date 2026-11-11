@@ -334,39 +334,55 @@ export const getBlogPost = createServerFn({ method: "GET" })
  */
 export const getUnifiedResourcePost = createServerFn({ method: "GET" })
   .validator((slug: string) => slug)
-  .handler(async ({ data: rawSlug }): Promise<ExtendedBlogPost | null> => {
+  .handler(async ({ data: rawSlug }): Promise<{ post: ExtendedBlogPost | null; relatedPosts: ExtendedBlogPost[] }> => {
     const slug = normalizeBlogSlug(rawSlug);
-    if (!slug) return null;
+    if (!slug) return { post: null, relatedPosts: [] };
 
     // 1. Check dynamic blogs designated for resources or both
     const dynamicBlogs = await fetchDynamicBlogs();
+    let post: ExtendedBlogPost | null = null;
     const customMatch = dynamicBlogs.find(
       (b) =>
         b.slug.toLowerCase() === slug &&
         (b.destination === "resource" || b.destination === "both")
     );
     if (customMatch) {
-      return customMatch;
+      post = customMatch;
+    } else {
+      // 2. Check static resources
+      const staticMatch = RESOURCE_POSTS.find((b) => b.slug.toLowerCase() === slug);
+      if (staticMatch) {
+        post = {
+          ...staticMatch,
+          status: "published",
+          destination: "resource",
+          isCustom: false,
+        };
+      } else {
+        // 3. Fallback: check any dynamic blog with this slug
+        const anyDynamic = dynamicBlogs.find((b) => b.slug.toLowerCase() === slug);
+        if (anyDynamic) {
+          post = anyDynamic;
+        }
+      }
     }
 
-    // 2. Check static resources
-    const staticMatch = RESOURCE_POSTS.find((b) => b.slug.toLowerCase() === slug);
-    if (staticMatch) {
-      return {
-        ...staticMatch,
+    if (!post) {
+      return { post: null, relatedPosts: [] };
+    }
+
+    const relatedPosts: ExtendedBlogPost[] = RESOURCE_POSTS
+      .filter((p) => !p.archived && p.slug !== post!.slug && p.slug !== "obbba-summary")
+      .sort((a, b) => (a.category === post!.category ? -1 : 1))
+      .slice(0, 3)
+      .map((p) => ({
+        ...p,
         status: "published",
         destination: "resource",
         isCustom: false,
-      };
-    }
+      }));
 
-    // 3. Fallback: check any dynamic blog with this slug
-    const anyDynamic = dynamicBlogs.find((b) => b.slug.toLowerCase() === slug);
-    if (anyDynamic) {
-      return anyDynamic;
-    }
-
-    return null;
+    return { post, relatedPosts };
   });
 
 /**
