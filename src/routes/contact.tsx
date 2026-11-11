@@ -18,8 +18,8 @@ import { Footer } from "@/components/site/Footer";
 import { WealthDisclosure } from "@/components/site/WealthDisclosure";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { Button } from "@/components/ui/button";
-import { submitNoCrmLead } from "@/lib/leads.server";
 import { BOOKING_ROUTE } from "@/data/calendly";
+import { submitContact } from "@/lib/api/client";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -122,12 +122,7 @@ function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await submitContact({
           name: formData.name.trim(),
           email: email,
           phone: formData.phone.trim() || undefined,
@@ -135,12 +130,9 @@ function ContactPage() {
           message: formData.message.trim(),
           officePreference: formData.officePreference,
           website: formData.website || undefined,
-        }),
       });
 
-      const response = await res.json().catch(() => ({}));
-
-      if (res.ok && response.success !== false) {
+      if (response.success !== false) {
         setSubmitted(true);
         setFormData({
           name: "",
@@ -186,7 +178,6 @@ function ContactPage() {
         <section className="section-y bg-[#faf9f6] border-b border-stone-200/70">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
-              
               {/* Left Column: Form Info + Quick Booking Card */}
               <div className="lg:col-span-5 space-y-8">
                 <div>
@@ -197,7 +188,9 @@ function ContactPage() {
                     How Can We Support Your Business?
                   </h2>
                   <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
-                    Whether you are seeking outsourced bookkeeping, strategic tax planning, CFO advisory, or an introduction to wealth management through our partner, Kuttin Wealth Management, our team is responsive, attentive, and ready to help.
+                    Whether you are seeking outsourced bookkeeping, strategic tax planning, CFO
+                    advisory, or an introduction to wealth management through our partner, Kuttin
+                    Wealth Management, our team is responsive, attentive, and ready to help.
                   </p>
                 </div>
 
@@ -213,10 +206,14 @@ function ContactPage() {
                     Need to Pick a Time Right Away?
                   </h3>
                   <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Skip the message queue and book a complimentary discovery call directly onto our onboarding team's live calendar.
+                    Skip the message queue and book a complimentary discovery call directly onto our
+                    onboarding team's live calendar.
                   </p>
                   <div className="mt-6">
-                    <Button asChild className="w-full rounded-full bg-[#142340] hover:bg-[#1b4e94] text-white font-bold text-xs uppercase tracking-wider py-3 shadow-md">
+                    <Button
+                      asChild
+                      className="w-full rounded-full bg-[#142340] hover:bg-[#1b4e94] text-white font-bold text-xs uppercase tracking-wider py-3 shadow-md"
+                    >
                       <a href={BOOKING_ROUTE} className="flex items-center justify-center gap-2">
                         <span>Schedule a Consultation</span>
                         <ArrowRight className="size-4" />
@@ -234,7 +231,8 @@ function ContactPage() {
                       Send Us a Message
                     </h3>
                     <p className="mt-2 text-sm text-slate-500">
-                      Fill out the form below and an SMG representative will reach back out promptly.
+                      Fill out the form below and an SMG representative will reach back out
+                      promptly.
                     </p>
                   </div>
 
@@ -249,7 +247,8 @@ function ContactPage() {
                         Thank You!
                       </h4>
                       <p className="mt-2 text-sm text-slate-600 leading-relaxed max-w-md mx-auto">
-                        Your message has been received. Our team will review your inquiry and follow up within one business day.
+                        Your message has been received. Our team will review your inquiry and follow
+                        up within one business day.
                       </p>
                       <div className="mt-6">
                         <Button
@@ -335,7 +334,8 @@ function ContactPage() {
                             htmlFor="contact-phone"
                             className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5"
                           >
-                            Phone Number <span className="text-xs font-normal text-slate-400">(Optional)</span>
+                            Phone Number{" "}
+                            <span className="text-xs font-normal text-slate-400">(Optional)</span>
                           </label>
                           <input
                             id="contact-phone"
@@ -406,7 +406,8 @@ function ContactPage() {
                           htmlFor="contact-consent"
                           className="text-xs text-slate-600 leading-relaxed cursor-pointer"
                         >
-                          I agree to receive communications and updates from SMG Accounting &amp; Advisory.
+                          I agree to receive communications and updates from SMG Accounting &amp;
+                          Advisory.
                         </label>
                       </div>
 
@@ -446,7 +447,6 @@ function ContactPage() {
                   )}
                 </div>
               </div>
-
             </div>
           </div>
         </section>
@@ -464,7 +464,8 @@ function ContactPage() {
                 Our Offices
               </h2>
               <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed">
-                Connect with our local practices or visit us in person at one of our three regional hubs.
+                Connect with our local practices or visit us in person at one of our three regional
+                hubs.
               </p>
             </div>
 

@@ -113,6 +113,9 @@ function Index() {
                 src="/images/solutions/home-feature-hospitality.jpg"
                 alt="SMG Home Feature Hospitality Accounting"
                 loading="lazy"
+                decoding="async"
+                width={600}
+                height={450}
                 className="relative aspect-4/3 w-full rounded-3xl object-cover shadow-[var(--shadow-card-hover)]"
               />
             </div>
@@ -197,6 +200,7 @@ function Index() {
                         src={s.img}
                         alt={s.title}
                         loading="lazy"
+                        decoding="async"
                         width={400}
                         height={300}
                         className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -265,6 +269,7 @@ function Index() {
                       src={l.src}
                       alt={l.alt}
                       loading="lazy"
+                      decoding="async"
                       width={144}
                       height={80}
                       className="max-h-full max-w-full object-contain"
@@ -285,6 +290,9 @@ function Index() {
                 src="/images/blog/szngsfqqjkih5cqdjdk-ja-e1635541793896.webp"
                 alt="Hospitality accounting clients"
                 loading="lazy"
+                decoding="async"
+                width={600}
+                height={750}
                 className="aspect-4/5 w-full rounded-3xl object-cover shadow-[var(--shadow-card-hover)]"
               />
             </div>

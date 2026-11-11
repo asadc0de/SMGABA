@@ -5,6 +5,7 @@ import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import type { IndustryData } from "@/data/industries";
 import { BOOKING_ROUTE } from "@/data/calendly";
+import { submitContact } from "@/lib/api/client";
 
 declare global {
   interface Window {
@@ -60,12 +61,7 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
         });
       }
 
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await submitContact({
           name: formData.name.trim(),
           email: email || contact,
           phone: phone || undefined,
@@ -78,12 +74,9 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
           subject: `New Consultation Request - ${data.title}: ${formData.name.trim()}`,
           bestTime: formData.bestTime,
           website: formData.website || undefined,
-        }),
       });
 
-      const response = await res.json().catch(() => ({}));
-
-      if (res.ok && response.success !== false) {
+      if (response.success !== false) {
         setSubmitted(true);
         setFormData({
           name: "",

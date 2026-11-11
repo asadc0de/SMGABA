@@ -17,6 +17,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
+import { submitContact } from "@/lib/api/client";
 
 const POSTS_PER_PAGE = 12;
 
@@ -91,10 +92,7 @@ function ResourcesPage() {
     setNewsletterError(null);
 
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const response = await submitContact({
           name: "Newsletter Subscriber",
           email: newsletterEmail.trim(),
           source: "resources-newsletter",
@@ -102,15 +100,13 @@ function ResourcesPage() {
           subject: `New Newsletter Subscription: ${newsletterEmail.trim()}`,
           message: "User subscribed to monthly SMG Executive Briefing newsletter.",
           website: newsletterHoneypot || undefined,
-        }),
       });
 
-      const data = await res.json().catch(() => ({}));
-      if (res.ok && data.success !== false) {
+      if (response.success !== false) {
         setNewsletterSuccess(true);
         setNewsletterEmail("");
       } else {
-        setNewsletterError(data.error || "Subscription failed. Please try again.");
+        setNewsletterError(response.error || "Subscription failed. Please try again.");
       }
     } catch {
       setNewsletterError("Network error. Please try again later.");
