@@ -30,7 +30,7 @@ export function Hero({
         // @ts-expect-error modern browsers support fetchPriority
         fetchPriority="high"
         loading="eager"
-        decoding="sync"
+        decoding="async"
         className="absolute inset-0 size-full object-cover object-center"
       />
 

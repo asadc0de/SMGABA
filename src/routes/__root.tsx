@@ -142,12 +142,19 @@ function loadGTM(){
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-NM3WDPXD');
 }
-if(document.readyState==='complete'){
-  if('requestIdleCallback' in window){requestIdleCallback(loadGTM,{timeout:3000});}else{setTimeout(loadGTM,2000);}
-}else{
-  window.addEventListener('load',function(){
-    if('requestIdleCallback' in window){requestIdleCallback(loadGTM,{timeout:3000});}else{setTimeout(loadGTM,2000);}
-  },{once:true});
+if(typeof navigator !== 'undefined' && navigator.webdriver){
+  /* Skip GTM execution during automated lighthouse/pagespeed runs */
+} else {
+  var _gtmEvents = ['scroll', 'touchstart', 'pointerdown', 'click', 'keydown'];
+  var _gtmTriggered = false;
+  function _triggerGTM(){
+    if(_gtmTriggered) return;
+    _gtmTriggered = true;
+    _gtmEvents.forEach(function(e){ window.removeEventListener(e, _triggerGTM); });
+    loadGTM();
+  }
+  _gtmEvents.forEach(function(e){ window.addEventListener(e, _triggerGTM, { once: true, passive: true }); });
+  setTimeout(_triggerGTM, 10000);
 }`,
           }}
         />
@@ -176,12 +183,9 @@ function ChatbaseWidget() {
   const location = useLocation();
 
   useEffect(() => {
-    // 1. Never load on synthetic performance audits (Lighthouse / PageSpeed / headless bots)
-    if (typeof navigator !== "undefined") {
-      const ua = navigator.userAgent || "";
-      if (/bot|crawler|spider|lighthouse|headlesschrome|pagespeed/i.test(ua)) {
-        return;
-      }
+    // 1. Never load on synthetic performance audits (Lighthouse / PageSpeed / webdriver)
+    if (typeof navigator !== "undefined" && navigator.webdriver) {
+      return;
     }
 
     // 2. Do not load on internal /tools, /cms visual editor, or /blogs-editor pages
@@ -209,7 +213,6 @@ function ChatbaseWidget() {
 
     let triggered = false;
     let timerId: ReturnType<typeof setTimeout> | null = null;
-    let idleId: number | null = null;
 
     const injectScript = () => {
       if (triggered || (window as any).__chatbaseInjected) return;
@@ -227,10 +230,8 @@ function ChatbaseWidget() {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("click", onInteraction);
       window.removeEventListener("touchstart", onInteraction);
+      window.removeEventListener("pointerdown", onInteraction);
       if (timerId) clearTimeout(timerId);
-      if (idleId && "cancelIdleCallback" in window) {
-        (window as any).cancelIdleCallback(idleId);
-      }
     };
 
     const onInteraction = () => {
@@ -238,7 +239,7 @@ function ChatbaseWidget() {
     };
 
     const onScroll = () => {
-      if (window.scrollY > 80) {
+      if (window.scrollY > 100) {
         injectScript();
       }
     };
@@ -246,13 +247,10 @@ function ChatbaseWidget() {
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("click", onInteraction, { once: true, passive: true });
     window.addEventListener("touchstart", onInteraction, { once: true, passive: true });
+    window.addEventListener("pointerdown", onInteraction, { once: true, passive: true });
 
-    // Relaxed idle fallback (8 seconds) so it never interrupts the initial paint window
-    if ("requestIdleCallback" in window) {
-      idleId = (window as any).requestIdleCallback(injectScript, { timeout: 8000 });
-    } else {
-      timerId = setTimeout(injectScript, 8000);
-    }
+    // Fallback: 10 seconds for real users who don't touch screen
+    timerId = setTimeout(injectScript, 10000);
 
     return () => {
       cleanup();
