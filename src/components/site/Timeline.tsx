@@ -5,10 +5,23 @@ import { TIMELINE_ITEMS, TIMELINE_INTRO, type TimelineItem } from "@/data/timeli
 interface TimelineProps {
   showHeader?: boolean;
   className?: string;
+  items?: TimelineItem[];
+  intro?: {
+    eyebrow?: string;
+    heading?: string;
+    subheading?: string;
+  };
 }
 
-export function Timeline({ showHeader = true, className }: TimelineProps = {}) {
+export function Timeline({ showHeader = true, className, items, intro }: TimelineProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const timelineItems = items && items.length > 0 ? items : TIMELINE_ITEMS;
+  const timelineIntro = {
+    eyebrow: intro?.eyebrow || TIMELINE_INTRO.eyebrow,
+    heading: intro?.heading || TIMELINE_INTRO.heading,
+    subheading: intro?.subheading || TIMELINE_INTRO.subheading,
+  };
 
   useEffect(() => {
     // Progressive enhancement: only run animation when IntersectionObserver is supported
@@ -72,16 +85,16 @@ export function Timeline({ showHeader = true, className }: TimelineProps = {}) {
           <div className="mb-12 sm:mb-16 text-center max-w-3xl mx-auto">
             <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-[0.72rem] sm:text-xs font-bold uppercase tracking-[0.16em] text-[#1b4e94] bg-gradient-to-r from-blue-500/10 via-indigo-500/10 to-blue-500/10 border border-blue-200/60 mb-3 shadow-2xs">
               <span className="size-1.5 rounded-full bg-[#2563eb]" />
-              {TIMELINE_INTRO.eyebrow}
+              {timelineIntro.eyebrow}
             </span>
             <h2
               id="our-story-heading"
               className="font-serif-hero text-2xl sm:text-3xl lg:text-4xl font-bold text-[#142340] tracking-tight leading-tight"
             >
-              {TIMELINE_INTRO.heading}
+              {timelineIntro.heading}
             </h2>
             <p className="mt-3 text-sm sm:text-base text-slate-500 leading-relaxed font-normal">
-              {TIMELINE_INTRO.subheading}
+              {timelineIntro.subheading}
             </p>
           </div>
         )}
@@ -96,7 +109,7 @@ export function Timeline({ showHeader = true, className }: TimelineProps = {}) {
 
           {/* Ordered Milestone List */}
           <ol className="relative space-y-8 md:space-y-12 list-none p-0 m-0">
-            {TIMELINE_ITEMS.map((item: TimelineItem, index: number) => {
+            {timelineItems.map((item: TimelineItem, index: number) => {
               const isEven = index % 2 === 0;
               const year = item.dateLabel.split(" ").pop() || item.dateLabel;
               const milestoneNumber = String(index + 1).padStart(2, "0");

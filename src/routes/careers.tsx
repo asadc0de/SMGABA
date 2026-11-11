@@ -4,6 +4,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { getCareersFeed, type JobPosting } from "@/lib/careers.server";
+import { getCareersPageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_CAREERS_PAGE_CONTENT } from "@/data/pageContent";
 import {
   Search,
   MapPin,
@@ -37,7 +39,23 @@ export const Route = createFileRoute("/careers")({
     ],
   }),
   loader: async () => {
-    return await getCareersFeed();
+    try {
+      const [feed, pageContent] = await Promise.all([
+        getCareersFeed().catch(() => ({ jobs: [], error: null })),
+        getCareersPageContentServer().catch(() => DEFAULT_CAREERS_PAGE_CONTENT),
+      ]);
+      return {
+        jobs: feed?.jobs || [],
+        error: feed?.error || null,
+        pageContent: pageContent || DEFAULT_CAREERS_PAGE_CONTENT,
+      };
+    } catch (err: any) {
+      return {
+        jobs: [],
+        error: err?.message || "Failed to load jobs",
+        pageContent: DEFAULT_CAREERS_PAGE_CONTENT,
+      };
+    }
   },
   pendingComponent: CareersLoading,
   errorComponent: CareersErrorFallback,
@@ -93,6 +111,8 @@ function CareersPage() {
   const rawJobs = loaderData?.jobs;
   const jobs: JobPosting[] = useMemo(() => rawJobs || [], [rawJobs]);
   const error: string | null = loaderData?.error || null;
+  const pageContent = loaderData?.pageContent || DEFAULT_CAREERS_PAGE_CONTENT;
+  const hero = pageContent.hero || DEFAULT_CAREERS_PAGE_CONTENT.hero;
 
   // Filter and search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -192,10 +212,10 @@ function CareersPage() {
       <main className="flex-1">
         {/* Page Hero Header */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1497366216548-37526070297c.webp"
-          eyebrow="Join Our Team"
-          title="Careers at SMG"
-          description="Explore open positions and join our team."
+          bgImage={hero.bgImage || "/images/stock/unsplash-photo-1497366216548-37526070297c.webp"}
+          eyebrow={hero.eyebrow || "Join Our Team"}
+          title={hero.title || "Careers at SMG"}
+          description={hero.description || "Explore open positions and join our team."}
         />
 
         {/* Main Careers Content Area */}

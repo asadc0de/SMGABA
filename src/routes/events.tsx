@@ -109,7 +109,7 @@ function EventCard({ event }: { event: EventItem }) {
             )}
           />
         ) : (
-          /* Branded Elegant Fallback Banner */
+          /* Branded Fallback Banner if no thumbnail */
           <div
             className={cn(
               "relative size-full min-h-[200px] flex flex-col items-center justify-center p-6 text-white overflow-hidden transition-transform duration-500 group-hover:scale-[1.02]",
@@ -147,34 +147,34 @@ function EventCard({ event }: { event: EventItem }) {
             </div>
           </div>
         )}
-
-        {/* Floating Status Badge */}
-        <div className="absolute top-3 left-3 z-20">
-          {isUpcoming ? (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-600/95 px-3 py-1 text-[11px] font-bold text-white shadow-lg backdrop-blur-md border border-white/20">
-              <Sparkles className="size-3 text-blue-200" /> Upcoming Webinar
-            </span>
-          ) : (
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-950/85 px-3 py-1 text-[11px] font-bold text-slate-200 shadow-lg backdrop-blur-md border border-white/15">
-              <Video className="size-3 text-slate-400" /> Past Recording
-            </span>
-          )}
-        </div>
       </div>
 
       {/* Right: Content + CTA */}
       <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
         <div className="space-y-3">
-          {/* Date & Time Row */}
-          <div className="flex items-center gap-4 text-xs text-muted-foreground font-mono">
-            <div className="flex items-center gap-1.5 font-bold text-navy">
-              <CalendarIcon className="size-3.5 text-primary" />
-              {formatEventDisplayDate(event.event_date)}
+          {/* Status Badge + Date & Time Row */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-3.5 text-xs text-muted-foreground font-mono">
+              <div className="flex items-center gap-1.5 font-bold text-navy">
+                <CalendarIcon className="size-3.5 text-primary" />
+                {formatEventDisplayDate(event.event_date)}
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="size-3.5" />
+                {displayTime}
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock className="size-3.5" />
-              {displayTime}
-            </div>
+
+            {/* Status Pill (Does not block banner) */}
+            {isUpcoming ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80 px-2.5 py-0.5 text-[11px] font-bold">
+                <Sparkles className="size-3 text-blue-600" /> Upcoming Webinar
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 px-2.5 py-0.5 text-[11px] font-bold">
+                <Video className="size-3 text-slate-500" /> Past Recording
+              </span>
+            )}
           </div>
 
           {/* Title & Subtitle */}

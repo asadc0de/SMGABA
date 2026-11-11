@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { RESOURCE_POSTS, type ResourcePost } from "@/data/resourcePosts";
+import { getPublicResources } from "@/lib/blogs.server";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/site/Header";
@@ -32,6 +33,14 @@ export const Route = createFileRoute("/resources/")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      const resources = await getPublicResources();
+      return { resources: resources || [] };
+    } catch {
+      return { resources: [] };
+    }
+  },
   component: ResourcesPage,
 });
 
@@ -76,6 +85,14 @@ const STRATEGIC_GUIDES = [
 ];
 
 function ResourcesPage() {
+  const loaderData = Route.useLoaderData();
+  const allResources = useMemo(() => {
+    if (loaderData?.resources && loaderData.resources.length > 0) {
+      return loaderData.resources;
+    }
+    return RESOURCE_POSTS;
+  }, [loaderData?.resources]);
+
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -119,18 +136,19 @@ function ResourcesPage() {
   const categories = useMemo(() => {
     const rawCategories = Array.from(
       new Set(
-        RESOURCE_POSTS.filter((p) => !p.archived && p.slug !== "obbba-summary")
+        allResources
+          .filter((p) => !p.archived && p.slug !== "obbba-summary")
           .map((p) => p.category)
           .filter(Boolean)
       )
     );
     // Ensure "News & Updates" is prominently available as a sensible category
     return ["All", "News & Updates", ...rawCategories.filter((c) => c !== "News & Updates")];
-  }, []);
+  }, [allResources]);
 
   // Filter resource posts
   const filteredPosts = useMemo(() => {
-    return RESOURCE_POSTS.filter((post) => {
+    return allResources.filter((post) => {
       if (post.archived || post.slug === "obbba-summary") return false;
       let matchesCategory = true;
       if (activeCategory === "News & Updates") {
@@ -153,7 +171,7 @@ function ResourcesPage() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [allResources, activeCategory, searchQuery]);
 
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
 

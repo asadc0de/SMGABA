@@ -13,6 +13,16 @@ import {
 export type { WebinarRedirect };
 
 /**
+ * Public canonical site URL used for generating, displaying, and copying shortlinks.
+ * Reads from VITE_SITE_URL with a fallback to production https://smgaba.com.
+ */
+export const SITE_URL: string = (
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_SITE_URL) ||
+  (typeof process !== "undefined" && (process.env?.VITE_SITE_URL || process.env?.SITE_URL)) ||
+  "https://smgaba.com"
+).replace(/\/+$/, "");
+
+/**
  * Robust helper to extract a string value regardless of whether TanStack Start
  * passes a raw string, `{ data: string }`, or `{ password: string }`.
  */
@@ -62,6 +72,7 @@ export const verifyAdminPassword = createServerFn({ method: "POST" })
     const authorized = isAuthorized(inputPassword, expectedPassword);
     return {
       authorized,
+      valid: authorized,
       error: authorized ? undefined : "Incorrect password.",
     };
   });

@@ -16,6 +16,8 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { ALL_INDUSTRIES_LIST } from "@/data/industries";
+import { getIndustriesPageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_INDUSTRIES_PAGE_CONTENT } from "@/data/pageContent";
 
 export const Route = createFileRoute("/industries")({
   head: () => ({
@@ -28,6 +30,14 @@ export const Route = createFileRoute("/industries")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      const pageData = await getIndustriesPageContentServer();
+      return { pageData };
+    } catch {
+      return { pageData: DEFAULT_INDUSTRIES_PAGE_CONTENT };
+    }
+  },
   component: IndustriesPage,
 });
 
@@ -43,6 +53,10 @@ const ICON_MAP: Record<string, LucideIcon> = {
 };
 
 function IndustriesPage() {
+  const loaderData = Route.useLoaderData();
+  const pageData = loaderData?.pageData || DEFAULT_INDUSTRIES_PAGE_CONTENT;
+  const hub = pageData.hub || DEFAULT_INDUSTRIES_PAGE_CONTENT.hub;
+
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
       <Header />
@@ -53,9 +67,12 @@ function IndustriesPage() {
            ========================================================================= */}
         <SubpageHero
           bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"
-          eyebrow="Industry Specializations"
-          title="Industries We Serve"
-          description="Generic accounting fails when applied to specialized businesses. At SMG, our dedicated accounting teams have deep vertical expertise in the specific regulations, KPIs, and tax codes governing your industry."
+          eyebrow={hub.eyebrow || "Industry Specializations"}
+          title={hub.title || "Industries We Serve"}
+          description={
+            hub.description ||
+            "Generic accounting fails when applied to specialized businesses. At SMG, our dedicated accounting teams have deep vertical expertise in the specific regulations, KPIs, and tax codes governing your industry."
+          }
         />
 
         {/* =========================================================================
@@ -65,11 +82,11 @@ function IndustriesPage() {
           <div className="mx-auto max-w-6xl px-6 lg:px-12">
             <div className="text-center mb-16">
               <h2 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
-                Tailored Expertise Across 8 Core Sectors
+                {hub.heading || "Tailored Expertise Across 8 Core Sectors"}
               </h2>
               <p className="mt-3 text-base text-slate-600 max-w-2xl mx-auto">
-                Explore our specialized accounting practices built for operational clarity and tax
-                minimization.
+                {hub.subheading ||
+                  "Explore our specialized accounting practices built for operational clarity and tax minimization."}
               </p>
             </div>
 

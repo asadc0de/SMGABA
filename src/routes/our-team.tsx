@@ -22,7 +22,8 @@ import { Footer } from "@/components/site/Footer";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { TEAM_MEMBERS, type TeamMember } from "@/data/teamMembers";
-import { FIRM_STATS } from "@/data/firmStats";
+import { FIRM_STATS, type FirmStats } from "@/data/firmStats";
+import { getTeamMembersServer, getFirmStatsServer } from "@/lib/site-content.server";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/our-team")({
@@ -36,10 +37,21 @@ export const Route = createFileRoute("/our-team")({
       },
     ],
   }),
+  loader: async () => {
+    try {
+      const [members, stats] = await Promise.all([
+        getTeamMembersServer(),
+        getFirmStatsServer(),
+      ]);
+      return { members, stats };
+    } catch {
+      return { members: TEAM_MEMBERS, stats: FIRM_STATS };
+    }
+  },
   component: OurTeamPage,
 });
 
-const CATEGORIES = [
+const DEFAULT_CATEGORIES = [
   "All Team",
   "Partners",
   "Directors & Executive Advisory",
@@ -76,10 +88,47 @@ const TEAM_PAGE_STATS = [
 ];
 
 function OurTeamPage() {
+  const loaderData = Route.useLoaderData();
+  const teamList = loaderData?.members || TEAM_MEMBERS;
+  const stats = loaderData?.stats || FIRM_STATS;
+
   const [activeCategory, setActiveCategory] = useState("All Team");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [copiedEmail, setCopiedEmail] = useState<string | null>(null);
+
+  const categories = useMemo(() => {
+    const dynamicCats = Array.from(new Set(teamList.map((m) => m.category).filter(Boolean)));
+    const merged = Array.from(new Set([...DEFAULT_CATEGORIES, ...dynamicCats]));
+    return merged;
+  }, [teamList]);
+
+  const teamPageStats = useMemo(() => [
+    {
+      value: `${stats.professionals}+`,
+      label: "Dedicated Professionals",
+      desc: "CPAs, EAs, CFPs, CVAs, and executive CFO advisors.",
+      icon: Users,
+    },
+    {
+      value: stats.yearsExperience ? `${stats.yearsExperience} Yrs` : "25+ Yrs",
+      label: "Leadership Experience",
+      desc: "Decades of deep industry expertise across major verticals.",
+      icon: Award,
+    },
+    {
+      value: `${stats.offices} Offices`,
+      label: "Regional Locations",
+      desc: "Long Island HQ, Manhattan, and St. Petersburg, Florida.",
+      icon: MapPin,
+    },
+    {
+      value: `${stats.clients.toLocaleString()}+`,
+      label: "Clients Empowered",
+      desc: "Providing hands-on financial stewardship that accelerates growth.",
+      icon: Building2,
+    },
+  ], [stats]);
 
   const handleCopyEmail = (email: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -89,7 +138,7 @@ function OurTeamPage() {
   };
 
   const filteredMembers = useMemo(() => {
-    return TEAM_MEMBERS.filter((member) => {
+    return teamList.filter((member) => {
       const matchesCategory =
         activeCategory === "All Team" || member.category === activeCategory;
       const q = searchQuery.toLowerCase().trim();
@@ -101,7 +150,7 @@ function OurTeamPage() {
         member.email.toLowerCase().includes(q);
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [teamList, activeCategory, searchQuery]);
 
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
@@ -126,7 +175,7 @@ function OurTeamPage() {
         <section className="border-b border-border/80 bg-[#faf9f6] py-12 lg:py-16">
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {TEAM_PAGE_STATS.map((stat) => {
+              {teamPageStats.map((stat) => {
                 const Icon = stat.icon;
                 return (
                   <div
@@ -160,7 +209,7 @@ function OurTeamPage() {
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               {/* Category Tabs */}
               <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-none">
-                {CATEGORIES.map((cat) => {
+                {categories.map((cat) => {
                   const isActive = activeCategory === cat;
                   return (
                     <button
@@ -174,7 +223,7 @@ function OurTeamPage() {
                       )}
                     >
                       {cat}
-                      {cat === "All Team" && ` (${TEAM_MEMBERS.length})`}
+                      {cat === "All Team" && ` (${teamList.length})`}
                     </button>
                   );
                 })}

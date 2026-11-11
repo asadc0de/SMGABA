@@ -9,6 +9,11 @@ import {
   Check,
   ArrowRight,
   BookOpen,
+  Lightbulb,
+  AlertTriangle,
+  Bookmark,
+  CheckCircle2,
+  TrendingUp,
 } from "lucide-react";
 import type { BlogPost } from "@/data/blogPosts";
 import type { ResourcePost } from "@/data/resourcePosts";
@@ -296,6 +301,122 @@ export function BlogPostView({
                           {block.caption}
                         </div>
                       )}
+                    </div>
+                  );
+                }
+
+                if (block.type === "image") {
+                  if (!block.url) return null;
+                  const isContained = block.size === "contained";
+                  return (
+                    <figure
+                      key={idx}
+                      className={`my-8 ${isContained ? "max-w-2xl mx-auto" : "w-full"}`}
+                    >
+                      <div className="overflow-hidden rounded-2xl border border-border/80 bg-slate-50 shadow-sm">
+                        <img
+                          src={block.url}
+                          alt={block.alt || block.caption || "Article visual illustration"}
+                          className="w-full h-auto max-h-[540px] object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                      {(block.caption || block.alt) && (
+                        <figcaption className="mt-2.5 text-center text-xs text-muted-foreground italic">
+                          {block.caption || block.alt}
+                        </figcaption>
+                      )}
+                    </figure>
+                  );
+                }
+
+                if (block.type === "callout") {
+                  const calloutType = block.calloutType || "tip";
+                  const config = {
+                    tip: {
+                      bg: "bg-blue-50/70",
+                      border: "border-blue-500",
+                      iconColor: "text-blue-600",
+                      titleColor: "text-blue-950",
+                      Icon: Lightbulb,
+                      defaultTitle: "Advisory Tip",
+                    },
+                    warning: {
+                      bg: "bg-amber-50/80",
+                      border: "border-amber-500",
+                      iconColor: "text-amber-600",
+                      titleColor: "text-amber-950",
+                      Icon: AlertTriangle,
+                      defaultTitle: "Important Precaution",
+                    },
+                    important: {
+                      bg: "bg-indigo-50/70",
+                      border: "border-indigo-600",
+                      iconColor: "text-indigo-600",
+                      titleColor: "text-indigo-950",
+                      Icon: Bookmark,
+                      defaultTitle: "Key Takeaway",
+                    },
+                    success: {
+                      bg: "bg-emerald-50/70",
+                      border: "border-emerald-500",
+                      iconColor: "text-emerald-600",
+                      titleColor: "text-emerald-950",
+                      Icon: CheckCircle2,
+                      defaultTitle: "Best Practice Recommendation",
+                    },
+                  }[calloutType];
+
+                  const contentHtml =
+                    block.text && block.text.includes("[") && block.text.includes("](")
+                      ? linksToHtml(block.text)
+                      : block.text;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`my-6 rounded-2xl border-l-4 ${config.border} ${config.bg} p-5 sm:p-6 shadow-2xs`}
+                    >
+                      <div className="flex items-start gap-3.5">
+                        <config.Icon className={`size-5 shrink-0 mt-0.5 ${config.iconColor}`} />
+                        <div className="space-y-1.5 w-full">
+                          <h5 className={`font-bold text-sm sm:text-base ${config.titleColor}`}>
+                            {block.title || config.defaultTitle}
+                          </h5>
+                          {contentHtml && (
+                            <p
+                              className="text-xs sm:text-sm text-slate-700 leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: contentHtml }}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (block.type === "stat") {
+                  return (
+                    <div
+                      key={idx}
+                      className="my-8 rounded-3xl border border-navy/10 bg-linear-to-br from-[#0a1835] via-[#0f2142] to-[#1a3668] p-6 sm:p-8 text-white shadow-md text-center"
+                    >
+                      <div className="font-serif-hero text-4xl sm:text-5xl font-bold tracking-tight text-blue-200">
+                        {block.statNumber || "0"}
+                      </div>
+                      <p className="mt-2 text-sm sm:text-base text-slate-200 font-medium max-w-xl mx-auto leading-relaxed">
+                        {block.statLabel || block.text || ""}
+                      </p>
+                    </div>
+                  );
+                }
+
+                if (block.type === "divider") {
+                  return (
+                    <div key={idx} className="my-10 flex items-center justify-center gap-4">
+                      <div className="h-px w-full bg-border/80" />
+                      <span className="text-xs text-muted-foreground font-serif">✦</span>
+                      <div className="h-px w-full bg-border/80" />
                     </div>
                   );
                 }

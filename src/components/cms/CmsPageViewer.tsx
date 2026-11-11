@@ -9,4 +9,3 @@ interface CmsPageViewerProps {
 export default function CmsPageViewer({ data }: CmsPageViewerProps) {
   return <Render config={puckRenderConfig} data={data} />;
 }
-

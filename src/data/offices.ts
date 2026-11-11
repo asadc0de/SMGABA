@@ -1,0 +1,65 @@
+export interface OfficeItem {
+  id: string;
+  name: string;
+  eyebrow: string;
+  addressLine1: string;
+  addressLine2: string;
+  phone: string;
+  phoneRaw: string;
+  fax: string;
+  hours: string;
+  taxHours: string | null;
+  href: string;
+  mapUrl?: string;
+  embedMapUrl?: string;
+  order?: number;
+}
+
+export const OFFICES: OfficeItem[] = [
+  {
+    id: "islandia",
+    name: "Long Island Headquarters",
+    eyebrow: "Corporate Headquarters",
+    addressLine1: "300 Corporate Plaza",
+    addressLine2: "Islandia, NY 11749",
+    phone: "(631) 481-8600",
+    phoneRaw: "6314818600",
+    fax: "(631) 481-8601",
+    hours: "Mon – Fri: 8:30am – 5:30pm",
+    taxHours: "Sat*: 9:00am – 5:00pm (*Jan 1 – Apr 15)",
+    href: "/islandia-location",
+    mapUrl: "https://maps.google.com/?q=300+Corporate+Plaza+Islandia+NY+11749",
+    embedMapUrl: "https://maps.google.com/maps?q=300+Corporate+Plaza+Islandia+NY+11749&t=&z=14&ie=UTF8&iwloc=&output=embed",
+  },
+  {
+    id: "manhattan",
+    name: "Manhattan Regional Office",
+    eyebrow: "Manhattan Practice",
+    addressLine1: "561 Seventh Avenue, 9th Floor",
+    addressLine2: "New York, NY 10018",
+    phone: "(212) 203-4700",
+    phoneRaw: "2122034700",
+    fax: "(631) 481-8601",
+    hours: "Mon – Fri: 8:30am – 5:30pm",
+    taxHours: "Sat*: 9:00am – 5:00pm (*Jan 1 – Apr 15)",
+    href: "/new-york-city-location",
+    mapUrl: "https://maps.google.com/?q=561+Seventh+Avenue+9th+Floor+New+York+NY+10018",
+    embedMapUrl: "https://maps.google.com/maps?q=561+Seventh+Avenue+9th+Floor+New+York+NY+10018&t=&z=14&ie=UTF8&iwloc=&output=embed",
+  },
+  {
+    id: "florida",
+    name: "Florida Regional Office",
+    eyebrow: "Gulf Coast Practice",
+    addressLine1: "646 94th Ave N",
+    addressLine2: "St. Petersburg, FL 33702",
+    phone: "(727) 388-3378",
+    phoneRaw: "7273883378",
+    fax: "(727) 318-4096",
+    hours: "Mon – Fri: 9:00am – 5:00pm",
+    taxHours: null,
+    href: "/florida-location",
+    mapUrl: "https://maps.google.com/?q=646+94th+Ave+N+St+Petersburg+FL+33702",
+    embedMapUrl: "https://maps.google.com/maps?q=646+94th+Ave+N+St+Petersburg+FL+33702&t=&z=14&ie=UTF8&iwloc=&output=embed",
+  },
+];
+

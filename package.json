@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "build:static": "vite build --config vite.static.config.ts && node scripts/prepare-static.mjs",
-    "preview:static": "vite preview --config vite.static.config.ts --outDir static-dist",
+    "build:static": "vite build --config vite.config.static.ts",
+    "preview:static": "vite preview --config vite.config.static.ts --outDir static-dist",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",

@@ -1,13 +1,36 @@
 // Structured real blog posts from smgaba.com
 export interface ContentBlock {
-  type: "h2" | "h3" | "h4" | "p" | "ul" | "ol" | "blockquote" | "table";
+  type:
+    | "h2"
+    | "h3"
+    | "h4"
+    | "p"
+    | "ul"
+    | "ol"
+    | "blockquote"
+    | "table"
+    | "image"
+    | "callout"
+    | "divider"
+    | "stat";
   text?: string;
   html?: string;
   items?: string[];
+  // for table
   hasHeader?: boolean;
   headers?: string[];
   rows?: string[][];
   caption?: string;
+  // for image
+  url?: string;
+  alt?: string;
+  size?: "full" | "contained";
+  // for callout
+  calloutType?: "tip" | "warning" | "important" | "success";
+  title?: string;
+  // for stat
+  statNumber?: string;
+  statLabel?: string;
 }
 
 export interface BlogPost {
@@ -23,6 +46,7 @@ export interface BlogPost {
   readTime: string;
   excerpt: string;
   archived?: boolean;
+  destination?: "blog" | "resource" | "both";
   blocks: ContentBlock[];
 }
 

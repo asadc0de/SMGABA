@@ -2,10 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { processContactSubmission, type ContactSubmissionPayload } from "@/lib/contact.server";
 
 const defaultAllowedOrigins = [
-  "http://localhost:4173",
+   "http://localhost:4173",
   "http://localhost:5173",
   "https://smgaba.com",
+  "https://www.smgaba.com",
   "https://smgaba.vercel.app",
+  "https://smgaba-olive.vercel.app",
 ];
 
 function getAllowedOrigins(): Set<string> {

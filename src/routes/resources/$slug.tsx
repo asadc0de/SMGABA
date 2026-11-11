@@ -1,5 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { getResourcePostBySlug, RESOURCE_POSTS } from "@/data/resourcePosts";
+import { getUnifiedResourcePost } from "@/lib/blogs.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -44,11 +45,21 @@ export const Route = createFileRoute("/resources/$slug")({
       throw notFound();
     }
 
-    const post = getResourcePostBySlug(params.slug);
+    let post = null;
+    try {
+      post = await getUnifiedResourcePost({ data: params.slug });
+    } catch {
+      // fallback
+    }
+
+    if (!post) {
+      post = (getResourcePostBySlug(params.slug) as any) || null;
+    }
+
     if (!post) {
       throw notFound();
     }
-    return { post: post || null };
+    return { post };
   },
   notFoundComponent: ResourceNotFoundComponent,
   component: ResourceSlugPage,

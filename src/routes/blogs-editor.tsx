@@ -43,6 +43,13 @@ import {
   ChevronRight,
   ArrowRight,
   Link2,
+  ListOrdered,
+  Lightbulb,
+  AlertTriangle,
+  Bookmark,
+  TrendingUp,
+  Minus,
+  Library,
 } from "lucide-react";
 import {
   getAdminBlogs,
@@ -54,6 +61,7 @@ import { uploadCmsImage } from "@/lib/cms.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
 import { linksToHtml, htmlToLinks } from "@/lib/blogLinks";
 import { type ContentBlock } from "@/data/blogPosts";
+import { MediaImageInput, MediaImagePickerModal } from "@/components/admin/MediaImagePickerModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/site/Header";
@@ -183,6 +191,7 @@ function createBlankPost(): ExtendedBlogPost {
     readTime: "4 min read",
     excerpt: "",
     status: "published",
+    destination: "blog",
     archived: false,
     isCustom: true,
     blocks: [
@@ -233,14 +242,18 @@ function BlogsEditorPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [destinationFilter, setDestinationFilter] = useState<string>("all");
   const [listPage, setListPage] = useState(1);
   const [isSaving, setIsSaving] = useState(false);
   const [isCustomSlugUnlocked, setIsCustomSlugUnlocked] = useState(false);
   const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
+  const [isCoverGalleryModalOpen, setIsCoverGalleryModalOpen] = useState(false);
   const [isUploadingCover, setIsUploadingCover] = useState(false);
   const [coverImageTab, setCoverImageTab] = useState<"upload" | "presets" | "url">("upload");
   const [isCoverDraggingOver, setIsCoverDraggingOver] = useState(false);
   const [customCoverUrl, setCustomCoverUrl] = useState("");
+  const [showNewCategoryInput, setShowNewCategoryInput] = useState(false);
+  const [customCategoryText, setCustomCategoryText] = useState("");
   const coverFileInputRef = useRef<HTMLInputElement>(null);
   const settingsFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -248,7 +261,7 @@ function BlogsEditorPage() {
   const [linkModal, setLinkModal] = useState<{
     isOpen: boolean;
     blockIndex: number;
-    subType: "p" | "ul" | "table" | "table-header";
+    subType: "p" | "ul" | "ol" | "callout" | "table" | "table-header";
     itemIndex?: number;
     rowIndex?: number;
     colIndex?: number;
@@ -302,6 +315,51 @@ function BlogsEditorPage() {
       blockIndex: blockIdx,
       subType: "ul",
       itemIndex: itemIdx,
+      linkText: selected,
+      linkUrl: "",
+      selectionStart: start,
+      selectionEnd: end,
+    });
+  };
+
+  const openInsertLinkForNumberedList = (blockIdx: number, itemIdx: number, inputEl: HTMLInputElement | null) => {
+    let selected = "";
+    let start: number | undefined;
+    let end: number | undefined;
+    if (inputEl) {
+      start = inputEl.selectionStart ?? undefined;
+      end = inputEl.selectionEnd ?? undefined;
+      if (start !== undefined && end !== undefined && start !== end) {
+        selected = inputEl.value.substring(start, end);
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: blockIdx,
+      subType: "ol",
+      itemIndex: itemIdx,
+      linkText: selected,
+      linkUrl: "",
+      selectionStart: start,
+      selectionEnd: end,
+    });
+  };
+
+  const openInsertLinkForCallout = (blockIdx: number, textareaEl: HTMLTextAreaElement | null) => {
+    let selected = "";
+    let start: number | undefined;
+    let end: number | undefined;
+    if (textareaEl) {
+      start = textareaEl.selectionStart;
+      end = textareaEl.selectionEnd;
+      if (start !== undefined && end !== undefined && start !== end) {
+        selected = textareaEl.value.substring(start, end);
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: blockIdx,
+      subType: "callout",
       linkText: selected,
       linkUrl: "",
       selectionStart: start,
@@ -412,6 +470,31 @@ function BlogsEditorPage() {
       }
       nextItems[itemIndex] = newItem;
       handleUpdateBlock(blockIndex, { items: nextItems });
+    } else if (subType === "ol" && itemIndex !== undefined) {
+      const block = currentPost.blocks[blockIndex];
+      const nextItems = [...(block.items || [])];
+      const currentItem = nextItems[itemIndex] || "";
+      let newItem = "";
+      if (selectionStart !== undefined && selectionEnd !== undefined && selectionStart !== selectionEnd) {
+        newItem = currentItem.substring(0, selectionStart) + markdownLink + currentItem.substring(selectionEnd);
+      } else if (selectionStart !== undefined) {
+        newItem = currentItem.substring(0, selectionStart) + markdownLink + currentItem.substring(selectionStart);
+      } else {
+        newItem = currentItem ? `${currentItem} ${markdownLink}` : markdownLink;
+      }
+      nextItems[itemIndex] = newItem;
+      handleUpdateBlock(blockIndex, { items: nextItems });
+    } else if (subType === "callout") {
+      const currentText = currentPost.blocks[blockIndex]?.text || "";
+      let newText = "";
+      if (selectionStart !== undefined && selectionEnd !== undefined && selectionStart !== selectionEnd) {
+        newText = currentText.substring(0, selectionStart) + markdownLink + currentText.substring(selectionEnd);
+      } else if (selectionStart !== undefined) {
+        newText = currentText.substring(0, selectionStart) + markdownLink + currentText.substring(selectionStart);
+      } else {
+        newText = currentText ? `${currentText} ${markdownLink}` : markdownLink;
+      }
+      handleUpdateBlock(blockIndex, { text: newText });
     } else if (subType === "table" && rowIndex !== undefined && colIndex !== undefined) {
       const block = currentPost.blocks[blockIndex];
       const currentCell = block.rows?.[rowIndex]?.[colIndex] || "";
@@ -554,9 +637,14 @@ function BlogsEditorPage() {
       const matchesCategory =
         categoryFilter === "all" || b.category === categoryFilter;
 
-      return matchesSearch && matchesStatus && matchesCategory;
+      const matchesDestination =
+        destinationFilter === "all" ||
+        (destinationFilter === "blog" && (b.destination === "blog" || b.destination === "both" || !b.destination)) ||
+        (destinationFilter === "resource" && (b.destination === "resource" || b.destination === "both"));
+
+      return matchesSearch && matchesStatus && matchesCategory && matchesDestination;
     });
-  }, [blogsList, searchTerm, statusFilter, categoryFilter]);
+  }, [blogsList, searchTerm, statusFilter, categoryFilter, destinationFilter]);
 
   const totalListPages = Math.ceil(filteredBlogs.length / POSTS_PER_PAGE);
 
@@ -643,15 +731,49 @@ function BlogsEditorPage() {
     let newBlock: ContentBlock;
     if (type === "ul") {
       newBlock = { type, items: ["First actionable checkpoint", "Second key takeaway"] };
+    } else if (type === "ol") {
+      newBlock = {
+        type: "ol",
+        items: [
+          "Step 1: Review current monthly financial statements",
+          "Step 2: Reconcile discrepancies with advisory lead",
+        ],
+      };
     } else if (type === "blockquote") {
       newBlock = {
         type,
         text: "Highlight a pivotal takeaway, executive quote, or industry advisory principle here.",
       };
     } else if (type === "h2") {
-      newBlock = { type, text: "New Section Heading" };
+      newBlock = { type, text: "Section Heading (H2)" };
     } else if (type === "h3") {
-      newBlock = { type, text: "Sub-section Heading" };
+      newBlock = { type, text: "Subheading (H3)" };
+    } else if (type === "h4") {
+      newBlock = { type, text: "Minor Topic Heading (H4)" };
+    } else if (type === "image") {
+      newBlock = {
+        type: "image",
+        url: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
+        alt: "Financial balance sheet and advisory review",
+        caption: "Figure 1: Strategic fiscal review and cash flow forecasting.",
+        size: "full",
+      };
+    } else if (type === "callout") {
+      newBlock = {
+        type: "callout",
+        calloutType: "tip",
+        title: "SMG Advisory Pro-Tip",
+        text: "Regularly auditing prime costs allows multi-unit restaurant operators to protect 3-5% in operating margin every quarter.",
+      };
+    } else if (type === "stat") {
+      newBlock = {
+        type: "stat",
+        statNumber: "85%",
+        statLabel:
+          "Of hospitality and growth businesses achieve improved cash flow visibility within their first 90 days of CFO advisory.",
+      };
+    } else if (type === "divider") {
+      newBlock = { type: "divider" };
     } else if (type === "table") {
       newBlock = {
         type: "table",
@@ -673,19 +795,22 @@ function BlogsEditorPage() {
       ...prev,
       blocks: [...prev.blocks, newBlock],
     }));
-    toast.success(
-      `Added ${
-        type === "h2"
-          ? "Heading"
-          : type === "p"
-          ? "Paragraph"
-          : type === "ul"
-          ? "Bullet List"
-          : type === "blockquote"
-          ? "Quote"
-          : "Table"
-      } block`
-    );
+
+    const typeLabels: Record<string, string> = {
+      h2: "Section Heading (H2)",
+      h3: "Subheading (H3)",
+      h4: "Minor Heading (H4)",
+      p: "Paragraph",
+      image: "Image Visual",
+      ul: "Bullet List",
+      ol: "Numbered List",
+      blockquote: "Quote",
+      callout: "Advisory Callout",
+      stat: "Key Statistic",
+      table: "Data Table",
+      divider: "Section Divider",
+    };
+    toast.success(`Added ${typeLabels[type] || "Content"} block`);
   };
 
   const handleUpdateBlock = (index: number, updated: Partial<ContentBlock>) => {
@@ -1085,12 +1210,25 @@ function BlogsEditorPage() {
               {/* Search & Category Filter */}
               <div className="flex flex-col sm:flex-row items-center gap-3">
                 <select
+                  value={destinationFilter}
+                  onChange={(e) => {
+                    setDestinationFilter(e.target.value);
+                    setListPage(1);
+                  }}
+                  className="w-full sm:w-auto h-9 px-3 text-xs font-semibold rounded-full border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 cursor-pointer"
+                >
+                  <option value="all">🌐 All Channels</option>
+                  <option value="blog">📝 Blog (/blog)</option>
+                  <option value="resource">📚 Resources (/resources)</option>
+                </select>
+
+                <select
                   value={categoryFilter}
                   onChange={(e) => {
                     setCategoryFilter(e.target.value);
                     setListPage(1);
                   }}
-                  className="w-full sm:w-auto h-9 px-3 text-xs font-medium rounded-full border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20"
+                  className="w-full sm:w-auto h-9 px-3 text-xs font-medium rounded-full border border-slate-200 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-navy/20 cursor-pointer"
                 >
                   {allCategories.map((cat) => (
                     <option key={cat} value={cat}>
@@ -1163,9 +1301,24 @@ function BlogsEditorPage() {
 
                           {/* Top Badges */}
                           <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2">
-                            <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-white/95 text-navy shadow-xs backdrop-blur-xs">
-                              {post.category}
-                            </span>
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-white/95 text-navy shadow-xs backdrop-blur-xs">
+                                {post.category}
+                              </span>
+                              {post.destination === "resource" ? (
+                                <span className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-purple-600 text-white shadow-xs">
+                                  📚 Resource
+                                </span>
+                              ) : post.destination === "both" ? (
+                                <span className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-indigo-600 text-white shadow-xs">
+                                  🌐 Both
+                                </span>
+                              ) : (
+                                <span className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-slate-800 text-white shadow-xs">
+                                  📝 Blog
+                                </span>
+                              )}
+                            </div>
 
                             {isScheduled && (
                               <span className="rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white shadow-xs flex items-center gap-1">
@@ -1508,23 +1661,20 @@ function BlogsEditorPage() {
                       <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-2 p-4">
                         <Button
                           type="button"
-                          onClick={() => coverFileInputRef.current?.click()}
+                          onClick={() => setIsCoverGalleryModalOpen(true)}
                           size="sm"
                           className="rounded-full bg-white text-navy hover:bg-slate-100 font-semibold shadow-lg text-xs gap-1.5"
                         >
-                          <Upload className="size-3.5 text-primary" /> Select from Computer
+                          <ImageIcon className="size-3.5 text-primary" /> Choose from Gallery or Device
                         </Button>
                         <Button
                           type="button"
-                          onClick={() => {
-                            setCustomCoverUrl(currentPost.image || "");
-                            setIsImagePickerOpen(true);
-                          }}
+                          onClick={() => coverFileInputRef.current?.click()}
                           size="sm"
                           variant="secondary"
-                          className="rounded-full bg-white/95 text-slate-800 hover:bg-white font-semibold shadow-lg text-xs gap-1.5"
+                          className="rounded-full bg-white/95 text-navy hover:bg-white font-semibold shadow-lg text-xs gap-1.5"
                         >
-                          <Sparkles className="size-3.5 text-amber-500" /> Presets &amp; URL
+                          <Upload className="size-3.5 text-primary" /> Quick Device Upload
                         </Button>
                         {currentPost.image && (
                           <Button
@@ -1547,24 +1697,25 @@ function BlogsEditorPage() {
                     <div className="absolute bottom-3 right-3 flex items-center gap-1.5">
                       <button
                         type="button"
-                        onClick={() => coverFileInputRef.current?.click()}
+                        onClick={() => setIsCoverGalleryModalOpen(true)}
                         className="rounded-full bg-white/95 text-navy font-semibold px-3 py-1.5 text-xs shadow-md border border-slate-200/80 flex items-center gap-1.5 hover:bg-white transition hover:shadow-lg"
                       >
-                        <Upload className="size-3.5 text-primary" /> Select from Computer
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCustomCoverUrl(currentPost.image || "");
-                          setIsImagePickerOpen(true);
-                        }}
-                        className="rounded-full bg-white/95 text-slate-700 font-semibold px-2.5 py-1.5 text-xs shadow-md border border-slate-200/80 flex items-center gap-1.5 hover:bg-white transition"
-                        title="Browse All Options"
-                      >
-                        <ImageIcon className="size-3.5 text-slate-600" /> Options
+                        <ImageIcon className="size-3.5 text-primary" /> Choose from Gallery / Device
                       </button>
                     </div>
                   </div>
+
+                  {/* Media Image Picker Modal for Cover */}
+                  <MediaImagePickerModal
+                    isOpen={isCoverGalleryModalOpen}
+                    onClose={() => setIsCoverGalleryModalOpen(false)}
+                    onSelect={(url) => {
+                      setCurrentPost((prev) => ({ ...prev, image: url }));
+                      toast.success("Cover photo updated");
+                    }}
+                    currentValue={currentPost.image}
+                    title="Choose Article Cover Photo"
+                  />
 
                   {/* Hidden file input for native computer file selection */}
                   <input
@@ -1782,26 +1933,132 @@ function BlogsEditorPage() {
                     </div>
                   )}
 
+                  {/* Destination Channel Selector */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                        <Globe className="size-3.5 text-primary" /> Destination:
+                      </span>
+                      <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200">
+                        <button
+                          type="button"
+                          onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "blog" }))}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                            currentPost.destination === "blog" || !currentPost.destination
+                              ? "bg-navy text-white shadow-xs"
+                              : "text-slate-600 hover:text-navy"
+                          }`}
+                        >
+                          <span>📝 Blog Only</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "resource" }))}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                            currentPost.destination === "resource"
+                              ? "bg-purple-700 text-white shadow-xs"
+                              : "text-slate-600 hover:text-purple-700"
+                          }`}
+                        >
+                          <span>📚 Resources Only</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "both" }))}
+                          className={`px-3 py-1 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                            currentPost.destination === "both"
+                              ? "bg-indigo-700 text-white shadow-xs"
+                              : "text-slate-600 hover:text-indigo-700"
+                          }`}
+                        >
+                          <span>🌐 Both Blog &amp; Resources</span>
+                        </button>
+                      </div>
+                    </div>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      {currentPost.destination === "resource"
+                        ? "Publishes to /resources/ library"
+                        : currentPost.destination === "both"
+                        ? "Publishes to both /blog/ & /resources/"
+                        : "Publishes to /blog/ and Insights"}
+                    </span>
+                  </div>
+
                   {/* Category Pills & Read Time Bar */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                     <div className="flex flex-wrap items-center gap-1.5">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1">
                         Category:
                       </span>
-                      {DEFAULT_CATEGORIES.map((cat) => (
+                      {allCategories
+                        .filter((cat) => cat !== "all")
+                        .map((cat) => (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => setCurrentPost((prev) => ({ ...prev, category: cat }))}
+                            className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
+                              currentPost.category === cat
+                                ? "bg-navy text-white shadow-xs"
+                                : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-navy"
+                            }`}
+                          >
+                            {cat}
+                          </button>
+                        ))}
+
+                      {showNewCategoryInput ? (
+                        <div className="inline-flex items-center gap-1.5 bg-white border border-slate-300 rounded-full pl-3 pr-1 py-0.5">
+                          <input
+                            type="text"
+                            placeholder="New category..."
+                            value={customCategoryText}
+                            onChange={(e) => setCustomCategoryText(e.target.value)}
+                            className="text-[11px] font-semibold text-slate-800 focus:outline-none w-28"
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && customCategoryText.trim()) {
+                                const newCat = customCategoryText.trim();
+                                setCurrentPost((prev) => ({ ...prev, category: newCat }));
+                                setCustomCategoryText("");
+                                setShowNewCategoryInput(false);
+                                toast.success(`Category "${newCat}" applied!`);
+                              }
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (customCategoryText.trim()) {
+                                const newCat = customCategoryText.trim();
+                                setCurrentPost((prev) => ({ ...prev, category: newCat }));
+                                setCustomCategoryText("");
+                                setShowNewCategoryInput(false);
+                                toast.success(`Category "${newCat}" applied!`);
+                              }
+                            }}
+                            className="rounded-full bg-[#0f2142] text-white px-2 py-0.5 text-[10px] font-bold uppercase hover:bg-navy/90"
+                          >
+                            Add
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setShowNewCategoryInput(false)}
+                            className="text-slate-400 hover:text-slate-600 px-1 text-xs"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ) : (
                         <button
-                          key={cat}
                           type="button"
-                          onClick={() => setCurrentPost((prev) => ({ ...prev, category: cat }))}
-                          className={`rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider transition ${
-                            currentPost.category === cat
-                              ? "bg-navy text-white shadow-xs"
-                              : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-navy"
-                          }`}
+                          onClick={() => setShowNewCategoryInput(true)}
+                          className="rounded-full border border-dashed border-slate-300 px-2.5 py-1 text-[11px] font-bold text-slate-500 hover:border-[#0f2142] hover:text-[#0f2142] transition flex items-center gap-1 cursor-pointer"
                         >
-                          {cat}
+                          <Plus className="size-3" />
+                          <span>+ Category</span>
                         </button>
-                      ))}
+                      )}
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -1897,17 +2154,23 @@ function BlogsEditorPage() {
                         <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                           {block.type === "h2" && "📌 Section Heading (H2)"}
                           {block.type === "h3" && "📎 Subheading (H3)"}
+                          {block.type === "h4" && "🏷️ Minor Topic (H4)"}
                           {block.type === "p" && "✍️ Paragraph"}
+                          {block.type === "image" && "🖼️ Image Visual"}
                           {block.type === "ul" && "📋 Bullet Points"}
+                          {block.type === "ol" && "🔢 Numbered List (Steps)"}
                           {block.type === "blockquote" && "💬 Highlight Quote"}
+                          {block.type === "callout" && "💡 Advisory Callout Box"}
+                          {block.type === "stat" && "📈 Key Metric / Statistic Highlight"}
                           {block.type === "table" && "📊 Data Table"}
+                          {block.type === "divider" && "✦ Section Divider"}
                         </div>
 
                         {/* Block Editor Input */}
                         {block.type === "h2" ? (
                           <input
                             type="text"
-                            placeholder="Section Heading..."
+                            placeholder="Section Heading (H2)..."
                             value={block.text || ""}
                             onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
                             className="w-full font-serif-hero text-xl sm:text-2xl font-bold text-navy bg-transparent border-b border-transparent focus:border-navy focus:outline-none py-1"
@@ -1915,10 +2178,18 @@ function BlogsEditorPage() {
                         ) : block.type === "h3" ? (
                           <input
                             type="text"
-                            placeholder="Subheading..."
+                            placeholder="Subheading (H3)..."
                             value={block.text || ""}
                             onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
                             className="w-full font-serif-hero text-lg sm:text-xl font-bold text-navy bg-transparent border-b border-transparent focus:border-navy focus:outline-none py-1"
+                          />
+                        ) : block.type === "h4" ? (
+                          <input
+                            type="text"
+                            placeholder="Minor Topic Heading (H4)..."
+                            value={block.text || ""}
+                            onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
+                            className="w-full font-serif-hero text-base sm:text-lg font-bold text-navy bg-transparent border-b border-transparent focus:border-navy focus:outline-none py-1"
                           />
                         ) : block.type === "blockquote" ? (
                           <div className="pl-4 border-l-4 border-primary bg-blue-50/40 p-3 rounded-r-xl">
@@ -1929,6 +2200,202 @@ function BlogsEditorPage() {
                               onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
                               className="w-full italic font-serif-hero text-base sm:text-lg text-navy bg-transparent border-none outline-none focus:ring-0 resize-none leading-relaxed"
                             />
+                          </div>
+                        ) : block.type === "image" ? (
+                          <div className="space-y-3 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+                              <div className="sm:col-span-2">
+                                <MediaImageInput
+                                  label="Article Image (Upload from Device or Select from Gallery)"
+                                  value={block.url || ""}
+                                  onChange={(url) => handleUpdateBlock(idx, { url })}
+                                  placeholder="https://... or /images/..."
+                                />
+                              </div>
+
+                              <div className="space-y-1.5">
+                                <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
+                                  Display Layout
+                                </label>
+                                <div className="grid grid-cols-2 gap-1.5 h-10">
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateBlock(idx, { size: "full" })}
+                                    className={`px-2 py-1.5 text-xs font-semibold rounded-xl border transition cursor-pointer flex items-center justify-center ${
+                                      block.size !== "contained"
+                                        ? "bg-navy text-white border-navy shadow-xs"
+                                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                    }`}
+                                  >
+                                    Full Width
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleUpdateBlock(idx, { size: "contained" })}
+                                    className={`px-2 py-1.5 text-xs font-semibold rounded-xl border transition cursor-pointer flex items-center justify-center ${
+                                      block.size === "contained"
+                                        ? "bg-navy text-white border-navy shadow-xs"
+                                        : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                    }`}
+                                  >
+                                    Centered
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div className="space-y-1">
+                                <label className="text-[11px] font-medium text-slate-500">
+                                  Alt Text (SEO &amp; Accessibility)
+                                </label>
+                                <input
+                                  type="text"
+                                  placeholder="Brief description of visual..."
+                                  value={block.alt || ""}
+                                  onChange={(e) => handleUpdateBlock(idx, { alt: e.target.value })}
+                                  className="w-full text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:bg-white focus:border-navy focus:outline-none"
+                                />
+                              </div>
+
+                              <div className="space-y-1">
+                                <label className="text-[11px] font-medium text-slate-500">
+                                  Caption (Text below image)
+                                </label>
+                                <input
+                                  type="text"
+                                  placeholder="Figure 1: Explanation or source..."
+                                  value={block.caption || ""}
+                                  onChange={(e) => handleUpdateBlock(idx, { caption: e.target.value })}
+                                  className="w-full text-xs text-slate-800 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:bg-white focus:border-navy focus:outline-none"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Live Thumbnail Preview */}
+                            {block.url ? (
+                              <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 max-h-56 relative group">
+                                <img
+                                  src={block.url}
+                                  alt={block.alt || "Preview"}
+                                  onError={(e) => {
+                                    (e.target as HTMLElement).style.display = "none";
+                                  }}
+                                  className="w-full h-auto max-h-56 object-cover"
+                                />
+                                <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-xs text-white text-[10px] px-2 py-0.5 rounded font-medium">
+                                  Live Image Preview
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="p-3 bg-slate-50 border border-dashed border-slate-200 rounded-xl text-center text-xs text-slate-400">
+                                Enter an image URL above to see live preview
+                              </div>
+                            )}
+                          </div>
+                        ) : block.type === "callout" ? (
+                          <div className="space-y-3 p-4 rounded-xl border border-slate-200 bg-white shadow-2xs">
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                Callout Style:
+                              </span>
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                {(["tip", "warning", "important", "success"] as const).map((cType) => {
+                                  const info = {
+                                    tip: { label: "💡 Advisory Tip" },
+                                    warning: { label: "⚠️ Precaution" },
+                                    important: { label: "📌 Key Takeaway" },
+                                    success: { label: "✅ Best Practice" },
+                                  }[cType];
+                                  const isSelected = (block.calloutType || "tip") === cType;
+                                  return (
+                                    <button
+                                      key={cType}
+                                      type="button"
+                                      onClick={() => handleUpdateBlock(idx, { calloutType: cType })}
+                                      className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition cursor-pointer ${
+                                        isSelected
+                                          ? "bg-navy text-white border-navy shadow-xs"
+                                          : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                      }`}
+                                    >
+                                      {info.label}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            <input
+                              type="text"
+                              placeholder="Callout Headline (e.g. Advisory Note from Our CPAs)..."
+                              value={block.title || ""}
+                              onChange={(e) => handleUpdateBlock(idx, { title: e.target.value })}
+                              className="w-full text-xs sm:text-sm font-bold text-navy bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:bg-white focus:border-navy focus:outline-none"
+                            />
+
+                            <div className="space-y-1">
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] text-slate-400">
+                                  Callout guidance text (markdown links supported):
+                                </span>
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() => {
+                                    const textarea = document.getElementById(`block-callout-${idx}`) as HTMLTextAreaElement | null;
+                                    openInsertLinkForCallout(idx, textarea);
+                                  }}
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md px-2 py-0.5 transition cursor-pointer"
+                                >
+                                  <Link2 className="size-3" />
+                                  <span>Insert link</span>
+                                </button>
+                              </div>
+                              <textarea
+                                id={`block-callout-${idx}`}
+                                rows={2}
+                                placeholder="Type your advice, industry rule-of-thumb, or key principle..."
+                                value={block.text || ""}
+                                onChange={(e) => handleUpdateBlock(idx, { text: e.target.value })}
+                                className="w-full text-xs sm:text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-lg p-2.5 focus:bg-white focus:border-navy focus:outline-none leading-relaxed resize-y"
+                              />
+                            </div>
+                          </div>
+                        ) : block.type === "stat" ? (
+                          <div className="p-4 rounded-xl border border-slate-200 bg-white shadow-2xs space-y-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div>
+                                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                                  Metric / Number
+                                </label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. 85% or $2.4M or 15+"
+                                  value={block.statNumber || ""}
+                                  onChange={(e) => handleUpdateBlock(idx, { statNumber: e.target.value })}
+                                  className="w-full font-serif-hero text-xl sm:text-2xl font-bold text-navy bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 focus:bg-white focus:border-navy focus:outline-none"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+                                  Metric Context / Explanation
+                                </label>
+                                <input
+                                  type="text"
+                                  placeholder="e.g. Of restaurant operators reduce prime cost with proactive advisory..."
+                                  value={block.statLabel || ""}
+                                  onChange={(e) => handleUpdateBlock(idx, { statLabel: e.target.value })}
+                                  className="w-full text-xs sm:text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 focus:bg-white focus:border-navy focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ) : block.type === "divider" ? (
+                          <div className="p-3 bg-slate-100/70 border border-slate-200 rounded-xl flex items-center justify-center gap-3">
+                            <div className="h-px w-full bg-slate-300" />
+                            <span className="text-xs text-slate-400 font-serif select-none">✦ Section Divider ✦</span>
+                            <div className="h-px w-full bg-slate-300" />
                           </div>
                         ) : block.type === "ul" ? (
                           <div className="space-y-2">
@@ -1980,6 +2447,63 @@ function BlogsEditorPage() {
                               className="text-xs font-semibold text-navy hover:underline mt-1 inline-flex items-center gap-1 cursor-pointer"
                             >
                               <Plus className="size-3" /> Add bullet point
+                            </button>
+                          </div>
+                        ) : block.type === "ol" ? (
+                          <div className="space-y-2">
+                            {(block.items || []).map((item, itemIdx) => (
+                              <div key={itemIdx} className="flex items-center gap-2">
+                                <span className="size-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+                                  {itemIdx + 1}
+                                </span>
+                                <input
+                                  id={`block-ol-${idx}-${itemIdx}`}
+                                  type="text"
+                                  value={item}
+                                  onChange={(e) => {
+                                    const nextItems = [...(block.items || [])];
+                                    nextItems[itemIdx] = e.target.value;
+                                    handleUpdateBlock(idx, { items: nextItems });
+                                  }}
+                                  className="w-full text-xs sm:text-sm text-slate-800 bg-white border border-slate-200 rounded-lg px-3 py-1.5 focus:border-navy focus:outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() => {
+                                    const input = document.getElementById(`block-ol-${idx}-${itemIdx}`) as HTMLInputElement | null;
+                                    openInsertLinkForNumberedList(idx, itemIdx, input);
+                                  }}
+                                  title="Insert link into numbered step"
+                                  className="size-7 rounded text-slate-400 hover:text-blue-700 hover:bg-blue-50 flex items-center justify-center shrink-0 border border-slate-200 transition cursor-pointer"
+                                >
+                                  <Link2 className="size-3" />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const nextItems = (block.items || []).filter((_, i) => i !== itemIdx);
+                                    handleUpdateBlock(idx, { items: nextItems });
+                                  }}
+                                  className="size-7 rounded text-slate-300 hover:text-red-500 hover:bg-red-50 flex items-center justify-center shrink-0 cursor-pointer"
+                                >
+                                  <X className="size-3.5" />
+                                </button>
+                              </div>
+                            ))}
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const nextItems = [
+                                  ...(block.items || []),
+                                  `Step ${(block.items?.length || 0) + 1} description`,
+                                ];
+                                handleUpdateBlock(idx, { items: nextItems });
+                              }}
+                              className="text-xs font-semibold text-navy hover:underline mt-1 inline-flex items-center gap-1 cursor-pointer"
+                            >
+                              <Plus className="size-3" /> Add numbered step
                             </button>
                           </div>
                         ) : block.type === "table" ? (
@@ -2173,55 +2697,144 @@ function BlogsEditorPage() {
 
                   {/* Clean Floating In-line Add Bar */}
                   <div className="pt-6 border-t border-slate-100">
-                    <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/80 flex flex-wrap items-center justify-center gap-2">
-                      <span className="text-xs font-semibold text-slate-500 mr-2">
-                        + Add Section:
-                      </span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("p")}
-                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <AlignLeft className="size-3.5 mr-1 text-primary" /> Paragraph
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("h2")}
-                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <Heading className="size-3.5 mr-1 text-primary" /> Section Heading
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("ul")}
-                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <List className="size-3.5 mr-1 text-primary" /> Bullet List
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("blockquote")}
-                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <Quote className="size-3.5 mr-1 text-primary" /> Quote Highlight
-                      </Button>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleAddBlock("table")}
-                        className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-700 hover:bg-slate-100 border-slate-200"
-                      >
-                        <TableIcon className="size-3.5 mr-1 text-primary" /> Table
-                      </Button>
+                    <div className="bg-slate-50 p-4 sm:p-5 rounded-3xl border border-slate-200/80 space-y-3.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                          <Plus className="size-3.5 text-primary" /> Add Section to Article:
+                        </span>
+                        <span className="text-[11px] text-slate-400 hidden sm:inline">
+                          Click any block below to insert into your story
+                        </span>
+                      </div>
+
+                      {/* Headings & Text */}
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest w-full sm:w-auto sm:mr-1">
+                          Headings:
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("h2")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 font-bold font-serif-hero cursor-pointer shadow-2xs"
+                        >
+                          <Heading className="size-3.5 mr-1 text-primary" /> H2 Section Heading
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("h3")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 font-semibold font-serif-hero cursor-pointer shadow-2xs"
+                        >
+                          <Heading className="size-3 mr-1 text-indigo-600" /> H3 Subheading
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("h4")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 font-medium cursor-pointer shadow-2xs"
+                        >
+                          <Heading className="size-3 mr-1 text-slate-600" /> H4 Minor Topic
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("p")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
+                        >
+                          <AlignLeft className="size-3.5 mr-1 text-primary" /> Paragraph
+                        </Button>
+                      </div>
+
+                      {/* Media & Visuals */}
+                      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200/60">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest w-full sm:w-auto sm:mr-1">
+                          Visuals &amp; Media:
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("image")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border-emerald-300 font-semibold cursor-pointer shadow-2xs"
+                        >
+                          <ImageIcon className="size-3.5 mr-1.5 text-emerald-600" /> Insert Image
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("callout")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-blue-50 text-blue-800 hover:bg-blue-100 border-blue-300 font-semibold cursor-pointer shadow-2xs"
+                        >
+                          <Lightbulb className="size-3.5 mr-1.5 text-blue-600" /> Advisory Callout
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("stat")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-indigo-50 text-indigo-800 hover:bg-indigo-100 border-indigo-300 font-semibold cursor-pointer shadow-2xs"
+                        >
+                          <TrendingUp className="size-3.5 mr-1.5 text-indigo-600" /> Key Metric Card
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("table")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
+                        >
+                          <TableIcon className="size-3.5 mr-1 text-primary" /> Data Table
+                        </Button>
+                      </div>
+
+                      {/* Lists & Accents */}
+                      <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200/60">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest w-full sm:w-auto sm:mr-1">
+                          Lists &amp; Structure:
+                        </span>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("ul")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
+                        >
+                          <List className="size-3.5 mr-1 text-primary" /> Bullet List
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("ol")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
+                        >
+                          <ListOrdered className="size-3.5 mr-1 text-primary" /> Numbered Steps
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("blockquote")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
+                        >
+                          <Quote className="size-3.5 mr-1 text-primary" /> Quote Highlight
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleAddBlock("divider")}
+                          className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
+                        >
+                          <Minus className="size-3.5 mr-1 text-slate-400" /> Section Divider
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2231,6 +2844,68 @@ function BlogsEditorPage() {
             {/* TAB CONTENT: 2. PUBLISHING & SEO SETTINGS */}
             {editorSubTab === "settings" && (
               <div className="max-w-3xl mx-auto space-y-6">
+                {/* 0. Publishing Channel & Destination Card */}
+                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+                  <div>
+                    <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
+                      <Globe className="size-4 text-primary" /> Publishing Channel &amp; Destination
+                    </h3>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Choose which website section this article belongs to.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "blog" }))}
+                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
+                        currentPost.destination === "blog" || !currentPost.destination
+                          ? "border-navy bg-navy/5 ring-2 ring-navy/20"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <BookOpen className="size-5 text-navy mb-2" />
+                      <div className="text-xs font-bold text-slate-900">Blog Article</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Published to /blog/ and Insights
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "resource" }))}
+                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
+                        currentPost.destination === "resource"
+                          ? "border-purple-600 bg-purple-50/60 ring-2 ring-purple-500/20"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <Library className="size-5 text-purple-600 mb-2" />
+                      <div className="text-xs font-bold text-slate-900">Resource Guide</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Published to /resources/ library
+                      </div>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "both" }))}
+                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
+                        currentPost.destination === "both"
+                          ? "border-indigo-600 bg-indigo-50/60 ring-2 ring-indigo-500/20"
+                          : "border-slate-200 hover:bg-slate-50"
+                      }`}
+                    >
+                      <Globe className="size-5 text-indigo-600 mb-2" />
+                      <div className="text-xs font-bold text-slate-900">Both Libraries</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
+                        Listed in Blog and Resources
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
                 {/* 1. Release Schedule Card */}
                 <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-5">
                   <div>
@@ -2339,73 +3014,16 @@ function BlogsEditorPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-                    {/* Cover Preview */}
-                    <div className="relative rounded-2xl overflow-hidden bg-slate-100 h-32 border border-slate-200 sm:col-span-1 group">
-                      {currentPost.image ? (
-                        <img
-                          src={currentPost.image}
-                          alt="Cover Preview"
-                          className="size-full object-cover"
-                        />
-                      ) : (
-                        <div className="size-full flex flex-col items-center justify-center text-slate-400 bg-slate-50 p-2 text-center">
-                          <ImageIcon className="size-6 mb-1 text-slate-300" />
-                          <span className="text-[10px]">No image selected</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="sm:col-span-2 space-y-2.5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Button
-                          type="button"
-                          onClick={() => settingsFileInputRef.current?.click()}
-                          size="sm"
-                          className="rounded-full bg-navy text-white hover:bg-navy/90 text-xs px-4 gap-1.5 shadow-xs"
-                        >
-                          <Upload className="size-3.5" /> Select from Computer
-                        </Button>
-                        <input
-                          ref={settingsFileInputRef}
-                          type="file"
-                          accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml,image/gif"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) handleCoverFileUpload(file);
-                            e.target.value = "";
-                          }}
-                        />
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setEditorSubTab("write");
-                            setCoverImageTab("presets");
-                            setIsImagePickerOpen(true);
-                          }}
-                          className="rounded-full text-xs px-3.5 gap-1.5 border-slate-200"
-                        >
-                          <Sparkles className="size-3.5 text-amber-500" /> Stock Presets
-                        </Button>
-                      </div>
-
-                      <div className="flex items-center gap-2 pt-1">
-                        <Input
-                          type="url"
-                          placeholder="Or paste external image URL..."
-                          value={currentPost.image}
-                          onChange={(e) => setCurrentPost((prev) => ({ ...prev, image: e.target.value }))}
-                          className="h-8 text-xs bg-white border-slate-200"
-                        />
-                      </div>
-                      <p className="text-[11px] text-slate-400">
-                        Recommended size: 1200 &times; 630px JPG, PNG, or WebP.
-                      </p>
-                    </div>
+                  <div className="space-y-3">
+                    <MediaImageInput
+                      label="Cover Image (Upload from Device or Select from Gallery)"
+                      value={currentPost.image}
+                      onChange={(url) => setCurrentPost((prev) => ({ ...prev, image: url }))}
+                      placeholder="/images/stock/... or https://..."
+                    />
+                    <p className="text-[11px] text-slate-400">
+                      Recommended size: 1200 &times; 630px JPG, PNG, or WebP. Appears as the top header of the article and card thumbnail.
+                    </p>
                   </div>
                 </div>
 
@@ -2454,7 +3072,9 @@ function BlogsEditorPage() {
                   </h3>
 
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 font-mono">https://smgaba.com/blog/</span>
+                    <span className="text-xs text-slate-500 font-mono">
+                      https://smgaba.com/{currentPost.destination === "resource" ? "resources" : "blog"}/
+                    </span>
                     <Input
                       type="text"
                       disabled={!isCustomSlugUnlocked}
@@ -2565,7 +3185,10 @@ function BlogsEditorPage() {
 
             {/* Render Exact BlogPostView */}
             <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-              <BlogPostView post={currentPost} />
+              <BlogPostView
+                post={currentPost}
+                isResource={currentPost.destination === "resource"}
+              />
             </div>
           </div>
         )}
