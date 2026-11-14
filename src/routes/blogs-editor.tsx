@@ -384,23 +384,23 @@ function blocksToHtml(blocks: ContentBlock[]): string {
       `);
     } else if (block.type === "callout") {
       htmlChunks.push(`
-        <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/70" contenteditable="false" data-block-type="callout">
-          <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1">💡 ${escapeHtml(block.title || "Advisory Note")}</h4>
-          <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed">${escapeHtml(block.text || "")}</p>
+        <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/70" data-block-type="callout">
+          <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1 cursor-text" contenteditable="true">💡 ${escapeHtml(block.title || "Advisory Note")}</h4>
+          <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed cursor-text" contenteditable="true">${escapeHtml(block.text || "")}</p>
         </div><p><br></p>
       `);
     } else if (block.type === "stat") {
       htmlChunks.push(`
-        <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/60" contenteditable="false" data-block-type="stat">
-          <span class="stat-number font-serif-hero text-2xl sm:text-3xl font-bold text-navy block mb-1">${escapeHtml(block.statNumber || "")}</span>
-          <span class="stat-label text-xs sm:text-sm text-slate-600">${escapeHtml(block.statLabel || "")}</span>
+        <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/60" data-block-type="stat">
+          <span class="stat-number font-serif-hero text-2xl sm:text-3xl font-bold text-navy block mb-1 cursor-text" contenteditable="true">${escapeHtml(block.statNumber || "")}</span>
+          <span class="stat-label text-xs sm:text-sm text-slate-600 block cursor-text" contenteditable="true">${escapeHtml(block.statLabel || "")}</span>
         </div><p><br></p>
       `);
     } else if (block.type === "table") {
-      const headers = (block.headers || []).map((h) => `<th class="p-2 border border-slate-300 bg-[#0e1b36] text-white text-xs font-semibold">${escapeHtml(h)}</th>`).join("");
-      const rows = (block.rows || []).map((row) => `<tr>${row.map((cell) => `<td class="p-2 border border-slate-200 text-xs text-slate-800">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
+      const headers = (block.headers || []).map((h) => `<th class="p-2.5 border border-slate-300 bg-[#0e1b36] text-white text-xs font-semibold cursor-text" contenteditable="true">${escapeHtml(h)}</th>`).join("");
+      const rows = (block.rows || []).map((row) => `<tr>${row.map((cell) => `<td class="p-2.5 border border-slate-200 text-xs text-slate-800 cursor-text" contenteditable="true">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
       htmlChunks.push(`
-        <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" contenteditable="false" data-block-type="table">
+        <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" data-block-type="table">
           <table class="w-full border-collapse text-left">
             <thead><tr>${headers}</tr></thead>
             <tbody>${rows}</tbody>
@@ -680,54 +680,54 @@ function BlogsEditorPage() {
 
   const insertCalloutIntoEditor = () => {
     const snippet = `
-      <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/80" contenteditable="false" data-block-type="callout">
-        <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1">💡 Advisory Note</h4>
-        <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed">Enter your key advisory recommendation or guidance here...</p>
+      <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/80" data-block-type="callout">
+        <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1 cursor-text" contenteditable="true">💡 Advisory Note</h4>
+        <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed cursor-text" contenteditable="true">Enter your key advisory recommendation or guidance here...</p>
       </div><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
-    toast.success("Advisory callout added!");
+    toast.success("Advisory callout added! Click inside to edit.");
   };
 
   const insertStatIntoEditor = () => {
     const snippet = `
-      <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/70" contenteditable="false" data-block-type="stat">
-        <span class="stat-number font-serif-hero text-3xl font-bold text-navy block mb-1">85%</span>
-        <span class="stat-label text-xs sm:text-sm text-slate-600">Of businesses improve cash flow with proactive advisory planning.</span>
+      <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/70" data-block-type="stat">
+        <span class="stat-number font-serif-hero text-3xl font-bold text-navy block mb-1 cursor-text" contenteditable="true">85%</span>
+        <span class="stat-label text-xs sm:text-sm text-slate-600 block cursor-text" contenteditable="true">Of businesses improve cash flow with proactive advisory planning.</span>
       </div><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
-    toast.success("Key metric card added!");
+    toast.success("Key metric card added! Click number or text to edit.");
   };
 
   const insertTableIntoEditor = () => {
     const snippet = `
-      <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" contenteditable="false" data-block-type="table">
+      <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" data-block-type="table">
         <table class="w-full border-collapse text-left">
           <thead class="bg-[#0e1b36] text-white">
             <tr>
-              <th class="p-2.5 border border-slate-300 text-xs font-semibold">Service Metric</th>
-              <th class="p-2.5 border border-slate-300 text-xs font-semibold">Industry Benchmark</th>
-              <th class="p-2.5 border border-slate-300 text-xs font-semibold">SMG Advisory Standard</th>
+              <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">Service Metric</th>
+              <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">Industry Benchmark</th>
+              <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">SMG Advisory Standard</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td class="p-2.5 border border-slate-200 text-xs">Monthly Close Speed</td>
-              <td class="p-2.5 border border-slate-200 text-xs">20-25 days</td>
-              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700">5-7 business days</td>
+              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Monthly Close Speed</td>
+              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">20-25 days</td>
+              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700 cursor-text" contenteditable="true">5-7 business days</td>
             </tr>
             <tr>
-              <td class="p-2.5 border border-slate-200 text-xs">Prime Cost Audit</td>
-              <td class="p-2.5 border border-slate-200 text-xs">Annual / Reactive</td>
-              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700">Weekly &amp; Monthly Review</td>
+              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Prime Cost Audit</td>
+              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Annual / Reactive</td>
+              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700 cursor-text" contenteditable="true">Weekly &amp; Monthly Review</td>
             </tr>
           </tbody>
         </table>
       </div><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
-    toast.success("Data table added!");
+    toast.success("Data table added! Click any cell to edit.");
   };
 
   const insertDividerIntoEditor = () => {
@@ -2822,8 +2822,8 @@ function BlogsEditorPage() {
                   {/* DOCUMENT MODE (VISUAL WYSIWYG - WORD / GOOGLE DOCS STYLE) */}
                   {canvasMode === "document" ? (
                     <div className="space-y-4">
-                      {/* Top Visual Formatting Toolbar */}
-                      <div className="sticky top-20 z-20 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl shadow-sm p-2.5 space-y-2">
+                      {/* Top Visual Formatting Toolbar - Sticky below the workspace bar */}
+                      <div className="sticky top-[11.5rem] md:top-[8.75rem] z-30 bg-white/98 backdrop-blur-md border border-slate-200/95 rounded-2xl shadow-md p-2.5 space-y-2">
                         {/* Row 1: Headings & Text Styles */}
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex flex-wrap items-center gap-1">
@@ -3157,6 +3157,37 @@ function BlogsEditorPage() {
                           #wysiwyg-document-editor .article-callout,
                           #wysiwyg-document-editor .article-stat {
                             user-select: text;
+                            transition: all 0.15s ease;
+                          }
+                          #wysiwyg-document-editor .article-callout:hover {
+                            border-color: #93c5fd;
+                            box-shadow: 0 4px 12px -2px rgba(59, 130, 246, 0.12);
+                          }
+                          #wysiwyg-document-editor .article-stat:hover {
+                            border-color: #a5b4fc;
+                            box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.12);
+                          }
+                          #wysiwyg-document-editor .callout-title:focus,
+                          #wysiwyg-document-editor .callout-text:focus,
+                          #wysiwyg-document-editor .stat-number:focus,
+                          #wysiwyg-document-editor .stat-label:focus,
+                          #wysiwyg-document-editor th:focus,
+                          #wysiwyg-document-editor td:focus {
+                            outline: 2px solid #1b4e94;
+                            outline-offset: 1px;
+                            background-color: rgba(255, 255, 255, 0.95);
+                            border-radius: 4px;
+                          }
+                          #wysiwyg-document-editor table th,
+                          #wysiwyg-document-editor table td {
+                            min-width: 80px;
+                            transition: background-color 0.1s ease;
+                          }
+                          #wysiwyg-document-editor table td:hover {
+                            background-color: rgba(27, 78, 148, 0.05);
+                          }
+                          #wysiwyg-document-editor table th:hover {
+                            background-color: #1e3a6a;
                           }
                         `}</style>
 
