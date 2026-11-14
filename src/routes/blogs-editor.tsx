@@ -377,21 +377,38 @@ function blocksToHtml(blocks: ContentBlock[]): string {
       htmlChunks.push(`<ol>${lis}</ol>`);
     } else if (block.type === "image") {
       htmlChunks.push(`
-        <figure class="article-image my-6 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3 text-center" contenteditable="false" data-block-type="image">
+        <figure class="article-image group relative my-6 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3 text-center" contenteditable="false" data-block-type="image">
+          <div class="component-controls absolute top-4 right-4 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-bold shadow-sm transition cursor-pointer" title="Delete Image">
+              <span>✕ Delete Image</span>
+            </button>
+          </div>
           <img src="${escapeHtml(block.url || "")}" alt="${escapeHtml(block.alt || "")}" class="rounded-xl w-full max-h-96 object-cover mx-auto" />
-          ${block.caption ? `<figcaption class="mt-2 text-xs text-slate-500 font-medium italic">${escapeHtml(block.caption)}</figcaption>` : ""}
+          <figcaption class="mt-2 text-xs text-slate-500 font-medium italic cursor-text" contenteditable="true">${escapeHtml(block.caption || "Click to add caption...")}</figcaption>
         </figure><p><br></p>
       `);
     } else if (block.type === "callout") {
       htmlChunks.push(`
-        <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/70" data-block-type="callout">
-          <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1 cursor-text" contenteditable="true">💡 ${escapeHtml(block.title || "Advisory Note")}</h4>
+        <div class="article-callout group relative my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/70" data-block-type="callout">
+          <div class="component-controls absolute top-2.5 right-2.5 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100/90 px-2 py-0.5 rounded-md">Advisory Box</span>
+            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Advisory Box">
+              <span>✕ Delete</span>
+            </button>
+          </div>
+          <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1 cursor-text pr-28" contenteditable="true">💡 ${escapeHtml(block.title || "Advisory Note")}</h4>
           <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed cursor-text" contenteditable="true">${escapeHtml(block.text || "")}</p>
         </div><p><br></p>
       `);
     } else if (block.type === "stat") {
       htmlChunks.push(`
-        <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/60" data-block-type="stat">
+        <div class="article-stat group relative my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/60" data-block-type="stat">
+          <div class="component-controls absolute top-2.5 right-2.5 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-100/90 px-2 py-0.5 rounded-md">Metric Card</span>
+            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Metric Card">
+              <span>✕ Delete</span>
+            </button>
+          </div>
           <span class="stat-number font-serif-hero text-2xl sm:text-3xl font-bold text-navy block mb-1 cursor-text" contenteditable="true">${escapeHtml(block.statNumber || "")}</span>
           <span class="stat-label text-xs sm:text-sm text-slate-600 block cursor-text" contenteditable="true">${escapeHtml(block.statLabel || "")}</span>
         </div><p><br></p>
@@ -400,11 +417,30 @@ function blocksToHtml(blocks: ContentBlock[]): string {
       const headers = (block.headers || []).map((h) => `<th class="p-2.5 border border-slate-300 bg-[#0e1b36] text-white text-xs font-semibold cursor-text" contenteditable="true">${escapeHtml(h)}</th>`).join("");
       const rows = (block.rows || []).map((row) => `<tr>${row.map((cell) => `<td class="p-2.5 border border-slate-200 text-xs text-slate-800 cursor-text" contenteditable="true">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
       htmlChunks.push(`
-        <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" data-block-type="table">
-          <table class="w-full border-collapse text-left">
-            <thead><tr>${headers}</tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
+        <div class="article-table-container group relative my-6 rounded-xl border border-slate-200 overflow-hidden shadow-2xs" data-block-type="table">
+          <div class="component-controls flex items-center justify-between bg-slate-100 px-3 py-1.5 border-b border-slate-200" contenteditable="false">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1">📊 Data Table</span>
+            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Data Table">
+              <span>✕ Delete Table</span>
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse text-left">
+              <thead><tr>${headers}</tr></thead>
+              <tbody>${rows}</tbody>
+            </table>
+          </div>
+        </div><p><br></p>
+      `);
+    } else if (block.type === "divider") {
+      htmlChunks.push(`
+        <div class="article-divider-wrap group relative my-8 py-2 text-center" data-block-type="divider">
+          <div class="component-controls absolute right-2 -top-3.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-[11px] font-semibold shadow-2xs transition cursor-pointer" title="Delete Divider">
+              <span>✕ Delete Divider</span>
+            </button>
+          </div>
+          <hr class="border-t-2 border-dashed border-slate-300" />
         </div><p><br></p>
       `);
     } else {
@@ -433,6 +469,8 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
 
   const parser = new DOMParser();
   const doc = parser.parseFromString(`<body>${html}</body>`, "text/html");
+  // Remove editor-only controls (like Delete buttons and badges) before parsing
+  doc.body.querySelectorAll(".component-controls, .delete-component-btn").forEach((el) => el.remove());
   const nodes = Array.from(doc.body.childNodes);
   const blocks: ContentBlock[] = [];
 
@@ -466,7 +504,7 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
       blocks.push({ type: "h4", text: el.textContent?.trim() || "" });
     } else if (tagName === "blockquote") {
       blocks.push({ type: "blockquote", text: el.textContent?.trim() || "" });
-    } else if (tagName === "hr") {
+    } else if (tagName === "hr" || el.getAttribute("data-block-type") === "divider" || el.querySelector("hr")) {
       blocks.push({ type: "divider" });
     } else if (tagName === "ul") {
       const items = Array.from(el.querySelectorAll("li"))
@@ -667,11 +705,57 @@ function BlogsEditorPage() {
     });
   };
 
+  const deleteCurrentBlockAtCursor = () => {
+    if (typeof window === "undefined" || !editorRef.current) return;
+    const selection = window.getSelection();
+    if (!selection || !selection.rangeCount) {
+      toast.error("Click inside the paragraph or block you want to delete.");
+      return;
+    }
+
+    let node: Node | null = selection.anchorNode;
+    if (!node) return;
+
+    // Walk up to find the immediate child inside editorRef.current
+    while (node && node.parentNode && node.parentNode !== editorRef.current) {
+      node = node.parentNode;
+    }
+
+    if (node && node.parentNode === editorRef.current) {
+      const el = node as HTMLElement;
+      el.remove();
+      handleWysiwygInput();
+      toast.success("Deleted paragraph / section!");
+    } else {
+      toast.error("Click inside the paragraph or section you want to delete.");
+    }
+  };
+
+  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    const deleteBtn = target.closest(".delete-component-btn");
+    if (deleteBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const component = deleteBtn.closest("[data-block-type], figure, .article-divider-wrap, .article-table-container");
+      if (component) {
+        component.remove();
+        handleWysiwygInput();
+        toast.success("Component deleted successfully!");
+      }
+    }
+  };
+
   const insertImageIntoEditor = (url: string, alt: string = "Article image", caption: string = "") => {
     const snippet = `
-      <figure class="article-image my-6 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3 text-center" contenteditable="false" data-block-type="image">
+      <figure class="article-image group relative my-6 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3 text-center" contenteditable="false" data-block-type="image">
+        <div class="component-controls absolute top-4 right-4 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+          <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/95 hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-bold shadow-sm transition cursor-pointer" title="Delete Image">
+            <span>✕ Delete Image</span>
+          </button>
+        </div>
         <img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" class="rounded-xl w-full max-h-96 object-cover mx-auto" />
-        ${caption ? `<figcaption class="mt-2 text-xs text-slate-500 font-medium italic">${escapeHtml(caption)}</figcaption>` : ""}
+        <figcaption class="mt-2 text-xs text-slate-500 font-medium italic cursor-text" contenteditable="true">${escapeHtml(caption || "Click to add caption...")}</figcaption>
       </figure><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
@@ -680,58 +764,88 @@ function BlogsEditorPage() {
 
   const insertCalloutIntoEditor = () => {
     const snippet = `
-      <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/80" data-block-type="callout">
-        <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1 cursor-text" contenteditable="true">💡 Advisory Note</h4>
+      <div class="article-callout group relative my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/80" data-block-type="callout">
+        <div class="component-controls absolute top-2.5 right-2.5 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100/90 px-2 py-0.5 rounded-md">Advisory Box</span>
+          <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Advisory Box">
+            <span>✕ Delete</span>
+          </button>
+        </div>
+        <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1 cursor-text pr-28" contenteditable="true">💡 Advisory Note</h4>
         <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed cursor-text" contenteditable="true">Enter your key advisory recommendation or guidance here...</p>
       </div><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
-    toast.success("Advisory callout added! Click inside to edit.");
+    toast.success("Advisory callout added! Click inside to edit, or click ✕ Delete to remove.");
   };
 
   const insertStatIntoEditor = () => {
     const snippet = `
-      <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/70" data-block-type="stat">
+      <div class="article-stat group relative my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/70" data-block-type="stat">
+        <div class="component-controls absolute top-2.5 right-2.5 flex items-center gap-1.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-600 bg-indigo-100/90 px-2 py-0.5 rounded-md">Metric Card</span>
+          <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Metric Card">
+            <span>✕ Delete</span>
+          </button>
+        </div>
         <span class="stat-number font-serif-hero text-3xl font-bold text-navy block mb-1 cursor-text" contenteditable="true">85%</span>
         <span class="stat-label text-xs sm:text-sm text-slate-600 block cursor-text" contenteditable="true">Of businesses improve cash flow with proactive advisory planning.</span>
       </div><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
-    toast.success("Key metric card added! Click number or text to edit.");
+    toast.success("Key metric card added! Click number or text to edit, or click ✕ Delete to remove.");
   };
 
   const insertTableIntoEditor = () => {
     const snippet = `
-      <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" data-block-type="table">
-        <table class="w-full border-collapse text-left">
-          <thead class="bg-[#0e1b36] text-white">
-            <tr>
-              <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">Service Metric</th>
-              <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">Industry Benchmark</th>
-              <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">SMG Advisory Standard</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Monthly Close Speed</td>
-              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">20-25 days</td>
-              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700 cursor-text" contenteditable="true">5-7 business days</td>
-            </tr>
-            <tr>
-              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Prime Cost Audit</td>
-              <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Annual / Reactive</td>
-              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700 cursor-text" contenteditable="true">Weekly &amp; Monthly Review</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="article-table-container group relative my-6 rounded-xl border border-slate-200 overflow-hidden shadow-2xs" data-block-type="table">
+        <div class="component-controls flex items-center justify-between bg-slate-100 px-3 py-1.5 border-b border-slate-200" contenteditable="false">
+          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1">📊 Data Table</span>
+          <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Data Table">
+            <span>✕ Delete Table</span>
+          </button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse text-left">
+            <thead class="bg-[#0e1b36] text-white">
+              <tr>
+                <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">Service Metric</th>
+                <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">Industry Benchmark</th>
+                <th class="p-2.5 border border-slate-300 text-xs font-semibold cursor-text" contenteditable="true">SMG Advisory Standard</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Monthly Close Speed</td>
+                <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">20-25 days</td>
+                <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700 cursor-text" contenteditable="true">5-7 business days</td>
+              </tr>
+              <tr>
+                <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Prime Cost Audit</td>
+                <td class="p-2.5 border border-slate-200 text-xs cursor-text" contenteditable="true">Annual / Reactive</td>
+                <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700 cursor-text" contenteditable="true">Weekly &amp; Monthly Review</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div><p><br></p>
     `;
     insertHtmlAtCursor(snippet);
-    toast.success("Data table added! Click any cell to edit.");
+    toast.success("Data table added! Click any cell to edit, or click ✕ Delete Table to remove.");
   };
 
   const insertDividerIntoEditor = () => {
-    insertHtmlAtCursor(`<hr class="my-8 border-slate-300" /><p><br></p>`);
+    const snippet = `
+      <div class="article-divider-wrap group relative my-8 py-2 text-center" data-block-type="divider">
+        <div class="component-controls absolute right-2 -top-3.5 opacity-90 hover:opacity-100 transition-opacity z-10" contenteditable="false">
+          <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-[11px] font-semibold shadow-2xs transition cursor-pointer" title="Delete Divider">
+            <span>✕ Delete Divider</span>
+          </button>
+        </div>
+        <hr class="border-t-2 border-dashed border-slate-300" />
+      </div><p><br></p>
+    `;
+    insertHtmlAtCursor(snippet);
     toast.success("Section divider added!");
   };
 
@@ -3065,9 +3179,22 @@ function BlogsEditorPage() {
                             type="button"
                             onMouseDown={(e) => {
                               e.preventDefault();
+                              deleteCurrentBlockAtCursor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-1 transition cursor-pointer ml-auto"
+                            title="Delete the paragraph, heading, or section where your cursor currently is"
+                          >
+                            <Trash2 className="size-3 text-red-600" />
+                            <span>Delete Current Block</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
                               executeCommand("removeFormat");
                             }}
-                            className="h-7 px-2 rounded-full hover:bg-slate-100 text-slate-500 text-[11px] font-medium ml-auto transition cursor-pointer"
+                            className="h-7 px-2 rounded-full hover:bg-slate-100 text-slate-500 text-[11px] font-medium transition cursor-pointer"
                             title="Clear formatting on selected text"
                           >
                             Clear Format
@@ -3197,6 +3324,7 @@ function BlogsEditorPage() {
                           contentEditable="true"
                           suppressContentEditableWarning
                           onInput={handleWysiwygInput}
+                          onClick={handleEditorClick}
                           className="w-full prose prose-slate max-w-none focus:outline-none"
                         />
 
