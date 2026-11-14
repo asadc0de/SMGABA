@@ -53,6 +53,19 @@ export function linksToHtml(text: string): string {
 }
 
 /**
+ * Converts markdown links [label](url), bold **text**, and italic *text* into safe HTML.
+ */
+export function markdownToHtml(text: string): string {
+  if (!text || typeof text !== "string") return "";
+  let html = linksToHtml(text);
+  // Bold **text**
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-bold text-[#0f2142]">$1</strong>');
+  // Italic *text*
+  html = html.replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, '$1<em>$2</em>$3');
+  return html;
+}
+
+/**
  * Converts existing HTML <a> tags back to markdown-style [label](url)
  * so existing imported posts display cleanly in the editor.
  */

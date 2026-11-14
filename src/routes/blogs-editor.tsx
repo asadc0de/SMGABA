@@ -50,6 +50,9 @@ import {
   TrendingUp,
   Minus,
   Library,
+  Pilcrow,
+  HelpCircle,
+  BarChart3,
 } from "lucide-react";
 import {
   getAdminBlogs,
@@ -59,7 +62,7 @@ import {
 } from "@/lib/blogs.server";
 import { uploadCmsImage } from "@/lib/cms.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
-import { linksToHtml, htmlToLinks } from "@/lib/blogLinks";
+import { linksToHtml, htmlToLinks, markdownToHtml, escapeHtml } from "@/lib/blogLinks";
 import { type ContentBlock } from "@/data/blogPosts";
 import { MediaImageInput, MediaImagePickerModal } from "@/components/admin/MediaImagePickerModal";
 import { Button } from "@/components/ui/button";
@@ -233,6 +236,356 @@ function createBlankPost(): ExtendedBlogPost {
   };
 }
 
+function parseFullArticleText(
+  rawText: string,
+  mode: "smart" | "single"
+): ContentBlock[] {
+  if (!rawText || !rawText.trim()) return [];
+
+  const trimmed = rawText.trim();
+  if (mode === "single") {
+    return [
+      {
+        type: "p",
+        text: trimmed,
+        html: linksToHtml(trimmed),
+      },
+    ];
+  }
+
+  // Smart Mode: split into sections separated by blank line(s)
+  const rawSections = trimmed
+    .replace(/\r\n/g, "\n")
+    .split(/\n\s*\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const blocks: ContentBlock[] = [];
+
+  for (const section of rawSections) {
+    const lines = section.split("\n").map((l) => l.trim()).filter(Boolean);
+
+    // 1. Check if all lines are bullet points (*, -, •)
+    if (lines.length > 0 && lines.every((l) => /^[-*•]\s+/.test(l))) {
+      blocks.push({
+        type: "ul",
+        items: lines.map((l) => htmlToLinks(l.replace(/^[-*•]\s+/, ""))),
+      });
+      continue;
+    }
+
+    // 2. Check if all lines are numbered list items (1., 2., 1))
+    if (lines.length > 0 && lines.every((l) => /^\d+[\.\)]\s+/.test(l))) {
+      blocks.push({
+        type: "ol",
+        items: lines.map((l) => htmlToLinks(l.replace(/^\d+[\.\)]\s+/, ""))),
+      });
+      continue;
+    }
+
+    // 3. Single line checks
+    if (lines.length === 1) {
+      const line = lines[0];
+
+      if (line.startsWith("### ")) {
+        blocks.push({
+          type: "h3",
+          text: line.replace(/^###\s+/, "").replace(/^[#\s]+/, ""),
+        });
+        continue;
+      }
+
+      if (line.startsWith("## ") || line.startsWith("# ")) {
+        blocks.push({
+          type: "h2",
+          text: line.replace(/^#{1,2}\s+/, "").replace(/^[#\s]+/, ""),
+        });
+        continue;
+      }
+
+      if (line.startsWith("#### ")) {
+        blocks.push({
+          type: "h4",
+          text: line.replace(/^####\s+/, ""),
+        });
+        continue;
+      }
+
+      if (line.startsWith("> ")) {
+        blocks.push({
+          type: "blockquote",
+          text: line.replace(/^>\s+/, ""),
+        });
+        continue;
+      }
+
+      // Check for standalone headings like "1. Introduction" or short capitalized lines
+      if (
+        line.length <= 90 &&
+        (/^(\d+[\.\)]|[A-Z][\.\)])\s+[A-Za-z0-9]/.test(line) ||
+          (!/[.?!;:]$/.test(line) && /^[A-Z0-9]/.test(line) && line.split(" ").length <= 10))
+      ) {
+        blocks.push({
+          type: "h2",
+          text: line,
+        });
+        continue;
+      }
+    }
+
+    // 4. Blockquote block with multiple lines
+    if (lines.every((l) => l.startsWith("> "))) {
+      blocks.push({
+        type: "blockquote",
+        text: lines.map((l) => l.replace(/^>\s*/, "")).join(" "),
+      });
+      continue;
+    }
+
+    // 5. Standard paragraph (multi-line or single line)
+    blocks.push({
+      type: "p",
+      text: section,
+      html: linksToHtml(section),
+    });
+  }
+
+  return blocks;
+}
+
+function blocksToHtml(blocks: ContentBlock[]): string {
+  if (!Array.isArray(blocks) || blocks.length === 0) return "<p><br></p>";
+
+  const htmlChunks: string[] = [];
+
+  for (const block of blocks) {
+    if (block.type === "h2") {
+      htmlChunks.push(`<h2>${escapeHtml(block.text || "")}</h2>`);
+    } else if (block.type === "h3") {
+      htmlChunks.push(`<h3>${escapeHtml(block.text || "")}</h3>`);
+    } else if (block.type === "h4") {
+      htmlChunks.push(`<h4>${escapeHtml(block.text || "")}</h4>`);
+    } else if (block.type === "blockquote") {
+      htmlChunks.push(`<blockquote>${escapeHtml(block.text || "")}</blockquote>`);
+    } else if (block.type === "divider") {
+      htmlChunks.push(`<hr>`);
+    } else if (block.type === "ul") {
+      const lis = (block.items || []).map((item) => `<li>${markdownToHtml(item)}</li>`).join("");
+      htmlChunks.push(`<ul>${lis}</ul>`);
+    } else if (block.type === "ol") {
+      const lis = (block.items || []).map((item) => `<li>${markdownToHtml(item)}</li>`).join("");
+      htmlChunks.push(`<ol>${lis}</ol>`);
+    } else if (block.type === "image") {
+      htmlChunks.push(`
+        <figure class="article-image my-6 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3 text-center" contenteditable="false" data-block-type="image">
+          <img src="${escapeHtml(block.url || "")}" alt="${escapeHtml(block.alt || "")}" class="rounded-xl w-full max-h-96 object-cover mx-auto" />
+          ${block.caption ? `<figcaption class="mt-2 text-xs text-slate-500 font-medium italic">${escapeHtml(block.caption)}</figcaption>` : ""}
+        </figure><p><br></p>
+      `);
+    } else if (block.type === "callout") {
+      htmlChunks.push(`
+        <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/70" contenteditable="false" data-block-type="callout">
+          <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1">💡 ${escapeHtml(block.title || "Advisory Note")}</h4>
+          <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed">${escapeHtml(block.text || "")}</p>
+        </div><p><br></p>
+      `);
+    } else if (block.type === "stat") {
+      htmlChunks.push(`
+        <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/60" contenteditable="false" data-block-type="stat">
+          <span class="stat-number font-serif-hero text-2xl sm:text-3xl font-bold text-navy block mb-1">${escapeHtml(block.statNumber || "")}</span>
+          <span class="stat-label text-xs sm:text-sm text-slate-600">${escapeHtml(block.statLabel || "")}</span>
+        </div><p><br></p>
+      `);
+    } else if (block.type === "table") {
+      const headers = (block.headers || []).map((h) => `<th class="p-2 border border-slate-300 bg-[#0e1b36] text-white text-xs font-semibold">${escapeHtml(h)}</th>`).join("");
+      const rows = (block.rows || []).map((row) => `<tr>${row.map((cell) => `<td class="p-2 border border-slate-200 text-xs text-slate-800">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
+      htmlChunks.push(`
+        <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" contenteditable="false" data-block-type="table">
+          <table class="w-full border-collapse text-left">
+            <thead><tr>${headers}</tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div><p><br></p>
+      `);
+    } else {
+      // p or richtext
+      const rawText = block.text || "";
+      const paras = rawText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
+      if (paras.length > 1) {
+        for (const p of paras) {
+          htmlChunks.push(`<p>${markdownToHtml(p)}</p>`);
+        }
+      } else if (block.html && block.html.includes("<")) {
+        htmlChunks.push(`<p>${block.html}</p>`);
+      } else {
+        htmlChunks.push(`<p>${markdownToHtml(rawText || "<br>")}</p>`);
+      }
+    }
+  }
+
+  return htmlChunks.join("");
+}
+
+function parseHtmlToBlocks(html: string): ContentBlock[] {
+  if (typeof window === "undefined" || !html) {
+    return [{ type: "p", text: html || "", html: html || "" }];
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<body>${html}</body>`, "text/html");
+  const nodes = Array.from(doc.body.childNodes);
+  const blocks: ContentBlock[] = [];
+
+  for (const node of nodes) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent?.trim();
+      if (text) {
+        blocks.push({
+          type: "p",
+          text,
+          html: linksToHtml(text),
+        });
+      }
+      continue;
+    }
+
+    if (node.nodeType !== Node.ELEMENT_NODE) continue;
+    const el = node as HTMLElement;
+    const tagName = el.tagName.toLowerCase();
+
+    // Skip empty dummy elements like <p><br></p>
+    if ((tagName === "p" || tagName === "div") && (!el.textContent?.trim() && !el.querySelector("img, table, hr"))) {
+      continue;
+    }
+
+    if (tagName === "h2") {
+      blocks.push({ type: "h2", text: el.textContent?.trim() || "" });
+    } else if (tagName === "h3") {
+      blocks.push({ type: "h3", text: el.textContent?.trim() || "" });
+    } else if (tagName === "h4") {
+      blocks.push({ type: "h4", text: el.textContent?.trim() || "" });
+    } else if (tagName === "blockquote") {
+      blocks.push({ type: "blockquote", text: el.textContent?.trim() || "" });
+    } else if (tagName === "hr") {
+      blocks.push({ type: "divider" });
+    } else if (tagName === "ul") {
+      const items = Array.from(el.querySelectorAll("li"))
+        .map((li) => li.innerHTML.trim())
+        .filter(Boolean);
+      if (items.length > 0) {
+        blocks.push({ type: "ul", items });
+      }
+    } else if (tagName === "ol") {
+      const items = Array.from(el.querySelectorAll("li"))
+        .map((li) => li.innerHTML.trim())
+        .filter(Boolean);
+      if (items.length > 0) {
+        blocks.push({ type: "ol", items });
+      }
+    } else if (tagName === "figure" || el.classList.contains("article-image") || tagName === "img" || el.querySelector("img")) {
+      const img = tagName === "img" ? (el as HTMLImageElement) : el.querySelector("img");
+      const caption = el.querySelector("figcaption")?.textContent?.trim() || "";
+      if (img?.getAttribute("src")) {
+        blocks.push({
+          type: "image",
+          url: img.getAttribute("src") || "",
+          alt: img.getAttribute("alt") || "",
+          caption: caption || undefined,
+          size: "full",
+        });
+      }
+    } else if (el.classList.contains("article-callout") || el.getAttribute("data-block-type") === "callout") {
+      const title = el.querySelector("h4, strong, .callout-title")?.textContent?.replace(/^[💡\s]+/, "").trim() || "Advisory Note";
+      const text = el.querySelector("p, .callout-text")?.textContent?.trim() || el.textContent?.trim() || "";
+      blocks.push({
+        type: "callout",
+        calloutType: "tip",
+        title,
+        text,
+      });
+    } else if (el.classList.contains("article-stat") || el.getAttribute("data-block-type") === "stat") {
+      const statNumber = el.querySelector(".stat-number")?.textContent?.trim() || "85%";
+      const statLabel = el.querySelector(".stat-label")?.textContent?.trim() || "";
+      blocks.push({
+        type: "stat",
+        statNumber,
+        statLabel,
+      });
+    } else if (tagName === "table" || el.querySelector("table")) {
+      const table = tagName === "table" ? (el as HTMLTableElement) : el.querySelector("table")!;
+      const headerThs = Array.from(table.querySelectorAll("thead th, tr:first-child th"));
+      const headers = headerThs.map((th) => th.textContent?.trim() || "");
+      const bodyRows = Array.from(table.querySelectorAll("tbody tr"));
+      const effectiveRows = bodyRows.length > 0 ? bodyRows : Array.from(table.querySelectorAll("tr")).slice(headers.length > 0 ? 1 : 0);
+      const rows = effectiveRows.map((tr) => Array.from(tr.querySelectorAll("td")).map((td) => td.textContent?.trim() || ""));
+      blocks.push({
+        type: "table",
+        hasHeader: headers.length > 0,
+        headers: headers.length > 0 ? headers : ["Column 1", "Column 2"],
+        rows: rows.length > 0 ? rows : [["Data 1", "Data 2"]],
+      });
+    } else {
+      // General paragraph or div
+      const innerHtml = el.innerHTML.trim();
+      const textContent = el.textContent?.trim() || "";
+      if (textContent || innerHtml) {
+        blocks.push({
+          type: "p",
+          text: textContent,
+          html: innerHtml,
+        });
+      }
+    }
+  }
+
+  return blocks.length > 0 ? blocks : [{ type: "p", text: "" }];
+}
+
+function blocksToDocumentText(blocks: ContentBlock[]): string {
+  if (!Array.isArray(blocks) || blocks.length === 0) return "";
+
+  const sections: string[] = [];
+
+  for (const block of blocks) {
+    if (block.type === "h2") {
+      if (block.text?.trim()) sections.push(`## ${block.text.trim()}`);
+    } else if (block.type === "h3") {
+      if (block.text?.trim()) sections.push(`### ${block.text.trim()}`);
+    } else if (block.type === "h4") {
+      if (block.text?.trim()) sections.push(`#### ${block.text.trim()}`);
+    } else if (block.type === "blockquote") {
+      if (block.text?.trim()) sections.push(`> ${block.text.trim()}`);
+    } else if (block.type === "ul") {
+      const listText = (block.items || [])
+        .map((item) => `* ${htmlToLinks(item)}`)
+        .filter(Boolean)
+        .join("\n");
+      if (listText) sections.push(listText);
+    } else if (block.type === "ol") {
+      const listText = (block.items || [])
+        .map((item, i) => `${i + 1}. ${htmlToLinks(item)}`)
+        .filter(Boolean)
+        .join("\n");
+      if (listText) sections.push(listText);
+    } else if (block.type === "callout") {
+      if (block.text?.trim()) {
+        sections.push(`> **${block.title || "Advisory Note"}:** ${block.text.trim()}`);
+      }
+    } else if (block.type === "stat") {
+      if (block.statNumber || block.statLabel) {
+        sections.push(`**${block.statNumber || ""}** - ${block.statLabel || ""}`);
+      }
+    } else if (block.type === "divider") {
+      sections.push(`---`);
+    } else if (block.type === "p") {
+      const text = (block.text || htmlToLinks(block.html || "")).trim();
+      if (text) sections.push(text);
+    }
+  }
+
+  return sections.join("\n\n");
+}
+
 function BlogsEditorPage() {
   const initialData = Route.useLoaderData();
   const [blogsList, setBlogsList] = useState<ExtendedBlogPost[]>(initialData?.blogs || []);
@@ -257,11 +610,136 @@ function BlogsEditorPage() {
   const coverFileInputRef = useRef<HTMLInputElement>(null);
   const settingsFileInputRef = useRef<HTMLInputElement>(null);
 
+  // Full Article Paste Modal State
+  const [isPasteArticleModalOpen, setIsPasteArticleModalOpen] = useState(false);
+  const [pasteArticleInput, setPasteArticleInput] = useState("");
+  const [pasteMode, setPasteMode] = useState<"smart" | "single">("smart");
+  const [pasteAction, setPasteAction] = useState<"append" | "replace">("append");
+
+  // Canvas Mode: "document" (Easy, single visual editor like Word/Medium) vs "blocks" (Custom modular blocks)
+  const [canvasMode, setCanvasMode] = useState<"document" | "blocks">("document");
+  const editorRef = useRef<HTMLDivElement>(null);
+  const [isInlineImageModalOpen, setIsInlineImageModalOpen] = useState(false);
+  const [editorWordCount, setEditorWordCount] = useState(0);
+  const [editorParagraphCount, setEditorParagraphCount] = useState(0);
+  const [lastWysiwygSelection, setLastWysiwygSelection] = useState<Range | null>(null);
+
+  const handleWysiwygInput = () => {
+    if (!editorRef.current) return;
+    const text = editorRef.current.innerText || "";
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const paras = text.split(/\n\s*\n/).filter((p) => p.trim().length > 0).length;
+    setEditorWordCount(words);
+    setEditorParagraphCount(paras);
+  };
+
+  const executeCommand = (command: string, value: string | undefined = undefined) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    document.execCommand(command, false, value);
+    handleWysiwygInput();
+  };
+
+  const insertHtmlAtCursor = (htmlSnippet: string) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    document.execCommand("insertHTML", false, htmlSnippet);
+    handleWysiwygInput();
+  };
+
+  const openInsertLinkForDocument = () => {
+    let selectedText = "";
+    if (typeof window !== "undefined") {
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        setLastWysiwygSelection(selection.getRangeAt(0).cloneRange());
+        selectedText = selection.toString();
+      }
+    }
+    setLinkModal({
+      isOpen: true,
+      blockIndex: -1,
+      subType: "document",
+      linkText: selectedText || "link text",
+      linkUrl: "",
+    });
+  };
+
+  const insertImageIntoEditor = (url: string, alt: string = "Article image", caption: string = "") => {
+    const snippet = `
+      <figure class="article-image my-6 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 p-3 text-center" contenteditable="false" data-block-type="image">
+        <img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" class="rounded-xl w-full max-h-96 object-cover mx-auto" />
+        ${caption ? `<figcaption class="mt-2 text-xs text-slate-500 font-medium italic">${escapeHtml(caption)}</figcaption>` : ""}
+      </figure><p><br></p>
+    `;
+    insertHtmlAtCursor(snippet);
+    toast.success("Image added to article!");
+  };
+
+  const insertCalloutIntoEditor = () => {
+    const snippet = `
+      <div class="article-callout my-6 p-4 rounded-2xl border border-blue-200 bg-blue-50/80" contenteditable="false" data-block-type="callout">
+        <h4 class="callout-title font-bold text-sm text-[#0f2142] flex items-center gap-1.5 mb-1">💡 Advisory Note</h4>
+        <p class="callout-text text-xs sm:text-sm text-slate-700 leading-relaxed">Enter your key advisory recommendation or guidance here...</p>
+      </div><p><br></p>
+    `;
+    insertHtmlAtCursor(snippet);
+    toast.success("Advisory callout added!");
+  };
+
+  const insertStatIntoEditor = () => {
+    const snippet = `
+      <div class="article-stat my-6 p-5 rounded-2xl border border-indigo-200 bg-indigo-50/70" contenteditable="false" data-block-type="stat">
+        <span class="stat-number font-serif-hero text-3xl font-bold text-navy block mb-1">85%</span>
+        <span class="stat-label text-xs sm:text-sm text-slate-600">Of businesses improve cash flow with proactive advisory planning.</span>
+      </div><p><br></p>
+    `;
+    insertHtmlAtCursor(snippet);
+    toast.success("Key metric card added!");
+  };
+
+  const insertTableIntoEditor = () => {
+    const snippet = `
+      <div class="my-6 overflow-x-auto rounded-xl border border-slate-200" contenteditable="false" data-block-type="table">
+        <table class="w-full border-collapse text-left">
+          <thead class="bg-[#0e1b36] text-white">
+            <tr>
+              <th class="p-2.5 border border-slate-300 text-xs font-semibold">Service Metric</th>
+              <th class="p-2.5 border border-slate-300 text-xs font-semibold">Industry Benchmark</th>
+              <th class="p-2.5 border border-slate-300 text-xs font-semibold">SMG Advisory Standard</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="p-2.5 border border-slate-200 text-xs">Monthly Close Speed</td>
+              <td class="p-2.5 border border-slate-200 text-xs">20-25 days</td>
+              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700">5-7 business days</td>
+            </tr>
+            <tr>
+              <td class="p-2.5 border border-slate-200 text-xs">Prime Cost Audit</td>
+              <td class="p-2.5 border border-slate-200 text-xs">Annual / Reactive</td>
+              <td class="p-2.5 border border-slate-200 text-xs font-semibold text-emerald-700">Weekly &amp; Monthly Review</td>
+            </tr>
+          </tbody>
+        </table>
+      </div><p><br></p>
+    `;
+    insertHtmlAtCursor(snippet);
+    toast.success("Data table added!");
+  };
+
+  const insertDividerIntoEditor = () => {
+    insertHtmlAtCursor(`<hr class="my-8 border-slate-300" /><p><br></p>`);
+    toast.success("Section divider added!");
+  };
+
   // Link Insertion Modal State
   const [linkModal, setLinkModal] = useState<{
     isOpen: boolean;
     blockIndex: number;
-    subType: "p" | "ul" | "ol" | "callout" | "table" | "table-header";
+    subType: "p" | "ul" | "ol" | "callout" | "table" | "table-header" | "document";
     itemIndex?: number;
     rowIndex?: number;
     colIndex?: number;
@@ -271,7 +749,7 @@ function BlogsEditorPage() {
     selectionEnd?: number;
   }>({
     isOpen: false,
-    blockIndex: 0,
+    blockIndex: -1,
     subType: "p",
     linkText: "",
     linkUrl: "",
@@ -444,6 +922,28 @@ function BlogsEditorPage() {
 
     const label = linkText.trim() || url;
     const markdownLink = `[${label}](${url})`;
+
+    if (subType === "document") {
+      if (editorRef.current) {
+        editorRef.current.focus();
+      }
+      if (typeof window !== "undefined" && lastWysiwygSelection) {
+        const selection = window.getSelection();
+        if (selection) {
+          selection.removeAllRanges();
+          selection.addRange(lastWysiwygSelection);
+        }
+      }
+      if (lastWysiwygSelection && !lastWysiwygSelection.collapsed) {
+        document.execCommand("createLink", false, url);
+      } else {
+        insertHtmlAtCursor(`<a href="${escapeHtml(url)}" class="text-blue-600 underline font-medium hover:text-blue-800">${escapeHtml(label)}</a>&nbsp;`);
+      }
+      handleWysiwygInput();
+      setLinkModal((prev) => ({ ...prev, isOpen: false }));
+      toast.success("Link added to article!");
+      return;
+    }
 
     if (subType === "p") {
       const currentText = currentPost.blocks[blockIndex]?.text || "";
@@ -655,19 +1155,35 @@ function BlogsEditorPage() {
 
   // Handler: Start New Post
   const handleStartNew = () => {
-    setCurrentPost(createBlankPost());
+    const blank = createBlankPost();
+    setCurrentPost(blank);
     setIsCustomSlugUnlocked(false);
+    setCanvasMode("document");
     setEditorSubTab("write");
     setActiveTab("edit");
+    setTimeout(() => {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = blocksToHtml(blank.blocks);
+        handleWysiwygInput();
+      }
+    }, 50);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Handler: Edit Post
   const handleEditPost = (post: ExtendedBlogPost) => {
-    setCurrentPost(preparePostForEditor(post));
+    const prepared = preparePostForEditor(post);
+    setCurrentPost(prepared);
     setIsCustomSlugUnlocked(true);
+    setCanvasMode("document");
     setEditorSubTab("write");
     setActiveTab("edit");
+    setTimeout(() => {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = blocksToHtml(prepared.blocks);
+        handleWysiwygInput();
+      }
+    }, 50);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -684,8 +1200,15 @@ function BlogsEditorPage() {
     };
     setCurrentPost(duplicated);
     setIsCustomSlugUnlocked(true);
+    setCanvasMode("document");
     setEditorSubTab("write");
     setActiveTab("edit");
+    setTimeout(() => {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = blocksToHtml(duplicated.blocks);
+        handleWysiwygInput();
+      }
+    }, 50);
     toast.info("Created a duplicate draft. You can customize and save it.");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -845,6 +1368,125 @@ function BlogsEditorPage() {
     }));
   };
 
+  // Split a multi-paragraph block into individual blocks
+  const handleSplitParagraph = (index: number) => {
+    const targetBlock = currentPost.blocks[index];
+    if (!targetBlock || !targetBlock.text) return;
+
+    const parsed = parseFullArticleText(targetBlock.text, "smart");
+    if (parsed.length <= 1) {
+      toast.info("No multiple sections found to split.");
+      return;
+    }
+
+    setCurrentPost((prev) => {
+      const nextBlocks = [...prev.blocks];
+      nextBlocks.splice(index, 1, ...parsed);
+      return { ...prev, blocks: nextBlocks };
+    });
+    toast.success(`Split into ${parsed.length} individual blocks!`);
+  };
+
+  // Merge all paragraph blocks into one continuous content block
+  const handleMergeAllParagraphs = () => {
+    const paraIndices = currentPost.blocks
+      .map((b, i) => (b.type === "p" ? i : -1))
+      .filter((i) => i !== -1);
+
+    if (paraIndices.length <= 1) {
+      toast.info("Need more than 1 paragraph block to merge.");
+      return;
+    }
+
+    const mergedText = currentPost.blocks
+      .filter((b) => b.type === "p")
+      .map((b) => (b.text || "").trim())
+      .filter(Boolean)
+      .join("\n\n");
+
+    const mergedBlock: ContentBlock = {
+      type: "p",
+      text: mergedText,
+      html: linksToHtml(mergedText),
+    };
+
+    const firstIdx = paraIndices[0];
+    const otherParaIndices = new Set(paraIndices.slice(1));
+
+    setCurrentPost((prev) => {
+      const nextBlocks = prev.blocks
+        .filter((_, idx) => !otherParaIndices.has(idx))
+        .map((b, idx) => (idx === firstIdx ? mergedBlock : b));
+      return { ...prev, blocks: nextBlocks };
+    });
+    toast.success("Merged paragraphs into a single content block!");
+  };
+
+  // Execute full article import
+  const handleExecuteFullArticleImport = () => {
+    if (!pasteArticleInput.trim()) {
+      toast.error("Please paste some article text first.");
+      return;
+    }
+
+    const newBlocks = parseFullArticleText(pasteArticleInput, pasteMode);
+    if (!newBlocks.length) {
+      toast.error("No content detected to import.");
+      return;
+    }
+
+    let titleToSet = currentPost.title;
+    if (!titleToSet) {
+      const firstLine = pasteArticleInput.trim().split("\n")[0].trim();
+      if (firstLine.startsWith("# ")) {
+        titleToSet = firstLine.replace(/^#\s+/, "");
+      }
+    }
+
+    const combinedBlocks = pasteAction === "replace" ? newBlocks : [...currentPost.blocks, ...newBlocks];
+    setCurrentPost((prev) => ({
+      ...prev,
+      title: titleToSet || prev.title,
+      blocks: combinedBlocks,
+    }));
+
+    if (editorRef.current) {
+      editorRef.current.innerHTML = blocksToHtml(combinedBlocks);
+      handleWysiwygInput();
+    }
+
+    setIsPasteArticleModalOpen(false);
+    setPasteArticleInput("");
+    toast.success(
+      `Successfully imported ${newBlocks.length} ${pasteMode === "single" ? "unified content block" : "structured blocks"}!`
+    );
+  };
+
+  const handleSwitchToBlocks = () => {
+    let newBlocks = currentPost.blocks;
+    if (editorRef.current) {
+      const parsed = parseHtmlToBlocks(editorRef.current.innerHTML);
+      if (parsed.length > 0) newBlocks = parsed;
+    }
+    setCurrentPost((prev) => ({
+      ...prev,
+      blocks: newBlocks,
+    }));
+    setCanvasMode("blocks");
+    toast.info("Switched to Advanced Blocks mode");
+  };
+
+  const handleSwitchToDocument = () => {
+    setCanvasMode("document");
+    setTimeout(() => {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = blocksToHtml(currentPost.blocks);
+        handleWysiwygInput();
+      }
+    }, 50);
+    toast.info("Switched to Easy Document mode");
+  };
+
   // Table Block Management Helpers
   const handleToggleTableHeader = (blockIdx: number) => {
     setCurrentPost((prev) => {
@@ -964,6 +1606,16 @@ function BlogsEditorPage() {
     });
   };
 
+  const handleOpenPreview = () => {
+    if (canvasMode === "document" && editorRef.current) {
+      const wysiwygHtml = editorRef.current.innerHTML || "";
+      const parsed = parseHtmlToBlocks(wysiwygHtml);
+      const syncedBlocks = parsed.length > 0 ? parsed : [{ type: "p", text: "" }];
+      setCurrentPost((prev) => ({ ...prev, blocks: syncedBlocks }));
+    }
+    setActiveTab("preview");
+  };
+
   // Handler: Save Post
   const handleSave = async (forceStatus?: "published" | "scheduled" | "draft") => {
     if (!currentPost.title.trim()) {
@@ -975,7 +1627,14 @@ function BlogsEditorPage() {
     setIsSaving(true);
 
     try {
-      const normalizedBlocks = (currentPost.blocks || []).map((block) => {
+      let activeBlocks = currentPost.blocks;
+      if (canvasMode === "document" && editorRef.current) {
+        const wysiwygHtml = editorRef.current.innerHTML || "";
+        const parsed = parseHtmlToBlocks(wysiwygHtml);
+        activeBlocks = parsed.length > 0 ? parsed : [{ type: "p", text: "" }];
+      }
+
+      const normalizedBlocks = (activeBlocks || []).map((block) => {
         if (block.type === "p") {
           const text = block.text || "";
           return {
@@ -1564,7 +2223,7 @@ function BlogsEditorPage() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => setActiveTab("preview")}
+                  onClick={handleOpenPreview}
                   className="rounded-full gap-1.5 bg-blue-50/80 text-blue-700 border-blue-200 hover:bg-blue-100 h-8 px-3.5 text-xs font-semibold"
                 >
                   <Eye className="size-3.5" /> Live Preview
@@ -2103,17 +2762,440 @@ function BlogsEditorPage() {
 
                 {/* Article Content Story Canvas */}
                 <div className="bg-white rounded-3xl border border-slate-200/80 shadow-xs p-6 sm:p-10 space-y-6">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                      Article Body
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      {currentPost.blocks.length} sections
-                    </span>
+                  {/* Mode Switch Header */}
+                  <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200">
+                        <button
+                          type="button"
+                          onClick={handleSwitchToDocument}
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                            canvasMode === "document"
+                              ? "bg-white text-navy shadow-xs"
+                              : "text-slate-600 hover:text-navy"
+                          }`}
+                        >
+                          <FileText className="size-3.5 text-blue-600" />
+                          <span>📄 Easy Document (Recommended)</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleSwitchToBlocks}
+                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                            canvasMode === "blocks"
+                              ? "bg-white text-navy shadow-xs"
+                              : "text-slate-600 hover:text-navy"
+                          }`}
+                        >
+                          <Layers className="size-3.5 text-slate-500" />
+                          <span>🧱 Advanced Blocks ({currentPost.blocks.length})</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      {canvasMode === "blocks" && currentPost.blocks.filter((b) => b.type === "p").length > 1 && (
+                        <button
+                          type="button"
+                          onClick={handleMergeAllParagraphs}
+                          className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 hover:bg-slate-200 transition cursor-pointer"
+                          title="Merge all paragraph blocks into one single continuous block"
+                        >
+                          <Layers className="size-3" />
+                          <span>Merge paragraphs</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPasteArticleInput("");
+                          setIsPasteArticleModalOpen(true);
+                        }}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-full bg-[#1b4e94] text-white hover:bg-[#153e77] transition shadow-xs cursor-pointer"
+                      >
+                        <Sparkles className="size-3.5" />
+                        <span>⚡ Paste Full Article</span>
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Blocks List */}
-                  <div className="space-y-6">
+                  {/* DOCUMENT MODE (VISUAL WYSIWYG - WORD / GOOGLE DOCS STYLE) */}
+                  {canvasMode === "document" ? (
+                    <div className="space-y-4">
+                      {/* Top Visual Formatting Toolbar */}
+                      <div className="sticky top-20 z-20 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl shadow-sm p-2.5 space-y-2">
+                        {/* Row 1: Headings & Text Styles */}
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex flex-wrap items-center gap-1">
+                            {/* Headings */}
+                            <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("formatBlock", "<h2>");
+                                }}
+                                className="h-7 px-2.5 rounded-lg hover:bg-white text-navy text-xs font-bold font-serif-hero transition flex items-center gap-1 cursor-pointer"
+                                title="Primary Section Heading (H2)"
+                              >
+                                <Heading className="size-3.5 text-primary" />
+                                <span>Heading 2</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("formatBlock", "<h3>");
+                                }}
+                                className="h-7 px-2.5 rounded-lg hover:bg-white text-navy text-xs font-semibold font-serif-hero transition flex items-center gap-1 cursor-pointer"
+                                title="Subheading (H3)"
+                              >
+                                <Heading className="size-3 text-slate-500" />
+                                <span>Heading 3</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("formatBlock", "<h4>");
+                                }}
+                                className="h-7 px-2 rounded-lg hover:bg-white text-slate-700 text-xs font-medium transition flex items-center gap-1 cursor-pointer"
+                                title="Minor Topic (H4)"
+                              >
+                                <Heading className="size-2.5 text-slate-400" />
+                                <span>H4</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("formatBlock", "<p>");
+                                }}
+                                className="h-7 px-2 rounded-lg hover:bg-white text-slate-600 text-xs font-medium transition flex items-center gap-1 cursor-pointer"
+                                title="Normal Paragraph Text"
+                              >
+                                <Pilcrow className="size-3 text-slate-400" />
+                                <span>Normal</span>
+                              </button>
+                            </div>
+
+                            <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+
+                            {/* Bold / Italic / Underline / Strike */}
+                            <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("bold");
+                                }}
+                                className="size-7 rounded-lg hover:bg-white text-slate-800 text-xs font-extrabold flex items-center justify-center transition cursor-pointer"
+                                title="Bold (Ctrl+B)"
+                              >
+                                <span>B</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("italic");
+                                }}
+                                className="size-7 rounded-lg hover:bg-white text-slate-800 text-xs italic font-serif flex items-center justify-center transition cursor-pointer"
+                                title="Italic (Ctrl+I)"
+                              >
+                                <span>I</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("underline");
+                                }}
+                                className="size-7 rounded-lg hover:bg-white text-slate-800 text-xs underline flex items-center justify-center transition cursor-pointer"
+                                title="Underline (Ctrl+U)"
+                              >
+                                <span className="font-semibold underline">U</span>
+                              </button>
+                            </div>
+
+                            <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
+
+                            {/* Lists & Quote & Link */}
+                            <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-xl border border-slate-200">
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("insertUnorderedList");
+                                }}
+                                className="h-7 px-2 rounded-lg hover:bg-white text-slate-700 text-xs font-medium flex items-center gap-1 transition cursor-pointer"
+                                title="Bullet List"
+                              >
+                                <List className="size-3.5 text-blue-600" />
+                                <span className="hidden md:inline">Bullet</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("insertOrderedList");
+                                }}
+                                className="h-7 px-2 rounded-lg hover:bg-white text-slate-700 text-xs font-medium flex items-center gap-1 transition cursor-pointer"
+                                title="Numbered Steps List"
+                              >
+                                <ListOrdered className="size-3.5 text-blue-600" />
+                                <span className="hidden md:inline">Numbered</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  executeCommand("formatBlock", "<blockquote>");
+                                }}
+                                className="h-7 px-2 rounded-lg hover:bg-white text-slate-700 text-xs font-serif flex items-center gap-1 transition cursor-pointer"
+                                title="Quote Highlight"
+                              >
+                                <Quote className="size-3 text-slate-500" />
+                                <span className="hidden md:inline">Quote</span>
+                              </button>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  openInsertLinkForDocument();
+                                }}
+                                className="h-7 px-2.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                                title="Insert Link"
+                              >
+                                <Link2 className="size-3.5 text-blue-600" />
+                                <span>Link</span>
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Quick Paste Full Article Button */}
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPasteArticleInput("");
+                                setIsPasteArticleModalOpen(true);
+                              }}
+                              className="h-8 px-3 rounded-full bg-[#1b4e94] text-white hover:bg-[#153e77] text-xs font-bold shadow-xs flex items-center gap-1.5 transition cursor-pointer"
+                              title="Paste your full article from Word or Google Docs"
+                            >
+                              <Sparkles className="size-3.5" />
+                              <span>Paste Word / Docs</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Row 2: Rich Visual Additions (Images, Callouts, Metrics, Tables, Dividers) */}
+                        <div className="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-slate-100 text-xs">
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
+                            <span>Insert Inline:</span>
+                          </span>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              setIsInlineImageModalOpen(true);
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert an image with caption into the article text"
+                          >
+                            <ImageIcon className="size-3.5 text-emerald-600" />
+                            <span>Image</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertCalloutIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200/80 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert an advisory note / insight box"
+                          >
+                            <HelpCircle className="size-3.5 text-blue-600" />
+                            <span>Advisory Box</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertStatIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200/80 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert a bold metric / stat highlight"
+                          >
+                            <BarChart3 className="size-3.5 text-indigo-600" />
+                            <span>Metric Card</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertTableIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert a comparison data table"
+                          >
+                            <TableIcon className="size-3.5 text-slate-600" />
+                            <span>Data Table</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertDividerIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 font-medium flex items-center gap-1 transition cursor-pointer"
+                            title="Insert a visual horizontal divider"
+                          >
+                            <Minus className="size-3.5 text-slate-500" />
+                            <span>Divider</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              executeCommand("removeFormat");
+                            }}
+                            className="h-7 px-2 rounded-full hover:bg-slate-100 text-slate-500 text-[11px] font-medium ml-auto transition cursor-pointer"
+                            title="Clear formatting on selected text"
+                          >
+                            Clear Format
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Visual WYSIWYG Document Editor Canvas */}
+                      <div className="rounded-2xl border border-slate-200 bg-white shadow-xs p-6 sm:p-10 focus-within:border-[#1b4e94] focus-within:ring-2 focus-within:ring-[#1b4e94]/10 transition">
+                        <style>{`
+                          #wysiwyg-document-editor {
+                            outline: none;
+                            min-height: 480px;
+                            font-size: 1.0625rem;
+                            line-height: 1.8;
+                            color: #1e293b;
+                          }
+                          #wysiwyg-document-editor:empty:before {
+                            content: "Start typing your article here, or click 'Paste Word / Docs' above to import an entire document...\\A\\A• Format headings, bold, italic, or lists with instant visual results\\A• Add images, advisory callouts, metric cards, or tables anywhere\\A• Click 'Live Preview' at any time to see the published article!";
+                            white-space: pre-wrap;
+                            color: #94a3b8;
+                            pointer-events: none;
+                          }
+                          #wysiwyg-document-editor h2 {
+                            font-family: inherit;
+                            font-size: 1.75rem;
+                            font-weight: 800;
+                            color: #0f2142;
+                            margin-top: 2rem;
+                            margin-bottom: 0.75rem;
+                            line-height: 1.3;
+                          }
+                          #wysiwyg-document-editor h3 {
+                            font-family: inherit;
+                            font-size: 1.35rem;
+                            font-weight: 700;
+                            color: #0f2142;
+                            margin-top: 1.5rem;
+                            margin-bottom: 0.5rem;
+                            line-height: 1.35;
+                          }
+                          #wysiwyg-document-editor h4 {
+                            font-size: 1.125rem;
+                            font-weight: 600;
+                            color: #334155;
+                            margin-top: 1.25rem;
+                            margin-bottom: 0.5rem;
+                          }
+                          #wysiwyg-document-editor p {
+                            margin-bottom: 1.15rem;
+                          }
+                          #wysiwyg-document-editor ul {
+                            list-style-type: disc;
+                            margin-left: 1.5rem;
+                            margin-bottom: 1.25rem;
+                          }
+                          #wysiwyg-document-editor ol {
+                            list-style-type: decimal;
+                            margin-left: 1.5rem;
+                            margin-bottom: 1.25rem;
+                          }
+                          #wysiwyg-document-editor li {
+                            margin-bottom: 0.35rem;
+                          }
+                          #wysiwyg-document-editor blockquote {
+                            border-left: 4px solid #1b4e94;
+                            background-color: #f8fafc;
+                            padding: 0.85rem 1.25rem;
+                            margin: 1.5rem 0;
+                            border-radius: 0 0.75rem 0.75rem 0;
+                            font-style: italic;
+                            color: #334155;
+                          }
+                          #wysiwyg-document-editor hr {
+                            border: 0;
+                            border-top: 2px dashed #cbd5e1;
+                            margin: 2.25rem 0;
+                          }
+                          #wysiwyg-document-editor a {
+                            color: #1b4e94;
+                            text-decoration: underline;
+                            font-weight: 600;
+                          }
+                          #wysiwyg-document-editor .article-image {
+                            user-select: none;
+                          }
+                          #wysiwyg-document-editor .article-callout,
+                          #wysiwyg-document-editor .article-stat {
+                            user-select: text;
+                          }
+                        `}</style>
+
+                        <div
+                          id="wysiwyg-document-editor"
+                          ref={editorRef}
+                          contentEditable="true"
+                          suppressContentEditableWarning
+                          onInput={handleWysiwygInput}
+                          className="w-full prose prose-slate max-w-none focus:outline-none"
+                        />
+
+                        {/* Document stats footer */}
+                        <div className="flex flex-wrap items-center justify-between gap-2 pt-4 mt-6 border-t border-slate-100 text-xs text-slate-400">
+                          <div className="flex items-center gap-3">
+                            <span className="font-semibold text-slate-700">
+                              {editorWordCount} words
+                            </span>
+                            <span>•</span>
+                            <span>
+                              {editorParagraphCount} paragraphs
+                            </span>
+                            <span>•</span>
+                            <span>
+                              ~{Math.max(1, Math.ceil(editorWordCount / 200))} min read
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-emerald-600 font-medium flex items-center gap-1">
+                            <span className="size-1.5 rounded-full bg-emerald-500 inline-block" />
+                            Visual WYSIWYG mode active — format shows instantly
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    /* BLOCKS MODE (ADVANCED) */
+                    <div className="space-y-6">
+                      {/* Blocks List */}
+                      <div className="space-y-6">
                     {currentPost.blocks.map((block, idx) => (
                       <div
                         key={idx}
@@ -2660,34 +3742,73 @@ function BlogsEditorPage() {
                           </div>
                         ) : (
                           <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[10px] text-slate-400 font-medium">
-                                Use markdown <code className="bg-slate-100 text-slate-700 px-1 py-0.5 rounded text-[10px]">[text](url)</code> or click Insert link:
-                              </span>
-                              <button
-                                type="button"
-                                onMouseDown={(e) => e.preventDefault()}
-                                onClick={() => {
-                                  const textarea = document.getElementById(`block-p-${idx}`) as HTMLTextAreaElement | null;
-                                  openInsertLinkForParagraph(idx, textarea);
-                                }}
-                                className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md px-2 py-0.5 transition cursor-pointer"
-                                title="Insert hyperlink into paragraph"
-                              >
-                                <Link2 className="size-3" />
-                                <span>Insert link</span>
-                              </button>
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-[10px] text-slate-400 font-medium">
+                                  Use markdown <code className="bg-slate-100 text-slate-700 px-1 py-0.5 rounded text-[10px]">[text](url)</code> or click Insert link:
+                                </span>
+                                {(() => {
+                                  const count = (block.text || "")
+                                    .split(/\n\s*\n/)
+                                    .filter((p) => p.trim().length > 0).length;
+                                  if (count > 1) {
+                                    return (
+                                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200/80 px-2 py-0.5 rounded-full">
+                                        <FileText className="size-3" />
+                                        <span>Multi-paragraph ({count} paragraphs)</span>
+                                      </span>
+                                    );
+                                  }
+                                  return null;
+                                })()}
+                              </div>
+
+                              <div className="flex items-center gap-1.5">
+                                {(() => {
+                                  const count = (block.text || "")
+                                    .split(/\n\s*\n/)
+                                    .filter((p) => p.trim().length > 0).length;
+                                  if (count > 1) {
+                                    return (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleSplitParagraph(idx)}
+                                        className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 rounded-md px-2 py-0.5 transition cursor-pointer"
+                                        title="Split this multi-paragraph block into individual blocks"
+                                      >
+                                        <Sparkles className="size-3" />
+                                        <span>Split into blocks</span>
+                                      </button>
+                                    );
+                                  }
+                                  return null;
+                                })()}
+
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={() => {
+                                    const textarea = document.getElementById(`block-p-${idx}`) as HTMLTextAreaElement | null;
+                                    openInsertLinkForParagraph(idx, textarea);
+                                  }}
+                                  className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 rounded-md px-2 py-0.5 transition cursor-pointer"
+                                  title="Insert hyperlink into paragraph"
+                                >
+                                  <Link2 className="size-3" />
+                                  <span>Insert link</span>
+                                </button>
+                              </div>
                             </div>
                             <textarea
                               id={`block-p-${idx}`}
-                              rows={3}
-                              placeholder="Write your paragraph content..."
+                              rows={Math.max(3, Math.min(16, (block.text || "").split("\n").length + 1))}
+                              placeholder="Write or paste your paragraph content (supports pasting multiple paragraphs)..."
                               value={block.text || ""}
                               onChange={(e) => {
                                 const val = e.target.value;
                                 handleUpdateBlock(idx, { text: val, html: linksToHtml(val) });
                               }}
-                              className="w-full text-sm sm:text-base text-slate-800 bg-transparent border-none outline-none focus:ring-0 resize-none leading-relaxed"
+                              className="w-full text-sm sm:text-base text-slate-800 bg-transparent border-none outline-none focus:ring-0 resize-y leading-relaxed"
                             />
                           </div>
                         )}
@@ -2747,6 +3868,18 @@ function BlogsEditorPage() {
                           className="rounded-full text-xs h-8 px-3.5 bg-white text-slate-800 hover:bg-slate-100 border-slate-200 cursor-pointer shadow-2xs"
                         >
                           <AlignLeft className="size-3.5 mr-1 text-primary" /> Paragraph
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setPasteArticleInput("");
+                            setIsPasteArticleModalOpen(true);
+                          }}
+                          className="rounded-full text-xs h-8 px-3.5 bg-blue-50 text-blue-800 hover:bg-blue-100 border-blue-200 font-semibold cursor-pointer shadow-2xs"
+                        >
+                          <Sparkles className="size-3.5 mr-1 text-blue-600" /> ⚡ Paste Full Article
                         </Button>
                       </div>
 
@@ -2838,8 +3971,10 @@ function BlogsEditorPage() {
                     </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+          </div>
+        )}
 
             {/* TAB CONTENT: 2. PUBLISHING & SEO SETTINGS */}
             {editorSubTab === "settings" && (
@@ -3289,6 +4424,156 @@ function BlogsEditorPage() {
             </div>
           </div>
         )}
+
+        {/* FULL ARTICLE BULK PASTE / IMPORTER MODAL */}
+        {/* ========================================================================= */}
+        {isPasteArticleModalOpen && (
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+            <div className="bg-white rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-2xl bg-blue-50 text-[#1b4e94] flex items-center justify-center shadow-2xs">
+                    <Sparkles className="size-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif-hero text-lg sm:text-xl font-bold text-navy">
+                      Paste Full Article / Bulk Importer
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Paste your entire draft from Word, Google Docs, or ChatGPT in one quick step.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPasteArticleModalOpen(false)}
+                  className="size-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition cursor-pointer"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+
+              {/* Import Mode Selection */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPasteMode("smart")}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer ${
+                    pasteMode === "smart"
+                      ? "border-[#1b4e94] bg-blue-50/50 text-[#1b4e94] ring-2 ring-[#1b4e94]/20"
+                      : "border-slate-200 hover:border-slate-300 text-slate-600 bg-white"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-bold text-xs mb-1 text-navy">
+                    <Sparkles className="size-3.5 text-[#1b4e94]" />
+                    <span>Smart Structured Blocks (Recommended)</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-normal">
+                    Automatically detects Headings (H2/H3), bullet points, numbered lists, and paragraphs.
+                  </p>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setPasteMode("single")}
+                  className={`p-3.5 rounded-2xl border text-left transition cursor-pointer ${
+                    pasteMode === "single"
+                      ? "border-[#1b4e94] bg-blue-50/50 text-[#1b4e94] ring-2 ring-[#1b4e94]/20"
+                      : "border-slate-200 hover:border-slate-300 text-slate-600 bg-white"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-bold text-xs mb-1 text-navy">
+                    <FileText className="size-3.5 text-[#1b4e94]" />
+                    <span>Single Continuous Content Block</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-normal">
+                    Keeps the entire article inside one continuous block, preserving all paragraphs on the live site.
+                  </p>
+                </button>
+              </div>
+
+              {/* Paste Textarea */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700">
+                    Paste Article Content:
+                  </label>
+                  <span className="text-[11px] text-slate-400">
+                    {pasteArticleInput.trim()
+                      ? `${pasteArticleInput.trim().split(/\s+/).length} words • ${
+                          pasteArticleInput.split(/\n\s*\n/).filter(Boolean).length
+                        } sections`
+                      : "Word, Google Docs, ChatGPT & Markdown supported"}
+                  </span>
+                </div>
+                <textarea
+                  rows={11}
+                  value={pasteArticleInput}
+                  onChange={(e) => setPasteArticleInput(e.target.value)}
+                  placeholder={`Paste your complete article draft here...\n\nExample:\n## 1. Executive Summary\nProactive financial advisory is critical for scaling businesses.\n\n## 2. Key Action Items\n* Reconcile accounts weekly\n* Monitor gross margins closely\n\nWhen ready, click "Convert & Import Article" below!`}
+                  className="w-full text-xs sm:text-sm text-slate-800 bg-slate-50 border border-slate-200 rounded-2xl p-4 focus:bg-white focus:border-[#1b4e94] focus:outline-none leading-relaxed resize-y font-mono"
+                />
+              </div>
+
+              {/* Destination Action & Buttons */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                <div className="flex items-center gap-4">
+                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
+                    <input
+                      type="radio"
+                      name="pasteAction"
+                      checked={pasteAction === "append"}
+                      onChange={() => setPasteAction("append")}
+                      className="text-[#1b4e94] focus:ring-[#1b4e94]"
+                    />
+                    <span>Add to existing content</span>
+                  </label>
+                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none">
+                    <input
+                      type="radio"
+                      name="pasteAction"
+                      checked={pasteAction === "replace"}
+                      onChange={() => setPasteAction("replace")}
+                      className="text-[#1b4e94] focus:ring-[#1b4e94]"
+                    />
+                    <span>Replace current content</span>
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsPasteArticleModalOpen(false)}
+                    className="rounded-full text-xs font-semibold px-4 h-9 cursor-pointer"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    disabled={!pasteArticleInput.trim()}
+                    onClick={() => handleExecuteFullArticleImport()}
+                    className="rounded-full bg-[#1b4e94] hover:bg-[#153e77] text-white text-xs font-bold px-5 h-9 gap-1.5 shadow-sm cursor-pointer disabled:opacity-50"
+                  >
+                    <Sparkles className="size-3.5" />
+                    <span>Convert &amp; Import Article</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Inline Image Picker Modal for Document WYSIWYG */}
+        <MediaImagePickerModal
+          isOpen={isInlineImageModalOpen}
+          onClose={() => setIsInlineImageModalOpen(false)}
+          onSelect={(url) => {
+            insertImageIntoEditor(url);
+            setIsInlineImageModalOpen(false);
+          }}
+          title="Insert Image into Document"
+        />
       </main>
 
       {/* Global Site Footer */}

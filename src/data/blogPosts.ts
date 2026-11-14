@@ -5,6 +5,7 @@ export interface ContentBlock {
     | "h3"
     | "h4"
     | "p"
+    | "richtext"
     | "ul"
     | "ol"
     | "blockquote"

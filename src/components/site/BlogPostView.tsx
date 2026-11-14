@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import type { BlogPost } from "@/data/blogPosts";
 import type { ResourcePost } from "@/data/resourcePosts";
-import { linksToHtml } from "@/lib/blogLinks";
+import { linksToHtml, markdownToHtml } from "@/lib/blogLinks";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -185,12 +185,32 @@ export function BlogPostView({
                   );
                 }
 
-                if (block.type === "p") {
+                if (block.type === "p" || (block as any).type === "richtext") {
+                  const rawText = block.text || "";
+                  const paragraphs = rawText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
+
+                  if (paragraphs.length > 1) {
+                    return (
+                      <div key={idx} className="space-y-5">
+                        {paragraphs.map((para, pIdx) => {
+                          const renderedHtml = markdownToHtml(para);
+                          return (
+                            <p
+                              key={pIdx}
+                              className="text-foreground/90 leading-relaxed"
+                              dangerouslySetInnerHTML={{ __html: renderedHtml }}
+                            />
+                          );
+                        })}
+                      </div>
+                    );
+                  }
+
                   const renderedHtml =
                     block.html && block.html.includes("<")
                       ? block.html
-                      : block.text && block.text.includes("[") && block.text.includes("](")
-                        ? linksToHtml(block.text)
+                      : block.text
+                        ? markdownToHtml(block.text)
                         : null;
 
                   if (renderedHtml) {
@@ -213,7 +233,7 @@ export function BlogPostView({
                   return (
                     <ul key={idx} className="my-6 space-y-3 pl-2">
                       {block.items?.map((item, i) => {
-                        const itemHtml = item && item.includes("[") && item.includes("](") ? linksToHtml(item) : item;
+                        const itemHtml = markdownToHtml(item);
                         return (
                           <li key={i} className="flex items-start gap-3 text-foreground/90">
                             <span className="mt-2 size-2 shrink-0 rounded-full bg-blue-600" />
@@ -229,7 +249,7 @@ export function BlogPostView({
                   return (
                     <ol key={idx} className="my-6 space-y-3 list-decimal pl-6 text-foreground/90">
                       {block.items?.map((item, i) => {
-                        const itemHtml = item && item.includes("[") && item.includes("](") ? linksToHtml(item) : item;
+                        const itemHtml = markdownToHtml(item);
                         return (
                           <li key={i} className="pl-1" dangerouslySetInnerHTML={{ __html: itemHtml }} />
                         );
