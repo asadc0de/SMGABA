@@ -10,9 +10,9 @@ export interface PublicBlogVisibilityFields {
  */
 export function isPublicBlogVisible(
   post: PublicBlogVisibilityFields,
-  now = Date.now(),
+  now?: number,
 ): boolean {
-  if (post.status !== "published" || post.archived) {
+  if (!post || post.status !== "published" || post.archived) {
     return false;
   }
 
@@ -20,6 +20,8 @@ export function isPublicBlogVisible(
     return true;
   }
 
+  // Guard against Array.prototype.filter passing (item, index) where index (0, 1, 2) overwrites now
+  const effectiveNow = typeof now === "number" && now > 1000000000 ? now : Date.now();
   const publishTime = new Date(post.publishDate).getTime();
-  return Number.isFinite(publishTime) && publishTime <= now;
+  return Number.isFinite(publishTime) && publishTime <= effectiveNow;
 }

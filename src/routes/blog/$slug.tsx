@@ -1,5 +1,6 @@
 import { createFileRoute, redirect, notFound } from "@tanstack/react-router";
-import { getBlogPost } from "@/lib/blogs.server";
+import { useState, useEffect } from "react";
+import { getBlogPost, type ExtendedBlogPost } from "@/lib/blogs.server";
 import { LEGACY_RESOURCE_SLUGS } from "@/data/legacyRedirects";
 import { BLOG_POSTS } from "@/data/blogPosts";
 import { BlogPostView } from "@/components/site/BlogPostView";
@@ -52,7 +53,37 @@ export const Route = createFileRoute("/blog/$slug")({
 });
 
 function BlogSlugPage() {
-  const { post } = Route.useLoaderData();
+  const { post: loaderPost } = Route.useLoaderData();
+  const { slug } = Route.useParams();
+  const [post, setPost] = useState<ExtendedBlogPost | null>(loaderPost || null);
+  const [loading, setLoading] = useState(!loaderPost);
+
+  useEffect(() => {
+    if (!loaderPost && slug) {
+      getBlogPost({ data: slug })
+        .then((res) => {
+          if (res) setPost(res);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [loaderPost, slug]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col justify-between">
+        <Header />
+        <main className="py-32 px-6 text-center">
+          <div className="mx-auto max-w-md card-surface p-10 flex flex-col items-center">
+            <div className="size-8 rounded-full border-2 border-primary border-t-transparent animate-spin mb-3" />
+            <p className="text-sm text-muted-foreground">Loading article...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!post) {
     return (

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Calendar,
   Clock,
@@ -44,11 +44,29 @@ function BlogIndexPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [dynamicPosts, setDynamicPosts] = useState<ExtendedBlogPost[] | null>(null);
+
+  useEffect(() => {
+    getPublicBlogs()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setDynamicPosts(data);
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not client-refresh public blogs:", err);
+      });
+  }, []);
 
   const activePosts = useMemo(() => {
-    const raw = loaderData?.posts && loaderData.posts.length > 0 ? loaderData.posts : BLOG_POSTS;
+    const raw =
+      dynamicPosts && dynamicPosts.length > 0
+        ? dynamicPosts
+        : loaderData?.posts && loaderData.posts.length > 0
+        ? loaderData.posts
+        : BLOG_POSTS;
     return raw.filter((p) => !p.archived);
-  }, [loaderData]);
+  }, [loaderData, dynamicPosts]);
 
   const categories = useMemo(() => {
     const cats = Array.from(new Set(activePosts.map((p) => p.category).filter(Boolean)));

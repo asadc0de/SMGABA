@@ -210,7 +210,10 @@ export const getPublicBlogs = createServerFn({ method: "GET" }).handler(
       map.set(post.slug.toLowerCase(), post);
     }
 
-    return Array.from(map.values()).filter(isPublicBlogVisible).sort((a, b) => {
+    const merged = Array.from(map.values());
+    const visiblePosts = merged.filter((p) => isPublicBlogVisible(p));
+
+    return visiblePosts.sort((a, b) => {
       const timeA = a.publishDate ? new Date(a.publishDate).getTime() : new Date(a.date).getTime() || 0;
       const timeB = b.publishDate ? new Date(b.publishDate).getTime() : new Date(b.date).getTime() || 0;
       return timeB - timeA;

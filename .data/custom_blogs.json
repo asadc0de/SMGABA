@@ -1,54 +1,1702 @@
 [
   {
-    "id": "896d27dc-104e-4211-a628-bedbaa633af5",
-    "slug": "mahama",
-    "title": "Mahama",
-    "metaTitle": "M | SMG ABA",
-    "metaDescription": "",
-    "h1": "Mahama",
-    "date": "Nov 2, 2026",
-    "publishDate": "2026-11-09T10:38:00+00:00",
+    "id": "dc887e22-2220-4925-aa26-89d02d6c097e",
+    "slug": "when-should-you-hire-a-fractional-cfo-5-signs-your-business-is-ready",
+    "title": "When Should You Hire a Fractional CFO? 5 Signs Your Business Is Ready",
+    "metaTitle": "When Should You Hire a Fractional CFO? 5 Signs Your Business Is Ready \n | SMG ABA",
+    "metaDescription": "Your financial reports are accurate. Your books are current. You know how the business performed last month. \n\nBut can you confidently answer what happens next?",
+    "h1": "When Should You Hire a Fractional CFO? 5 Signs Your Business Is Ready",
+    "date": "Nov 16, 2026",
+    "publishDate": "2026-11-16T18:13:59.093+00:00",
     "author": "SMG Advisory Team",
     "category": "Bookkeeping",
-    "image": "/images/stock/unsplash-photo-1554224155-8d04cb21cd6c.webp",
+    "image": "https://dtygudbvdgkkrntosfun.supabase.co/storage/v1/object/public/event-images/cms/1794848458004-When_Should_You_Hire_a_Fractional_CFO_5_Signs_Your_Business_Is_Ready.png",
     "readTime": "4 min read",
-    "excerpt": "",
+    "excerpt": "Your financial reports are accurate. Your books are current. You know how the business performed last month. \n\nBut can you confidently answer what happens next?",
     "status": "published",
     "archived": false,
+    "destination": "blog",
     "blocks": [
       {
-        "text": "1. Key Industry Insights & Strategic Analysis",
+        "html": "Can the business afford to hire? How much cash will an expansion require? What happens if revenue falls short of expectations? Are higher sales actually improving profitability?",
+        "text": "Can the business afford to hire? How much cash will an expansion require? What happens if revenue falls short of expectations? Are higher sales actually improving profitability?",
+        "type": "p"
+      },
+      {
+        "html": "A business may be ready for a fractional CFO when its financial records are reliable, but leadership still needs help forecasting cash, evaluating profitability, modeling hiring or expansion, preparing for financing, or making other significant financial decisions.",
+        "text": "A business may be ready for a fractional CFO when its financial records are reliable, but leadership still needs help forecasting cash, evaluating profitability, modeling hiring or expansion, preparing for financing, or making other significant financial decisions.",
+        "type": "p"
+      },
+      {
+        "html": "If inaccurate or delayed records are the primary problem, however, stronger bookkeeping should come first.",
+        "text": "If inaccurate or delayed records are the primary problem, however, stronger bookkeeping should come first.",
+        "type": "p"
+      },
+      {
+        "html": "The distinction matters. Fractional CFO services aren&#39;t simply another level of financial reporting. They&#39;re designed to help business owners use reliable financial information to evaluate what may happen next and make more informed decisions about the future.",
+        "text": "The distinction matters. Fractional CFO services aren't simply another level of financial reporting. They're designed to help business owners use reliable financial information to evaluate what may happen next and make more informed decisions about the future.",
+        "type": "p"
+      },
+      {
+        "text": "What Does a Fractional CFO Do?",
         "type": "h2"
       },
       {
-        "html": "<a href=\"mahamdev.com\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">Maham ALi</a> Dive into the actionable details. Provide data, real-world benchmarks, and clear explanations that assist business owners in making informed financial decisions.",
-        "text": "[Maham ALi](mahamdev.com) Dive into the actionable details. Provide data, real-world benchmarks, and clear explanations that assist business owners in making informed financial decisions.",
+        "html": "A fractional CFO provides CFO-level financial guidance on a part-time or outsourced basis rather than serving as a full-time executive.",
+        "text": "A fractional CFO provides CFO-level financial guidance on a part-time or outsourced basis rather than serving as a full-time executive.",
+        "type": "p"
+      },
+      {
+        "html": "Depending on the needs of the business, fractional CFO services may include:",
+        "text": "Depending on the needs of the business, fractional CFO services may include:",
         "type": "p"
       },
       {
         "type": "ul",
         "items": [
-          "Strategic compliance checkpoints and regulatory advantages",
-          "Cash flow optimization tips and outsourced CFO guidance",
-          "Quarterly tax mitigation planning cadence"
+          "Budgeting and financial forecasting",
+          "Cash flow forecasting and planning",
+          "Profitability analysis",
+          "Financial KPI development",
+          "Scenario modeling",
+          "Financing preparation",
+          "Evaluation of major investments",
+          "Strategic financial planning"
         ]
       },
       {
-        "text": "Proactive financial advisory isn't just about reviewing historical numbers—it's about anticipating upcoming market shifts and positioning your business for sustainable profitability.",
-        "type": "blockquote"
+        "html": "The role is generally more forward-looking than bookkeeping or traditional financial reporting.",
+        "text": "The role is generally more forward-looking than bookkeeping or traditional financial reporting.",
+        "type": "p"
       },
       {
-        "text": "Conclusion & Strategic Next Steps",
+        "html": "According to Alejandro Garcia, CFO of SMG ABA, one of the clearest indications that a business may need CFO-level guidance is when its financial questions begin to change.",
+        "text": "According to Alejandro Garcia, CFO of SMG ABA, one of the clearest indications that a business may need CFO-level guidance is when its financial questions begin to change.",
+        "type": "p"
+      },
+      {
+        "html": "“Usually, it&#39;s when the financial questions become bigger than ‘What happened?’ and start becoming ‘What should we do next?’”",
+        "text": "“Usually, it's when the financial questions become bigger than ‘What happened?’ and start becoming ‘What should we do next?’”",
+        "type": "p"
+      },
+      {
+        "html": "Accurate financial statements remain essential. But when business owners need to understand what those numbers could mean six or twelve months from now, additional financial analysis may become valuable.",
+        "text": "Accurate financial statements remain essential. But when business owners need to understand what those numbers could mean six or twelve months from now, additional financial analysis may become valuable.",
+        "type": "p"
+      },
+      {
+        "html": "Here are five signs your business may have reached that point.",
+        "text": "Here are five signs your business may have reached that point.",
+        "type": "p"
+      },
+      {
+        "text": "5 Signs It May Be Time to Hire a Fractional CFO",
         "type": "h2"
       },
       {
-        "html": "Summarize the key takeaways and invite readers to schedule a consultation with the SMG Advisory Team.",
-        "text": "Summarize the key takeaways and invite readers to schedule a consultation with the SMG Advisory Team.",
+        "text": "1. Your Financial Reports Tell You What Happened, but Not What to Do Next",
+        "type": "h3"
+      },
+      {
+        "html": "Your financial statements provide important information about your business.",
+        "text": "Your financial statements provide important information about your business.",
+        "type": "p"
+      },
+      {
+        "html": "Your Profit and Loss Statement shows revenue, expenses, and profitability over a period. Your Balance Sheet provides a snapshot of assets, liabilities, and equity. Your Cash Flow Statement explains how cash moved through the business during a historical period.",
+        "text": "Your Profit and Loss Statement shows revenue, expenses, and profitability over a period. Your Balance Sheet provides a snapshot of assets, liabilities, and equity. Your Cash Flow Statement explains how cash moved through the business during a historical period.",
+        "type": "p"
+      },
+      {
+        "html": "But these reports don&#39;t automatically answer questions such as:",
+        "text": "But these reports don't automatically answer questions such as:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Can we afford to add employees?",
+          "How much working capital will we need?",
+          "Can the business support another location?",
+          "What happens if revenue grows more slowly than expected?",
+          "How could a major investment affect cash flow and profitability?"
+        ]
+      },
+      {
+        "html": "These are forward-looking questions.",
+        "text": "These are forward-looking questions.",
+        "type": "p"
+      },
+      {
+        "html": "A fractional CFO can use reliable financial information to build forecasts, model different scenarios, and help leadership evaluate the potential financial impact of important decisions.",
+        "text": "A fractional CFO can use reliable financial information to build forecasts, model different scenarios, and help leadership evaluate the potential financial impact of important decisions.",
+        "type": "p"
+      },
+      {
+        "html": "The objective isn&#39;t to produce more reports. It&#39;s to turn reliable financial information into useful insight about what may come next.",
+        "text": "The objective isn't to produce more reports. It's to turn reliable financial information into useful insight about what may come next.",
+        "type": "p"
+      },
+      {
+        "text": "2. Revenue Is Growing, but Profitability or Cash Flow Isn't Keeping Pace",
+        "type": "h3"
+      },
+      {
+        "html": "Higher revenue doesn&#39;t automatically mean a financially stronger business.",
+        "text": "Higher revenue doesn't automatically mean a financially stronger business.",
+        "type": "p"
+      },
+      {
+        "html": "Growth can require additional employees, technology, inventory, equipment, marketing, facilities, and outside vendors. Those investments may be necessary, but they also increase the cost of supporting the business.",
+        "text": "Growth can require additional employees, technology, inventory, equipment, marketing, facilities, and outside vendors. Those investments may be necessary, but they also increase the cost of supporting the business.",
+        "type": "p"
+      },
+      {
+        "html": "As Alejandro explains:",
+        "text": "As Alejandro explains:",
+        "type": "p"
+      },
+      {
+        "html": "“Growth can hide financial problems.”",
+        "text": "“Growth can hide financial problems.”",
+        "type": "p"
+      },
+      {
+        "html": "Revenue may be increasing while margins are shrinking, cash is becoming tighter, or overhead is rising faster than the business can sustainably support.",
+        "text": "Revenue may be increasing while margins are shrinking, cash is becoming tighter, or overhead is rising faster than the business can sustainably support.",
+        "type": "p"
+      },
+      {
+        "html": "That&#39;s why revenue should be evaluated alongside business profitability, margins, expenses, working capital, and cash flow.",
+        "text": "That's why revenue should be evaluated alongside business profitability, margins, expenses, working capital, and cash flow.",
+        "type": "p"
+      },
+      {
+        "html": "Understanding how to know if your business is actually profitable can help you look beyond revenue and evaluate what your financial performance is really telling you.",
+        "text": "Understanding how to know if your business is actually profitable can help you look beyond revenue and evaluate what your financial performance is really telling you.",
+        "type": "p"
+      },
+      {
+        "html": "A fractional CFO can help leadership identify the financial KPIs that matter to the business and evaluate whether growth is translating into stronger financial performance.",
+        "text": "A fractional CFO can help leadership identify the financial KPIs that matter to the business and evaluate whether growth is translating into stronger financial performance.",
+        "type": "p"
+      },
+      {
+        "html": "Instead of asking only, “Are sales growing?” leadership can ask a more meaningful question:",
+        "text": "Instead of asking only, “Are sales growing?” leadership can ask a more meaningful question:",
+        "type": "p"
+      },
+      {
+        "html": "“Is our growth financially sustainable?”",
+        "text": "“Is our growth financially sustainable?”",
+        "type": "p"
+      },
+      {
+        "text": "3. Cash Flow Is Becoming Harder to Forecast",
+        "type": "h3"
+      },
+      {
+        "html": "A profitable company can still experience cash flow pressure.",
+        "text": "A profitable company can still experience cash flow pressure.",
+        "type": "p"
+      },
+      {
+        "html": "Customers may take longer to pay. Payroll and vendor obligations may come due before receivables are collected. Inventory purchases, equipment, debt payments, and expansion can consume available cash even when the business is profitable on paper.",
+        "text": "Customers may take longer to pay. Payroll and vendor obligations may come due before receivables are collected. Inventory purchases, equipment, debt payments, and expansion can consume available cash even when the business is profitable on paper.",
+        "type": "p"
+      },
+      {
+        "html": "When these moving pieces become more complicated, looking at today&#39;s bank balance provides only part of the picture.",
+        "text": "When these moving pieces become more complicated, looking at today's bank balance provides only part of the picture.",
+        "type": "p"
+      },
+      {
+        "html": "Cash flow forecasting helps businesses estimate future cash inflows and outflows based on expected collections, operating expenses, payroll, debt obligations, investments, and other anticipated activity.",
+        "text": "Cash flow forecasting helps businesses estimate future cash inflows and outflows based on expected collections, operating expenses, payroll, debt obligations, investments, and other anticipated activity.",
+        "type": "p"
+      },
+      {
+        "html": "A fractional CFO can help develop and regularly update those forecasts as circumstances change.",
+        "text": "A fractional CFO can help develop and regularly update those forecasts as circumstances change.",
+        "type": "p"
+      },
+      {
+        "html": "Forecasts aren&#39;t guarantees. Actual results may differ from projections. Their value is in helping leadership evaluate potential outcomes and identify possible cash needs before they become immediate problems.",
+        "text": "Forecasts aren't guarantees. Actual results may differ from projections. Their value is in helping leadership evaluate potential outcomes and identify possible cash needs before they become immediate problems.",
+        "type": "p"
+      },
+      {
+        "html": "Alejandro describes part of the CFO&#39;s role as helping business owners “see around corners”—understanding not only where the company stands today, but what today&#39;s decisions may mean six or twelve months from now.",
+        "text": "Alejandro describes part of the CFO's role as helping business owners “see around corners”—understanding not only where the company stands today, but what today's decisions may mean six or twelve months from now.",
+        "type": "p"
+      },
+      {
+        "text": "4. Major Business Decisions Require More Financial Analysis",
+        "type": "h3"
+      },
+      {
+        "html": "Experience and intuition remain important when running a business. But as the financial consequences of a decision increase, additional analysis can provide valuable context.",
+        "text": "Experience and intuition remain important when running a business. But as the financial consequences of a decision increase, additional analysis can provide valuable context.",
+        "type": "p"
+      },
+      {
+        "html": "Consider decisions such as:",
+        "text": "Consider decisions such as:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Hiring several employees",
+          "Opening another location",
+          "Entering a new market",
+          "Purchasing significant equipment",
+          "Changing pricing",
+          "Taking on debt",
+          "Making a major technology investment",
+          "Preparing for financing",
+          "Considering an acquisition"
+        ]
+      },
+      {
+        "html": "Before committing resources, leadership may need to understand how a decision could affect cash flow, profitability, working capital, and other financial priorities.",
+        "text": "Before committing resources, leadership may need to understand how a decision could affect cash flow, profitability, working capital, and other financial priorities.",
+        "type": "p"
+      },
+      {
+        "html": "For example, opening another location isn&#39;t simply a question of whether the business has enough cash today.",
+        "text": "For example, opening another location isn't simply a question of whether the business has enough cash today.",
+        "type": "p"
+      },
+      {
+        "html": "What happens if the new location takes longer than expected to reach its revenue targets? How much working capital will be required in the meantime? How would additional payroll and fixed costs affect the rest of the company?",
+        "text": "What happens if the new location takes longer than expected to reach its revenue targets? How much working capital will be required in the meantime? How would additional payroll and fixed costs affect the rest of the company?",
+        "type": "p"
+      },
+      {
+        "html": "Financial forecasting and scenario modeling can help leadership evaluate different assumptions before making the decision.",
+        "text": "Financial forecasting and scenario modeling can help leadership evaluate different assumptions before making the decision.",
+        "type": "p"
+      },
+      {
+        "html": "A fractional CFO doesn&#39;t make the decision for the business owner. The role is to provide stronger financial context so leadership can make a more informed decision.",
+        "text": "A fractional CFO doesn't make the decision for the business owner. The role is to provide stronger financial context so leadership can make a more informed decision.",
+        "type": "p"
+      },
+      {
+        "text": "5. You Need CFO-Level Expertise but Not a Full-Time CFO",
+        "type": "h3"
+      },
+      {
+        "html": "A business can need strategic financial leadership without requiring a full-time CFO.",
+        "text": "A business can need strategic financial leadership without requiring a full-time CFO.",
+        "type": "p"
+      },
+      {
+        "html": "According to Alejandro, fractional CFO support often makes sense when a company needs CFO-level thinking but doesn&#39;t yet need, or want the cost of, a full-time executive.",
+        "text": "According to Alejandro, fractional CFO support often makes sense when a company needs CFO-level thinking but doesn't yet need, or want the cost of, a full-time executive.",
+        "type": "p"
+      },
+      {
+        "html": "The business may need regular support with:",
+        "text": "The business may need regular support with:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Budgeting and forecasting",
+          "Cash flow management",
+          "Financial KPIs",
+          "Profitability analysis",
+          "Financing preparation",
+          "Expansion planning",
+          "Strategic financial decisions"
+        ]
+      },
+      {
+        "html": "But those needs may only require CFO involvement for a portion of the month or week.",
+        "text": "But those needs may only require CFO involvement for a portion of the month or week.",
+        "type": "p"
+      },
+      {
+        "html": "Fractional CFO services provide access to CFO-level expertise while allowing the level of involvement to adjust as the company&#39;s needs evolve.",
+        "text": "Fractional CFO services provide access to CFO-level expertise while allowing the level of involvement to adjust as the company's needs evolve.",
+        "type": "p"
+      },
+      {
+        "html": "The decision shouldn&#39;t be based on cost alone.",
+        "text": "The decision shouldn't be based on cost alone.",
+        "type": "p"
+      },
+      {
+        "html": "The better question is:",
+        "text": "The better question is:",
+        "type": "p"
+      },
+      {
+        "html": "What level of financial leadership does the business actually need right now?",
+        "text": "What level of financial leadership does the business actually need right now?",
+        "type": "p"
+      },
+      {
+        "text": "Bookkeeper vs. Accountant/Controller vs. Fractional CFO vs. Full-Time CFO",
+        "type": "h2"
+      },
+      {
+        "html": "Understanding the differences between financial roles can help you determine what level of support your business needs.",
+        "text": "Understanding the differences between financial roles can help you determine what level of support your business needs.",
+        "type": "p"
+      },
+      {
+        "rows": [
+          [
+            "Bookkeeper",
+            "Records transactions, reconciles accounts, and maintains accurate books",
+            "Primarily historical",
+            "The business needs current, reliable financial records"
+          ],
+          [
+            "Accountant / Controller",
+            "Oversees accounting processes and financial reporting",
+            "Historical and current",
+            "Reporting and accounting requirements become more complex"
+          ],
+          [
+            "Fractional CFO",
+            "Provides strategic financial analysis and guidance",
+            "Primarily forward-looking",
+            "Leadership needs forecasting, cash flow planning, profitability analysis, financing support, or help evaluating major decisions"
+          ],
+          [
+            "Full-Time CFO",
+            "Provides ongoing executive financial leadership",
+            "Forward-looking and strategic",
+            "The complexity and frequency of financial decisions require continuous executive-level involvement"
+          ]
+        ],
+        "type": "table",
+        "headers": [
+          "Role",
+          "Primary Responsibility",
+          "Financial Focus",
+          "When It May Be Needed"
+        ],
+        "hasHeader": true
+      },
+      {
+        "html": "These roles aren&#39;t necessarily replacements for one another.CFO-level analysis depends on accurate financial information. A fractional or full-time CFO still needs reliable bookkeeping and accounting processes as the foundation for forecasting and strategic analysis.",
+        "text": "These roles aren't necessarily replacements for one another.CFO-level analysis depends on accurate financial information. A fractional or full-time CFO still needs reliable bookkeeping and accounting processes as the foundation for forecasting and strategic analysis.",
+        "type": "p"
+      },
+      {
+        "text": "When Bookkeeping Should Come First",
+        "type": "h2"
+      },
+      {
+        "html": "Not every business experiencing financial challenges needs a fractional CFO.",
+        "text": "Not every business experiencing financial challenges needs a fractional CFO.",
+        "type": "p"
+      },
+      {
+        "html": "If your books are months behind, accounts aren&#39;t reconciled, transactions are missing, or financial statements contain unresolved issues, improving the accuracy and timeliness of your accounting may be the more appropriate first step.",
+        "text": "If your books are months behind, accounts aren't reconciled, transactions are missing, or financial statements contain unresolved issues, improving the accuracy and timeliness of your accounting may be the more appropriate first step.",
+        "type": "p"
+      },
+      {
+        "html": "Alejandro summarizes the distinction clearly: “You don&#39;t want to pay for strategy before you have reliable numbers to base that strategy on.”If the primary needs are maintaining accurate books, reconciling accounts, producing timely financial statements, and staying compliant, strengthening the bookkeeping and accounting foundation should generally come first.Once reliable financial information is available, CFO-level guidance can use those numbers for forecasting, planning, and strategic analysis.Bookkeeping tells you what happened. CFO-level guidance helps you evaluate what to do next.",
+        "text": "Alejandro summarizes the distinction clearly: “You don't want to pay for strategy before you have reliable numbers to base that strategy on.”If the primary needs are maintaining accurate books, reconciling accounts, producing timely financial statements, and staying compliant, strengthening the bookkeeping and accounting foundation should generally come first.Once reliable financial information is available, CFO-level guidance can use those numbers for forecasting, planning, and strategic analysis.Bookkeeping tells you what happened. CFO-level guidance helps you evaluate what to do next.",
+        "type": "p"
+      },
+      {
+        "text": "How to Know If Your Business Is Ready",
+        "type": "h2"
+      },
+      {
+        "html": "There isn&#39;t a universal revenue level or employee count that determines when a company should hire a fractional CFO.",
+        "text": "There isn't a universal revenue level or employee count that determines when a company should hire a fractional CFO.",
+        "type": "p"
+      },
+      {
+        "html": "Two businesses generating similar revenue can have very different financial needs.",
+        "text": "Two businesses generating similar revenue can have very different financial needs.",
+        "type": "p"
+      },
+      {
+        "html": "Instead, consider the questions leadership is trying to answer.",
+        "text": "Instead, consider the questions leadership is trying to answer.",
+        "type": "p"
+      },
+      {
+        "html": "Can you confidently determine:",
+        "text": "Can you confidently determine:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "How much cash the business may need over the next six to twelve months?&amp;amp;amp;nbsp;",
+          "Whether the company can support planned hiring or expansion?&amp;amp;amp;nbsp;",
+          "Which areas of the business are driving or reducing profitability?&amp;amp;amp;nbsp;",
+          "Whether you&amp;amp;#39;re tracking the right financial KPIs?&amp;amp;amp;nbsp;",
+          "How different business scenarios could affect financial performance?&amp;amp;amp;nbsp;",
+          "Whether the company is financially prepared for financing or a major transaction?"
+        ]
+      },
+      {
+        "html": "Answering “no” to one question doesn&#39;t automatically mean you need a fractional CFO.But if these questions are becoming central to running the business and your existing financial reporting isn&#39;t providing enough insight, it may be time to consider whether your financial support needs to evolve.",
+        "text": "Answering “no” to one question doesn't automatically mean you need a fractional CFO.But if these questions are becoming central to running the business and your existing financial reporting isn't providing enough insight, it may be time to consider whether your financial support needs to evolve.",
+        "type": "p"
+      },
+      {
+        "text": "When Might You Need a Full-Time CFO Instead?",
+        "type": "h2"
+      },
+      {
+        "html": "Fractional CFO services aren&#39;t necessarily a permanent alternative to a full-time CFO.",
+        "text": "Fractional CFO services aren't necessarily a permanent alternative to a full-time CFO.",
+        "type": "p"
+      },
+      {
+        "html": "As an organization becomes more complex, it may eventually need continuous executive financial leadership.",
+        "text": "As an organization becomes more complex, it may eventually need continuous executive financial leadership.",
+        "type": "p"
+      },
+      {
+        "html": "A full-time CFO may become more appropriate when the scope and frequency of strategic financial responsibilities require ongoing involvement in leadership, capital strategy, financial operations, risk management, transactions, or other significant financial matters.",
+        "text": "A full-time CFO may become more appropriate when the scope and frequency of strategic financial responsibilities require ongoing involvement in leadership, capital strategy, financial operations, risk management, transactions, or other significant financial matters.",
+        "type": "p"
+      },
+      {
+        "html": "There is no universal revenue threshold that determines when this transition should happen. The decision should be based on the complexity of the organization, the responsibilities involved, and how much ongoing CFO-level leadership the business actually requires.",
+        "text": "There is no universal revenue threshold that determines when this transition should happen. The decision should be based on the complexity of the organization, the responsibilities involved, and how much ongoing CFO-level leadership the business actually requires.",
+        "type": "p"
+      },
+      {
+        "text": "Frequently Asked Questions",
+        "type": "h2"
+      },
+      {
+        "text": "What is the difference between a fractional CFO and a bookkeeper?",
+        "type": "h4"
+      },
+      {
+        "html": "A bookkeeper focuses primarily on maintaining accurate financial records, including recording transactions and reconciling accounts. A fractional CFO uses reliable financial information to provide more forward-looking guidance around forecasting, cash flow, profitability, budgeting, and strategic decisions.",
+        "text": "A bookkeeper focuses primarily on maintaining accurate financial records, including recording transactions and reconciling accounts. A fractional CFO uses reliable financial information to provide more forward-looking guidance around forecasting, cash flow, profitability, budgeting, and strategic decisions.",
+        "type": "p"
+      },
+      {
+        "text": "Is there a revenue level at which a business needs a fractional CFO?",
+        "type": "h4"
+      },
+      {
+        "html": "There isn&#39;t a universal revenue threshold. The complexity of the business and the financial decisions leadership needs to make are generally more useful indicators than revenue alone.",
+        "text": "There isn't a universal revenue threshold. The complexity of the business and the financial decisions leadership needs to make are generally more useful indicators than revenue alone.",
+        "type": "p"
+      },
+      {
+        "text": "How often does a fractional CFO work with a business?",
+        "type": "h4"
+      },
+      {
+        "html": "The level of involvement depends on the company&#39;s needs and the scope of the engagement. Some businesses may require CFO support only periodically, while others may need more regular involvement as financial complexity increases.",
+        "text": "The level of involvement depends on the company's needs and the scope of the engagement. Some businesses may require CFO support only periodically, while others may need more regular involvement as financial complexity increases.",
+        "type": "p"
+      },
+      {
+        "text": "When should a business hire a full-time CFO instead?",
+        "type": "h4"
+      },
+      {
+        "html": "A full-time CFO may become appropriate when the organization needs ongoing executive-level financial leadership rather than periodic strategic support. The decision depends on the company&#39;s complexity and financial-management needs rather than a single revenue or employee threshold.",
+        "text": "A full-time CFO may become appropriate when the organization needs ongoing executive-level financial leadership rather than periodic strategic support. The decision depends on the company's complexity and financial-management needs rather than a single revenue or employee threshold.",
+        "type": "p"
+      },
+      {
+        "text": "Can a fractional CFO help prepare for financing?",
+        "type": "h4"
+      },
+      {
+        "html": "A fractional CFO may help businesses prepare financial forecasts, evaluate cash requirements, analyze performance, and organize financial information used in financing discussions. Financing decisions and requirements ultimately depend on the lender, investor, transaction, and circumstances involved.",
+        "text": "A fractional CFO may help businesses prepare financial forecasts, evaluate cash requirements, analyze performance, and organize financial information used in financing discussions. Financing decisions and requirements ultimately depend on the lender, investor, transaction, and circumstances involved.",
+        "type": "p"
+      },
+      {
+        "text": "Conclusion",
+        "type": "h2"
+      },
+      {
+        "html": "The right time to hire a fractional CFO isn&#39;t determined by a single revenue number or stage of growth.",
+        "text": "The right time to hire a fractional CFO isn't determined by a single revenue number or stage of growth.",
+        "type": "p"
+      },
+      {
+        "html": "It usually becomes clearer when your books and financial reports are reliable, but leadership still needs greater insight into cash flow, profitability, forecasting, financing, or major business decisions.",
+        "text": "It usually becomes clearer when your books and financial reports are reliable, but leadership still needs greater insight into cash flow, profitability, forecasting, financing, or major business decisions.",
+        "type": "p"
+      },
+      {
+        "html": "If the underlying financial records aren&#39;t reliable, bookkeeping and accounting should come first. But when the foundation is strong and the questions have shifted from “What happened?” to “What should we do next?”, fractional CFO guidance may be an appropriate next step.",
+        "text": "If the underlying financial records aren't reliable, bookkeeping and accounting should come first. But when the foundation is strong and the questions have shifted from “What happened?” to “What should we do next?”, fractional CFO guidance may be an appropriate next step.",
+        "type": "p"
+      },
+      {
+        "html": "The goal is not simply to have more financial information.",
+        "text": "The goal is not simply to have more financial information.",
+        "type": "p"
+      },
+      {
+        "html": "It&#39;s to use reliable information to make better decisions about what&#39;s ahead.",
+        "text": "It's to use reliable information to make better decisions about what's ahead.",
+        "type": "p"
+      },
+      {
+        "text": "Turn Financial Information into Better Business Decisions",
+        "type": "h2"
+      },
+      {
+        "html": "At SMG, we help growing businesses build the financial visibility and forward-looking insight needed to make informed decisions.",
+        "text": "At SMG, we help growing businesses build the financial visibility and forward-looking insight needed to make informed decisions.",
+        "type": "p"
+      },
+      {
+        "html": "Our CFO advisory services help business owners evaluate cash flow, profitability, forecasts, growth opportunities, and other significant financial decisions while building on a foundation of accurate financial information.",
+        "text": "Our CFO advisory services help business owners evaluate cash flow, profitability, forecasts, growth opportunities, and other significant financial decisions while building on a foundation of accurate financial information.",
+        "type": "p"
+      },
+      {
+        "html": "If your financial questions are becoming more complex, schedule a complimentary consultation with SMG to discuss whether fractional CFO guidance is the right level of support for your business.",
+        "text": "If your financial questions are becoming more complex, schedule a complimentary consultation with SMG to discuss whether fractional CFO guidance is the right level of support for your business.",
         "type": "p"
       }
     ],
     "isCustom": true,
-    "createdAt": "2026-11-02T10:39:03.57545+00:00",
-    "updatedAt": "2026-11-02T10:40:56.268Z"
+    "createdAt": "2026-11-16T16:52:55.792406+00:00",
+    "updatedAt": "2026-11-16T18:13:59.093+00:00"
+  },
+  {
+    "id": "950f7c72-6d6f-4a8c-8704-0de948b36633",
+    "slug": "why-revenue-growth-doesn-t-always-improve-cash-flow",
+    "title": "Why Revenue Growth Doesn't Always Improve Cash Flow",
+    "metaTitle": "Why Revenue Growth Doesn't Always Improve Cash Flow  | SMG ABA",
+    "metaDescription": "Many business owners are surprised to find that even as sales continue to grow, cash can still be tight. They may be generating more revenue than ever, yet still struggle to cover payroll, pay vendors, invest in new opportunities, or maintain healthy working capital.",
+    "h1": "Why Revenue Growth Doesn't Always Improve Cash Flow",
+    "date": "Nov 2, 2026",
+    "publishDate": "2026-11-09T15:46:00+00:00",
+    "author": "SMG Advisory Team",
+    "category": "Bookkeeping",
+    "image": "https://dtygudbvdgkkrntosfun.supabase.co/storage/v1/object/public/event-images/cms/1794245104552-Why_Revenue_Growth_Doesn_t_Always_Improve_Cash_Flow___1_.png",
+    "readTime": "4 min read",
+    "excerpt": "Many business owners are surprised to find that even as sales continue to grow, cash can still be tight. They may be generating more revenue than ever, yet still struggle to cover payroll, pay vendors, invest in new opportunities, or maintain healthy working capital.",
+    "status": "published",
+    "archived": false,
+    "destination": "blog",
+    "blocks": [
+      {
+        "html": "The reason is simple: revenue and cash flow are not the same. ",
+        "text": "The reason is simple: revenue and cash flow are not the same. ",
+        "type": "p"
+      },
+      {
+        "html": "Revenue measures the value of the products or services your business has sold, while cash flow measures the actual movement of money into and out of your business. If customers take longer to pay invoices, expenses increase faster than revenue, or too much cash is tied up in inventory, your business can experience cash flow challenges despite strong sales. ",
+        "text": "Revenue measures the value of the products or services your business has sold, while cash flow measures the actual movement of money into and out of your business. If customers take longer to pay invoices, expenses increase faster than revenue, or too much cash is tied up in inventory, your business can experience cash flow challenges despite strong sales. ",
+        "type": "p"
+      },
+      {
+        "html": "This is a common challenge for growing businesses. Expansion often requires hiring employees, purchasing inventory, investing in equipment, or offering longer payment terms to customers. While these investments support future growth, they also increase the demand on your available cash. ",
+        "text": "This is a common challenge for growing businesses. Expansion often requires hiring employees, purchasing inventory, investing in equipment, or offering longer payment terms to customers. While these investments support future growth, they also increase the demand on your available cash. ",
+        "type": "p"
+      },
+      {
+        "html": "Understanding the difference between revenue and cash flow helps business owners make better financial decisions. Instead of assuming higher sales automatically strengthen the business, you can evaluate whether your cash flow is keeping pace with your growth. ",
+        "text": "Understanding the difference between revenue and cash flow helps business owners make better financial decisions. Instead of assuming higher sales automatically strengthen the business, you can evaluate whether your cash flow is keeping pace with your growth. ",
+        "type": "p"
+      },
+      {
+        "html": "With effective cash flow management, accurate financial reporting, and consistent monthly bookkeeping, you gain the financial visibility needed to make informed decisions, support day-to-day operations, and position your business for sustainable growth. ",
+        "text": "With effective cash flow management, accurate financial reporting, and consistent monthly bookkeeping, you gain the financial visibility needed to make informed decisions, support day-to-day operations, and position your business for sustainable growth. ",
+        "type": "p"
+      },
+      {
+        "text": "Revenue and Cash Flow Are Not the Same",
+        "type": "h2"
+      },
+      {
+        "html": "One of the most common financial misconceptions is assuming that growing revenue automatically means more cash in the business. ",
+        "text": "One of the most common financial misconceptions is assuming that growing revenue automatically means more cash in the business. ",
+        "type": "p"
+      },
+      {
+        "html": "While revenue is an important measure of business performance, it doesn&#39;t tell you how much cash is available to cover day-to-day operations. ",
+        "text": "While revenue is an important measure of business performance, it doesn't tell you how much cash is available to cover day-to-day operations. ",
+        "type": "p"
+      },
+      {
+        "html": "Revenue represents the value of the products or services your business has sold during a specific period. It appears on your Profit and Loss Statement and measures your company&#39;s ability to generate sales. ",
+        "text": "Revenue represents the value of the products or services your business has sold during a specific period. It appears on your Profit and Loss Statement and measures your company's ability to generate sales. ",
+        "type": "p"
+      },
+      {
+        "html": "Cash flow, on the other hand, measures the actual movement of money into and out of your business. More importantly, it answers the question every business owner needs to know: ",
+        "text": "Cash flow, on the other hand, measures the actual movement of money into and out of your business. More importantly, it answers the question every business owner needs to know: ",
+        "type": "p"
+      },
+      {
+        "text": "Do we have enough cash to operate the business today?",
+        "type": "h4"
+      },
+      {
+        "html": "For example, imagine your company completes a $100,000 project and gives the client 60 days to pay the invoice. ",
+        "text": "For example, imagine your company completes a $100,000 project and gives the client 60 days to pay the invoice. ",
+        "type": "p"
+      },
+      {
+        "html": "Your Profit and Loss Statement recognizes the revenue immediately, making it appear that the business had a strong month. However, until that payment is collected, your business is still responsible for covering payroll, rent, software subscriptions, vendor invoices, and taxes. ",
+        "text": "Your Profit and Loss Statement recognizes the revenue immediately, making it appear that the business had a strong month. However, until that payment is collected, your business is still responsible for covering payroll, rent, software subscriptions, vendor invoices, and taxes. ",
+        "type": "p"
+      },
+      {
+        "html": "Although revenue has increased, the cash hasn&#39;t reached your bank account. ",
+        "text": "Although revenue has increased, the cash hasn't reached your bank account. ",
+        "type": "p"
+      },
+      {
+        "html": "That&#39;s why a business can be profitable on paper while still experiencing cash flow challenges. ",
+        "text": "That's why a business can be profitable on paper while still experiencing cash flow challenges. ",
+        "type": "p"
+      },
+      {
+        "html": "Understanding the difference between revenue and cash flow is one of the first steps toward making better financial decisions and improving cash flow management. ",
+        "text": "Understanding the difference between revenue and cash flow is one of the first steps toward making better financial decisions and improving cash flow management. ",
+        "type": "p"
+      },
+      {
+        "text": "Why Growing Businesses Often Experience Cash Flow Challenges ",
+        "type": "h2"
+      },
+      {
+        "html": "Growth creates opportunity, but it also increases the financial demands on your business.",
+        "text": "Growth creates opportunity, but it also increases the financial demands on your business.",
+        "type": "p"
+      },
+      {
+        "html": "As your business expands, it&#39;s common for expenses to increase before the additional revenue is collected. ",
+        "text": "As your business expands, it's common for expenses to increase before the additional revenue is collected. ",
+        "type": "p"
+      },
+      {
+        "html": "Examples include: ",
+        "text": "Examples include: ",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Hiring new employees before additional revenue is received ",
+          "Purchasing inventory to meet growing demand ",
+          "Investing in equipment and technology ",
+          "Expanding office or warehouse space ",
+          "Increasing marketing and advertising expenses ",
+          "Offering longer payment terms to customers "
+        ]
+      },
+      {
+        "html": "Each of these investments supports future growth, but they also reduce available working capital in the short term. ",
+        "text": "Each of these investments supports future growth, but they also reduce available working capital in the short term. ",
+        "type": "p"
+      },
+      {
+        "html": "Without careful cash flow management, a business can continue growing while struggling to meet its financial obligations. ",
+        "text": "Without careful cash flow management, a business can continue growing while struggling to meet its financial obligations. ",
+        "type": "p"
+      },
+      {
+        "html": "That&#39;s why successful business owners don&#39;t measure growth by revenue alone. They also monitor cash flow to ensure the business has the financial resources needed to support continued growth. ",
+        "text": "That's why successful business owners don't measure growth by revenue alone. They also monitor cash flow to ensure the business has the financial resources needed to support continued growth. ",
+        "type": "p"
+      },
+      {
+        "text": "Five Reasons Revenue Growth Doesn't Improve Cash Flow",
+        "type": "h2"
+      },
+      {
+        "text": "1. Customers Take Too Long to Pay ",
+        "type": "h3"
+      },
+      {
+        "html": "One of the most common causes of cash flow problems is slow customer payments. ",
+        "text": "One of the most common causes of cash flow problems is slow customer payments. ",
+        "type": "p"
+      },
+      {
+        "html": "When invoices remain unpaid for 30, 60, or even 90 days, the revenue has already been recorded, but the cash hasn&#39;t been collected. As accounts receivable grow, less cash is available to cover payroll, operating expenses, and other day-to-day business needs. ",
+        "text": "When invoices remain unpaid for 30, 60, or even 90 days, the revenue has already been recorded, but the cash hasn't been collected. As accounts receivable grow, less cash is available to cover payroll, operating expenses, and other day-to-day business needs. ",
+        "type": "p"
+      },
+      {
+        "html": "Monitoring aging receivables, following up on overdue invoices, and maintaining consistent collection processes can significantly improve cash flow. ",
+        "text": "Monitoring aging receivables, following up on overdue invoices, and maintaining consistent collection processes can significantly improve cash flow. ",
+        "type": "p"
+      },
+      {
+        "text": "2. Expenses Increase Faster Than Revenue ",
+        "type": "h3"
+      },
+      {
+        "html": "Growth often requires investment before it generates a return.",
+        "text": "Growth often requires investment before it generates a return.",
+        "type": "p"
+      },
+      {
+        "html": "Hiring employees, expanding office space, investing in technology, or purchasing equipment all increase operating expenses. If those costs grow faster than incoming cash, your business can experience cash flow challenges even as revenue continues to increase. ",
+        "text": "Hiring employees, expanding office space, investing in technology, or purchasing equipment all increase operating expenses. If those costs grow faster than incoming cash, your business can experience cash flow challenges even as revenue continues to increase. ",
+        "type": "p"
+      },
+      {
+        "html": "That&#39;s why it&#39;s important to monitor both profitability and cash flow. Growing sales are encouraging, but they don&#39;t always reflect the cash available to operate and grow your business. ",
+        "text": "That's why it's important to monitor both profitability and cash flow. Growing sales are encouraging, but they don't always reflect the cash available to operate and grow your business. ",
+        "type": "p"
+      },
+      {
+        "text": "3. Inventory Ties Up Valuable Cash ",
+        "type": "h3"
+      },
+      {
+        "html": "For businesses that sell physical products, inventory is essential. However, carrying more inventory than you need can quickly reduce available cash. ",
+        "text": "For businesses that sell physical products, inventory is essential. However, carrying more inventory than you need can quickly reduce available cash. ",
+        "type": "p"
+      },
+      {
+        "html": "Every dollar invested in inventory is a dollar that can&#39;t be used for payroll, operating expenses, or future investments. If products remain on the shelf for weeks or months before they&#39;re sold, that cash remains unavailable to support the business. ",
+        "text": "Every dollar invested in inventory is a dollar that can't be used for payroll, operating expenses, or future investments. If products remain on the shelf for weeks or months before they're sold, that cash remains unavailable to support the business. ",
+        "type": "p"
+      },
+      {
+        "html": "Reviewing inventory levels alongside your Cash Flow Statement helps identify slow-moving inventory and purchasing patterns that may be reducing available working capital. \n\nMaintaining the right inventory levels helps you meet customer demand without unnecessarily tying up cash. ",
+        "text": "Reviewing inventory levels alongside your Cash Flow Statement helps identify slow-moving inventory and purchasing patterns that may be reducing available working capital. \n\nMaintaining the right inventory levels helps you meet customer demand without unnecessarily tying up cash. ",
+        "type": "p"
+      },
+      {
+        "text": "4. Vendor Payments Are Due Before Customer Payments Arrive ",
+        "type": "h3"
+      },
+      {
+        "html": "Many growing businesses experience a gap between when cash leaves the business and when it comes in. ",
+        "text": "Many growing businesses experience a gap between when cash leaves the business and when it comes in. ",
+        "type": "p"
+      },
+      {
+        "html": "For example, you may need to pay suppliers within 15 or 30 days while giving customers 45 or 60 days to pay their invoices. Although the revenue has been recorded, the cash hasn&#39;t yet been collected. ",
+        "text": "For example, you may need to pay suppliers within 15 or 30 days while giving customers 45 or 60 days to pay their invoices. Although the revenue has been recorded, the cash hasn't yet been collected. ",
+        "type": "p"
+      },
+      {
+        "html": "This timing difference can create cash flow pressure, especially during periods of rapid growth. ",
+        "text": "This timing difference can create cash flow pressure, especially during periods of rapid growth. ",
+        "type": "p"
+      },
+      {
+        "html": "Regularly reviewing both accounts payable and accounts receivable helps you anticipate when cash is expected to leave the business and when it should be received. Managing payment terms with vendors and customers can improve cash flow without increasing revenue. ",
+        "text": "Regularly reviewing both accounts payable and accounts receivable helps you anticipate when cash is expected to leave the business and when it should be received. Managing payment terms with vendors and customers can improve cash flow without increasing revenue. ",
+        "type": "p"
+      },
+      {
+        "text": "5. Decisions Are Made Without Current Financial Information ",
+        "type": "h3"
+      },
+      {
+        "html": "Cash flow problems often begin with decisions made using outdated financial information. ",
+        "text": "Cash flow problems often begin with decisions made using outdated financial information. ",
+        "type": "p"
+      },
+      {
+        "html": "If your bookkeeping is weeks or months behind, it&#39;s difficult to understand your current financial position or accurately evaluate the impact of major business decisions. ",
+        "text": "If your bookkeeping is weeks or months behind, it's difficult to understand your current financial position or accurately evaluate the impact of major business decisions. ",
+        "type": "p"
+      },
+      {
+        "html": "Questions like these become difficult to answer: ",
+        "text": "Questions like these become difficult to answer: ",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Can we afford to hire another employee? ",
+          "Is now the right time to invest in new equipment? ",
+          "Should we expand into another market? ",
+          "Do we have enough cash to cover upcoming expenses?"
+        ]
+      },
+      {
+        "html": "Without accurate financial reporting, business owners are forced to rely on assumptions instead of current financial information.",
+        "text": "Without accurate financial reporting, business owners are forced to rely on assumptions instead of current financial information.",
+        "type": "p"
+      },
+      {
+        "html": "Consistent monthly bookkeeping provides the timely financial information needed to make informed decisions, improve financial visibility, and support healthier cash flow. ",
+        "text": "Consistent monthly bookkeeping provides the timely financial information needed to make informed decisions, improve financial visibility, and support healthier cash flow. ",
+        "type": "p"
+      },
+      {
+        "alt": "Financial balance sheet and advisory review",
+        "url": "https://dtygudbvdgkkrntosfun.supabase.co/storage/v1/object/public/event-images/cms/1794245734617-How_Better_Cash_Flow_Management_Improves_Financial_Stability__1_.png",
+        "size": "full",
+        "type": "image",
+        "caption": "Figure 1: Strategic fiscal review and cash flow forecasting."
+      },
+      {
+        "text": "How Better Cash Flow Management Improves Financial Stability ",
+        "type": "h2"
+      },
+      {
+        "html": "Strong cash flow management is about more than maintaining a healthy bank balance. It&#39;s about understanding how cash moves through your business so you can make informed decisions, meet your financial obligations, and support long-term growth.",
+        "text": "Strong cash flow management is about more than maintaining a healthy bank balance. It's about understanding how cash moves through your business so you can make informed decisions, meet your financial obligations, and support long-term growth.",
+        "type": "p"
+      },
+      {
+        "html": "Businesses with healthy cash flow are better positioned to: ",
+        "text": "Businesses with healthy cash flow are better positioned to: ",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Pay employees and vendors on time ",
+          "Invest in growth opportunities ",
+          "Respond to unexpected expense",
+          "Reduce reliance on credit ",
+          "Improve financial stability ",
+          "Build stronger relationships with suppliers"
+        ]
+      },
+      {
+        "html": "Healthy cash flow also gives business owners greater confidence. Instead of worrying about whether there will be enough cash to cover next month&#39;s expenses, you can focus on running the business, planning for growth, and responding to new opportunities. ",
+        "text": "Healthy cash flow also gives business owners greater confidence. Instead of worrying about whether there will be enough cash to cover next month's expenses, you can focus on running the business, planning for growth, and responding to new opportunities. ",
+        "type": "p"
+      },
+      {
+        "text": "Practical Ways to Improve Business Cash Flow ",
+        "type": "h2"
+      },
+      {
+        "html": "Improving cash flow isn&#39;t always about generating more sales. In many cases, small improvements to your financial processes can make a meaningful difference. \n\nHere are several practical ways to strengthen your cash flow: ",
+        "text": "Improving cash flow isn't always about generating more sales. In many cases, small improvements to your financial processes can make a meaningful difference. \n\nHere are several practical ways to strengthen your cash flow: ",
+        "type": "p"
+      },
+      {
+        "text": "Improve Your Invoicing Process ",
+        "type": "h3"
+      },
+      {
+        "html": "Send invoices promptly and establish clear payment terms from the start. \n\nThe sooner invoices are sent, the sooner payments can be collected. Offering electronic payment options can also make it easier for customers to pay quickly. ",
+        "text": "Send invoices promptly and establish clear payment terms from the start. \n\nThe sooner invoices are sent, the sooner payments can be collected. Offering electronic payment options can also make it easier for customers to pay quickly. ",
+        "type": "p"
+      },
+      {
+        "text": "Monitor Accounts Receivable Regularly ",
+        "type": "h3"
+      },
+      {
+        "html": "Outstanding invoices reduce the cash available to operate your business. ",
+        "text": "Outstanding invoices reduce the cash available to operate your business. ",
+        "type": "p"
+      },
+      {
+        "html": "Review your accounts receivable each month and follow up on overdue invoices before they become larger collection issues. Reducing the time it takes customers to pay can have an immediate impact on cash flow. ",
+        "text": "Review your accounts receivable each month and follow up on overdue invoices before they become larger collection issues. Reducing the time it takes customers to pay can have an immediate impact on cash flow. ",
+        "type": "p"
+      },
+      {
+        "text": "Manage Accounts Payable Strategically ",
+        "type": "h3"
+      },
+      {
+        "html": "Pay vendors on time to maintain strong relationships, but avoid paying invoices earlier than necessary unless there is a financial benefit, such as an early payment discount. ",
+        "text": "Pay vendors on time to maintain strong relationships, but avoid paying invoices earlier than necessary unless there is a financial benefit, such as an early payment discount. ",
+        "type": "p"
+      },
+      {
+        "html": "Regularly reviewing your accounts payable helps you better anticipate upcoming cash needs and manage your available working capital. ",
+        "text": "Regularly reviewing your accounts payable helps you better anticipate upcoming cash needs and manage your available working capital. ",
+        "type": "p"
+      },
+      {
+        "text": "Build a Cash Flow Forecast ",
+        "type": "h3"
+      },
+      {
+        "html": "One of the most valuable tools for managing cash flow is a cash flow forecast. ",
+        "text": "One of the most valuable tools for managing cash flow is a cash flow forecast. ",
+        "type": "p"
+      },
+      {
+        "html": "Forecasting estimates future cash inflows and outflows based on expected sales, operating expenses, customer payments, and upcoming financial obligations. ",
+        "text": "Forecasting estimates future cash inflows and outflows based on expected sales, operating expenses, customer payments, and upcoming financial obligations. ",
+        "type": "p"
+      },
+      {
+        "html": "Instead of reacting to cash shortages after they occur, you can identify potential gaps in advance and make adjustments before they affect your business. ",
+        "text": "Instead of reacting to cash shortages after they occur, you can identify potential gaps in advance and make adjustments before they affect your business. ",
+        "type": "p"
+      },
+      {
+        "html": "A cash flow forecast also supports better budgeting, hiring decisions, capital investments, and long-term business planning. ",
+        "text": "A cash flow forecast also supports better budgeting, hiring decisions, capital investments, and long-term business planning. ",
+        "type": "p"
+      },
+      {
+        "text": "Why Financial Visibility Is Essential for Growing Businesses",
+        "type": "h2"
+      },
+      {
+        "html": "Effective cash flow management starts with understanding your financial position. ",
+        "text": "Effective cash flow management starts with understanding your financial position. ",
+        "type": "p"
+      },
+      {
+        "html": "Without accurate financial information, it&#39;s difficult to identify trends, monitor business performance, or make informed decisions with confidence. ",
+        "text": "Without accurate financial information, it's difficult to identify trends, monitor business performance, or make informed decisions with confidence. ",
+        "type": "p"
+      },
+      {
+        "html": "Strong financial visibility helps business owners answer important questions such as: ",
+        "text": "Strong financial visibility helps business owners answer important questions such as: ",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Which customers consistently pay late? ",
+          "Are operating expenses increasing faster than revenue? ",
+          "How much working capital is available? ",
+          "Are we generating enough cash to support future growth? "
+        ]
+      },
+      {
+        "html": "The answers to these questions come from accurate financial reporting, not guesswork. ",
+        "text": "The answers to these questions come from accurate financial reporting, not guesswork. ",
+        "type": "p"
+      },
+      {
+        "html": "When your financial records are incomplete or outdated, you&#39;re forced to make decisions based on yesterday&#39;s numbers instead of today&#39;s financial reality. ",
+        "text": "When your financial records are incomplete or outdated, you're forced to make decisions based on yesterday's numbers instead of today's financial reality. ",
+        "type": "p"
+      },
+      {
+        "html": "As we discussed in our article,<a href=\"https://www.smgaba.com/blog/the-3-financial-reports-every-business-owner-should-review-monthly\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">The 3 Financial Reports Every Business Owner Should Review Monthly</a>, regularly reviewing your financial statements helps you identify opportunities, monitor performance, and address potential issues before they affect your business. ",
+        "text": "As we discussed in our article,[The 3 Financial Reports Every Business Owner Should Review Monthly](https://www.smgaba.com/blog/the-3-financial-reports-every-business-owner-should-review-monthly), regularly reviewing your financial statements helps you identify opportunities, monitor performance, and address potential issues before they affect your business. ",
+        "type": "p"
+      },
+      {
+        "html": "Likewise, our article, <a href=\"https://www.smgaba.com/blog/monthly-bookkeeping-financial-visibility\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">How Monthly Bookkeeping Improves Financial Visibility for Growing Businesses</a>, explains how accurate monthly bookkeeping creates the foundation for reliable financial reporting and better business decisions. ",
+        "text": "Likewise, our article, [How Monthly Bookkeeping Improves Financial Visibility for Growing Businesses](https://www.smgaba.com/blog/monthly-bookkeeping-financial-visibility), explains how accurate monthly bookkeeping creates the foundation for reliable financial reporting and better business decisions. ",
+        "type": "p"
+      },
+      {
+        "html": "Together, accurate bookkeeping, consistent financial reporting, and effective cash flow management give business owners the financial visibility needed to make informed decisions and support long-term growth. ",
+        "text": "Together, accurate bookkeeping, consistent financial reporting, and effective cash flow management give business owners the financial visibility needed to make informed decisions and support long-term growth. ",
+        "type": "p"
+      },
+      {
+        "text": "Conclusion ",
+        "type": "h2"
+      },
+      {
+        "html": "Revenue growth is an important sign of business success, but it doesn&#39;t always mean your cash flow is keeping pace. ",
+        "text": "Revenue growth is an important sign of business success, but it doesn't always mean your cash flow is keeping pace. ",
+        "type": "p"
+      },
+      {
+        "html": "Without effective cash flow management, even profitable businesses can struggle to pay vendors, meet payroll, or invest in future opportunities because cash isn&#39;t available when it&#39;s needed most. ",
+        "text": "Without effective cash flow management, even profitable businesses can struggle to pay vendors, meet payroll, or invest in future opportunities because cash isn't available when it's needed most. ",
+        "type": "p"
+      },
+      {
+        "html": "Understanding the difference between revenue and cash flow allows business owners to make better financial decisions. By monitoring accounts receivable, managing accounts payable, maintaining healthy working capital, and using cash flow forecasting, you can improve liquidity and avoid many of the financial challenges that often accompany growth.",
+        "text": "Understanding the difference between revenue and cash flow allows business owners to make better financial decisions. By monitoring accounts receivable, managing accounts payable, maintaining healthy working capital, and using cash flow forecasting, you can improve liquidity and avoid many of the financial challenges that often accompany growth.",
+        "type": "p"
+      },
+      {
+        "html": "Reliable financial reporting and consistent monthly bookkeeping are equally important. When your financial records are accurate and up to date, you gain the financial visibility needed to evaluate performance, plan ahead, and respond to challenges before they become larger problems. ",
+        "text": "Reliable financial reporting and consistent monthly bookkeeping are equally important. When your financial records are accurate and up to date, you gain the financial visibility needed to evaluate performance, plan ahead, and respond to challenges before they become larger problems. ",
+        "type": "p"
+      },
+      {
+        "html": "Revenue tells you how much business you&#39;re generating. Cash flow determines whether your business has the financial resources to sustain that growth over the long term. ",
+        "text": "Revenue tells you how much business you're generating. Cash flow determines whether your business has the financial resources to sustain that growth over the long term. ",
+        "type": "p"
+      },
+      {
+        "text": "Improve Your Cash Flow with SMG ABA ",
+        "type": "h2"
+      },
+      {
+        "html": "Managing cash flow requires more than monitoring your bank balance. It requires accurate financial information, proactive planning, and a clear understanding of how money moves through your business. ",
+        "text": "Managing cash flow requires more than monitoring your bank balance. It requires accurate financial information, proactive planning, and a clear understanding of how money moves through your business. ",
+        "type": "p"
+      },
+      {
+        "html": "At <a href=\"https://www.smgaba.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">SMG ABA</a>, we provide monthly bookkeeping, outsourced bookkeeping, bookkeeping and accounting services, and outsourced accounting services that help growing businesses improve cash flow management and gain greater financial visibility. Through accurate financial reporting, timely financial insights, and responsive guidance, we help business owners make informed decisions that support long-term success. ",
+        "text": "At [SMG ABA](https://www.smgaba.com/), we provide monthly bookkeeping, outsourced bookkeeping, bookkeeping and accounting services, and outsourced accounting services that help growing businesses improve cash flow management and gain greater financial visibility. Through accurate financial reporting, timely financial insights, and responsive guidance, we help business owners make informed decisions that support long-term success. ",
+        "type": "p"
+      },
+      {
+        "html": "Whether you&#39;re experiencing rapid growth or looking to strengthen your financial foundation, our accounting services for growing businesses can help you improve financial visibility, strengthen cash flow, and make more confident business decisions. ",
+        "text": "Whether you're experiencing rapid growth or looking to strengthen your financial foundation, our accounting services for growing businesses can help you improve financial visibility, strengthen cash flow, and make more confident business decisions. ",
+        "type": "p"
+      },
+      {
+        "html": "<a href=\"https://www.smgaba.com/contact\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">Schedule a complimentary consultation today</a> and discover how SMG ABA can help you gain the financial visibility and strategic insight needed to support long-term business growth. ",
+        "text": "[Schedule a complimentary consultation today](https://www.smgaba.com/contact) and discover how SMG ABA can help you gain the financial visibility and strategic insight needed to support long-term business growth. ",
+        "type": "p"
+      }
+    ],
+    "isCustom": true,
+    "createdAt": "2026-10-29T14:03:08.822686+00:00",
+    "updatedAt": "2026-11-09T17:45:47.705+00:00"
+  },
+  {
+    "id": "3e491d36-2436-4cca-a34a-533942a8b9e7",
+    "slug": "7-financial-kpis-every-growing-business-should-track",
+    "title": "7 Financial KPIs Every Growing Business Should Track",
+    "metaTitle": "7 Financial KPIs Every Growing Business Should Track  | SMG ABA",
+    "metaDescription": "Learn seven financial KPIs that reveal profitability, cash flow, collections, and efficiency and how growing businesses should review them.",
+    "h1": "7 Financial KPIs Every Growing Business Should Track",
+    "date": "Oct 19, 2026",
+    "publishDate": "2026-10-26T15:33:00+00:00",
+    "author": "SMG Advisory Team",
+    "category": "Bookkeeping",
+    "image": "https://dtygudbvdgkkrntosfun.supabase.co/storage/v1/object/public/event-images/cms/1792761038631-The_Financial_KPIs_Every_Growing_Business_Should_Track__And_Why_Most_Don_t___1_.png",
+    "readTime": "4 min read",
+    "excerpt": "Learn seven financial KPIs that reveal profitability, cash flow, collections, and efficiency and how growing businesses should review them.",
+    "status": "published",
+    "archived": false,
+    "destination": "blog",
+    "blocks": [
+      {
+        "html": "Growing businesses have access to more financial data than ever before. Revenue reports, bank balances, invoices, expenses, payroll data, and accounting dashboards can provide a constant stream of information.",
+        "text": "Growing businesses have access to more financial data than ever before. Revenue reports, bank balances, invoices, expenses, payroll data, and accounting dashboards can provide a constant stream of information.",
+        "type": "p"
+      },
+      {
+        "html": "But having more numbers does not necessarily mean you have better financial visibility. \n\nThe more important question is: \n\nWhich numbers actually tell you whether your business is getting stronger? \n\nThat is where financial KPIs, or key performance indicators, become valuable.",
+        "text": "But having more numbers does not necessarily mean you have better financial visibility. \n\nThe more important question is: \n\nWhich numbers actually tell you whether your business is getting stronger? \n\nThat is where financial KPIs, or key performance indicators, become valuable.",
+        "type": "p"
+      },
+      {
+        "html": "Financial KPIs are measurable indicators used to evaluate specific areas of business performance. When tracked consistently, they can help business owners understand profitability, cash flow, collections, operating efficiency, and short-term financial health. \n\nBut a number by itself is not necessarily a KPI. \n\nA financial number becomes a useful KPI when it is connected to a business objective, measured consistently, compared with a meaningful target, and used to determine when action may be needed. \n\nFor growing businesses, the goal is not to monitor every number available. It is to identify the financial KPIs that provide useful information for the decisions management needs to make. \n\n",
+        "text": "Financial KPIs are measurable indicators used to evaluate specific areas of business performance. When tracked consistently, they can help business owners understand profitability, cash flow, collections, operating efficiency, and short-term financial health. \n\nBut a number by itself is not necessarily a KPI. \n\nA financial number becomes a useful KPI when it is connected to a business objective, measured consistently, compared with a meaningful target, and used to determine when action may be needed. \n\nFor growing businesses, the goal is not to monitor every number available. It is to identify the financial KPIs that provide useful information for the decisions management needs to make. \n\n",
+        "type": "p"
+      },
+      {
+        "text": "Financial KPI Dashboard: What Should You Track?",
+        "type": "h2"
+      },
+      {
+        "html": "Here is a quick overview of seven financial KPIs growing businesses may want to monitor. ",
+        "text": "Here is a quick overview of seven financial KPIs growing businesses may want to monitor. ",
+        "type": "p"
+      },
+      {
+        "rows": [
+          [
+            "Revenue Growth Rate",
+            "(Current Revenue − Prior Revenue) ÷ Prior Revenue ",
+            "Direction and pace of sales growth ",
+            "Monthly ",
+            "Growth slowing or declining "
+          ],
+          [
+            "Gross Profit Margin ",
+            "Gross Profit ÷ Revenue ",
+            "Profitability after direct costs ",
+            "Monthly ",
+            "Margin consistently declining "
+          ],
+          [
+            "Net Profit Margin \t",
+            "Net Income ÷ Revenue ",
+            "Overall profitability ",
+            "Monthly ",
+            "Revenue rising while margin declines "
+          ],
+          [
+            "Operating Cash Flow ",
+            "From Statement of Cash Flows",
+            "Cash generated or used by operations",
+            "Monthly; more often when needed ",
+            "Persistent negative operating cash flow "
+          ],
+          [
+            "Days Sales Outstanding",
+            "Average A/R ÷ Credit Sales × Days ",
+            "Speed of customer collections ",
+            "Monthly; potentially weekly for collections ",
+            "Collection time increasing"
+          ],
+          [
+            "Operating Expense Ratio ",
+            "Operating Expenses ÷ Revenue",
+            "Relationship between operating costs and revenue",
+            "Monthly",
+            "Expenses growing faster than revenue "
+          ],
+          [
+            "Working Capital / Current Ratio ",
+            "Current Assets − Current Liabilities; Current Assets ÷ Current Liabilities ",
+            "Short-term financial position ",
+            "Monthly",
+            "Deteriorating liquidity "
+          ]
+        ],
+        "type": "table",
+        "headers": [
+          "KPI",
+          "How It Is Calculated ",
+          "What It Helps Reveal ",
+          "Typical Review Frequency ",
+          "Warning Sign to Investigate "
+        ],
+        "hasHeader": true
+      },
+      {
+        "html": "These measurements should not be evaluated against universal targets. \n\nWhat constitutes a healthy margin, collection period, growth rate, or current ratio varies by industry, business model, company maturity, seasonality, and other factors. ",
+        "text": "These measurements should not be evaluated against universal targets. \n\nWhat constitutes a healthy margin, collection period, growth rate, or current ratio varies by industry, business model, company maturity, seasonality, and other factors. ",
+        "type": "p"
+      },
+      {
+        "html": "A more useful approach is to compare KPIs with prior periods, budget or forecast, internal targets, and appropriate industry benchmarks when reliable comparisons are available. ",
+        "text": "A more useful approach is to compare KPIs with prior periods, budget or forecast, internal targets, and appropriate industry benchmarks when reliable comparisons are available. ",
+        "type": "p"
+      },
+      {
+        "html": "Most financial KPIs should generally be reviewed monthly. However, cash balances, cash forecasts, and customer collections may require more frequent monitoring when liquidity is tight. ",
+        "text": "Most financial KPIs should generally be reviewed monthly. However, cash balances, cash forecasts, and customer collections may require more frequent monitoring when liquidity is tight. ",
+        "type": "p"
+      },
+      {
+        "html": "A useful financial dashboard may show: \n\nCurrent month  \n\nYear to date  \n\nPrior-year comparison  \n\nBudget or forecast  \n\nTarget  \n\nTrend  \n\nThe dashboard should help management see not only where the business stands, but also whether performance is moving in the desired direction. ",
+        "text": "A useful financial dashboard may show: \n\nCurrent month  \n\nYear to date  \n\nPrior-year comparison  \n\nBudget or forecast  \n\nTarget  \n\nTrend  \n\nThe dashboard should help management see not only where the business stands, but also whether performance is moving in the desired direction. ",
+        "type": "p"
+      },
+      {
+        "text": "1. Revenue Growth Rate ",
+        "type": "h2"
+      },
+      {
+        "html": "Revenue growth measures how sales change from one period to another. \n\nRevenue Growth Rate = (Current-Period Revenue − Prior-Period Revenue) ÷ Prior-Period Revenue ",
+        "text": "Revenue growth measures how sales change from one period to another. \n\nRevenue Growth Rate = (Current-Period Revenue − Prior-Period Revenue) ÷ Prior-Period Revenue ",
+        "type": "p"
+      },
+      {
+        "html": "For example, a business may compare the current month with the same month last year or compare year-to-date revenue with the corresponding prior-year period. ",
+        "text": "For example, a business may compare the current month with the same month last year or compare year-to-date revenue with the corresponding prior-year period. ",
+        "type": "p"
+      },
+      {
+        "html": "For example, a business may compare the current month with the same month last year or compare year-to-date revenue with the corresponding prior-year period. ",
+        "text": "For example, a business may compare the current month with the same month last year or compare year-to-date revenue with the corresponding prior-year period. ",
+        "type": "p"
+      },
+      {
+        "html": "Consistent revenue growth may indicate increasing demand, successful sales efforts, expansion, or other positive developments. ",
+        "text": "Consistent revenue growth may indicate increasing demand, successful sales efforts, expansion, or other positive developments. ",
+        "type": "p"
+      },
+      {
+        "html": "But revenue should never be evaluated in isolation. \n\nA business can increase sales while simultaneously experiencing declining margins, rising operating expenses, or tightening cash flow. ",
+        "text": "But revenue should never be evaluated in isolation. \n\nA business can increase sales while simultaneously experiencing declining margins, rising operating expenses, or tightening cash flow. ",
+        "type": "p"
+      },
+      {
+        "html": "That is why revenue growth becomes more useful when reviewed alongside profitability and cash flow KPIs. ",
+        "text": "That is why revenue growth becomes more useful when reviewed alongside profitability and cash flow KPIs. ",
+        "type": "p"
+      },
+      {
+        "text": "2. Gross Profit Margin ",
+        "type": "h2"
+      },
+      {
+        "html": "Gross profit margin measures how much revenue remains after accounting for the applicable direct costs associated with generating that revenue. ",
+        "text": "Gross profit margin measures how much revenue remains after accounting for the applicable direct costs associated with generating that revenue. ",
+        "type": "p"
+      },
+      {
+        "html": "Gross Profit Margin = Gross Profit ÷ Revenue \n\nGross profit margin can help management understand whether pricing, direct costs, product or service mix, and other operational factors are affecting profitability. ",
+        "text": "Gross Profit Margin = Gross Profit ÷ Revenue \n\nGross profit margin can help management understand whether pricing, direct costs, product or service mix, and other operational factors are affecting profitability. ",
+        "type": "p"
+      },
+      {
+        "html": "Suppose revenue increases while gross profit margin declines. \n\nThat may warrant a closer look at factors such as pricing, labor or material costs, vendor costs, discounts, or changes in sales mix, depending on the business. ",
+        "text": "Suppose revenue increases while gross profit margin declines. \n\nThat may warrant a closer look at factors such as pricing, labor or material costs, vendor costs, discounts, or changes in sales mix, depending on the business. ",
+        "type": "p"
+      },
+      {
+        "html": "A declining margin does not automatically identify the cause. It identifies an area that deserves investigation. ",
+        "text": "A declining margin does not automatically identify the cause. It identifies an area that deserves investigation. ",
+        "type": "p"
+      },
+      {
+        "html": "Because cost structures vary substantially among industries, there is no single gross profit margin that is “good” for every business. ",
+        "text": "Because cost structures vary substantially among industries, there is no single gross profit margin that is “good” for every business. ",
+        "type": "p"
+      },
+      {
+        "html": "The more meaningful analysis compares the company&#39;s margin over time, against budget, and, where appropriate, with relevant industry information. ",
+        "text": "The more meaningful analysis compares the company's margin over time, against budget, and, where appropriate, with relevant industry information. ",
+        "type": "p"
+      },
+      {
+        "text": "3. Net Profit Margin ",
+        "type": "h2"
+      },
+      {
+        "html": "Gross profit margin focuses on profitability after direct costs. Net profit margin provides a broader view of overall profitability. ",
+        "text": "Gross profit margin focuses on profitability after direct costs. Net profit margin provides a broader view of overall profitability. ",
+        "type": "p"
+      },
+      {
+        "html": "Net profit reflects what remains after cost of sales, operating expenses, interest, taxes, and other applicable income or expenses have been considered. ",
+        "text": "Net profit reflects what remains after cost of sales, operating expenses, interest, taxes, and other applicable income or expenses have been considered. ",
+        "type": "p"
+      },
+      {
+        "html": "Net Profit Margin = Net Income ÷ Revenue ",
+        "text": "Net Profit Margin = Net Income ÷ Revenue ",
+        "type": "p"
+      },
+      {
+        "html": "Tracking net profit margin helps management evaluate how much of each dollar of revenue ultimately remains as net income. ",
+        "text": "Tracking net profit margin helps management evaluate how much of each dollar of revenue ultimately remains as net income. ",
+        "type": "p"
+      },
+      {
+        "html": "This is particularly useful when a business is growing. \n\nRevenue may increase significantly while net profit margin declines because payroll, occupancy costs, professional fees, interest, or other expenses are increasing faster than the business can absorb them. ",
+        "text": "This is particularly useful when a business is growing. \n\nRevenue may increase significantly while net profit margin declines because payroll, occupancy costs, professional fees, interest, or other expenses are increasing faster than the business can absorb them. ",
+        "type": "p"
+      },
+      {
+        "html": "Rather than asking only, “Did profit increase?” management can ask: \n\n“Is the business becoming more profitable relative to the revenue it generates?” \n\nAs with gross margin, appropriate net margins vary by industry and business model. Trends and relevant comparisons are generally more useful than applying a universal target. ",
+        "text": "Rather than asking only, “Did profit increase?” management can ask: \n\n“Is the business becoming more profitable relative to the revenue it generates?” \n\nAs with gross margin, appropriate net margins vary by industry and business model. Trends and relevant comparisons are generally more useful than applying a universal target. ",
+        "type": "p"
+      },
+      {
+        "text": "4. Operating Cash Flow ",
+        "type": "h2"
+      },
+      {
+        "html": "Profitability and cash flow are related, but they are not the same thing. ",
+        "text": "Profitability and cash flow are related, but they are not the same thing. ",
+        "type": "p"
+      },
+      {
+        "html": "Operating cash flow reflects cash generated or used through the company&#39;s operating activities during a historical period and is reported in the Statement of Cash Flows. ",
+        "text": "Operating cash flow reflects cash generated or used through the company's operating activities during a historical period and is reported in the Statement of Cash Flows. ",
+        "type": "p"
+      },
+      {
+        "html": "A profitable business can still experience cash pressure because of collection timing, inventory requirements, debt payments, capital expenditures, growth investments, or other factors. ",
+        "text": "A profitable business can still experience cash pressure because of collection timing, inventory requirements, debt payments, capital expenditures, growth investments, or other factors. ",
+        "type": "p"
+      },
+      {
+        "html": "That is why operating cash flow should be evaluated alongside profitability. ",
+        "text": "That is why operating cash flow should be evaluated alongside profitability. ",
+        "type": "p"
+      },
+      {
+        "html": "It is also important to distinguish historical cash flow from cash flow forecasting. ",
+        "text": "It is also important to distinguish historical cash flow from cash flow forecasting. ",
+        "type": "p"
+      },
+      {
+        "html": "The Statement of Cash Flows explains what happened to cash during a historical period. A cash flow forecast estimates potential future inflows, outflows, and cash requirements based on assumptions. ",
+        "text": "The Statement of Cash Flows explains what happened to cash during a historical period. A cash flow forecast estimates potential future inflows, outflows, and cash requirements based on assumptions. ",
+        "type": "p"
+      },
+      {
+        "html": "Growing businesses may need both. ",
+        "text": "Growing businesses may need both. ",
+        "type": "p"
+      },
+      {
+        "html": "Historical operating cash flow helps management understand what has occurred, while forecasting can help evaluate whether available cash may be sufficient for upcoming payroll, vendor payments, taxes, debt obligations, investments, and other anticipated needs. ",
+        "text": "Historical operating cash flow helps management understand what has occurred, while forecasting can help evaluate whether available cash may be sufficient for upcoming payroll, vendor payments, taxes, debt obligations, investments, and other anticipated needs. ",
+        "type": "p"
+      },
+      {
+        "text": "5. Days Sales Outstanding and Accounts Receivable Aging ",
+        "type": "h2"
+      },
+      {
+        "html": "Accounts receivable tells you how much customers owe the business, but a useful KPI should also help management understand how quickly those receivables are being collected. ",
+        "text": "Accounts receivable tells you how much customers owe the business, but a useful KPI should also help management understand how quickly those receivables are being collected. ",
+        "type": "p"
+      },
+      {
+        "html": "One common measurement is Days Sales Outstanding, or DSO. \n\nDSO = Average Accounts Receivable ÷ Credit Sales × Number of Days \n\nDSO estimates the average number of days it takes to collect applicable credit sales. ",
+        "text": "One common measurement is Days Sales Outstanding, or DSO. \n\nDSO = Average Accounts Receivable ÷ Credit Sales × Number of Days \n\nDSO estimates the average number of days it takes to collect applicable credit sales. ",
+        "type": "p"
+      },
+      {
+        "html": "The calculation should be used consistently, and businesses should consider whether the underlying sales and receivables data are comparable from period to period. ",
+        "text": "The calculation should be used consistently, and businesses should consider whether the underlying sales and receivables data are comparable from period to period. ",
+        "type": "p"
+      },
+      {
+        "html": "Businesses should also review an accounts receivable aging report, which organizes outstanding receivables based on how long they have remained unpaid. ",
+        "text": "Businesses should also review an accounts receivable aging report, which organizes outstanding receivables based on how long they have remained unpaid. ",
+        "type": "p"
+      },
+      {
+        "html": "Credit sales may increase reported revenue and profit before the customer pays, but they improve liquidity only when the receivable is collected. ",
+        "text": "Credit sales may increase reported revenue and profit before the customer pays, but they improve liquidity only when the receivable is collected. ",
+        "type": "p"
+      },
+      {
+        "html": "If revenue is increasing while DSO and older receivable balances are also increasing, management may need to examine collection processes, customer payment behavior, billing practices, or payment terms. ",
+        "text": "If revenue is increasing while DSO and older receivable balances are also increasing, management may need to examine collection processes, customer payment behavior, billing practices, or payment terms. ",
+        "type": "p"
+      },
+      {
+        "html": "The appropriate collection period varies by business and industry, so trends and agreed payment terms provide important context. ",
+        "text": "The appropriate collection period varies by business and industry, so trends and agreed payment terms provide important context. ",
+        "type": "p"
+      },
+      {
+        "text": "6. Operating Expenses as a Percentage of Revenue ",
+        "type": "h2"
+      },
+      {
+        "html": "Growing businesses naturally spend more as they expand. ",
+        "text": "Growing businesses naturally spend more as they expand. ",
+        "type": "p"
+      },
+      {
+        "html": "The important question is whether operating expenses are growing at a sustainable rate relative to revenue. ",
+        "text": "The important question is whether operating expenses are growing at a sustainable rate relative to revenue. ",
+        "type": "p"
+      },
+      {
+        "html": "One way to monitor this is: \n\nOperating Expense Ratio = Operating Expenses ÷ Revenue ",
+        "text": "One way to monitor this is: \n\nOperating Expense Ratio = Operating Expenses ÷ Revenue ",
+        "type": "p"
+      },
+      {
+        "html": "Tracking operating expenses as a percentage of revenue can help management see whether overhead is consuming a larger or smaller share of the company&#39;s revenue. ",
+        "text": "Tracking operating expenses as a percentage of revenue can help management see whether overhead is consuming a larger or smaller share of the company's revenue. ",
+        "type": "p"
+      },
+      {
+        "html": "If revenue grows 10% while certain operating expenses grow 25%, that does not automatically mean those expenses are inappropriate. A business may intentionally invest ahead of future growth. ",
+        "text": "If revenue grows 10% while certain operating expenses grow 25%, that does not automatically mean those expenses are inappropriate. A business may intentionally invest ahead of future growth. ",
+        "type": "p"
+      },
+      {
+        "html": "However, the change deserves context. \n\nManagement should understand what is driving the increase, whether the expense supports the company&#39;s objectives, and whether actual spending is consistent with budget or forecast expectations. ",
+        "text": "However, the change deserves context. \n\nManagement should understand what is driving the increase, whether the expense supports the company's objectives, and whether actual spending is consistent with budget or forecast expectations. ",
+        "type": "p"
+      },
+      {
+        "text": "7. Working Capital and Current Ratio ",
+        "type": "h2"
+      },
+      {
+        "html": "Working capital provides information about a company&#39;s short-term financial position. ",
+        "text": "Working capital provides information about a company's short-term financial position. ",
+        "type": "p"
+      },
+      {
+        "html": "Working Capital = Current Assets − Current Liabilities",
+        "text": "Working Capital = Current Assets − Current Liabilities",
+        "type": "p"
+      },
+      {
+        "html": "Another related KPI is the current ratio: ",
+        "text": "Another related KPI is the current ratio: ",
+        "type": "p"
+      },
+      {
+        "html": "Current Ratio = Current Assets ÷ Current Liabilities ",
+        "text": "Current Ratio = Current Assets ÷ Current Liabilities ",
+        "type": "p"
+      },
+      {
+        "html": "Together, these measures can provide useful information about the relationship between resources classified as current assets and obligations classified as current liabilities. ",
+        "text": "Together, these measures can provide useful information about the relationship between resources classified as current assets and obligations classified as current liabilities. ",
+        "type": "p"
+      },
+      {
+        "html": "However, positive working capital does not automatically mean a business can safely hire employees, purchase inventory, acquire equipment, or expand. ",
+        "text": "However, positive working capital does not automatically mean a business can safely hire employees, purchase inventory, acquire equipment, or expand. ",
+        "type": "p"
+      },
+      {
+        "html": "The composition and timing of current assets and liabilities matter. ",
+        "text": "The composition and timing of current assets and liabilities matter. ",
+        "type": "p"
+      },
+      {
+        "html": "For example, a significant portion of current assets could consist of slow-moving inventory or receivables that have not yet been collected. ",
+        "text": "For example, a significant portion of current assets could consist of slow-moving inventory or receivables that have not yet been collected. ",
+        "type": "p"
+      },
+      {
+        "html": "Before making significant commitments, management should also consider projected cash flow, upcoming obligations, seasonality, financing needs, and other relevant factors. ",
+        "text": "Before making significant commitments, management should also consider projected cash flow, upcoming obligations, seasonality, financing needs, and other relevant factors. ",
+        "type": "p"
+      },
+      {
+        "text": "Looking at KPIs Together Tells a Different Story ",
+        "type": "h2"
+      },
+      {
+        "alt": "Looking at KPIs Together Tells a Different Story ",
+        "url": "https://dtygudbvdgkkrntosfun.supabase.co/storage/v1/object/public/event-images/cms/1794242293581-Common_KPI_Mistakes_That_Can_Mislead_Business_Owners.png",
+        "size": "full",
+        "type": "image",
+        "caption": ""
+      },
+      {
+        "html": "One KPI rarely tells the entire story. ",
+        "text": "One KPI rarely tells the entire story. ",
+        "type": "p"
+      },
+      {
+        "html": "Consider a hypothetical business reporting the following:",
+        "text": "Consider a hypothetical business reporting the following:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Revenue growth: 15%",
+          "Gross profit margin: declined from 45% to 39%  ",
+          "Net profit margin: declined from 9% to 5%  ",
+          "Average collection time: increased from 32 to 48 days "
+        ]
+      },
+      {
+        "html": "Looking only at revenue, the business appears to be performing well. ",
+        "text": "Looking only at revenue, the business appears to be performing well. ",
+        "type": "p"
+      },
+      {
+        "html": "But the other KPIs reveal a different picture. ",
+        "text": "But the other KPIs reveal a different picture. ",
+        "type": "p"
+      },
+      {
+        "html": "Sales are growing, while gross margin and net margin are declining and customers are taking longer to pay. ",
+        "text": "Sales are growing, while gross margin and net margin are declining and customers are taking longer to pay. ",
+        "type": "p"
+      },
+      {
+        "html": "That combination could indicate increasing cost pressure and weakening liquidity despite strong top-line growth. ",
+        "text": "That combination could indicate increasing cost pressure and weakening liquidity despite strong top-line growth. ",
+        "type": "p"
+      },
+      {
+        "html": "The example illustrates why financial KPIs are most useful when reviewed together rather than independently. ",
+        "text": "The example illustrates why financial KPIs are most useful when reviewed together rather than independently. ",
+        "type": "p"
+      },
+      {
+        "html": "The objective is not simply to collect more metrics. It is to understand the relationship between them. ",
+        "text": "The objective is not simply to collect more metrics. It is to understand the relationship between them. ",
+        "type": "p"
+      },
+      {
+        "text": "Why Many Growing Businesses Struggle to Track the Right KPIs ",
+        "type": "h2"
+      },
+      {
+        "html": "Most business owners understand that financial information matters. \n\nThe challenge is often turning accounting data into reliable, consistent measurements that management can actually use. ",
+        "text": "Most business owners understand that financial information matters. \n\nThe challenge is often turning accounting data into reliable, consistent measurements that management can actually use. ",
+        "type": "p"
+      },
+      {
+        "text": "Their Financial Reports Aren't Current",
+        "type": "h3"
+      },
+      {
+        "html": "Financial KPIs are only as reliable as the information behind them. \n\nIf bookkeeping is weeks or months behind, management may be evaluating performance using incomplete information. \n\nConsistent monthly bookkeeping provides the foundation for reliable financial reporting and KPI analysis. \n\nWithout that foundation, even a well-designed dashboard can be misleading. ",
+        "text": "Financial KPIs are only as reliable as the information behind them. \n\nIf bookkeeping is weeks or months behind, management may be evaluating performance using incomplete information. \n\nConsistent monthly bookkeeping provides the foundation for reliable financial reporting and KPI analysis. \n\nWithout that foundation, even a well-designed dashboard can be misleading. ",
+        "type": "p"
+      },
+      {
+        "text": "They Focus Too Heavily on the Bank Balance ",
+        "type": "h3"
+      },
+      {
+        "html": "Knowing how much cash is available is important, but a bank balance does not explain the company&#39;s overall financial performance.",
+        "text": "Knowing how much cash is available is important, but a bank balance does not explain the company's overall financial performance.",
+        "type": "p"
+      },
+      {
+        "html": "It does not tell management whether the company is profitable, whether margins are declining, whether receivables are becoming harder to collect, or whether expenses are growing faster than revenue. ",
+        "text": "It does not tell management whether the company is profitable, whether margins are declining, whether receivables are becoming harder to collect, or whether expenses are growing faster than revenue. ",
+        "type": "p"
+      },
+      {
+        "html": "Those questions require information from multiple financial reports and KPIs. ",
+        "text": "Those questions require information from multiple financial reports and KPIs. ",
+        "type": "p"
+      },
+      {
+        "text": "They Track Too Many Numbers ",
+        "type": "h3"
+      },
+      {
+        "html": "Modern accounting platforms can produce dozens of reports and measurements. \n\nMore data does not necessarily create more clarity. \n\nA useful KPI dashboard should focus on metrics connected to the company&#39;s most important objectives and decisions. \n\nDifferent businesses may therefore need different KPIs beyond the seven discussed here. ",
+        "text": "Modern accounting platforms can produce dozens of reports and measurements. \n\nMore data does not necessarily create more clarity. \n\nA useful KPI dashboard should focus on metrics connected to the company's most important objectives and decisions. \n\nDifferent businesses may therefore need different KPIs beyond the seven discussed here. ",
+        "type": "p"
+      },
+      {
+        "text": "They Review the Numbers Without a Target ",
+        "type": "h3"
+      },
+      {
+        "html": "A KPI becomes much more useful when management knows what it is being compared against. ",
+        "text": "A KPI becomes much more useful when management knows what it is being compared against. ",
+        "type": "p"
+      },
+      {
+        "html": "Instead of simply reporting that gross margin is 42%, for example, a dashboard might show: ",
+        "text": "Instead of simply reporting that gross margin is 42%, for example, a dashboard might show: ",
+        "type": "p"
+      },
+      {
+        "html": "Current: 42% \n Prior year: 45% \n Budget: 46% \n Target: 45% ",
+        "text": "Current: 42% \n Prior year: 45% \n Budget: 46% \n Target: 45% ",
+        "type": "p"
+      },
+      {
+        "html": "That immediately creates a more useful management conversation. \n\nWhy has margin declined? Is the change temporary? Was it expected? Does pricing need to be reviewed? Have costs changed? \n\nThe KPI identifies where management should ask questions. It does not automatically provide the answer. ",
+        "text": "That immediately creates a more useful management conversation. \n\nWhy has margin declined? Is the change temporary? Was it expected? Does pricing need to be reviewed? Have costs changed? \n\nThe KPI identifies where management should ask questions. It does not automatically provide the answer. ",
+        "type": "p"
+      },
+      {
+        "text": "Turn Financial KPIs Into Better Business Decisions ",
+        "type": "h2"
+      },
+      {
+        "html": "Tracking financial KPIs is not about producing another report that nobody uses. \n\nThe value comes from connecting financial information to decisions. ",
+        "text": "Tracking financial KPIs is not about producing another report that nobody uses. \n\nThe value comes from connecting financial information to decisions. ",
+        "type": "p"
+      },
+      {
+        "html": "Depending on the business, KPI trends may help management evaluate questions such as: ",
+        "text": "Depending on the business, KPI trends may help management evaluate questions such as: ",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Is pricing supporting the desired margins?  ",
+          "Are operating expenses increasing faster than planned?  ",
+          "Are customers taking longer to pay?  ",
+          "Does the cash forecast support an upcoming investment?  ",
+          "Are profitability trends moving in the desired direction?  ",
+          "Is actual performance consistent with budget?  ",
+          "Which areas require additional investigation?  "
+        ]
+      },
+      {
+        "html": "SMG Insight: The most useful financial dashboard is not necessarily the one with the most metrics. It is the one that gives leadership a consistent view of the measurements tied to their most important decisions and makes it clear when actual performance moves away from expectations. \n\nThat requires both reliable accounting information and management discipline.",
+        "text": "SMG Insight: The most useful financial dashboard is not necessarily the one with the most metrics. It is the one that gives leadership a consistent view of the measurements tied to their most important decisions and makes it clear when actual performance moves away from expectations. \n\nThat requires both reliable accounting information and management discipline.",
+        "type": "p"
+      },
+      {
+        "text": "Bookkeeping, Financial Reporting, and CFO Advisory Serve Different Roles ",
+        "type": "h2"
+      },
+      {
+        "html": "Reliable KPI tracking starts with accurate accounting. \n\nIf transactions are missing, reconciliations are incomplete, or financial statements are delayed, the first priority may be strengthening the company&#39;s bookkeeping and reporting processes. \n\nOnce reliable financial information is available, management can use that information to build more meaningful KPI reporting. \n\nFor companies with more complex decision-making needs, CFO advisory services can take the process further through customized dashboards, budgeting and forecasting, profitability analysis, cash flow planning, and other forward-looking financial analysis. \n\nThese services solve different problems. \n\nAccurate bookkeeping creates the financial foundation. \n\nFinancial reporting organizes the information. \n\nKPIs highlight the measurements management wants to monitor. \n\nAdvisory turns that information into deeper analysis around business decisions. ",
+        "text": "Reliable KPI tracking starts with accurate accounting. \n\nIf transactions are missing, reconciliations are incomplete, or financial statements are delayed, the first priority may be strengthening the company's bookkeeping and reporting processes. \n\nOnce reliable financial information is available, management can use that information to build more meaningful KPI reporting. \n\nFor companies with more complex decision-making needs, CFO advisory services can take the process further through customized dashboards, budgeting and forecasting, profitability analysis, cash flow planning, and other forward-looking financial analysis. \n\nThese services solve different problems. \n\nAccurate bookkeeping creates the financial foundation. \n\nFinancial reporting organizes the information. \n\nKPIs highlight the measurements management wants to monitor. \n\nAdvisory turns that information into deeper analysis around business decisions. ",
+        "type": "p"
+      },
+      {
+        "text": "Conclusion ",
+        "type": "h2"
+      },
+      {
+        "html": "Leadership needs to understand whether margins are improving, whether customers are paying on time, whether operating costs remain aligned with revenue, and whether the company&#39;s short-term financial position supports its plans. \n\nThe right financial KPIs provide a structured way to monitor those questions. \n\nBut there is no universal dashboard that works for every business. \n\nThe most useful KPIs are connected to the company&#39;s objectives, calculated consistently, compared with meaningful targets, and reviewed frequently enough for management to act when performance changes. \n\nThat is what turns financial data into useful management information. ",
+        "text": "Leadership needs to understand whether margins are improving, whether customers are paying on time, whether operating costs remain aligned with revenue, and whether the company's short-term financial position supports its plans. \n\nThe right financial KPIs provide a structured way to monitor those questions. \n\nBut there is no universal dashboard that works for every business. \n\nThe most useful KPIs are connected to the company's objectives, calculated consistently, compared with meaningful targets, and reviewed frequently enough for management to act when performance changes. \n\nThat is what turns financial data into useful management information. ",
+        "type": "p"
+      },
+      {
+        "text": "Turn Your Financial Reporting Into Action ",
+        "type": "h2"
+      },
+      {
+        "html": "At <a href=\"https://www.smgaba.com/\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">SMG</a>  we help growing businesses build reliable monthly reporting and focus on the KPIs that support their most important decisions. ",
+        "text": "At [SMG](https://www.smgaba.com/)  we help growing businesses build reliable monthly reporting and focus on the KPIs that support their most important decisions. ",
+        "type": "p"
+      },
+      {
+        "html": "If your books are incomplete or delayed, our bookkeeping team can help restore accuracy and timeliness. If your reporting is reliable but you need customized dashboards, forecasting, profitability analysis, and executive-level guidance, our CFO advisory team can help turn those numbers into action. ",
+        "text": "If your books are incomplete or delayed, our bookkeeping team can help restore accuracy and timeliness. If your reporting is reliable but you need customized dashboards, forecasting, profitability analysis, and executive-level guidance, our CFO advisory team can help turn those numbers into action. ",
+        "type": "p"
+      },
+      {
+        "html": "<a href=\"https://www.smgaba.com/contact\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-[#1b4e94] underline underline-offset-2 hover:text-[#2563eb]\">Schedule a complimentary consultation</a> with SMG to discuss the accounting and advisory support that fits your business. ",
+        "text": "[Schedule a complimentary consultation](https://www.smgaba.com/contact) with SMG to discuss the accounting and advisory support that fits your business. ",
+        "type": "p"
+      },
+      {
+        "html": "Financial KPIs should be interpreted based on the specific business, industry, accounting methods, objectives, and circumstances. This article provides general educational information and is not individualized accounting, tax, legal, investment, or financial advice. ",
+        "text": "Financial KPIs should be interpreted based on the specific business, industry, accounting methods, objectives, and circumstances. This article provides general educational information and is not individualized accounting, tax, legal, investment, or financial advice. ",
+        "type": "p"
+      }
+    ],
+    "isCustom": true,
+    "createdAt": "2026-10-19T15:44:42.228284+00:00",
+    "updatedAt": "2026-11-09T17:23:10.812+00:00"
+  },
+  {
+    "id": "12d1abae-7779-4e4d-bb50-222c8f53ef73",
+    "slug": "eidl-loan-payment-reminder",
+    "title": "EIDL Loan Payment Reminder",
+    "metaTitle": "EIDL Loan Payment Reminder - SMG Accountants, Bookkeepers & Advisors",
+    "metaDescription": "As a reminder to those currently a part of the COVID-19 Economic Injury Disaster Loan (EIDL) program, all borrowers are required to submit regular principal and interest payments, beginning 30 months from the effective date of your loan.",
+    "h1": "EIDL Loan Payment Reminder",
+    "date": "Sep 27, 2022",
+    "author": "Gregory Scotto",
+    "category": "Government Grants & Legislation",
+    "image": "/images/blog/eidl-loan-payment-reminder.jpg",
+    "readTime": "2 min read",
+    "excerpt": "As a reminder to those currently a part of the COVID-19 Economic Injury Disaster Loan (EIDL) program, all borrowers are required to submit regular principal and interest payments, beginning 30 months from the effective date of your loan.",
+    "status": "draft",
+    "archived": true,
+    "destination": "blog",
+    "blocks": [
+      {
+        "html": "As a reminder to those currently a part of the COVID-19 Economic Injury Disaster Loan (EIDL) program, all borrowers are required to submit regular principal and interest payments, beginning 30 months from the effective date of your loan.",
+        "text": "As a reminder to those currently a part of the COVID-19 Economic Injury Disaster Loan (EIDL) program, all borrowers are required to submit regular principal and interest payments, beginning 30 months from the effective date of your loan.",
+        "type": "p"
+      },
+      {
+        "html": "All information regarding account balances and payment deadlines are currently listed in your Capital Access Financial System.",
+        "text": "All information regarding account balances and payment deadlines are currently listed in your Capital Access Financial System.",
+        "type": "p"
+      },
+      {
+        "html": "To make an online payment, it is recommended that you submit such payments through <a href=\"http://Pay.gov\">Pay.gov</a>, using SBA Form 1201 Borrower Payment with accepted payment methods such as your bank account, PayPal account, or debit card. If you are unable to submit payments in this way, you are permitted to submit them through your personal banking account or mail them by check or money order to the U.S. Small Business Administration. For more information regarding the COVID-19 EIDL program, head to <a href=\"http://SBA.gov\">SBA.gov</a>.",
+        "text": "To make an online payment, it is recommended that you submit such payments through Pay.gov, using SBA Form 1201 Borrower Payment with accepted payment methods such as your bank account, PayPal account, or debit card. If you are unable to submit payments in this way, you are permitted to submit them through your personal banking account or mail them by check or money order to the U.S. Small Business Administration. For more information regarding the COVID-19 EIDL program, head to SBA.gov.",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Testimonials"
+        ]
+      }
+    ],
+    "isCustom": true,
+    "createdAt": "2026-10-19T15:32:16.185894+00:00",
+    "updatedAt": "2026-10-19T15:32:15.672+00:00"
   }
 ]

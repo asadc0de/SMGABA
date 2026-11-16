@@ -187,7 +187,7 @@ function createBlankPost(): ExtendedBlogPost {
     metaDescription: "",
     h1: "",
     date: dateFormatted,
-    publishDate: nextWeekIso,
+    publishDate: undefined,
     author: "SMG Advisory Team",
     category: "Bookkeeping",
     image: SAMPLE_IMAGES[0].url,
@@ -627,6 +627,20 @@ function blocksToDocumentText(blocks: ContentBlock[]): string {
 function BlogsEditorPage() {
   const initialData = Route.useLoaderData();
   const [blogsList, setBlogsList] = useState<ExtendedBlogPost[]>(initialData?.blogs || []);
+
+  // Client-side refresh: Always fetch the latest posts from Supabase on mount
+  useEffect(() => {
+    getAdminBlogs()
+      .then((data) => {
+        if (data?.blogs && Array.isArray(data.blogs) && data.blogs.length > 0) {
+          setBlogsList(data.blogs);
+        }
+      })
+      .catch((err) => {
+        console.warn("Could not client-refresh blogs list:", err);
+      });
+  }, []);
+
   const [activeTab, setActiveTab] = useState<"list" | "edit" | "preview">("list");
   const [editorSubTab, setEditorSubTab] = useState<"write" | "settings">("write");
   const [currentPost, setCurrentPost] = useState<ExtendedBlogPost>(createBlankPost);
@@ -1751,23 +1765,30 @@ function BlogsEditorPage() {
       const normalizedBlocks = (activeBlocks || []).map((block) => {
         if (block.type === "p") {
           const text = block.text || "";
+          // Preserve rich WYSIWYG HTML (bold, italic, links, etc.) without stripping formatting
+          const html =
+            block.html && block.html.includes("<")
+              ? block.html
+              : text
+              ? markdownToHtml(text)
+              : "";
           return {
             ...block,
             text,
-            html: linksToHtml(text),
+            html,
           };
         }
         if (block.type === "ul" || block.type === "ol") {
           return {
             ...block,
-            items: (block.items || []).map((item) => linksToHtml(item)),
+            items: (block.items || []).map((item) => markdownToHtml(item)),
           };
         }
         if (block.type === "table") {
           return {
             ...block,
-            headers: (block.headers || []).map((h) => linksToHtml(h)),
-            rows: (block.rows || []).map((row) => row.map((cell) => linksToHtml(cell))),
+            headers: (block.headers || []).map((h) => markdownToHtml(h)),
+            rows: (block.rows || []).map((row) => row.map((cell) => markdownToHtml(cell))),
           };
         }
         return block;
@@ -1776,6 +1797,12 @@ function BlogsEditorPage() {
       const postToSave: ExtendedBlogPost = {
         ...currentPost,
         status: effectiveStatus,
+        publishDate:
+          effectiveStatus === "published"
+            ? (currentPost.publishDate && new Date(currentPost.publishDate).getTime() <= Date.now()
+                ? currentPost.publishDate
+                : undefined)
+            : currentPost.publishDate,
         slug:
           currentPost.slug.trim() ||
           currentPost.title

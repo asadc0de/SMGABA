@@ -43,3 +43,6 @@ static-dist
 
 # Onboarding internal docs
 docs/onboarding/
+
+cpanel-deploy.zip
+
