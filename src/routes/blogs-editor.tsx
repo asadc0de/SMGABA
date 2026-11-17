@@ -62,7 +62,7 @@ import {
 } from "@/lib/blogs.server";
 import { uploadCmsImage } from "@/lib/cms.server";
 import { BlogPostView } from "@/components/site/BlogPostView";
-import { linksToHtml, htmlToLinks, markdownToHtml, escapeHtml } from "@/lib/blogLinks";
+import { linksToHtml, htmlToLinks, markdownToHtml, escapeHtml, cleanWordHtml } from "@/lib/blogLinks";
 import { type ContentBlock } from "@/data/blogPosts";
 import { MediaImageInput, MediaImagePickerModal } from "@/components/admin/MediaImagePickerModal";
 import { Button } from "@/components/ui/button";
@@ -141,23 +141,36 @@ function preparePostForEditor(post: ExtendedBlogPost): ExtendedBlogPost {
     cloned.blocks = cloned.blocks.map((block) => {
       if (block.type === "p") {
         let text = block.text || "";
-        // When loading a post, if block.html has <a> tags and text lacks them, initialise the textarea from htmlToLinks(block.html)
-        if (block.html && /<a\b/i.test(block.html) && !/\[.*?\]\(.*?\)/.test(text)) {
-          text = htmlToLinks(block.html);
+        // Clean out any raw HTML tags from text
+        if (/<[a-z][\s\S]*>/i.test(text)) {
+          text = text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
         }
+        text = text.replace(/&#39;|&amp;#39;/g, "'");
+
+        let html = block.html || "";
+        if (html && html.includes("<")) {
+          html = cleanWordHtml(html);
+        } else if (text) {
+          html = linksToHtml(text);
+        }
+        html = html.replace(/&#39;|&amp;#39;/g, "'");
+
         return {
           ...block,
           text,
-          html: linksToHtml(text),
+          html,
         };
       }
       if (block.type === "ul" || block.type === "ol") {
-        const items = (block.items || []).map((item) => htmlToLinks(item));
+        const items = (block.items || []).map((item) => {
+          let cleaned = cleanWordHtml(item).replace(/&#39;|&amp;#39;/g, "'");
+          return htmlToLinks(cleaned);
+        });
         return { ...block, items };
       }
       if (block.type === "table") {
-        const headers = (block.headers || []).map((h) => htmlToLinks(h));
-        const rows = (block.rows || []).map((row) => row.map((cell) => htmlToLinks(cell)));
+        const headers = (block.headers || []).map((h) => htmlToLinks(cleanWordHtml(h).replace(/&#39;|&amp;#39;/g, "'")));
+        const rows = (block.rows || []).map((row) => row.map((cell) => htmlToLinks(cleanWordHtml(cell).replace(/&#39;|&amp;#39;/g, "'"))));
         return { ...block, headers, rows };
       }
       return block;
@@ -452,7 +465,12 @@ function blocksToHtml(blocks: ContentBlock[]): string {
           htmlChunks.push(`<p>${markdownToHtml(p)}</p>`);
         }
       } else if (block.html && block.html.includes("<")) {
-        htmlChunks.push(`<p>${block.html}</p>`);
+        const cleaned = cleanWordHtml(block.html);
+        if (/^<(p|div|blockquote|h[1-6])/i.test(cleaned.trim())) {
+          htmlChunks.push(cleaned);
+        } else {
+          htmlChunks.push(`<p>${cleaned}</p>`);
+        }
       } else {
         htmlChunks.push(`<p>${markdownToHtml(rawText || "<br>")}</p>`);
       }
@@ -564,8 +582,8 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
       });
     } else {
       // General paragraph or div
-      const innerHtml = el.innerHTML.trim();
-      const textContent = el.textContent?.trim() || "";
+      const innerHtml = cleanWordHtml(el.innerHTML.trim());
+      const textContent = (el.textContent?.trim() || "").replace(/&#39;|&amp;#39;/g, "'");
       if (textContent || innerHtml) {
         blocks.push({
           type: "p",
@@ -1764,14 +1782,20 @@ function BlogsEditorPage() {
 
       const normalizedBlocks = (activeBlocks || []).map((block) => {
         if (block.type === "p") {
-          const text = block.text || "";
-          // Preserve rich WYSIWYG HTML (bold, italic, links, etc.) without stripping formatting
-          const html =
+          let text = block.text || "";
+          if (/<[a-z][\s\S]*>/i.test(text)) {
+            text = text.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+          }
+          text = text.replace(/&#39;|&amp;#39;/g, "'");
+
+          let html =
             block.html && block.html.includes("<")
-              ? block.html
+              ? cleanWordHtml(block.html)
               : text
               ? markdownToHtml(text)
               : "";
+          html = cleanWordHtml(html).replace(/&#39;|&amp;#39;/g, "'");
+
           return {
             ...block,
             text,
@@ -1781,14 +1805,17 @@ function BlogsEditorPage() {
         if (block.type === "ul" || block.type === "ol") {
           return {
             ...block,
-            items: (block.items || []).map((item) => markdownToHtml(item)),
+            items: (block.items || []).map((item) => {
+              const cleaned = cleanWordHtml(item).replace(/&#39;|&amp;#39;/g, "'");
+              return cleaned;
+            }),
           };
         }
         if (block.type === "table") {
           return {
             ...block,
-            headers: (block.headers || []).map((h) => markdownToHtml(h)),
-            rows: (block.rows || []).map((row) => row.map((cell) => markdownToHtml(cell))),
+            headers: (block.headers || []).map((h) => cleanWordHtml(h).replace(/&#39;|&amp;#39;/g, "'")),
+            rows: (block.rows || []).map((row) => row.map((cell) => cleanWordHtml(cell).replace(/&#39;|&amp;#39;/g, "'"))),
           };
         }
         return block;
@@ -3352,6 +3379,39 @@ function BlogsEditorPage() {
                           suppressContentEditableWarning
                           onInput={handleWysiwygInput}
                           onClick={handleEditorClick}
+                          onPaste={(e) => {
+                            const html = e.clipboardData?.getData("text/html");
+                            if (
+                              html &&
+                              (html.includes("class=\"Paragraph") ||
+                                html.includes("SCXW") ||
+                                html.includes("data-contrast") ||
+                                html.includes("MsoNormal") ||
+                                html.includes("<span") ||
+                                html.includes("style="))
+                            ) {
+                              e.preventDefault();
+                              const cleaned = cleanWordHtml(html);
+                              try {
+                                document.execCommand("insertHTML", false, cleaned);
+                              } catch {
+                                const selection = window.getSelection();
+                                if (selection && selection.rangeCount > 0) {
+                                  const range = selection.getRangeAt(0);
+                                  range.deleteContents();
+                                  const div = document.createElement("div");
+                                  div.innerHTML = cleaned;
+                                  const frag = document.createDocumentFragment();
+                                  let node;
+                                  while ((node = div.firstChild)) {
+                                    frag.appendChild(node);
+                                  }
+                                  range.insertNode(frag);
+                                }
+                              }
+                              handleWysiwygInput();
+                            }
+                          }}
                           className="w-full prose prose-slate max-w-none focus:outline-none"
                         />
 
