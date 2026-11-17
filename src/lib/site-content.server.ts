@@ -10,12 +10,18 @@ import {
   DEFAULT_SOLUTIONS_PAGE_CONTENT,
   DEFAULT_INDUSTRIES_PAGE_CONTENT,
   DEFAULT_CAREERS_PAGE_CONTENT,
+  DEFAULT_CONTACT_PAGE_CONTENT,
+  DEFAULT_FOOTER_CONTENT,
+  DEFAULT_HEADER_CONTENT,
   type HomePageContent,
   type AboutPageContent,
   type StoryPageContent,
   type SolutionsPageContent,
   type IndustriesPageContent,
   type CareersPageContent,
+  type ContactPageContent,
+  type FooterContent,
+  type HeaderContent,
 } from "@/data/pageContent";
 
 export type {
@@ -29,6 +35,9 @@ export type {
   SolutionsPageContent,
   IndustriesPageContent,
   CareersPageContent,
+  ContactPageContent,
+  FooterContent,
+  HeaderContent,
 };
 
 async function getFsModule() {
@@ -621,5 +630,30 @@ export async function getCareersPageContentServer(): Promise<CareersPageContent>
 export async function saveCareersPageContentServer(content: CareersPageContent): Promise<{ success: boolean; error?: string }> {
   return await saveCmsSetting<CareersPageContent>("page_careers", content);
 }
+
+export async function getContactPageContentServer(): Promise<ContactPageContent> {
+  return await getCmsSetting<ContactPageContent>("page_contact", DEFAULT_CONTACT_PAGE_CONTENT);
+}
+
+export async function saveContactPageContentServer(content: ContactPageContent): Promise<{ success: boolean; error?: string }> {
+  return await saveCmsSetting<ContactPageContent>("page_contact", content);
+}
+
+export async function getFooterContentServer(): Promise<FooterContent> {
+  return await getCmsSetting<FooterContent>("site_footer", DEFAULT_FOOTER_CONTENT);
+}
+
+export async function saveFooterContentServer(content: FooterContent): Promise<{ success: boolean; error?: string }> {
+  return await saveCmsSetting<FooterContent>("site_footer", content);
+}
+
+export async function getHeaderContentServer(): Promise<HeaderContent> {
+  return await getCmsSetting<HeaderContent>("site_header", DEFAULT_HEADER_CONTENT);
+}
+
+export async function saveHeaderContentServer(content: HeaderContent): Promise<{ success: boolean; error?: string }> {
+  return await saveCmsSetting<HeaderContent>("site_header", content);
+}
+
 
 

@@ -9,8 +9,8 @@ import { Testimonials } from "@/components/site/Testimonials";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { LogoMarquee } from "@/components/site/LogoMarquee";
 import { ProvenProcess } from "@/components/site/ProvenProcess";
-import { getHomePageContentServer } from "@/lib/site-content.server";
-import { DEFAULT_HOME_PAGE_CONTENT } from "@/data/pageContent";
+import { getHomePageContentServer, getFooterContentServer, getHeaderContentServer } from "@/lib/site-content.server";
+import { DEFAULT_HOME_PAGE_CONTENT, DEFAULT_FOOTER_CONTENT, DEFAULT_HEADER_CONTENT } from "@/data/pageContent";
 
 const HERO_IMAGE = "/images/blog/smg-wallpaper-optimized.webp";
 const OG_IMAGE = "/images/blog/smg-wallpaper.jpg";
@@ -59,10 +59,18 @@ export const Route = createFileRoute("/")({
   }),
   loader: async () => {
     try {
-      const home = await getHomePageContentServer();
-      return { home };
+      const [home, footer, header] = await Promise.all([
+        getHomePageContentServer().catch(() => DEFAULT_HOME_PAGE_CONTENT),
+        getFooterContentServer().catch(() => DEFAULT_FOOTER_CONTENT),
+        getHeaderContentServer().catch(() => DEFAULT_HEADER_CONTENT),
+      ]);
+      return { home, footer, header };
     } catch {
-      return { home: DEFAULT_HOME_PAGE_CONTENT };
+      return {
+        home: DEFAULT_HOME_PAGE_CONTENT,
+        footer: DEFAULT_FOOTER_CONTENT,
+        header: DEFAULT_HEADER_CONTENT,
+      };
     }
   },
   component: Index,
@@ -121,10 +129,12 @@ const LOCATIONS = [
 function Index() {
   const loaderData = Route.useLoaderData();
   const home = loaderData?.home || DEFAULT_HOME_PAGE_CONTENT;
+  const footer = loaderData?.footer || DEFAULT_FOOTER_CONTENT;
+  const header = loaderData?.header || DEFAULT_HEADER_CONTENT;
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header headerContent={header} />
 
       <main>
         {/* 2 — Hero */}
@@ -224,7 +234,7 @@ function Index() {
             </div>
 
             <ul className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {SOLUTIONS.map((s) => (
+              {(home.solutionCards && home.solutionCards.length > 0 ? home.solutionCards : SOLUTIONS).map((s) => (
                 <li key={s.title}>
                   <a
                     href={s.href}
@@ -232,7 +242,7 @@ function Index() {
                   >
                     <div className="relative aspect-4/3 overflow-hidden">
                       <img
-                        src={s.img}
+                        src={getHomeImage(s.img, s.img)}
                         alt={s.title}
                         loading="lazy"
                         decoding="async"
@@ -372,7 +382,7 @@ function Index() {
         </section>
 
         {/* 11 — As Featured In */}
-        <LogoMarquee />
+        <LogoMarquee recognition={home.recognition} />
 
         {/* 12 — Locations */}
         <section className="section-y" id="locations">
@@ -462,7 +472,7 @@ function Index() {
         </section>
       </main>
 
-      <Footer />
+      <Footer footerContent={footer} />
     </div>
   );
 }

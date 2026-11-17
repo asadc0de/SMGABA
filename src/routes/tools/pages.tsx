@@ -13,6 +13,12 @@ import {
   saveIndustriesPageAdmin,
   getCareersPageAdmin,
   saveCareersPageAdmin,
+  getContactPageAdmin,
+  saveContactPageAdmin,
+  getFooterAdmin,
+  saveFooterAdmin,
+  getHeaderAdmin,
+  saveHeaderAdmin,
   resetSiteContentSectionAdmin,
   verifyAdminPassword,
 } from "@/lib/site-content-admin";
@@ -23,12 +29,18 @@ import {
   DEFAULT_SOLUTIONS_PAGE_CONTENT,
   DEFAULT_INDUSTRIES_PAGE_CONTENT,
   DEFAULT_CAREERS_PAGE_CONTENT,
+  DEFAULT_CONTACT_PAGE_CONTENT,
+  DEFAULT_FOOTER_CONTENT,
+  DEFAULT_HEADER_CONTENT,
   type HomePageContent,
   type AboutPageContent,
   type StoryPageContent,
   type SolutionsPageContent,
   type IndustriesPageContent,
   type CareersPageContent,
+  type ContactPageContent,
+  type FooterContent,
+  type HeaderContent,
 } from "@/data/pageContent";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -60,6 +72,13 @@ import {
   Sparkles,
   Layers,
   CheckCircle2,
+  PhoneCall,
+  Phone,
+  Mail,
+  Globe,
+  PanelTop,
+  Footprints,
+  Share2,
 } from "lucide-react";
 
 export const Route = createFileRoute("/tools/pages")({
@@ -71,13 +90,16 @@ export const Route = createFileRoute("/tools/pages")({
   }),
   loader: async () => {
     try {
-      const [homeRes, aboutRes, storyRes, solutionsRes, industriesRes, careersRes] = await Promise.all([
+      const [homeRes, aboutRes, storyRes, solutionsRes, industriesRes, careersRes, contactRes, footerRes, headerRes] = await Promise.all([
         getHomePageAdmin().catch(() => ({ content: DEFAULT_HOME_PAGE_CONTENT })),
         getAboutPageAdmin().catch(() => ({ content: DEFAULT_ABOUT_PAGE_CONTENT })),
         getStoryPageAdmin().catch(() => ({ content: DEFAULT_STORY_PAGE_CONTENT })),
         getSolutionsPageAdmin().catch(() => ({ content: DEFAULT_SOLUTIONS_PAGE_CONTENT })),
         getIndustriesPageAdmin().catch(() => ({ content: DEFAULT_INDUSTRIES_PAGE_CONTENT })),
         getCareersPageAdmin().catch(() => ({ content: DEFAULT_CAREERS_PAGE_CONTENT })),
+        getContactPageAdmin().catch(() => ({ content: DEFAULT_CONTACT_PAGE_CONTENT })),
+        getFooterAdmin().catch(() => ({ content: DEFAULT_FOOTER_CONTENT })),
+        getHeaderAdmin().catch(() => ({ content: DEFAULT_HEADER_CONTENT })),
       ]);
 
       return {
@@ -87,6 +109,9 @@ export const Route = createFileRoute("/tools/pages")({
         solutions: solutionsRes?.content || DEFAULT_SOLUTIONS_PAGE_CONTENT,
         industries: industriesRes?.content || DEFAULT_INDUSTRIES_PAGE_CONTENT,
         careers: careersRes?.content || DEFAULT_CAREERS_PAGE_CONTENT,
+        contact: contactRes?.content || DEFAULT_CONTACT_PAGE_CONTENT,
+        footer: footerRes?.content || DEFAULT_FOOTER_CONTENT,
+        header: headerRes?.content || DEFAULT_HEADER_CONTENT,
       };
     } catch {
       return {
@@ -96,6 +121,9 @@ export const Route = createFileRoute("/tools/pages")({
         solutions: DEFAULT_SOLUTIONS_PAGE_CONTENT,
         industries: DEFAULT_INDUSTRIES_PAGE_CONTENT,
         careers: DEFAULT_CAREERS_PAGE_CONTENT,
+        contact: DEFAULT_CONTACT_PAGE_CONTENT,
+        footer: DEFAULT_FOOTER_CONTENT,
+        header: DEFAULT_HEADER_CONTENT,
       };
     }
   },
@@ -104,7 +132,7 @@ export const Route = createFileRoute("/tools/pages")({
 
 const AUTH_STORAGE_KEY = "smg_tools_admin_pw";
 
-type TabKey = "home" | "about" | "story" | "solutions" | "industries" | "careers";
+type TabKey = "home" | "about" | "story" | "solutions" | "industries" | "careers" | "contact" | "footer" | "header";
 
 function SitePagesEditorPage() {
   const loaderData = Route.useLoaderData();
@@ -125,6 +153,9 @@ function SitePagesEditorPage() {
   const [solutions, setSolutions] = useState<SolutionsPageContent>(loaderData?.solutions || DEFAULT_SOLUTIONS_PAGE_CONTENT);
   const [industries, setIndustries] = useState<IndustriesPageContent>(loaderData?.industries || DEFAULT_INDUSTRIES_PAGE_CONTENT);
   const [careers, setCareers] = useState<CareersPageContent>(loaderData?.careers || DEFAULT_CAREERS_PAGE_CONTENT);
+  const [contact, setContact] = useState<ContactPageContent>(loaderData?.contact || DEFAULT_CONTACT_PAGE_CONTENT);
+  const [footer, setFooter] = useState<FooterContent>(loaderData?.footer || DEFAULT_FOOTER_CONTENT);
+  const [header, setHeader] = useState<HeaderContent>(loaderData?.header || DEFAULT_HEADER_CONTENT);
 
   // Sub-selectors
   const [selectedSolutionKey, setSelectedSolutionKey] = useState<string>("bookkeeping");
@@ -180,13 +211,16 @@ function SitePagesEditorPage() {
   async function handleRefresh() {
     setIsRefreshing(true);
     try {
-      const [h, a, s, sol, ind, car] = await Promise.all([
+      const [h, a, s, sol, ind, car, con, foot, head] = await Promise.all([
         getHomePageAdmin(),
         getAboutPageAdmin(),
         getStoryPageAdmin(),
         getSolutionsPageAdmin(),
         getIndustriesPageAdmin(),
         getCareersPageAdmin(),
+        getContactPageAdmin(),
+        getFooterAdmin(),
+        getHeaderAdmin(),
       ]);
       if (h?.content) setHome(h.content);
       if (a?.content) setAbout(a.content);
@@ -194,6 +228,9 @@ function SitePagesEditorPage() {
       if (sol?.content) setSolutions(sol.content);
       if (ind?.content) setIndustries(ind.content);
       if (car?.content) setCareers(car.content);
+      if (con?.content) setContact(con.content);
+      if (foot?.content) setFooter(foot.content);
+      if (head?.content) setHeader(head.content);
       toast.success("Page content refreshed from Supabase");
     } catch {
       toast.error("Failed to refresh content");
@@ -228,6 +265,18 @@ function SitePagesEditorPage() {
       } else if (activeTab === "careers") {
         const res = await saveCareersPageAdmin({ data: { password, content: careers } });
         if (res.success) toast.success("Careers page saved to Supabase & disk backup!");
+        else toast.error(res.error || "Save failed");
+      } else if (activeTab === "contact") {
+        const res = await saveContactPageAdmin({ data: { password, content: contact } });
+        if (res.success) toast.success("Contact page saved to Supabase & disk backup!");
+        else toast.error(res.error || "Save failed");
+      } else if (activeTab === "footer") {
+        const res = await saveFooterAdmin({ data: { password, content: footer } });
+        if (res.success) toast.success("Footer & Socials saved to Supabase & disk backup!");
+        else toast.error(res.error || "Save failed");
+      } else if (activeTab === "header") {
+        const res = await saveHeaderAdmin({ data: { password, content: header } });
+        if (res.success) toast.success("Header & Banner saved to Supabase & disk backup!");
         else toast.error(res.error || "Save failed");
       }
     } catch (err: any) {
@@ -374,6 +423,58 @@ function SitePagesEditorPage() {
           </div>
         </div>
 
+        {/* Quick Hub Navigation */}
+        <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 rounded-2xl p-3.5 mb-6 text-white shadow-md flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-blue-400" />
+            <span className="text-xs font-bold text-slate-200">Other CMS Management Hubs:</span>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap text-xs">
+            <Link
+              to="/tools/team"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all inline-flex items-center gap-1"
+            >
+              <Users className="size-3" />
+              <span>Team Members</span>
+            </Link>
+            <Link
+              to="/tools/testimonials"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all inline-flex items-center gap-1"
+            >
+              <Sparkles className="size-3" />
+              <span>Testimonials</span>
+            </Link>
+            <Link
+              to="/tools/offices"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all inline-flex items-center gap-1"
+            >
+              <Building2 className="size-3" />
+              <span>Office Locations</span>
+            </Link>
+            <Link
+              to="/tools/stats"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all inline-flex items-center gap-1"
+            >
+              <Layers className="size-3" />
+              <span>Key Stats</span>
+            </Link>
+            <Link
+              to="/tools/events"
+              className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-all inline-flex items-center gap-1"
+            >
+              <Calendar className="size-3" />
+              <span>Events & Webinars</span>
+            </Link>
+            <Link
+              to="/blogs-editor"
+              className="px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold transition-all inline-flex items-center gap-1 shadow-sm"
+            >
+              <FileText className="size-3" />
+              <span>Blog Studio</span>
+            </Link>
+          </div>
+        </div>
+
         {/* Tab Navigation */}
         <div className="bg-white rounded-2xl p-2 border border-slate-200/80 shadow-xs mb-8 overflow-x-auto">
           <div className="flex items-center gap-1 min-w-max">
@@ -384,6 +485,9 @@ function SitePagesEditorPage() {
               { id: "solutions", label: "Solutions Pages", icon: Compass, href: "/solutions" },
               { id: "industries", label: "Industries Pages", icon: Building2, href: "/industries" },
               { id: "careers", label: "Careers Page", icon: GraduationCap, href: "/careers" },
+              { id: "contact", label: "Contact Page", icon: PhoneCall, href: "/contact" },
+              { id: "footer", label: "Footer & Socials", icon: Footprints, href: "/" },
+              { id: "header", label: "Header & Banner", icon: PanelTop, href: "/" },
             ].map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -563,6 +667,315 @@ function SitePagesEditorPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+
+            {/* Solution Cards Section */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b pb-3 flex-wrap gap-2">
+                <div>
+                  <h2 className="text-base font-black text-[#0f2142]">4. "What We Do" / Solutions Section ({home.solutionCards?.length || 0})</h2>
+                  <p className="text-xs text-slate-500">Edit the section heading and add as many solution cards as you like.</p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    const currentCards = home.solutionCards || [];
+                    const newCard = {
+                      title: "New Solution",
+                      href: "/solutions",
+                      img: "/images/solutions/smg-bookkeeping-1.webp",
+                    };
+                    setHome({ ...home, solutionCards: [...currentCards, newCard] });
+                  }}
+                  className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white"
+                >
+                  <Plus className="size-3.5 mr-1" />
+                  <span>Add Solution Card</span>
+                </Button>
+              </div>
+
+              {/* Header texts */}
+              <div className="grid gap-4 sm:grid-cols-2 p-4 rounded-2xl bg-blue-50/50 border border-blue-100">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Section Eyebrow</Label>
+                  <Input
+                    value={home.solutionsSection?.eyebrow || "What we do"}
+                    onChange={(e) =>
+                      setHome({
+                        ...home,
+                        solutionsSection: {
+                          ...(home.solutionsSection || { eyebrow: "What we do", title: "Our Solutions", description: "" }),
+                          eyebrow: e.target.value,
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Section Title</Label>
+                  <Input
+                    value={home.solutionsSection?.title || "Our Solutions"}
+                    onChange={(e) =>
+                      setHome({
+                        ...home,
+                        solutionsSection: {
+                          ...(home.solutionsSection || { eyebrow: "What we do", title: "Our Solutions", description: "" }),
+                          title: e.target.value,
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Section Description</Label>
+                  <Textarea
+                    rows={2}
+                    value={home.solutionsSection?.description || ""}
+                    onChange={(e) =>
+                      setHome({
+                        ...home,
+                        solutionsSection: {
+                          ...(home.solutionsSection || { eyebrow: "What we do", title: "Our Solutions", description: "" }),
+                          description: e.target.value,
+                        },
+                      })
+                    }
+                    className="rounded-xl bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Cards List */}
+              <div className="space-y-4">
+                {(home.solutionCards || []).map((card, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-black text-slate-600 uppercase">Solution Card #{idx + 1}: {card.title || "Untitled"}</p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const updated = (home.solutionCards || []).filter((_, i) => i !== idx);
+                          setHome({ ...home, solutionCards: updated });
+                        }}
+                        className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                      >
+                        <Trash2 className="size-3.5 mr-1" />
+                        <span className="text-xs font-semibold">Delete Card</span>
+                      </Button>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-bold text-slate-700">Card Title</Label>
+                        <Input
+                          value={card.title}
+                          onChange={(e) => {
+                            const updated = [...(home.solutionCards || [])];
+                            updated[idx] = { ...updated[idx], title: e.target.value };
+                            setHome({ ...home, solutionCards: updated });
+                          }}
+                          className="h-10 rounded-xl bg-white"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-bold text-slate-700">Link (href)</Label>
+                        <Input
+                          value={card.href}
+                          onChange={(e) => {
+                            const updated = [...(home.solutionCards || [])];
+                            updated[idx] = { ...updated[idx], href: e.target.value };
+                            setHome({ ...home, solutionCards: updated });
+                          }}
+                          className="h-10 rounded-xl bg-white"
+                        />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <MediaImageInput
+                          label="Card Image"
+                          value={card.img}
+                          onChange={(url) => {
+                            const updated = [...(home.solutionCards || [])];
+                            updated[idx] = { ...updated[idx], img: url };
+                            setHome({ ...home, solutionCards: updated });
+                          }}
+                          placeholder="/images/solutions/solution-card.webp or https://..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Newsletter Section */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">5. Newsletter Section</h2>
+              <div className="grid gap-4 sm:grid-cols-1">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Newsletter Headline</Label>
+                  <Input
+                    value={home.newsletter.title}
+                    onChange={(e) => setHome({ ...home, newsletter: { ...home.newsletter, title: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Newsletter Description</Label>
+                  <Textarea
+                    rows={3}
+                    value={home.newsletter.description}
+                    onChange={(e) => setHome({ ...home, newsletter: { ...home.newsletter, description: e.target.value } })}
+                    className="rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Recognition / As Featured In Section */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <div className="flex items-center justify-between border-b pb-3 flex-wrap gap-2">
+                <div>
+                  <h2 className="text-base font-black text-[#0f2142]">6. Recognition / "As Featured In" Logos ({home.recognition?.logos?.length || 0})</h2>
+                  <p className="text-xs text-slate-500">Manage the scrolling logo marquee banner of media features, awards, and affiliations.</p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => {
+                    const currentLogos = home.recognition?.logos || [];
+                    const newLogo = {
+                      src: "/images/awards/1413842518-entrepreneur-logo.jpg",
+                      alt: "Brand or Feature Name",
+                    };
+                    setHome({
+                      ...home,
+                      recognition: {
+                        eyebrow: home.recognition?.eyebrow || "Recognition",
+                        title: home.recognition?.title || "As Featured In...",
+                        logos: [...currentLogos, newLogo],
+                      },
+                    });
+                  }}
+                  className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white"
+                >
+                  <Plus className="size-3.5 mr-1" />
+                  <span>Add Recognition Logo</span>
+                </Button>
+              </div>
+
+              {/* Recognition Header */}
+              <div className="grid gap-4 sm:grid-cols-2 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Eyebrow</Label>
+                  <Input
+                    value={home.recognition?.eyebrow || "Recognition"}
+                    onChange={(e) =>
+                      setHome({
+                        ...home,
+                        recognition: {
+                          eyebrow: e.target.value,
+                          title: home.recognition?.title || "As Featured In...",
+                          logos: home.recognition?.logos || [],
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Title</Label>
+                  <Input
+                    value={home.recognition?.title || "As Featured In..."}
+                    onChange={(e) =>
+                      setHome({
+                        ...home,
+                        recognition: {
+                          eyebrow: home.recognition?.eyebrow || "Recognition",
+                          title: e.target.value,
+                          logos: home.recognition?.logos || [],
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl bg-white"
+                  />
+                </div>
+              </div>
+
+              {/* Logos List */}
+              <div className="space-y-3">
+                {(home.recognition?.logos || []).map((logo, idx) => (
+                  <div key={idx} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-600">Logo #{idx + 1}: {logo.alt || "Unnamed"}</span>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          const updated = (home.recognition?.logos || []).filter((_, i) => i !== idx);
+                          setHome({
+                            ...home,
+                            recognition: {
+                              eyebrow: home.recognition?.eyebrow || "Recognition",
+                              title: home.recognition?.title || "As Featured In...",
+                              logos: updated,
+                            },
+                          });
+                        }}
+                        className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                      >
+                        <Trash2 className="size-3.5 mr-1" />
+                        <span className="text-xs font-semibold">Delete</span>
+                      </Button>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-1.5">
+                        <Label className="text-xs font-bold text-slate-700">Brand / Feature Alt Text</Label>
+                        <Input
+                          value={logo.alt}
+                          onChange={(e) => {
+                            const updated = [...(home.recognition?.logos || [])];
+                            updated[idx] = { ...updated[idx], alt: e.target.value };
+                            setHome({
+                              ...home,
+                              recognition: {
+                                eyebrow: home.recognition?.eyebrow || "Recognition",
+                                title: home.recognition?.title || "As Featured In...",
+                                logos: updated,
+                              },
+                            });
+                          }}
+                          placeholder="e.g. Inc. 5000, Forbes, NYC Hospitality Alliance"
+                          className="h-9 rounded-xl bg-white text-xs"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <MediaImageInput
+                          label="Logo Image (Upload or select from gallery)"
+                          value={logo.src}
+                          onChange={(url) => {
+                            const updated = [...(home.recognition?.logos || [])];
+                            updated[idx] = { ...updated[idx], src: url };
+                            setHome({
+                              ...home,
+                              recognition: {
+                                eyebrow: home.recognition?.eyebrow || "Recognition",
+                                title: home.recognition?.title || "As Featured In...",
+                                logos: updated,
+                              },
+                            });
+                          }}
+                          placeholder="/images/awards/logo.png or https://..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -1381,6 +1794,340 @@ function SitePagesEditorPage() {
                     value={careers.hero.bgImage}
                     onChange={(url) => setCareers({ ...careers, hero: { ...careers.hero, bgImage: url } })}
                     placeholder="/images/careers-hero.jpg or https://..."
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 7: CONTACT PAGE */}
+        {activeTab === "contact" && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl p-4">
+              <div>
+                <h3 className="text-sm font-bold text-blue-900">Editing Contact Page (/contact)</h3>
+                <p className="text-xs text-blue-700">Manage the hero, inquiry form text, and fast-track booking card.</p>
+              </div>
+              <Button asChild variant="outline" size="sm" className="rounded-full bg-white text-xs font-bold">
+                <a href="/contact" target="_blank" rel="noreferrer">
+                  <span>View Live</span>
+                  <ExternalLink className="size-3 ml-1" />
+                </a>
+              </Button>
+            </div>
+
+            {/* Contact Hero */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">1. Hero Section</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Hero Title</Label>
+                  <Input
+                    value={contact.hero.title}
+                    onChange={(e) => setContact({ ...contact, hero: { ...contact.hero, title: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Hero Description</Label>
+                  <Textarea
+                    rows={2}
+                    value={contact.hero.description}
+                    onChange={(e) => setContact({ ...contact, hero: { ...contact.hero, description: e.target.value } })}
+                    className="rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <MediaImageInput
+                    label="Background Image"
+                    value={contact.hero.bgImage}
+                    onChange={(url) => setContact({ ...contact, hero: { ...contact.hero, bgImage: url } })}
+                    placeholder="/images/contact-hero.jpg or https://..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Inquiry Form Text */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">2. Inquiry Form Text</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Form Title</Label>
+                  <Input
+                    value={contact.inquiry.title}
+                    onChange={(e) => setContact({ ...contact, inquiry: { ...contact.inquiry, title: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Form Subtitle</Label>
+                  <Input
+                    value={contact.inquiry.subtitle}
+                    onChange={(e) => setContact({ ...contact, inquiry: { ...contact.inquiry, subtitle: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Response Promise</Label>
+                  <Input
+                    value={contact.inquiry.responsePromise}
+                    onChange={(e) => setContact({ ...contact, inquiry: { ...contact.inquiry, responsePromise: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Fast Track Booking Card */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">3. Fast Track Booking Card</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Headquarters Title</Label>
+                  <Input
+                    value={contact.directCards.headquartersTitle}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, headquartersTitle: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Headquarters Description</Label>
+                  <Input
+                    value={contact.directCards.headquartersDesc}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, headquartersDesc: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Direct Line Title</Label>
+                  <Input
+                    value={contact.directCards.directLineTitle}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, directLineTitle: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Direct Line Phone</Label>
+                  <Input
+                    value={contact.directCards.directLinePhone}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, directLinePhone: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Consultation Title</Label>
+                  <Input
+                    value={contact.directCards.consultationTitle}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, consultationTitle: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Consultation Description</Label>
+                  <Input
+                    value={contact.directCards.consultationDesc}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, consultationDesc: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">CTA Button Text</Label>
+                  <Input
+                    value={contact.directCards.consultationCtaText}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, consultationCtaText: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">CTA Button Link</Label>
+                  <Input
+                    value={contact.directCards.consultationCtaLink}
+                    onChange={(e) => setContact({ ...contact, directCards: { ...contact.directCards, consultationCtaLink: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 8: FOOTER & SOCIALS */}
+        {activeTab === "footer" && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl p-4">
+              <div>
+                <h3 className="text-sm font-bold text-blue-900">Editing Footer & Social Media Links</h3>
+                <p className="text-xs text-blue-700">Manage tagline, disclaimer, copyright, phone, email, and all social media URLs.</p>
+              </div>
+            </div>
+
+            {/* Brand & Legal */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">1. Brand & Legal</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Footer Tagline</Label>
+                  <Textarea
+                    rows={2}
+                    value={footer.tagline}
+                    onChange={(e) => setFooter({ ...footer, tagline: e.target.value })}
+                    className="rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Legal Disclaimer</Label>
+                  <Textarea
+                    rows={3}
+                    value={footer.disclaimer}
+                    onChange={(e) => setFooter({ ...footer, disclaimer: e.target.value })}
+                    className="rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Copyright Text</Label>
+                  <Input
+                    value={footer.copyrightText}
+                    onChange={(e) => setFooter({ ...footer, copyrightText: e.target.value })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">
+                    <Phone className="size-3.5 inline mr-1" />Primary Phone
+                  </Label>
+                  <Input
+                    value={footer.primaryPhone}
+                    onChange={(e) => setFooter({ ...footer, primaryPhone: e.target.value })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">
+                    <Mail className="size-3.5 inline mr-1" />Primary Email
+                  </Label>
+                  <Input
+                    value={footer.primaryEmail}
+                    onChange={(e) => setFooter({ ...footer, primaryEmail: e.target.value })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Social Media Links */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">
+                <Share2 className="size-4 inline mr-2" />2. Social Media Links
+              </h2>
+              <div className="space-y-3">
+                {(footer.socials || []).map((social, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center gap-2 min-w-[100px]">
+                      <Globe className="size-4 text-slate-500" />
+                      <span className="text-xs font-black text-slate-700 uppercase">{social.platform}</span>
+                    </div>
+                    <Input
+                      value={social.href}
+                      onChange={(e) => {
+                        const updated = [...footer.socials];
+                        updated[idx] = { ...updated[idx], href: e.target.value };
+                        setFooter({ ...footer, socials: updated });
+                      }}
+                      placeholder={`https://${social.platform}.com/...`}
+                      className="h-9 rounded-xl flex-1 text-xs"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB 9: HEADER & BANNER */}
+        {activeTab === "header" && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl p-4">
+              <div>
+                <h3 className="text-sm font-bold text-blue-900">Editing Header & Announcement Banner</h3>
+                <p className="text-xs text-blue-700">Manage the top announcement banner, phone number, and CTA button in the site header.</p>
+              </div>
+            </div>
+
+            {/* Announcement Banner */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">1. Announcement Banner</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2 flex items-center gap-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={header.announcementBanner.enabled}
+                      onChange={(e) => setHeader({ ...header, announcementBanner: { ...header.announcementBanner, enabled: e.target.checked } })}
+                      className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <span className="text-xs font-bold text-slate-700">Show Announcement Banner on Site</span>
+                  </label>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${header.announcementBanner.enabled ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"}`}>
+                    {header.announcementBanner.enabled ? "LIVE" : "HIDDEN"}
+                  </span>
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Banner Text</Label>
+                  <Input
+                    value={header.announcementBanner.text}
+                    onChange={(e) => setHeader({ ...header, announcementBanner: { ...header.announcementBanner, text: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Link Text</Label>
+                  <Input
+                    value={header.announcementBanner.linkText}
+                    onChange={(e) => setHeader({ ...header, announcementBanner: { ...header.announcementBanner, linkText: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Link URL</Label>
+                  <Input
+                    value={header.announcementBanner.linkHref}
+                    onChange={(e) => setHeader({ ...header, announcementBanner: { ...header.announcementBanner, linkHref: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Contact & CTA */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">2. Quick Contact & CTA Button</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">
+                    <Phone className="size-3.5 inline mr-1" />Contact Phone
+                  </Label>
+                  <Input
+                    value={header.contactPhone}
+                    onChange={(e) => setHeader({ ...header, contactPhone: e.target.value })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">CTA Button Text</Label>
+                  <Input
+                    value={header.ctaButtonText}
+                    onChange={(e) => setHeader({ ...header, ctaButtonText: e.target.value })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">CTA Button Link</Label>
+                  <Input
+                    value={header.ctaButtonHref}
+                    onChange={(e) => setHeader({ ...header, ctaButtonHref: e.target.value })}
+                    className="h-10 rounded-xl"
                   />
                 </div>
               </div>

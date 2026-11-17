@@ -1,4 +1,6 @@
-const LOGOS = [
+import { type RecognitionLogo } from "@/data/pageContent";
+
+const DEFAULT_LOGOS: RecognitionLogo[] = [
   { src: "/images/awards/1413842518-entrepreneur-logo.jpg", alt: "Entrepreneur" },
   { src: "/images/awards/smg-inc5000-1080x1080-03.png", alt: "Inc. 5000 2023 Logo" },
   { src: "/images/awards/hia-logo.jpg", alt: "HIA" },
@@ -27,13 +29,25 @@ const LOGOS = [
   },
 ];
 
-export function LogoMarquee() {
+export function LogoMarquee({
+  recognition,
+}: {
+  recognition?: {
+    eyebrow?: string;
+    title?: string;
+    logos?: RecognitionLogo[];
+  };
+} = {}) {
+  const eyebrow = recognition?.eyebrow || "Recognition";
+  const title = recognition?.title || "As Featured In...";
+  const logos = recognition?.logos && recognition.logos.length > 0 ? recognition.logos : DEFAULT_LOGOS;
+
   return (
     <section className="section-y bg-secondary">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Recognition</p>
-          <h2 className="mt-3 text-3xl md:text-4xl">As Featured In...</h2>
+          <p className="eyebrow">{eyebrow}</p>
+          <h2 className="mt-3 text-3xl md:text-4xl">{title}</h2>
         </div>
       </div>
 
@@ -45,7 +59,7 @@ export function LogoMarquee() {
         }}
       >
         <ul className="marquee-track flex w-max items-stretch gap-4 md:gap-6">
-          {[...LOGOS, ...LOGOS].map((logo, i) => (
+          {[...logos, ...logos].map((logo, i) => (
             <li key={`${logo.alt}-${i}`} className="shrink-0">
               <div className="grid h-28 w-44 place-items-center rounded-2xl border border-border bg-background p-5 shadow-[var(--shadow-card)] md:h-32 md:w-52">
                 <img

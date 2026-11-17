@@ -6,6 +6,17 @@ import { INDUSTRIES_DATA, type IndustryData } from "./industries";
 // ==========================================
 // 1. HOME PAGE CONTENT
 // ==========================================
+export interface HomeSolutionCard {
+  title: string;
+  href: string;
+  img: string;
+}
+
+export interface RecognitionLogo {
+  src: string;
+  alt: string;
+}
+
 export interface HomePageContent {
   hero: {
     headline: string;
@@ -31,11 +42,17 @@ export interface HomePageContent {
     title: string;
     description: string;
   };
+  solutionCards?: HomeSolutionCard[];
   hospitalitySection: {
     eyebrow: string;
     title: string;
     paragraphs: string[];
     image: string;
+  };
+  recognition?: {
+    eyebrow: string;
+    title: string;
+    logos: RecognitionLogo[];
   };
 }
 
@@ -68,6 +85,28 @@ export const DEFAULT_HOME_PAGE_CONTENT: HomePageContent = {
     description:
       "SMG works closely to bring out the best of our clients' businesses by concentrating our efforts on each individual client's specific needs.",
   },
+  solutionCards: [
+    {
+      title: "Outsourced Bookkeeping",
+      href: "/solutions/bookkeeping",
+      img: "/images/solutions/smg-bookkeeping-1.webp",
+    },
+    {
+      title: "CFO on the Go",
+      href: "/solutions/cfo-advisory-services",
+      img: "/images/solutions/adobestock-201950021-1.webp",
+    },
+    {
+      title: "Tax Services",
+      href: "/solutions/tax",
+      img: "/images/solutions/smg-tax-services-1.webp",
+    },
+    {
+      title: "Back Office",
+      href: "/solutions/wealth-management",
+      img: "/images/solutions/smg-back-office-1.webp",
+    },
+  ],
   hospitalitySection: {
     eyebrow: "Industry expertise",
     title: "We Know the Hospitality Industry",
@@ -77,6 +116,23 @@ export const DEFAULT_HOME_PAGE_CONTENT: HomePageContent = {
       "We'll show you how to refine the numbers so you can keep doing what you love.",
     ],
     image: "/images/solutions/home-feature-hospitality.jpg",
+  },
+  recognition: {
+    eyebrow: "Recognition",
+    title: "As Featured In...",
+    logos: [
+      { src: "/images/awards/1413842518-entrepreneur-logo.jpg", alt: "Entrepreneur" },
+      { src: "/images/awards/smg-inc5000-1080x1080-03.png", alt: "Inc. 5000 2023 Logo" },
+      { src: "/images/awards/hia-logo.jpg", alt: "HIA" },
+      { src: "/images/awards/2021-exceptional-workplace-award-logo-copy-1.png", alt: "2021 Exceptional Workplace Award" },
+      { src: "/images/awards/stevie-gold.jpg", alt: "Stevie Gold Award" },
+      { src: "/images/awards/libn-bptw-logo-noyear.png", alt: "LIBN Best Places To Work" },
+      { src: "/images/awards/hospitality-restaurantowner.com-logo.png", alt: "RestaurantOwner.com" },
+      { src: "/images/awards/spacc-proudmemberlogo-color.png", alt: "SMG is a proud member of the St. Pete Chamber of Commerce" },
+      { src: "/images/awards/hospitality-nyc-restaurant-alliance.jpg", alt: "NYC Restaurant Alliance" },
+      { src: "/images/awards/nysra-rgb.png", alt: "New York State Restaurant Association Logo" },
+      { src: "/images/awards/hospitality-natiaonal-restaurant-association-logo.jpg", alt: "National Restaurant Association" },
+    ],
   },
 };
 
@@ -241,5 +297,114 @@ export const DEFAULT_CAREERS_PAGE_CONTENT: CareersPageContent = {
     description: "Explore open positions and join our team.",
     bgImage: "/images/stock/unsplash-photo-1497366216548-37526070297c.webp",
   },
+};
+
+// ==========================================
+// 7. CONTACT PAGE CONTENT
+// ==========================================
+export interface ContactPageContent {
+  hero: {
+    title: string;
+    description: string;
+    bgImage: string;
+  };
+  inquiry: {
+    title: string;
+    subtitle: string;
+    responsePromise: string;
+  };
+  directCards: {
+    headquartersTitle: string;
+    headquartersDesc: string;
+    directLineTitle: string;
+    directLinePhone: string;
+    consultationTitle: string;
+    consultationDesc: string;
+    consultationCtaText: string;
+    consultationCtaLink: string;
+  };
+}
+
+export const DEFAULT_CONTACT_PAGE_CONTENT: ContactPageContent = {
+  hero: {
+    title: "Contact Us",
+    description:
+      "Ready to transform your financial operations? Get in touch with our team of specialists or visit one of our offices across NY & FL.",
+    bgImage: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
+  },
+  inquiry: {
+    title: "Send Us a Message",
+    subtitle: "Fill out the form below and one of our dedicated advisors will reach out promptly.",
+    responsePromise: "We typically respond within one business day.",
+  },
+  directCards: {
+    headquartersTitle: "Corporate Headquarters",
+    headquartersDesc: "300 Corporate Plaza, Islandia, NY 11749",
+    directLineTitle: "Call Our Direct Line",
+    directLinePhone: "(631) 481-8600",
+    consultationTitle: "Schedule Directly",
+    consultationDesc: "Book a 30-minute introductory discovery session directly with an SMG advisor.",
+    consultationCtaText: "BOOK AN APPOINTMENT",
+    consultationCtaLink: BOOKING_ROUTE,
+  },
+};
+
+// ==========================================
+// 8. GLOBAL FOOTER CONTENT
+// ==========================================
+export interface FooterContent {
+  tagline: string;
+  disclaimer: string;
+  copyrightText: string;
+  primaryPhone: string;
+  primaryEmail: string;
+  socials: {
+    platform: "facebook" | "instagram" | "twitter" | "linkedin" | "yelp";
+    label: string;
+    href: string;
+  }[];
+}
+
+export const DEFAULT_FOOTER_CONTENT: FooterContent = {
+  tagline: "SMG is a full-service accounting, bookkeeping, and advisory firm serving businesses across NY and FL.",
+  disclaimer:
+    "Securities and investment advisory services offered through Kuttin Wealth Management, an independent registered investment advisory firm. Scotto & Melchiorre Group LLC (SMG) and Kuttin Wealth Management are non-affiliated separate entities.",
+  copyrightText: "Scotto & Melchiorre Group LLC. All rights reserved.",
+  primaryPhone: "(631) 481-8600",
+  primaryEmail: "info@smgaba.com",
+  socials: [
+    { platform: "facebook", label: "Facebook", href: "https://www.facebook.com/SMGABALLC" },
+    { platform: "instagram", label: "Instagram", href: "https://www.instagram.com/smgaballc/" },
+    { platform: "twitter", label: "Twitter", href: "https://twitter.com/SMGABALLC" },
+    { platform: "linkedin", label: "LinkedIn", href: "https://www.linkedin.com/company/scotto-&-melchiorre-group/" },
+    { platform: "yelp", label: "Yelp", href: "https://www.yelp.com/biz/scotto-and-melchiorre-group-islandia-2?osq=accountant" },
+  ],
+};
+
+// ==========================================
+// 9. GLOBAL HEADER CONTENT
+// ==========================================
+export interface HeaderContent {
+  announcementBanner: {
+    enabled: boolean;
+    text: string;
+    linkText: string;
+    linkHref: string;
+  };
+  contactPhone: string;
+  ctaButtonText: string;
+  ctaButtonHref: string;
+}
+
+export const DEFAULT_HEADER_CONTENT: HeaderContent = {
+  announcementBanner: {
+    enabled: false,
+    text: "Tax season filing deadline updates & advisory guidance.",
+    linkText: "Learn More",
+    linkHref: "/blog",
+  },
+  contactPhone: "(631) 481-8600",
+  ctaButtonText: "Book an Appointment",
+  ctaButtonHref: BOOKING_ROUTE,
 };
 

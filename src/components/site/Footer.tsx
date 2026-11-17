@@ -2,6 +2,7 @@ import { Facebook, Instagram, Linkedin, Star, Twitter, Phone, MapPin, ArrowUpRig
 import { Button } from "@/components/ui/button";
 import { BOOKING_ROUTE } from "@/data/calendly";
 import { type CmsSiteSettings, type SocialLink } from "@/lib/cms-settings";
+import { type FooterContent } from "@/data/pageContent";
 
 const SOCIAL_ICON_MAP: Record<string, any> = {
   facebook: Facebook,
@@ -79,7 +80,7 @@ const SOCIALS = [
   },
 ];
 
-export function Footer({ settings }: { settings?: CmsSiteSettings } = {}) {
+export function Footer({ settings, footerContent }: { settings?: CmsSiteSettings; footerContent?: FooterContent } = {}) {
   const footerSettings = settings?.footer;
   const ctaBanner = footerSettings?.ctaBanner || {
     enabled: true,
@@ -90,8 +91,8 @@ export function Footer({ settings }: { settings?: CmsSiteSettings } = {}) {
   };
 
   const logoUrl = footerSettings?.logoUrl;
-  const aboutText = footerSettings?.aboutText || "Full-service accounting, bookkeeping, and advisory for hospitality, real estate, and small business owners across New York & Florida.";
-  const copyrightText = footerSettings?.copyrightText || `© ${new Date().getFullYear()} SMG Accounting, Bookkeeping & Advisory. All rights reserved.`;
+  const aboutText = footerContent?.tagline || footerSettings?.aboutText || "Full-service accounting, bookkeeping, and advisory for hospitality, real estate, and small business owners across New York & Florida.";
+  const copyrightText = footerContent?.copyrightText || footerSettings?.copyrightText || `© ${new Date().getFullYear()} SMG Accounting, Bookkeeping & Advisory. All rights reserved.`;
 
   const linkGroups = footerSettings?.linkGroups && footerSettings.linkGroups.length > 0
     ? footerSettings.linkGroups
@@ -101,7 +102,13 @@ export function Footer({ settings }: { settings?: CmsSiteSettings } = {}) {
         { id: "fg-3", title: "Industries", links: INDUSTRY_LINKS.map((l, i) => ({ id: `il-${i}`, ...l, enabled: true })) },
       ];
 
-  const socialLinks: Array<{ label: string; href: string; Icon: any }> = footerSettings?.socialLinks && footerSettings.socialLinks.length > 0
+  const socialLinks: Array<{ label: string; href: string; Icon: any }> = footerContent?.socials && footerContent.socials.length > 0
+    ? footerContent.socials.map((s) => ({
+        label: s.label || s.platform,
+        href: s.href,
+        Icon: SOCIAL_ICON_MAP[s.platform] || Globe,
+      }))
+    : footerSettings?.socialLinks && footerSettings.socialLinks.length > 0
     ? footerSettings.socialLinks.filter((s) => s.enabled !== false).map((s) => ({
         label: s.label || s.platform,
         href: s.href,
@@ -345,6 +352,15 @@ export function Footer({ settings }: { settings?: CmsSiteSettings } = {}) {
           </div>
         </div>
       </div>
+
+      {/* Legal Disclaimer */}
+      {footerContent?.disclaimer && (
+        <div className="border-t border-white/10 bg-black/15 py-4 px-6 text-center text-[0.68rem] text-slate-400/80 leading-relaxed">
+          <div className="max-w-5xl mx-auto">
+            {footerContent.disclaimer}
+          </div>
+        </div>
+      )}
 
       {/* Bottom Bar */}
       <div className="border-t border-white/10">

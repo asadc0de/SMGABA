@@ -21,7 +21,8 @@ import { Button } from "@/components/ui/button";
 import { BOOKING_ROUTE } from "@/data/calendly";
 import { submitContact } from "@/lib/api/client";
 import { OFFICES, type OfficeItem } from "@/data/offices";
-import { getOfficesServer } from "@/lib/site-content.server";
+import { getOfficesServer, getContactPageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_CONTACT_PAGE_CONTENT, type ContactPageContent } from "@/data/pageContent";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -36,10 +37,13 @@ export const Route = createFileRoute("/contact")({
   }),
   loader: async () => {
     try {
-      const offices = await getOfficesServer();
-      return { offices };
+      const [offices, contact] = await Promise.all([
+        getOfficesServer().catch(() => OFFICES),
+        getContactPageContentServer().catch(() => DEFAULT_CONTACT_PAGE_CONTENT),
+      ]);
+      return { offices, contact };
     } catch {
-      return { offices: OFFICES };
+      return { offices: OFFICES, contact: DEFAULT_CONTACT_PAGE_CONTENT };
     }
   },
   component: ContactPage,
@@ -48,6 +52,7 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const loaderData = Route.useLoaderData();
   const officesList = loaderData?.offices || OFFICES;
+  const contact = loaderData?.contact || DEFAULT_CONTACT_PAGE_CONTENT;
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -134,12 +139,12 @@ function ContactPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"
+          bgImage={contact.hero?.bgImage || "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"}
           eyebrow="Get In Touch"
-          title="Contact SMG ABA"
-          description="We're here to answer questions, explore opportunities, and build long-term partnerships. Reach our advisory team across New York and Florida or schedule a direct consultation."
-          buttonText="SCHEDULE A CONSULTATION"
-          buttonHref={BOOKING_ROUTE}
+          title={contact.hero?.title || "Contact SMG ABA"}
+          description={contact.hero?.description || "We're here to answer questions, explore opportunities, and build long-term partnerships. Reach our advisory team across New York and Florida or schedule a direct consultation."}
+          buttonText={contact.directCards?.consultationCtaText || "SCHEDULE A CONSULTATION"}
+          buttonHref={contact.directCards?.consultationCtaLink || BOOKING_ROUTE}
         />
 
         {/* =========================================================================
@@ -173,19 +178,18 @@ function ContactPage() {
                     <span className="text-xs font-bold uppercase tracking-wider">Fast Track</span>
                   </div>
                   <h3 className="font-serif-hero text-xl font-bold text-[#142340]">
-                    Need to Pick a Time Right Away?
+                    {contact.directCards?.consultationTitle || "Need to Pick a Time Right Away?"}
                   </h3>
                   <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    Skip the message queue and book a complimentary discovery call directly onto our
-                    onboarding team's live calendar.
+                    {contact.directCards?.consultationDesc || "Skip the message queue and book a complimentary discovery call directly onto our onboarding team's live calendar."}
                   </p>
                   <div className="mt-6">
                     <Button
                       asChild
                       className="w-full rounded-full bg-[#142340] hover:bg-[#1b4e94] text-white font-bold text-xs uppercase tracking-wider py-3 shadow-md"
                     >
-                      <a href={BOOKING_ROUTE} className="flex items-center justify-center gap-2">
-                        <span>Schedule a Consultation</span>
+                      <a href={contact.directCards?.consultationCtaLink || BOOKING_ROUTE} className="flex items-center justify-center gap-2">
+                        <span>{contact.directCards?.consultationCtaText || "Schedule a Consultation"}</span>
                         <ArrowRight className="size-4" />
                       </a>
                     </Button>
@@ -198,11 +202,10 @@ function ContactPage() {
                 <div className="rounded-3xl border border-slate-200/90 bg-white p-8 sm:p-10 lg:p-12 shadow-xl shadow-slate-200/50">
                   <div className="mb-8">
                     <h3 className="font-serif-hero text-2xl sm:text-3xl font-bold text-[#142340]">
-                      Send Us a Message
+                      {contact.inquiry?.title || "Send Us a Message"}
                     </h3>
                     <p className="mt-2 text-sm text-slate-500">
-                      Fill out the form below and an SMG representative will reach back out
-                      promptly.
+                      {contact.inquiry?.subtitle || "Fill out the form below and an SMG representative will reach back out promptly."}
                     </p>
                   </div>
 

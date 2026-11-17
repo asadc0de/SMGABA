@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BOOKING_ROUTE } from "@/data/calendly";
+import { type HeaderContent } from "@/data/pageContent";
 
 type NavSubItem = {
   label: string;
@@ -216,7 +217,7 @@ const SUB_ICON_MAP: Record<string, React.ElementType> = {
 
 import { type CmsSiteSettings } from "@/lib/cms-settings";
 
-export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
+export function Header({ settings, headerContent }: { settings?: CmsSiteSettings; headerContent?: HeaderContent } = {}) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
@@ -231,11 +232,13 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
 
   const logoUrl = settings?.header?.logoUrl;
   const logoAlt = settings?.header?.logoAlt || "SMG Accounting, Bookkeeping & Advisory";
-  const ctaButton = settings?.header?.ctaButton || {
-    enabled: true,
-    label: "Schedule a Consultation",
-    href: BOOKING_ROUTE,
+  const ctaButton = {
+    enabled: settings?.header?.ctaButton?.enabled ?? true,
+    label: headerContent?.ctaButtonText || settings?.header?.ctaButton?.label || "Schedule a Consultation",
+    href: headerContent?.ctaButtonHref || settings?.header?.ctaButton?.href || BOOKING_ROUTE,
   };
+  const phone = headerContent?.contactPhone || "(631) 481-8600";
+  const cleanPhone = phone.replace(/\D/g, "");
 
   const isChildActive = (childHref: string) => {
     const cleanHref = childHref.split("#")[0].replace(/\/$/, "") || "/";
@@ -306,7 +309,25 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
   }, [open]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 transition-all duration-300 pointer-events-none">
+    <>
+      {headerContent?.announcementBanner?.enabled && (
+        <aside
+          aria-label="Announcement"
+          className="relative z-50 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 text-white text-xs py-2 px-4 text-center font-medium shadow-sm flex items-center justify-center gap-2"
+        >
+          <span>{headerContent.announcementBanner.text}</span>
+          {headerContent.announcementBanner.linkHref && (
+            <a
+              href={headerContent.announcementBanner.linkHref}
+              className="underline font-bold hover:text-blue-100 ml-1 inline-flex items-center gap-0.5"
+            >
+              <span>{headerContent.announcementBanner.linkText || "Learn More"}</span>
+              <ArrowRight className="size-3 inline" />
+            </a>
+          )}
+        </aside>
+      )}
+      <header className={cn("fixed inset-x-0 top-0 z-50 px-3 sm:px-6 lg:px-8 pt-3 sm:pt-4 transition-all duration-300 pointer-events-none", headerContent?.announcementBanner?.enabled && "top-8")}>
       <div
         className={cn(
           "mx-auto w-full max-w-[1260px] transition-all duration-300 pointer-events-auto rounded-full",
@@ -541,9 +562,9 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
             {/* ── Mobile Controls ── */}
             <div className="flex items-center gap-2 lg:hidden">
               <a
-                href="tel:6314818600"
+                href={`tel:${cleanPhone || "6314818600"}`}
                 className="flex size-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-                aria-label="Call SMG"
+                aria-label={`Call SMG at ${phone}`}
               >
                 <Phone className="size-4" />
               </a>
@@ -729,5 +750,6 @@ export function Header({ settings }: { settings?: CmsSiteSettings } = {}) {
         </nav>
       </div>
     </header>
+    </>
   );
 }

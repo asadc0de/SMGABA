@@ -25,6 +25,12 @@ import {
   saveIndustriesPageContentServer,
   getCareersPageContentServer,
   saveCareersPageContentServer,
+  getContactPageContentServer,
+  saveContactPageContentServer,
+  getFooterContentServer,
+  saveFooterContentServer,
+  getHeaderContentServer,
+  saveHeaderContentServer,
   type TeamMember,
   type TestimonialItem,
   type OfficeItem,
@@ -35,6 +41,9 @@ import {
   type SolutionsPageContent,
   type IndustriesPageContent,
   type CareersPageContent,
+  type ContactPageContent,
+  type FooterContent,
+  type HeaderContent,
 } from "./site-content.server";
 import { TEAM_MEMBERS } from "@/data/teamMembers";
 import { ALL_TESTIMONIALS } from "@/data/testimonials";
@@ -47,6 +56,9 @@ import {
   DEFAULT_SOLUTIONS_PAGE_CONTENT,
   DEFAULT_INDUSTRIES_PAGE_CONTENT,
   DEFAULT_CAREERS_PAGE_CONTENT,
+  DEFAULT_CONTACT_PAGE_CONTENT,
+  DEFAULT_FOOTER_CONTENT,
+  DEFAULT_HEADER_CONTENT,
 } from "@/data/pageContent";
 
 export { verifyAdminPassword };
@@ -201,7 +213,10 @@ export const resetSiteContentSectionAdmin = createServerFn({ method: "POST" })
         | "story"
         | "solutions"
         | "industries"
-        | "careers";
+        | "careers"
+        | "contact"
+        | "footer"
+        | "header";
     }) => d,
   )
   .handler(async ({ data }): Promise<{ success: boolean; error?: string }> => {
@@ -239,6 +254,12 @@ export const resetSiteContentSectionAdmin = createServerFn({ method: "POST" })
         return await saveIndustriesPageContentServer({ ...DEFAULT_INDUSTRIES_PAGE_CONTENT });
       case "careers":
         return await saveCareersPageContentServer({ ...DEFAULT_CAREERS_PAGE_CONTENT });
+      case "contact":
+        return await saveContactPageContentServer({ ...DEFAULT_CONTACT_PAGE_CONTENT });
+      case "footer":
+        return await saveFooterContentServer({ ...DEFAULT_FOOTER_CONTENT });
+      case "header":
+        return await saveHeaderContentServer({ ...DEFAULT_HEADER_CONTENT });
       default:
         return { success: false, error: "Unknown section" };
     }
@@ -345,6 +366,52 @@ export const saveCareersPageAdmin = createServerFn({ method: "POST" })
     if (!auth.authorized) return { success: false, error: auth.error };
     return await saveCareersPageContentServer(data.content);
   });
+
+export const getContactPageAdmin = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ content: ContactPageContent }> => {
+    const content = await getContactPageContentServer();
+    return { content };
+  },
+);
+
+export const saveContactPageAdmin = createServerFn({ method: "POST" })
+  .validator((d: { password?: string; content: ContactPageContent }) => d)
+  .handler(async ({ data }): Promise<{ success: boolean; error?: string }> => {
+    const auth = checkAuth(data.password);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    return await saveContactPageContentServer(data.content);
+  });
+
+export const getFooterAdmin = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ content: FooterContent }> => {
+    const content = await getFooterContentServer();
+    return { content };
+  },
+);
+
+export const saveFooterAdmin = createServerFn({ method: "POST" })
+  .validator((d: { password?: string; content: FooterContent }) => d)
+  .handler(async ({ data }): Promise<{ success: boolean; error?: string }> => {
+    const auth = checkAuth(data.password);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    return await saveFooterContentServer(data.content);
+  });
+
+export const getHeaderAdmin = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{ content: HeaderContent }> => {
+    const content = await getHeaderContentServer();
+    return { content };
+  },
+);
+
+export const saveHeaderAdmin = createServerFn({ method: "POST" })
+  .validator((d: { password?: string; content: HeaderContent }) => d)
+  .handler(async ({ data }): Promise<{ success: boolean; error?: string }> => {
+    const auth = checkAuth(data.password);
+    if (!auth.authorized) return { success: false, error: auth.error };
+    return await saveHeaderContentServer(data.content);
+  });
+
 
 
 
