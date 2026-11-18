@@ -173,8 +173,9 @@ export function ImagePickerInput({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
-      setUploadError("Please select a valid image file (PNG, JPG, WebP, SVG).");
+    const isIcoFile = /\.ico$/i.test(file.name);
+    if (!file.type.startsWith("image/") && !isIcoFile) {
+      setUploadError("Please select an image file (PNG, JPG, WebP, SVG, or ICO).");
       return;
     }
 
@@ -197,7 +198,7 @@ export function ImagePickerInput({
         const res = await uploadCmsImage({
           data: {
             fileName: file.name,
-            contentType: file.type,
+            contentType: file.type || (isIcoFile ? "image/x-icon" : "image/jpeg"),
             base64Data,
             adminPassword: adminPw,
           },
@@ -282,7 +283,7 @@ export function ImagePickerInput({
           <input
             id={fileInputId}
             type="file"
-            accept="image/*"
+            accept="image/*,.ico,image/x-icon,image/vnd.microsoft.icon"
             disabled={readOnly || isUploading}
             onChange={handleFileUpload}
             className="hidden"
@@ -352,7 +353,7 @@ export function ImagePickerInput({
                 <span>Upload New</span>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/*,.ico,image/x-icon,image/vnd.microsoft.icon"
                   disabled={isUploading}
                   onChange={handleFileUpload}
                   className="hidden"

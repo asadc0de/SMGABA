@@ -1,5 +1,9 @@
 import type { ComponentConfig } from "@puckeditor/core";
-import { IconFeaturesRender, type IconFeaturesProps, defaultIconFeaturesProps } from "./IconFeatures";
+import {
+  IconFeaturesRender,
+  type IconFeaturesProps,
+  defaultIconFeaturesProps,
+} from "./IconFeatures";
 import { createLinkPickerField } from "../fields/LinkPicker";
 import { createResponsiveSpaceField } from "../fields/ResponsiveSelect";
 import { createSizeSliderField } from "../fields/SizeSlider";
@@ -10,6 +14,7 @@ import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createSegmentedField } from "../fields/SegmentedControl";
+import { createImagePickerField } from "../fields/ImagePicker";
 
 const ICON_OPTIONS = [
   { label: "Shield (Security & Protection)", value: "Shield" },
@@ -126,6 +131,10 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
           label: "Icon",
           options: ICON_OPTIONS,
         },
+        iconImage: createImagePickerField({
+          label: "Custom Icon Image / .ico (Optional)",
+          placeholder: "Upload an icon image or choose from the media library",
+        }),
         title: {
           type: "text",
           label: "Feature Title",
