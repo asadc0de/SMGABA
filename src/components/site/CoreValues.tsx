@@ -1,7 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { Maximize2, RotateCcw, TrendingUp, X, ZoomIn, ZoomOut } from "lucide-react";
 
-export function CoreValues() {
+export interface CoreValuesProps {
+  coreValues?: {
+    title?: string;
+    image?: string;
+    bottomBannerText?: string;
+    bottomBannerSubtext?: string;
+  };
+}
+
+export function CoreValues({ coreValues }: CoreValuesProps = {}) {
+  const imageSrc = coreValues?.image || "/core-values-drive.webp";
+  const titleText = coreValues?.title || "Our Core Values - The Principles That Drive Us";
+  const bottomBannerText = coreValues?.bottomBannerText || "STRONG VALUES & STRONG PARTNERSHIPS";
+  const bottomBannerSubtext = coreValues?.bottomBannerSubtext || "smgaba.com";
+
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
@@ -111,7 +125,7 @@ export function CoreValues() {
 
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         {/* Visually hidden heading for SEO and screen reader accessibility */}
-        <h2 className="sr-only">Our Core Values - The Principles That Drive Us</h2>
+        <h2 className="sr-only">{titleText}</h2>
 
         {/* ========================================================================= */}
         {/* CORE VALUES DRIVE DIAGRAM GRAPHIC                                         */}
@@ -133,8 +147,8 @@ export function CoreValues() {
               aria-label="View zoomable Core Values graphic"
             >
               <img
-                src="/core-values-drive.webp"
-                alt="SMG Core Values - DRIVE framework diagram: Do What It Takes (go above and beyond, solution-oriented, never settle), Responsiveness (prompt, proactive, easy to reach, clients count on us), Integrity (do the right thing always, honest, transparent, trustworthy), Value Accuracy & Accountability (ownership, highest standards of accuracy and reliability), Engage With Passion (care deeply, energy, enthusiasm, positive attitude). Strong Values, Strong Partnerships."
+                src={imageSrc}
+                alt={titleText}
                 width={766}
                 height={964}
                 className="w-full h-auto object-contain mx-auto select-none drop-shadow-[0_10px_25px_rgba(23,72,140,0.06)] rounded-none sm:rounded-2xl transition-transform duration-300 group-hover:scale-[1.01]"
@@ -192,9 +206,11 @@ export function CoreValues() {
         {/* ========================================================================= */}
         <div className="mt-12 sm:mt-16 bg-[#17488c] py-5 px-6 text-center text-white rounded-2xl shadow-sm max-w-4xl mx-auto">
           <p className="text-sm sm:text-base md:text-lg font-bold uppercase tracking-widest text-white font-sans">
-            STRONG VALUES &amp; STRONG PARTNERSHIPS
+            {bottomBannerText}
           </p>
-          <p className="text-xs sm:text-sm text-blue-100 font-medium mt-1">smgaba.com</p>
+          {bottomBannerSubtext && (
+            <p className="text-xs sm:text-sm text-blue-100 font-medium mt-1">{bottomBannerSubtext}</p>
+          )}
         </div>
       </div>
 
@@ -296,8 +312,8 @@ export function CoreValues() {
               onDoubleClick={handleDoubleClick}
             >
               <img
-                src="/core-values-drive.webp"
-                alt="SMG Core Values - DRIVE: Do What It Takes, Responsiveness, Integrity, Value Accuracy & Accountability, Engage With Passion"
+                src={imageSrc}
+                alt={titleText}
                 width={766}
                 height={964}
                 className="max-h-[82vh] w-auto max-w-full object-contain rounded-xl shadow-2xl pointer-events-none"
