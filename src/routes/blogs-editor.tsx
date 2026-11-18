@@ -53,6 +53,9 @@ import {
   Pilcrow,
   HelpCircle,
   BarChart3,
+  Palette,
+  Highlighter,
+  RotateCcw,
 } from "lucide-react";
 import {
   getAdminBlogs,
@@ -431,11 +434,47 @@ function blocksToHtml(blocks: ContentBlock[]): string {
       const rows = (block.rows || []).map((row) => `<tr>${row.map((cell) => `<td class="p-2.5 border border-slate-200 text-xs text-slate-800 cursor-text" contenteditable="true">${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
       htmlChunks.push(`
         <div class="article-table-container group relative my-6 rounded-xl border border-slate-200 overflow-hidden shadow-2xs" data-block-type="table">
-          <div class="component-controls flex items-center justify-between bg-slate-100 px-3 py-1.5 border-b border-slate-200" contenteditable="false">
-            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1">📊 Data Table</span>
-            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Data Table">
-              <span>✕ Delete Table</span>
-            </button>
+          <div class="component-controls flex flex-wrap items-center justify-between gap-2 bg-slate-100 p-2 px-3 border-b border-slate-200 select-none text-xs" contenteditable="false">
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1 mr-1">📊 Table:</span>
+              <span class="table-active-cell-badge inline-flex items-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-900 text-[10px] font-bold border border-blue-200">
+                Click a cell to target
+              </span>
+
+              <!-- ROW BY-CELL ACTIONS -->
+              <div class="inline-flex items-center gap-1 bg-white p-0.5 px-1.5 rounded-lg border border-slate-300 shadow-2xs">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Row:</span>
+                <button type="button" class="table-add-row-above-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Row ABOVE the selected cell">
+                  + Above
+                </button>
+                <button type="button" class="table-add-row-below-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Row BELOW the selected cell">
+                  + Below
+                </button>
+                <button type="button" class="table-del-this-row-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-white hover:bg-red-50 text-red-600 hover:text-red-700 text-[11px] font-bold border border-red-200 transition cursor-pointer" title="DELETE this specific row">
+                  ✕ Del Row
+                </button>
+              </div>
+
+              <!-- COL BY-CELL ACTIONS -->
+              <div class="inline-flex items-center gap-1 bg-white p-0.5 px-1.5 rounded-lg border border-slate-300 shadow-2xs">
+                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Col:</span>
+                <button type="button" class="table-add-col-left-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Column to the LEFT of the selected cell">
+                  + Left
+                </button>
+                <button type="button" class="table-add-col-right-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Column to the RIGHT of the selected cell">
+                  + Right
+                </button>
+                <button type="button" class="table-del-this-col-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-white hover:bg-red-50 text-red-600 hover:text-red-700 text-[11px] font-bold border border-red-200 transition cursor-pointer" title="DELETE this specific column">
+                  ✕ Del Col
+                </button>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Entire Table">
+                <span>🗑️ Delete Table</span>
+              </button>
+            </div>
           </div>
           <div class="overflow-x-auto">
             <table class="w-full border-collapse text-left">
@@ -457,14 +496,8 @@ function blocksToHtml(blocks: ContentBlock[]): string {
         </div><p><br></p>
       `);
     } else {
-      // p or richtext
-      const rawText = block.text || "";
-      const paras = rawText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
-      if (paras.length > 1) {
-        for (const p of paras) {
-          htmlChunks.push(`<p>${markdownToHtml(p)}</p>`);
-        }
-      } else if (block.html && block.html.includes("<")) {
+      // p or richtext: prioritize rich HTML if present to preserve <a>, <strong>, <em>, <i>, <u>
+      if (block.html && block.html.includes("<")) {
         const cleaned = cleanWordHtml(block.html);
         if (/^<(p|div|blockquote|h[1-6])/i.test(cleaned.trim())) {
           htmlChunks.push(cleaned);
@@ -472,7 +505,15 @@ function blocksToHtml(blocks: ContentBlock[]): string {
           htmlChunks.push(`<p>${cleaned}</p>`);
         }
       } else {
-        htmlChunks.push(`<p>${markdownToHtml(rawText || "<br>")}</p>`);
+        const rawText = block.text || "";
+        const paras = rawText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
+        if (paras.length > 1) {
+          for (const p of paras) {
+            htmlChunks.push(`<p>${markdownToHtml(p)}</p>`);
+          }
+        } else {
+          htmlChunks.push(`<p>${markdownToHtml(rawText || "<br>")}</p>`);
+        }
       }
     }
   }
@@ -489,6 +530,7 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
   const doc = parser.parseFromString(`<body>${html}</body>`, "text/html");
   // Remove editor-only controls (like Delete buttons and badges) before parsing
   doc.body.querySelectorAll(".component-controls, .delete-component-btn").forEach((el) => el.remove());
+  doc.body.querySelectorAll(".active-table-cell").forEach((el) => el.classList.remove("active-table-cell"));
   const nodes = Array.from(doc.body.childNodes);
   const blocks: ContentBlock[] = [];
 
@@ -694,6 +736,100 @@ function BlogsEditorPage() {
   const [editorParagraphCount, setEditorParagraphCount] = useState(0);
   const [lastWysiwygSelection, setLastWysiwygSelection] = useState<Range | null>(null);
 
+  // Text Color & Background Highlight State
+  const [activeTextColor, setActiveTextColor] = useState("#0f2142");
+  const [isColorPickerOpen, setIsColorPickerOpen] = useState(false);
+  const [isHighlightPickerOpen, setIsHighlightPickerOpen] = useState(false);
+
+  // Table Cell Operations & Context Menu State
+  const [activeCellTarget, setActiveCellTarget] = useState<{
+    rowIndex: number;
+    colIndex: number;
+    cell: HTMLElement;
+    tr: HTMLTableRowElement;
+    table: HTMLTableElement;
+  } | null>(null);
+
+  const [tableContextMenu, setTableContextMenu] = useState<{
+    isOpen: boolean;
+    x: number;
+    y: number;
+    cell: HTMLElement | null;
+    tr: HTMLTableRowElement | null;
+    table: HTMLTableElement | null;
+    rowIndex: number;
+    colIndex: number;
+    isHeader: boolean;
+  }>({
+    isOpen: false,
+    x: 0,
+    y: 0,
+    cell: null,
+    tr: null,
+    table: null,
+    rowIndex: 0,
+    colIndex: 0,
+    isHeader: false,
+  });
+
+  const applyTextColor = (color: string) => {
+    setActiveTextColor(color);
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    if (typeof window !== "undefined" && lastWysiwygSelection) {
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(lastWysiwygSelection);
+      }
+    }
+    if (color === "inherit" || !color) {
+      try {
+        document.execCommand("removeFormat", false);
+      } catch {}
+    } else {
+      try {
+        document.execCommand("styleWithCSS", false, "true");
+      } catch {}
+      document.execCommand("foreColor", false, color);
+    }
+    handleWysiwygInput();
+    setIsColorPickerOpen(false);
+  };
+
+  const applyHighlightColor = (color: string) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    if (typeof window !== "undefined" && lastWysiwygSelection) {
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(lastWysiwygSelection);
+      }
+    }
+    if (!color || color === "transparent") {
+      try {
+        document.execCommand("styleWithCSS", false, "true");
+      } catch {}
+      try {
+        document.execCommand("hiliteColor", false, "transparent");
+        document.execCommand("backColor", false, "transparent");
+      } catch {}
+    } else {
+      try {
+        document.execCommand("styleWithCSS", false, "true");
+      } catch {}
+      const ok = document.execCommand("hiliteColor", false, color);
+      if (!ok) {
+        document.execCommand("backColor", false, color);
+      }
+    }
+    handleWysiwygInput();
+    setIsHighlightPickerOpen(false);
+  };
+
   const handleWysiwygInput = () => {
     if (!editorRef.current) return;
     const text = editorRef.current.innerText || "";
@@ -702,6 +838,32 @@ function BlogsEditorPage() {
     setEditorWordCount(words);
     setEditorParagraphCount(paras);
   };
+
+  // Restore editor DOM content whenever switching to 'edit' view or 'write' tab
+  useEffect(() => {
+    if (activeTab === "edit" && editorSubTab === "write" && canvasMode === "document") {
+      const timer = setTimeout(() => {
+        if (editorRef.current) {
+          const currentHtml = editorRef.current.innerHTML.trim();
+          if (
+            !currentHtml ||
+            currentHtml === "<p><br></p>" ||
+            currentHtml === "<br>" ||
+            currentHtml === "<p></p>"
+          ) {
+            if (currentPost.blocks && currentPost.blocks.length > 0) {
+              const htmlToSet = blocksToHtml(currentPost.blocks);
+              if (htmlToSet && htmlToSet !== "<p><br></p>") {
+                editorRef.current.innerHTML = htmlToSet;
+                handleWysiwygInput();
+              }
+            }
+          }
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [activeTab, editorSubTab, canvasMode, currentPost.id]);
 
   const executeCommand = (command: string, value: string | undefined = undefined) => {
     if (editorRef.current) {
@@ -748,6 +910,28 @@ function BlogsEditorPage() {
     let node: Node | null = selection.anchorNode;
     if (!node) return;
 
+    // Check if inside a component (table, callout, stat, figure, divider)
+    const elNode = (node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement) as HTMLElement | null;
+    const component = elNode?.closest?.("[data-block-type], figure, .article-divider-wrap, .article-table-container");
+    if (component && editorRef.current.contains(component)) {
+      component.remove();
+      handleWysiwygInput();
+      toast.success("Component deleted successfully!");
+      return;
+    }
+
+    // Check if inside an LI
+    const li = elNode?.closest?.("li");
+    if (li && editorRef.current.contains(li)) {
+      const parentList = li.parentElement;
+      if (parentList && parentList.children.length > 1) {
+        li.remove();
+        handleWysiwygInput();
+        toast.success("Bullet item deleted!");
+        return;
+      }
+    }
+
     // Walk up to find the immediate child inside editorRef.current
     while (node && node.parentNode && node.parentNode !== editorRef.current) {
       node = node.parentNode;
@@ -763,8 +947,292 @@ function BlogsEditorPage() {
     }
   };
 
-  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const insertRowAbove = (targetTr: HTMLTableRowElement, targetTable: HTMLTableElement) => {
+    const colCount = targetTable.querySelectorAll("thead th").length || targetTr.children.length || 3;
+    const newTr = document.createElement("tr");
+    for (let i = 0; i < colCount; i++) {
+      const td = document.createElement("td");
+      td.className = "p-2.5 border border-slate-200 text-xs cursor-text";
+      td.contentEditable = "true";
+      td.textContent = "New cell";
+      newTr.appendChild(td);
+    }
+    targetTr.before(newTr);
+    handleWysiwygInput();
+    toast.success("Row inserted above!");
+  };
+
+  const insertRowBelow = (targetTr: HTMLTableRowElement, targetTable: HTMLTableElement) => {
+    const colCount = targetTable.querySelectorAll("thead th").length || targetTr.children.length || 3;
+    const newTr = document.createElement("tr");
+    for (let i = 0; i < colCount; i++) {
+      const td = document.createElement("td");
+      td.className = "p-2.5 border border-slate-200 text-xs cursor-text";
+      td.contentEditable = "true";
+      td.textContent = "New cell";
+      newTr.appendChild(td);
+    }
+    targetTr.after(newTr);
+    handleWysiwygInput();
+    toast.success("Row inserted below!");
+  };
+
+  const deleteSpecificRow = (targetTr: HTMLTableRowElement, targetTable: HTMLTableElement) => {
+    const tbody = targetTable.querySelector("tbody") || targetTable;
+    const rows = tbody.querySelectorAll("tr");
+    if (rows.length > 1) {
+      targetTr.remove();
+      setActiveCellTarget(null);
+      handleWysiwygInput();
+      toast.success("Row deleted!");
+    } else {
+      toast.error("Table must have at least one row.");
+    }
+  };
+
+  const insertColumnLeft = (colIdx: number, targetTable: HTMLTableElement) => {
+    const theadRow = targetTable.querySelector("thead tr");
+    if (theadRow) {
+      const th = document.createElement("th");
+      th.className = "p-2.5 border border-slate-300 text-xs font-semibold cursor-text bg-[#0e1b36] text-white";
+      th.contentEditable = "true";
+      th.textContent = `Header`;
+      const refTh = theadRow.children[colIdx];
+      if (refTh) theadRow.insertBefore(th, refTh);
+      else theadRow.appendChild(th);
+    }
+    const tbodyRows = targetTable.querySelectorAll("tbody tr");
+    tbodyRows.forEach((tr) => {
+      const td = document.createElement("td");
+      td.className = "p-2.5 border border-slate-200 text-xs cursor-text";
+      td.contentEditable = "true";
+      td.textContent = "Cell";
+      const refTd = tr.children[colIdx];
+      if (refTd) tr.insertBefore(td, refTd);
+      else tr.appendChild(td);
+    });
+    handleWysiwygInput();
+    toast.success("Column inserted on left!");
+  };
+
+  const insertColumnRight = (colIdx: number, targetTable: HTMLTableElement) => {
+    const theadRow = targetTable.querySelector("thead tr");
+    if (theadRow) {
+      const th = document.createElement("th");
+      th.className = "p-2.5 border border-slate-300 text-xs font-semibold cursor-text bg-[#0e1b36] text-white";
+      th.contentEditable = "true";
+      th.textContent = `Header`;
+      const refTh = theadRow.children[colIdx];
+      if (refTh && refTh.nextSibling) theadRow.insertBefore(th, refTh.nextSibling);
+      else theadRow.appendChild(th);
+    }
+    const tbodyRows = targetTable.querySelectorAll("tbody tr");
+    tbodyRows.forEach((tr) => {
+      const td = document.createElement("td");
+      td.className = "p-2.5 border border-slate-200 text-xs cursor-text";
+      td.contentEditable = "true";
+      td.textContent = "Cell";
+      const refTd = tr.children[colIdx];
+      if (refTd && refTd.nextSibling) tr.insertBefore(td, refTd.nextSibling);
+      else tr.appendChild(td);
+    });
+    handleWysiwygInput();
+    toast.success("Column inserted on right!");
+  };
+
+  const deleteSpecificColumn = (colIdx: number, targetTable: HTMLTableElement) => {
+    const theadRow = targetTable.querySelector("thead tr");
+    const colCount = theadRow ? theadRow.children.length : targetTable.querySelector("tr")?.children.length || 0;
+    if (colCount > 1) {
+      if (theadRow && theadRow.children[colIdx]) {
+        theadRow.children[colIdx].remove();
+      }
+      const tbodyRows = targetTable.querySelectorAll("tbody tr");
+      tbodyRows.forEach((tr) => {
+        if (tr.children[colIdx]) tr.children[colIdx].remove();
+      });
+      setActiveCellTarget(null);
+      handleWysiwygInput();
+      toast.success("Column deleted!");
+    } else {
+      toast.error("Table must have at least one column.");
+    }
+  };
+
+  const handleEditorContextMenu = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
+    const cell = target.closest("td, th") as HTMLElement | null;
+    if (cell && editorRef.current?.contains(cell)) {
+      e.preventDefault();
+      const tr = cell.closest("tr") as HTMLTableRowElement;
+      const table = cell.closest("table") as HTMLTableElement;
+      if (!tr || !table) return;
+
+      const isHeader = cell.tagName.toLowerCase() === "th";
+      const colIndex = Array.from(tr.children).indexOf(cell);
+      const allTrs = Array.from(table.querySelectorAll("tbody tr"));
+      const rowIndex = isHeader ? -1 : allTrs.indexOf(tr);
+
+      setActiveCellTarget({ rowIndex, colIndex, cell, tr, table });
+      setTableContextMenu({
+        isOpen: true,
+        x: Math.min(e.clientX, typeof window !== "undefined" ? window.innerWidth - 230 : e.clientX),
+        y: Math.min(e.clientY, typeof window !== "undefined" ? window.innerHeight - 320 : e.clientY),
+        cell,
+        tr,
+        table,
+        rowIndex,
+        colIndex,
+        isHeader,
+      });
+    } else {
+      setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+    }
+  };
+
+  const handleEditorClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsColorPickerOpen(false);
+    setIsHighlightPickerOpen(false);
+    setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+    const target = e.target as HTMLElement;
+
+    // Detect cell click for active cell indicator/toolbar
+    const cell = target.closest("td, th") as HTMLElement | null;
+    if (cell && editorRef.current?.contains(cell)) {
+      // Clear previous active cells
+      editorRef.current.querySelectorAll(".active-table-cell").forEach((el) => {
+        el.classList.remove("active-table-cell");
+      });
+      cell.classList.add("active-table-cell");
+
+      const tr = cell.closest("tr") as HTMLTableRowElement;
+      const table = cell.closest("table") as HTMLTableElement;
+      if (tr && table) {
+        const isHeader = cell.tagName.toLowerCase() === "th";
+        const colIndex = Array.from(tr.children).indexOf(cell);
+        const allTrs = Array.from(table.querySelectorAll("tbody tr"));
+        const rowIndex = isHeader ? -1 : allTrs.indexOf(tr);
+        setActiveCellTarget({ rowIndex, colIndex, cell, tr, table });
+
+        const container = table.closest(".article-table-container");
+        const badge = container?.querySelector(".table-active-cell-badge");
+        if (badge) {
+          const rowName = isHeader ? "Header" : `Row ${rowIndex + 1}`;
+          const colName = `Col ${colIndex + 1}`;
+          badge.textContent = `🎯 ${rowName}, ${colName} selected`;
+          (badge as HTMLElement).className = "table-active-cell-badge inline-flex items-center px-2 py-0.5 rounded-md bg-blue-600 text-white text-[10px] font-bold shadow-xs";
+        }
+      }
+    } else if (!target.closest(".table-cell-action-btn, .table-context-menu, .table-action-pill, .component-controls")) {
+      // Clicked outside table
+    }
+
+    // 1. Table: Add Row Above
+    const addRowAboveBtn = target.closest(".table-add-row-above-btn");
+    if (addRowAboveBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const container = addRowAboveBtn.closest(".article-table-container");
+      const table = container?.querySelector("table");
+      if (table) {
+        const activeCell = container?.querySelector(".active-table-cell") || editorRef.current?.querySelector(".active-table-cell");
+        const targetTr = (activeCell ? activeCell.closest("tr") : null) as HTMLTableRowElement || table.querySelector("tbody tr") as HTMLTableRowElement || table.querySelector("tr") as HTMLTableRowElement;
+        if (targetTr) {
+          insertRowAbove(targetTr, table);
+        }
+      }
+      return;
+    }
+
+    // 2. Table: Add Row Below (or standard Add Row)
+    const addRowBelowBtn = target.closest(".table-add-row-below-btn, .table-add-row-btn");
+    if (addRowBelowBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const container = addRowBelowBtn.closest(".article-table-container");
+      const table = container?.querySelector("table");
+      if (table) {
+        const activeCell = container?.querySelector(".active-table-cell") || editorRef.current?.querySelector(".active-table-cell");
+        const targetTr = (activeCell ? activeCell.closest("tr") : null) as HTMLTableRowElement || table.querySelector("tbody tr:last-child") as HTMLTableRowElement || table.querySelector("tr:last-child") as HTMLTableRowElement;
+        if (targetTr) {
+          insertRowBelow(targetTr, table);
+        }
+      }
+      return;
+    }
+
+    // 3. Table: Delete Row (Specific or Last)
+    const delRowBtn = target.closest(".table-del-this-row-btn, .table-del-row-btn");
+    if (delRowBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const container = delRowBtn.closest(".article-table-container");
+      const table = container?.querySelector("table");
+      if (table) {
+        const activeCell = container?.querySelector(".active-table-cell") || editorRef.current?.querySelector(".active-table-cell");
+        let targetTr = (activeCell ? activeCell.closest("tr") : null) as HTMLTableRowElement | null;
+        if (targetTr && targetTr.parentElement?.tagName.toLowerCase() === "thead") {
+          toast.error("Header row cannot be deleted. Click a data row in the table to delete it.");
+          return;
+        }
+        if (!targetTr) {
+          targetTr = (table.querySelector("tbody tr:last-child") || table.querySelector("tr:last-child")) as HTMLTableRowElement | null;
+        }
+        if (targetTr) {
+          deleteSpecificRow(targetTr, table);
+        }
+      }
+      return;
+    }
+
+    // 4. Table: Add Column Left
+    const addColLeftBtn = target.closest(".table-add-col-left-btn");
+    if (addColLeftBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const container = addColLeftBtn.closest(".article-table-container");
+      const table = container?.querySelector("table");
+      if (table) {
+        const activeCell = container?.querySelector(".active-table-cell") || editorRef.current?.querySelector(".active-table-cell");
+        const colIdx = activeCell ? Array.from(activeCell.parentElement?.children || []).indexOf(activeCell) : 0;
+        insertColumnLeft(Math.max(0, colIdx), table);
+      }
+      return;
+    }
+
+    // 5. Table: Add Column Right (or standard Add Col)
+    const addColRightBtn = target.closest(".table-add-col-right-btn, .table-add-col-btn");
+    if (addColRightBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const container = addColRightBtn.closest(".article-table-container");
+      const table = container?.querySelector("table");
+      if (table) {
+        const activeCell = container?.querySelector(".active-table-cell") || editorRef.current?.querySelector(".active-table-cell");
+        const lastIdx = (table.querySelector("thead tr")?.children.length || 1) - 1;
+        const colIdx = activeCell ? Array.from(activeCell.parentElement?.children || []).indexOf(activeCell) : lastIdx;
+        insertColumnRight(Math.max(0, colIdx), table);
+      }
+      return;
+    }
+
+    // 6. Table: Delete Column (Specific or Last)
+    const delColBtn = target.closest(".table-del-this-col-btn, .table-del-col-btn");
+    if (delColBtn) {
+      e.preventDefault();
+      e.stopPropagation();
+      const container = delColBtn.closest(".article-table-container");
+      const table = container?.querySelector("table");
+      if (table) {
+        const activeCell = container?.querySelector(".active-table-cell") || editorRef.current?.querySelector(".active-table-cell");
+        const lastIdx = (table.querySelector("thead tr")?.children.length || 1) - 1;
+        const colIdx = activeCell ? Array.from(activeCell.parentElement?.children || []).indexOf(activeCell) : lastIdx;
+        deleteSpecificColumn(Math.max(0, colIdx), table);
+      }
+      return;
+    }
+
+    // 5. Delete Component (Table, Callout, Stat, Image, Divider)
     const deleteBtn = target.closest(".delete-component-btn");
     if (deleteBtn) {
       e.preventDefault();
@@ -775,7 +1243,23 @@ function BlogsEditorPage() {
         handleWysiwygInput();
         toast.success("Component deleted successfully!");
       }
+      return;
     }
+  };
+
+  const insertParagraphIntoEditor = () => {
+    insertHtmlAtCursor("<p>New paragraph text... Click here to type.</p><p><br></p>");
+    toast.success("Paragraph added!");
+  };
+
+  const insertBulletListIntoEditor = () => {
+    insertHtmlAtCursor("<ul><li>Bullet point item 1</li><li>Bullet point item 2</li></ul><p><br></p>");
+    toast.success("Bullet list added!");
+  };
+
+  const insertNumberedListIntoEditor = () => {
+    insertHtmlAtCursor("<ol><li>Step 1 description</li><li>Step 2 description</li></ol><p><br></p>");
+    toast.success("Numbered list added!");
   };
 
   const insertImageIntoEditor = (url: string, alt: string = "Article image", caption: string = "") => {
@@ -831,11 +1315,47 @@ function BlogsEditorPage() {
   const insertTableIntoEditor = () => {
     const snippet = `
       <div class="article-table-container group relative my-6 rounded-xl border border-slate-200 overflow-hidden shadow-2xs" data-block-type="table">
-        <div class="component-controls flex items-center justify-between bg-slate-100 px-3 py-1.5 border-b border-slate-200" contenteditable="false">
-          <span class="text-[11px] font-bold uppercase tracking-wider text-slate-600 flex items-center gap-1">📊 Data Table</span>
-          <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Data Table">
-            <span>✕ Delete Table</span>
-          </button>
+        <div class="component-controls flex flex-wrap items-center justify-between gap-2 bg-slate-100 p-2 px-3 border-b border-slate-200 select-none text-xs" contenteditable="false">
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1 mr-1">📊 Table:</span>
+            <span class="table-active-cell-badge inline-flex items-center px-2 py-0.5 rounded-md bg-blue-100 text-blue-900 text-[10px] font-bold border border-blue-200">
+              Click a cell to target
+            </span>
+
+            <!-- ROW BY-CELL ACTIONS -->
+            <div class="inline-flex items-center gap-1 bg-white p-0.5 px-1.5 rounded-lg border border-slate-300 shadow-2xs">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Row:</span>
+              <button type="button" class="table-add-row-above-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Row ABOVE the selected cell">
+                + Above
+              </button>
+              <button type="button" class="table-add-row-below-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Row BELOW the selected cell">
+                + Below
+              </button>
+              <button type="button" class="table-del-this-row-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-white hover:bg-red-50 text-red-600 hover:text-red-700 text-[11px] font-bold border border-red-200 transition cursor-pointer" title="DELETE this specific row">
+                ✕ Del Row
+              </button>
+            </div>
+
+            <!-- COL BY-CELL ACTIONS -->
+            <div class="inline-flex items-center gap-1 bg-white p-0.5 px-1.5 rounded-lg border border-slate-300 shadow-2xs">
+              <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Col:</span>
+              <button type="button" class="table-add-col-left-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Column to the LEFT of the selected cell">
+                + Left
+              </button>
+              <button type="button" class="table-add-col-right-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-slate-50 hover:bg-blue-50 text-slate-700 hover:text-blue-700 text-[11px] font-semibold border border-slate-200 transition cursor-pointer" title="Add Column to the RIGHT of the selected cell">
+                + Right
+              </button>
+              <button type="button" class="table-del-this-col-btn inline-flex items-center gap-0.5 px-2 py-0.5 rounded bg-white hover:bg-red-50 text-red-600 hover:text-red-700 text-[11px] font-bold border border-red-200 transition cursor-pointer" title="DELETE this specific column">
+                ✕ Del Col
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button type="button" class="delete-component-btn inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-200 text-xs font-semibold shadow-2xs transition cursor-pointer" title="Delete Entire Table">
+              <span>🗑️ Delete Table</span>
+            </button>
+          </div>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full border-collapse text-left">
@@ -1307,6 +1827,9 @@ function BlogsEditorPage() {
     setCanvasMode("document");
     setEditorSubTab("write");
     setActiveTab("edit");
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, "", window.location.pathname);
+    }
     setTimeout(() => {
       if (editorRef.current) {
         editorRef.current.innerHTML = blocksToHtml(blank.blocks);
@@ -1324,6 +1847,9 @@ function BlogsEditorPage() {
     setCanvasMode("document");
     setEditorSubTab("write");
     setActiveTab("edit");
+    if (typeof window !== "undefined" && post.slug) {
+      window.history.replaceState(null, "", `?slug=${post.slug}`);
+    }
     setTimeout(() => {
       if (editorRef.current) {
         editorRef.current.innerHTML = blocksToHtml(prepared.blocks);
@@ -1349,6 +1875,9 @@ function BlogsEditorPage() {
     setCanvasMode("document");
     setEditorSubTab("write");
     setActiveTab("edit");
+    if (typeof window !== "undefined" && duplicated.slug) {
+      window.history.replaceState(null, "", `?slug=${duplicated.slug}`);
+    }
     setTimeout(() => {
       if (editorRef.current) {
         editorRef.current.innerHTML = blocksToHtml(duplicated.blocks);
@@ -1358,6 +1887,19 @@ function BlogsEditorPage() {
     toast.info("Created a duplicate draft. You can customize and save it.");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  // Auto-restore draft from URL ?slug= on initial load or browser back
+  useEffect(() => {
+    if (typeof window === "undefined" || blogsList.length === 0) return;
+    const params = new URLSearchParams(window.location.search);
+    const slugParam = params.get("slug");
+    if (slugParam && activeTab === "list") {
+      const match = blogsList.find((b) => b.slug === slugParam);
+      if (match) {
+        handleEditPost(match);
+      }
+    }
+  }, [blogsList]);
 
   // Handler: Delete Post
   const handleDeletePost = async (slug: string) => {
@@ -1756,8 +2298,9 @@ function BlogsEditorPage() {
     if (canvasMode === "document" && editorRef.current) {
       const wysiwygHtml = editorRef.current.innerHTML || "";
       const parsed = parseHtmlToBlocks(wysiwygHtml);
-      const syncedBlocks = parsed.length > 0 ? parsed : [{ type: "p", text: "" }];
-      setCurrentPost((prev) => ({ ...prev, blocks: syncedBlocks }));
+      if (parsed.length > 0 && parsed.some((b) => (b.text && b.text.trim()) || (b.html && b.html.trim()))) {
+        setCurrentPost((prev) => ({ ...prev, blocks: parsed }));
+      }
     }
     setActiveTab("preview");
   };
@@ -1777,7 +2320,9 @@ function BlogsEditorPage() {
       if (canvasMode === "document" && editorRef.current) {
         const wysiwygHtml = editorRef.current.innerHTML || "";
         const parsed = parseHtmlToBlocks(wysiwygHtml);
-        activeBlocks = parsed.length > 0 ? parsed : [{ type: "p", text: "" }];
+        if (parsed.length > 0 && parsed.some((b) => (b.text && b.text.trim()) || (b.html && b.html.trim()))) {
+          activeBlocks = parsed;
+        }
       }
 
       const normalizedBlocks = (activeBlocks || []).map((block) => {
@@ -1858,6 +2403,10 @@ function BlogsEditorPage() {
         });
 
         setCurrentPost(preparePostForEditor(postToSave));
+
+        if (typeof window !== "undefined" && postToSave.slug) {
+          window.history.replaceState(null, "", `?slug=${postToSave.slug}`);
+        }
       } else {
         toast.error(res.error || "Failed to save blog post.");
       }
@@ -1867,6 +2416,290 @@ function BlogsEditorPage() {
       setIsSaving(false);
     }
   };
+
+  const renderSettingsCards = (isSidebar: boolean = false) => (
+    <div className={`space-y-5 ${isSidebar ? "" : "max-w-3xl mx-auto"}`}>
+      {/* 0. Publishing Channel & Destination Card */}
+      <div className={`bg-white ${isSidebar ? "p-4 sm:p-5 rounded-2xl" : "p-6 sm:p-8 rounded-3xl"} border border-slate-200/80 shadow-xs space-y-3.5`}>
+        <div>
+          <h3 className="text-sm font-bold font-serif-hero text-navy flex items-center gap-2">
+            <Globe className="size-4 text-primary" /> Publishing Channel
+          </h3>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Choose which website section this article belongs to.
+          </p>
+        </div>
+
+        <div className={`grid ${isSidebar ? "grid-cols-1 gap-2" : "grid-cols-1 sm:grid-cols-3 gap-3"}`}>
+          <button
+            type="button"
+            onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "blog" }))}
+            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
+              currentPost.destination === "blog" || !currentPost.destination
+                ? "border-navy bg-navy/5 ring-2 ring-navy/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <BookOpen className="size-4 text-navy shrink-0" />
+              <div className="text-xs font-bold text-slate-900">Blog Article</div>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Published to /blog/ and Insights
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "resource" }))}
+            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
+              currentPost.destination === "resource"
+                ? "border-purple-600 bg-purple-50/60 ring-2 ring-purple-500/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Library className="size-4 text-purple-600 shrink-0" />
+              <div className="text-xs font-bold text-slate-900">Resource Guide</div>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Published to /resources/ library
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "both" }))}
+            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
+              currentPost.destination === "both"
+                ? "border-indigo-600 bg-indigo-50/60 ring-2 ring-indigo-500/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Globe className="size-4 text-indigo-600 shrink-0" />
+              <div className="text-xs font-bold text-slate-900">Both Libraries</div>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Listed in Blog and Resources
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* 1. Release Schedule Card */}
+      <div className={`bg-white ${isSidebar ? "p-4 sm:p-5 rounded-2xl" : "p-6 sm:p-8 rounded-3xl"} border border-slate-200/80 shadow-xs space-y-4`}>
+        <div>
+          <h3 className="text-sm font-bold font-serif-hero text-navy flex items-center gap-2">
+            <CalendarClock className="size-4 text-primary" /> Release Schedule
+          </h3>
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            Publication timing and visibility.
+          </p>
+        </div>
+
+        <div className={`grid ${isSidebar ? "grid-cols-1 gap-2" : "grid-cols-1 sm:grid-cols-3 gap-3"}`}>
+          <button
+            type="button"
+            onClick={() => setCurrentPost((prev) => ({ ...prev, status: "published" }))}
+            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
+              currentPost.status === "published" || !currentPost.status
+                ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="size-4 text-emerald-600 shrink-0" />
+              <div className="text-xs font-bold text-slate-900">Publish Immediately</div>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Live on website right away
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCurrentPost((prev) => ({ ...prev, status: "scheduled" }))}
+            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
+              currentPost.status === "scheduled"
+                ? "border-blue-600 bg-blue-50/60 ring-2 ring-blue-500/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <CalendarClock className="size-4 text-blue-600 shrink-0" />
+              <div className="text-xs font-bold text-slate-900">Future Schedule</div>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Auto-releases at chosen date
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCurrentPost((prev) => ({ ...prev, status: "draft" }))}
+            className={`p-3 rounded-xl border text-left transition cursor-pointer ${
+              currentPost.status === "draft"
+                ? "border-amber-600 bg-amber-50/60 ring-2 ring-amber-500/20"
+                : "border-slate-200 hover:bg-slate-50"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <FileText className="size-4 text-amber-600 shrink-0" />
+              <div className="text-xs font-bold text-slate-900">Save as Draft</div>
+            </div>
+            <div className="text-[10px] text-slate-500 mt-0.5">
+              Private in studio only
+            </div>
+          </button>
+        </div>
+
+        {currentPost.status === "scheduled" && (
+          <div className="p-3 bg-blue-50/80 rounded-xl border border-blue-200 space-y-1.5">
+            <label className="block text-xs font-bold text-blue-950">
+              Release Date &amp; Time:
+            </label>
+            <Input
+              type="datetime-local"
+              value={currentPost.publishDate || ""}
+              onChange={(e) => setCurrentPost((prev) => ({ ...prev, publishDate: e.target.value }))}
+              className="h-9 text-xs bg-white border-blue-300 focus-visible:ring-blue-500 text-blue-950 font-medium"
+            />
+            <p className="text-[10px] text-blue-700">
+              &bull; Once reached, this article will automatically appear on the live website.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* 2. URL Web Address */}
+      <div className={`bg-white ${isSidebar ? "p-4 sm:p-5 rounded-2xl" : "p-6 sm:p-8 rounded-3xl"} border border-slate-200/80 shadow-xs space-y-3`}>
+        <h3 className="text-sm font-bold font-serif-hero text-navy flex items-center gap-2">
+          <Globe className="size-4 text-primary" /> URL Web Address
+        </h3>
+        <p className="text-[11px] text-slate-500">
+          Permanent link on the website:
+        </p>
+
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-1.5">
+            <Input
+              type="text"
+              disabled={!isCustomSlugUnlocked}
+              value={currentPost.slug}
+              onChange={(e) =>
+                setCurrentPost((prev) => ({
+                  ...prev,
+                  slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-"),
+                }))
+              }
+              className="h-9 text-xs font-mono bg-white border-slate-200 flex-1"
+              placeholder="article-slug"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsCustomSlugUnlocked(!isCustomSlugUnlocked)}
+              className="text-xs h-9 px-2.5 shrink-0"
+            >
+              {isCustomSlugUnlocked ? <Lock className="size-3.5 mr-1" /> : <Unlock className="size-3.5 mr-1" />}
+              {isCustomSlugUnlocked ? "Lock" : "Edit"}
+            </Button>
+          </div>
+          <div className="text-[11px] text-slate-500 font-mono break-all bg-slate-50 p-2 rounded-lg border border-slate-100">
+            smgaba.com/{currentPost.destination === "resource" ? "resources" : "blog"}/{currentPost.slug || "..."}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Author & Publication Date */}
+      <div className={`bg-white ${isSidebar ? "p-4 sm:p-5 rounded-2xl" : "p-6 sm:p-8 rounded-3xl"} border border-slate-200/80 shadow-xs space-y-3.5`}>
+        <h3 className="text-sm font-bold font-serif-hero text-navy flex items-center gap-2">
+          <User className="size-4 text-primary" /> Author &amp; Details
+        </h3>
+
+        <div className={`grid ${isSidebar ? "grid-cols-1 gap-3" : "grid-cols-1 sm:grid-cols-2 gap-4"}`}>
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              Author
+            </label>
+            <select
+              value={currentPost.author}
+              onChange={(e) => setCurrentPost((prev) => ({ ...prev, author: e.target.value }))}
+              className="w-full h-9 px-3 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-navy/20"
+            >
+              {DEFAULT_AUTHORS.map((a) => (
+                <option key={a} value={a}>
+                  {a}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              Date Label
+            </label>
+            <Input
+              type="text"
+              value={currentPost.date}
+              onChange={(e) => setCurrentPost((prev) => ({ ...prev, date: e.target.value }))}
+              className="h-9 text-xs bg-white border-slate-200"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 4. Google SEO Preview Card */}
+      <div className={`bg-white ${isSidebar ? "p-4 sm:p-5 rounded-2xl" : "p-6 sm:p-8 rounded-3xl"} border border-slate-200/80 shadow-xs space-y-3.5`}>
+        <h3 className="text-sm font-bold font-serif-hero text-navy flex items-center gap-2">
+          <Sparkles className="size-4 text-primary" /> Google Search Preview
+        </h3>
+
+        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+          <div className="text-[10px] text-slate-500 flex items-center gap-1.5">
+            <span className="size-3.5 rounded-full bg-navy text-white text-[8px] font-bold flex items-center justify-center">S</span>
+            <span className="truncate">smgaba.com &rsaquo; blog &rsaquo; {currentPost.slug || "url"}</span>
+          </div>
+          <div className="text-xs font-semibold text-blue-800 line-clamp-1">
+            {currentPost.metaTitle || currentPost.title || "Article Title"}
+          </div>
+          <div className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed">
+            {currentPost.metaDescription || currentPost.excerpt || "Article summary will appear here on Google search results."}
+          </div>
+        </div>
+
+        <div className="space-y-3 pt-1">
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              Meta Title
+            </label>
+            <Input
+              type="text"
+              value={currentPost.metaTitle || ""}
+              onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaTitle: e.target.value }))}
+              className="h-8 text-xs bg-white border-slate-200"
+              placeholder={currentPost.title || "Article Title"}
+            />
+          </div>
+
+          <div>
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1">
+              Meta Description
+            </label>
+            <textarea
+              rows={2}
+              value={currentPost.metaDescription || ""}
+              onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaDescription: e.target.value }))}
+              className="w-full p-2 text-xs text-slate-800 bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-navy/20 resize-none"
+              placeholder="Brief summary for Google..."
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between text-slate-900 font-sans antialiased">
@@ -2348,7 +3181,12 @@ function BlogsEditorPage() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setActiveTab("list")}
+                  onClick={() => {
+                    setActiveTab("list");
+                    if (typeof window !== "undefined") {
+                      window.history.replaceState(null, "", window.location.pathname);
+                    }
+                  }}
                   className="rounded-full text-slate-600 hover:text-navy hover:bg-slate-100 h-8 px-3 text-xs"
                 >
                   <ArrowLeft className="size-3.5 mr-1" /> All Articles
@@ -2360,18 +3198,19 @@ function BlogsEditorPage() {
                   <button
                     type="button"
                     onClick={() => setEditorSubTab("write")}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                       editorSubTab === "write"
                         ? "bg-white text-navy font-bold shadow-xs"
                         : "text-slate-600 hover:text-navy"
                     }`}
                   >
-                    ✍️ Article Content
+                    <FileText className="size-3.5 text-blue-600" />
+                    <span>Article Content</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setEditorSubTab("settings")}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                       editorSubTab === "settings"
                         ? "bg-white text-navy font-bold shadow-xs"
                         : "text-slate-600 hover:text-navy"
@@ -2944,19 +3783,19 @@ function BlogsEditorPage() {
                           }`}
                         >
                           <FileText className="size-3.5 text-blue-600" />
-                          <span>📄 Easy Document (Recommended)</span>
+                          <span>📄 Visual Document (All-in-One)</span>
                         </button>
                         <button
                           type="button"
                           onClick={handleSwitchToBlocks}
-                          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                          className={`px-3 py-1.5 rounded-xl text-xs font-medium transition flex items-center gap-1.5 cursor-pointer ${
                             canvasMode === "blocks"
-                              ? "bg-white text-navy shadow-xs"
-                              : "text-slate-600 hover:text-navy"
+                              ? "bg-white text-navy shadow-xs font-bold"
+                              : "text-slate-500 hover:text-navy"
                           }`}
                         >
-                          <Layers className="size-3.5 text-slate-500" />
-                          <span>🧱 Advanced Blocks ({currentPost.blocks.length})</span>
+                          <Layers className="size-3.5 text-slate-400" />
+                          <span>🧱 Raw Blocks ({currentPost.blocks.length})</span>
                         </button>
                       </div>
                     </div>
@@ -2982,7 +3821,7 @@ function BlogsEditorPage() {
                         className="inline-flex items-center gap-1.5 text-xs font-bold px-3.5 py-1.5 rounded-full bg-[#1b4e94] text-white hover:bg-[#153e77] transition shadow-xs cursor-pointer"
                       >
                         <Sparkles className="size-3.5" />
-                        <span>⚡ Paste Full Article</span>
+                        <span>⚡ Paste Word / Docs</span>
                       </button>
                     </div>
                   </div>
@@ -3086,6 +3925,150 @@ function BlogsEditorPage() {
                               </button>
                             </div>
 
+                            {/* Text Color & Highlight Picker */}
+                            <div className="flex items-center gap-0.5 bg-slate-100 p-0.5 rounded-xl border border-slate-200 relative">
+                              {/* Text Color Dropdown */}
+                              <div className="relative">
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    if (typeof window !== "undefined") {
+                                      const sel = window.getSelection();
+                                      if (sel && sel.rangeCount > 0) {
+                                        setLastWysiwygSelection(sel.getRangeAt(0).cloneRange());
+                                      }
+                                    }
+                                    setIsColorPickerOpen((prev) => !prev);
+                                    setIsHighlightPickerOpen(false);
+                                  }}
+                                  className="h-7 px-2 rounded-lg hover:bg-white text-slate-800 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+                                  title="Text Color"
+                                >
+                                  <span className="flex flex-col items-center">
+                                    <span className="text-[11px] leading-tight font-black">A</span>
+                                    <span
+                                      className="w-3.5 h-[2.5px] rounded-full"
+                                      style={{ backgroundColor: activeTextColor }}
+                                    />
+                                  </span>
+                                  <Palette className="size-2.5 text-slate-400" />
+                                </button>
+
+                                {isColorPickerOpen && (
+                                  <div
+                                    className="absolute top-full left-0 mt-1.5 p-3 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 w-56 space-y-2.5 shadow-slate-300"
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                  >
+                                    <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                                      <span>Text Color</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => applyTextColor("inherit")}
+                                        className="text-[10px] text-slate-400 hover:text-red-600 transition"
+                                      >
+                                        Reset
+                                      </button>
+                                    </div>
+                                    <div className="grid grid-cols-5 gap-1.5">
+                                      {[
+                                        { name: "Navy Dark", hex: "#0f2142" },
+                                        { name: "Brand Blue", hex: "#1b4e94" },
+                                        { name: "Sky Blue", hex: "#0284c7" },
+                                        { name: "Emerald", hex: "#059669" },
+                                        { name: "Crimson", hex: "#dc2626" },
+                                        { name: "Amber Gold", hex: "#d97706" },
+                                        { name: "Purple", hex: "#7c3aed" },
+                                        { name: "Charcoal", hex: "#334155" },
+                                        { name: "Muted Gray", hex: "#64748b" },
+                                        { name: "Black", hex: "#000000" },
+                                      ].map((c) => (
+                                        <button
+                                          key={c.hex}
+                                          type="button"
+                                          title={c.name}
+                                          onClick={() => applyTextColor(c.hex)}
+                                          className="size-7 rounded-lg border border-slate-200 hover:scale-110 transition flex items-center justify-center shadow-2xs cursor-pointer"
+                                          style={{ backgroundColor: c.hex }}
+                                        >
+                                          {activeTextColor.toLowerCase() === c.hex.toLowerCase() && (
+                                            <Check className="size-3 text-white" />
+                                          )}
+                                        </button>
+                                      ))}
+                                    </div>
+                                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                                      <span className="text-[11px] text-slate-600 font-medium">Custom HEX:</span>
+                                      <input
+                                        type="color"
+                                        value={activeTextColor}
+                                        onChange={(e) => applyTextColor(e.target.value)}
+                                        className="size-6 rounded border border-slate-200 cursor-pointer p-0 bg-transparent"
+                                      />
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Highlight Color Dropdown */}
+                              <div className="relative">
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => {
+                                    e.preventDefault();
+                                    if (typeof window !== "undefined") {
+                                      const sel = window.getSelection();
+                                      if (sel && sel.rangeCount > 0) {
+                                        setLastWysiwygSelection(sel.getRangeAt(0).cloneRange());
+                                      }
+                                    }
+                                    setIsHighlightPickerOpen((prev) => !prev);
+                                    setIsColorPickerOpen(false);
+                                  }}
+                                  className="h-7 px-2 rounded-lg hover:bg-white text-slate-800 text-xs font-bold flex items-center gap-1 transition cursor-pointer"
+                                  title="Highlight / Background Color"
+                                >
+                                  <Highlighter className="size-3 text-amber-500" />
+                                </button>
+
+                                {isHighlightPickerOpen && (
+                                  <div
+                                    className="absolute top-full left-0 mt-1.5 p-3 bg-white rounded-2xl shadow-xl border border-slate-200 z-50 w-52 space-y-2.5 shadow-slate-300"
+                                    onMouseDown={(e) => e.stopPropagation()}
+                                  >
+                                    <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center justify-between">
+                                      <span>Highlight</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => applyHighlightColor("transparent")}
+                                        className="text-[10px] text-slate-400 hover:text-red-600 transition"
+                                      >
+                                        Remove
+                                      </button>
+                                    </div>
+                                    <div className="grid grid-cols-5 gap-1.5">
+                                      {[
+                                        { name: "Yellow", hex: "#fef08a" },
+                                        { name: "Soft Blue", hex: "#dbeafe" },
+                                        { name: "Soft Green", hex: "#dcfce7" },
+                                        { name: "Soft Orange", hex: "#ffedd5" },
+                                        { name: "Soft Pink", hex: "#ffe4e6" },
+                                      ].map((c) => (
+                                        <button
+                                          key={c.hex}
+                                          type="button"
+                                          title={c.name}
+                                          onClick={() => applyHighlightColor(c.hex)}
+                                          className="size-7 rounded-lg border border-slate-200 hover:scale-110 transition shadow-2xs cursor-pointer"
+                                          style={{ backgroundColor: c.hex }}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
                             <div className="h-5 w-px bg-slate-200 mx-1 hidden sm:block" />
 
                             {/* Lists & Quote & Link */}
@@ -3158,11 +4141,63 @@ function BlogsEditorPage() {
                           </div>
                         </div>
 
-                        {/* Row 2: Rich Visual Additions (Images, Callouts, Metrics, Tables, Dividers) */}
+                        {/* Row 2: Rich Visual Additions (Paragraphs, Bullets, Tables, Images, Callouts, Metrics, Dividers) */}
                         <div className="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-slate-100 text-xs">
                           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mr-1 flex items-center gap-1">
-                            <span>Insert Inline:</span>
+                            <span>Insert:</span>
                           </span>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertParagraphIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert a new paragraph block at cursor"
+                          >
+                            <AlignLeft className="size-3 text-slate-600" />
+                            <span>+ Paragraph</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertBulletListIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert a bullet list at cursor"
+                          >
+                            <List className="size-3 text-blue-600" />
+                            <span>+ Bullet</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertNumberedListIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert a numbered steps list at cursor"
+                          >
+                            <ListOrdered className="size-3 text-blue-600" />
+                            <span>+ Numbered</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              insertTableIntoEditor();
+                            }}
+                            className="h-7 px-2.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-900 border border-indigo-200/80 font-bold flex items-center gap-1 transition cursor-pointer"
+                            title="Insert an interactive comparison table with Add/Del Rows & Columns"
+                          >
+                            <TableIcon className="size-3.5 text-indigo-600" />
+                            <span>+ Data Table</span>
+                          </button>
 
                           <button
                             type="button"
@@ -3174,7 +4209,7 @@ function BlogsEditorPage() {
                             title="Insert an image with caption into the article text"
                           >
                             <ImageIcon className="size-3.5 text-emerald-600" />
-                            <span>Image</span>
+                            <span>+ Image</span>
                           </button>
 
                           <button
@@ -3196,24 +4231,11 @@ function BlogsEditorPage() {
                               e.preventDefault();
                               insertStatIntoEditor();
                             }}
-                            className="h-7 px-2.5 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-800 border border-indigo-200/80 font-semibold flex items-center gap-1 transition cursor-pointer"
+                            className="h-7 px-2.5 rounded-full bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200/80 font-semibold flex items-center gap-1 transition cursor-pointer"
                             title="Insert a bold metric / stat highlight"
                           >
-                            <BarChart3 className="size-3.5 text-indigo-600" />
+                            <BarChart3 className="size-3.5 text-purple-600" />
                             <span>Metric Card</span>
-                          </button>
-
-                          <button
-                            type="button"
-                            onMouseDown={(e) => {
-                              e.preventDefault();
-                              insertTableIntoEditor();
-                            }}
-                            className="h-7 px-2.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-semibold flex items-center gap-1 transition cursor-pointer"
-                            title="Insert a comparison data table"
-                          >
-                            <TableIcon className="size-3.5 text-slate-600" />
-                            <span>Data Table</span>
                           </button>
 
                           <button
@@ -3236,7 +4258,7 @@ function BlogsEditorPage() {
                               deleteCurrentBlockAtCursor();
                             }}
                             className="h-7 px-2.5 rounded-full bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold flex items-center gap-1 transition cursor-pointer ml-auto"
-                            title="Delete the paragraph, heading, or section where your cursor currently is"
+                            title="Delete the paragraph, heading, list item, or component where your cursor currently is"
                           >
                             <Trash2 className="size-3 text-red-600" />
                             <span>Delete Current Block</span>
@@ -3370,7 +4392,86 @@ function BlogsEditorPage() {
                           #wysiwyg-document-editor table th:hover {
                             background-color: #1e3a6a;
                           }
+                          #wysiwyg-document-editor .active-table-cell {
+                            outline: 2px solid #2563eb !important;
+                            outline-offset: -2px;
+                            background-color: #eff6ff !important;
+                          }
                         `}</style>
+
+                        {/* Active Table Cell Context Toolbar */}
+                        {activeCellTarget && (
+                          <div className="mb-4 p-2.5 px-3.5 rounded-xl bg-blue-50/95 border border-blue-200/90 shadow-xs flex flex-wrap items-center justify-between gap-2 text-xs text-blue-950 animate-in fade-in-50 table-action-pill">
+                            <div className="flex items-center gap-1.5 font-bold">
+                              <TableIcon className="size-3.5 text-blue-700" />
+                              <span>
+                                Active Cell: {activeCellTarget.rowIndex === -1 ? "Header" : `Row ${activeCellTarget.rowIndex + 1}`}, Column {activeCellTarget.colIndex + 1}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1 flex-wrap">
+                              <button
+                                type="button"
+                                onClick={() => insertRowAbove(activeCellTarget.tr, activeCellTarget.table)}
+                                className="px-2 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-semibold transition cursor-pointer table-cell-action-btn"
+                                title="Insert row directly above this cell"
+                              >
+                                + Row Above
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => insertRowBelow(activeCellTarget.tr, activeCellTarget.table)}
+                                className="px-2 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-semibold transition cursor-pointer table-cell-action-btn"
+                                title="Insert row directly below this cell"
+                              >
+                                + Row Below
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteSpecificRow(activeCellTarget.tr, activeCellTarget.table)}
+                                className="px-2 py-0.5 rounded bg-white hover:bg-red-50 text-red-600 border border-red-200 text-[11px] font-semibold transition cursor-pointer table-cell-action-btn"
+                                title="Delete this row"
+                              >
+                                🗑️ Del Row
+                              </button>
+
+                              <span className="text-blue-200 mx-0.5">|</span>
+
+                              <button
+                                type="button"
+                                onClick={() => insertColumnLeft(activeCellTarget.colIndex, activeCellTarget.table)}
+                                className="px-2 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-semibold transition cursor-pointer table-cell-action-btn"
+                                title="Insert column to the left of this cell"
+                              >
+                                + Col Left
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => insertColumnRight(activeCellTarget.colIndex, activeCellTarget.table)}
+                                className="px-2 py-0.5 rounded bg-white hover:bg-blue-100 text-blue-800 border border-blue-200 text-[11px] font-semibold transition cursor-pointer table-cell-action-btn"
+                                title="Insert column to the right of this cell"
+                              >
+                                + Col Right
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => deleteSpecificColumn(activeCellTarget.colIndex, activeCellTarget.table)}
+                                className="px-2 py-0.5 rounded bg-white hover:bg-red-50 text-red-600 border border-red-200 text-[11px] font-semibold transition cursor-pointer table-cell-action-btn"
+                                title="Delete this column"
+                              >
+                                🗑️ Del Col
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setActiveCellTarget(null)}
+                                className="size-5 rounded-full hover:bg-blue-200/60 text-slate-400 hover:text-slate-700 flex items-center justify-center ml-1 cursor-pointer"
+                                title="Dismiss cell bar"
+                              >
+                                <X className="size-3" />
+                              </button>
+                            </div>
+                          </div>
+                        )}
 
                         <div
                           id="wysiwyg-document-editor"
@@ -3379,6 +4480,7 @@ function BlogsEditorPage() {
                           suppressContentEditableWarning
                           onInput={handleWysiwygInput}
                           onClick={handleEditorClick}
+                          onContextMenu={handleEditorContextMenu}
                           onPaste={(e) => {
                             const html = e.clipboardData?.getData("text/html");
                             if (
@@ -4225,308 +5327,7 @@ function BlogsEditorPage() {
             {/* TAB CONTENT: 2. PUBLISHING & SEO SETTINGS */}
             {editorSubTab === "settings" && (
               <div className="max-w-3xl mx-auto space-y-6">
-                {/* 0. Publishing Channel & Destination Card */}
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-                  <div>
-                    <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
-                      <Globe className="size-4 text-primary" /> Publishing Channel &amp; Destination
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-1">
-                      Choose which website section this article belongs to.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "blog" }))}
-                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
-                        currentPost.destination === "blog" || !currentPost.destination
-                          ? "border-navy bg-navy/5 ring-2 ring-navy/20"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <BookOpen className="size-5 text-navy mb-2" />
-                      <div className="text-xs font-bold text-slate-900">Blog Article</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
-                        Published to /blog/ and Insights
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "resource" }))}
-                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
-                        currentPost.destination === "resource"
-                          ? "border-purple-600 bg-purple-50/60 ring-2 ring-purple-500/20"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <Library className="size-5 text-purple-600 mb-2" />
-                      <div className="text-xs font-bold text-slate-900">Resource Guide</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
-                        Published to /resources/ library
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPost((prev) => ({ ...prev, destination: "both" }))}
-                      className={`p-4 rounded-2xl border text-left transition cursor-pointer ${
-                        currentPost.destination === "both"
-                          ? "border-indigo-600 bg-indigo-50/60 ring-2 ring-indigo-500/20"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <Globe className="size-5 text-indigo-600 mb-2" />
-                      <div className="text-xs font-bold text-slate-900">Both Libraries</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
-                        Listed in Blog and Resources
-                      </div>
-                    </button>
-                  </div>
-                </div>
-
-                {/* 1. Release Schedule Card */}
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-5">
-                  <div>
-                    <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
-                      <CalendarClock className="size-4 text-primary" /> When Should This Article Go Live?
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-1">
-                      Choose immediate publication, future scheduled release, or save as draft.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    {/* Option 1: Publish Now */}
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPost((prev) => ({ ...prev, status: "published" }))}
-                      className={`p-4 rounded-2xl border text-left transition ${
-                        currentPost.status === "published" || !currentPost.status
-                          ? "border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-500/20"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <CheckCircle2 className="size-5 text-emerald-600 mb-2" />
-                      <div className="text-xs font-bold text-slate-900">Publish Immediately</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
-                        Live on /blog right away
-                      </div>
-                    </button>
-
-                    {/* Option 2: Future Schedule */}
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPost((prev) => ({ ...prev, status: "scheduled" }))}
-                      className={`p-4 rounded-2xl border text-left transition ${
-                        currentPost.status === "scheduled"
-                          ? "border-blue-600 bg-blue-50/60 ring-2 ring-blue-500/20"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <CalendarClock className="size-5 text-blue-600 mb-2" />
-                      <div className="text-xs font-bold text-slate-900">Future Schedule</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
-                        Auto-releases at chosen date
-                      </div>
-                    </button>
-
-                    {/* Option 3: Draft */}
-                    <button
-                      type="button"
-                      onClick={() => setCurrentPost((prev) => ({ ...prev, status: "draft" }))}
-                      className={`p-4 rounded-2xl border text-left transition ${
-                        currentPost.status === "draft"
-                          ? "border-amber-600 bg-amber-50/60 ring-2 ring-amber-500/20"
-                          : "border-slate-200 hover:bg-slate-50"
-                      }`}
-                    >
-                      <FileText className="size-5 text-amber-600 mb-2" />
-                      <div className="text-xs font-bold text-slate-900">Save as Draft</div>
-                      <div className="text-[11px] text-slate-500 mt-0.5">
-                        Private in studio only
-                      </div>
-                    </button>
-                  </div>
-
-                  {/* Future Datetime Picker if Scheduled */}
-                  {currentPost.status === "scheduled" && (
-                    <div className="p-4 bg-blue-50/80 rounded-2xl border border-blue-200 space-y-2">
-                      <label className="block text-xs font-bold text-blue-950">
-                        Select Automatic Release Date &amp; Time:
-                      </label>
-                      <Input
-                        type="datetime-local"
-                        value={currentPost.publishDate || ""}
-                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, publishDate: e.target.value }))}
-                        className="h-10 text-xs bg-white border-blue-300 focus-visible:ring-blue-500 text-blue-950 font-medium"
-                      />
-                      <p className="text-[11px] text-blue-700">
-                        &bull; Once this date/time arrives, this article will automatically appear on the live blog and search feeds.
-                      </p>
-                    </div>
-                  )}
-                </div>
-
-                {/* 2. Featured Cover Image Card */}
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
-                        <ImageIcon className="size-4 text-primary" /> Featured Article Cover Image
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Select an image from your computer to display at the top of the article and in blog card previews.
-                      </p>
-                    </div>
-                    {currentPost.image && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCurrentPost((prev) => ({ ...prev, image: "" }));
-                          toast.success("Cover image removed");
-                        }}
-                        className="text-xs text-red-600 hover:underline flex items-center gap-1"
-                      >
-                        <Trash2 className="size-3" /> Remove Image
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    <MediaImageInput
-                      label="Cover Image (Upload from Device or Select from Gallery)"
-                      value={currentPost.image}
-                      onChange={(url) => setCurrentPost((prev) => ({ ...prev, image: url }))}
-                      placeholder="/images/stock/... or https://..."
-                    />
-                    <p className="text-[11px] text-slate-400">
-                      Recommended size: 1200 &times; 630px JPG, PNG, or WebP. Appears as the top header of the article and card thumbnail.
-                    </p>
-                  </div>
-                </div>
-
-                {/* 3. Author & Category Settings */}
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-                  <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
-                    <User className="size-4 text-primary" /> Author &amp; Publication Details
-                  </h3>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                        Author Name
-                      </label>
-                      <select
-                        value={currentPost.author}
-                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, author: e.target.value }))}
-                        className="w-full h-10 px-3 text-xs rounded-xl border border-slate-200 bg-white text-slate-800 focus:outline-none focus:ring-2 focus:ring-navy/20"
-                      >
-                        {DEFAULT_AUTHORS.map((a) => (
-                          <option key={a} value={a}>
-                            {a}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                        Display Date Label
-                      </label>
-                      <Input
-                        type="text"
-                        value={currentPost.date}
-                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, date: e.target.value }))}
-                        className="h-10 text-xs bg-white border-slate-200"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* 3. URL Slug Settings */}
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-                  <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
-                    <Globe className="size-4 text-primary" /> URL Web Address
-                  </h3>
-
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-slate-500 font-mono">
-                      https://smgaba.com/{currentPost.destination === "resource" ? "resources" : "blog"}/
-                    </span>
-                    <Input
-                      type="text"
-                      disabled={!isCustomSlugUnlocked}
-                      value={currentPost.slug}
-                      onChange={(e) =>
-                        setCurrentPost((prev) => ({
-                          ...prev,
-                          slug: e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, "-"),
-                        }))
-                      }
-                      className="h-9 text-xs font-mono bg-white border-slate-200 flex-1"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setIsCustomSlugUnlocked(!isCustomSlugUnlocked)}
-                      className="text-xs h-9 px-3 shrink-0"
-                    >
-                      {isCustomSlugUnlocked ? <Lock className="size-3.5 mr-1" /> : <Unlock className="size-3.5 mr-1" />}
-                      {isCustomSlugUnlocked ? "Lock" : "Customize"}
-                    </Button>
-                  </div>
-                </div>
-
-                {/* 4. Google SEO Preview Card */}
-                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-                  <h3 className="text-base font-bold font-serif-hero text-navy flex items-center gap-2">
-                    <Sparkles className="size-4 text-primary" /> Google Search Result Simulation
-                  </h3>
-
-                  {/* Visual Google Card */}
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-1">
-                    <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                      <span className="size-4 rounded-full bg-navy text-white text-[9px] font-bold flex items-center justify-center">S</span>
-                      <span>smgaba.com &rsaquo; blog &rsaquo; {currentPost.slug || "article-url"}</span>
-                    </div>
-                    <div className="text-base font-medium text-blue-800 line-clamp-1 hover:underline cursor-pointer">
-                      {currentPost.metaTitle || currentPost.title || "Article Title"}
-                    </div>
-                    <div className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                      {currentPost.metaDescription || currentPost.excerpt || "Article summary will appear here on Google search results."}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3 pt-2">
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                        Meta Title
-                      </label>
-                      <Input
-                        type="text"
-                        value={currentPost.metaTitle}
-                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaTitle: e.target.value }))}
-                        className="h-9 text-xs bg-white border-slate-200"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                        Meta Description
-                      </label>
-                      <textarea
-                        rows={2}
-                        value={currentPost.metaDescription}
-                        onChange={(e) => setCurrentPost((prev) => ({ ...prev, metaDescription: e.target.value }))}
-                        className="w-full p-2.5 text-xs text-slate-800 bg-white rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-navy/20"
-                      />
-                    </div>
-                  </div>
-                </div>
+                {renderSettingsCards(false)}
               </div>
             )}
           </div>
@@ -4539,14 +5340,37 @@ function BlogsEditorPage() {
           <div className="space-y-6">
             {/* Top Preview Bar */}
             <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between gap-4">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setActiveTab("edit")}
-                className="gap-1.5 rounded-full text-navy border-slate-200 hover:bg-slate-100 h-8 text-xs font-semibold"
-              >
-                <Edit3 className="size-3.5" /> Back to Editor
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setActiveTab("edit");
+                    setEditorSubTab("write");
+                    setTimeout(() => {
+                      if (editorRef.current) {
+                        editorRef.current.innerHTML = blocksToHtml(currentPost.blocks);
+                        handleWysiwygInput();
+                      }
+                    }, 50);
+                  }}
+                  className="gap-1.5 rounded-full text-navy border-slate-200 hover:bg-slate-100 h-8 text-xs font-semibold"
+                >
+                  <Edit3 className="size-3.5" /> Back to Editor
+                </Button>
+
+                {currentPost.slug && (
+                  <a
+                    href={`/${currentPost.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 px-3 h-8 text-xs font-semibold text-slate-700 shadow-2xs transition"
+                  >
+                    <ExternalLink className="size-3.5 text-blue-600" />
+                    <span className="hidden sm:inline">Open in New Tab</span>
+                  </a>
+                )}
+              </div>
 
               <div className="flex items-center gap-2">
                 <span className="text-xs text-slate-500 font-medium hidden sm:inline">
@@ -4820,6 +5644,124 @@ function BlogsEditorPage() {
           }}
           title="Insert Image into Document"
         />
+
+        {/* Table Cell Right-Click Context Menu */}
+        {tableContextMenu.isOpen && (
+          <div
+            className="fixed z-50 bg-white rounded-xl shadow-2xl border border-slate-200 py-1.5 w-52 text-xs font-medium text-slate-700 animate-in fade-in-50 zoom-in-95 table-context-menu"
+            style={{ top: `${tableContextMenu.y}px`, left: `${tableContextMenu.x}px` }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="px-3 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider border-b border-slate-100 flex items-center justify-between">
+              <span>Cell ({tableContextMenu.isHeader ? "Header" : `Row ${tableContextMenu.rowIndex + 1}`}, Col {tableContextMenu.colIndex + 1})</span>
+              <button
+                type="button"
+                onClick={() => setTableContextMenu((prev) => ({ ...prev, isOpen: false }))}
+                className="text-slate-400 hover:text-slate-700 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.tr && tableContextMenu.table) {
+                  insertRowAbove(tableContextMenu.tr, tableContextMenu.table);
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer transition"
+            >
+              <ArrowUp className="size-3.5 text-blue-600" />
+              <span>Insert Row Above</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.tr && tableContextMenu.table) {
+                  insertRowBelow(tableContextMenu.tr, tableContextMenu.table);
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer transition"
+            >
+              <ArrowDown className="size-3.5 text-blue-600" />
+              <span>Insert Row Below</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.tr && tableContextMenu.table) {
+                  deleteSpecificRow(tableContextMenu.tr, tableContextMenu.table);
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-red-50 text-red-600 flex items-center gap-2 cursor-pointer transition"
+            >
+              <Trash2 className="size-3.5 text-red-500" />
+              <span>Delete This Row</span>
+            </button>
+
+            <div className="h-px bg-slate-100 my-1" />
+
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.table) {
+                  insertColumnLeft(tableContextMenu.colIndex, tableContextMenu.table);
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer transition"
+            >
+              <ArrowLeft className="size-3.5 text-blue-600" />
+              <span>Insert Column Left</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.table) {
+                  insertColumnRight(tableContextMenu.colIndex, tableContextMenu.table);
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-blue-50 hover:text-blue-700 flex items-center gap-2 cursor-pointer transition"
+            >
+              <ArrowRight className="size-3.5 text-blue-600" />
+              <span>Insert Column Right</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.table) {
+                  deleteSpecificColumn(tableContextMenu.colIndex, tableContextMenu.table);
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-red-50 text-red-600 flex items-center gap-2 cursor-pointer transition"
+            >
+              <Trash2 className="size-3.5 text-red-500" />
+              <span>Delete This Column</span>
+            </button>
+
+            <div className="h-px bg-slate-100 my-1" />
+
+            <button
+              type="button"
+              onClick={() => {
+                if (tableContextMenu.cell) {
+                  tableContextMenu.cell.textContent = "";
+                  handleWysiwygInput();
+                }
+                setTableContextMenu((prev) => ({ ...prev, isOpen: false }));
+              }}
+              className="w-full text-left px-3 py-1.5 hover:bg-slate-50 text-slate-600 flex items-center gap-2 cursor-pointer transition"
+            >
+              <RotateCcw className="size-3.5 text-slate-400" />
+              <span>Clear Cell Content</span>
+            </button>
+          </div>
+        )}
       </main>
 
       {/* Global Site Footer */}

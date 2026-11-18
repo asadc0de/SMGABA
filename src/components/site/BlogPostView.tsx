@@ -156,7 +156,56 @@ export function BlogPostView({
 
           <div className="grid gap-12 lg:grid-cols-12">
             {/* Main Content Body */}
-            <article className="lg:col-span-12 space-y-6 text-foreground/90 text-base sm:text-lg leading-relaxed">
+            <article className="lg:col-span-12 space-y-6 text-foreground/90 text-base sm:text-lg leading-relaxed blog-article-body">
+              <style>{`
+                .blog-article-body a {
+                  color: #1b4e94;
+                  text-decoration: underline !important;
+                  text-underline-offset: 3px;
+                  font-weight: 600;
+                  transition: color 0.15s ease;
+                }
+                .blog-article-body a:hover {
+                  color: #2563eb;
+                  text-decoration-thickness: 2px;
+                }
+                .blog-article-body strong,
+                .blog-article-body b {
+                  font-weight: 700 !important;
+                }
+                .blog-article-body strong:not([style*="color"]),
+                .blog-article-body b:not([style*="color"]) {
+                  color: #0f2142;
+                }
+                .blog-article-body em,
+                .blog-article-body i {
+                  font-style: italic !important;
+                }
+                .blog-article-body u {
+                  text-decoration: underline !important;
+                  text-underline-offset: 3px;
+                }
+                .blog-article-body a:not([style*="color"]) strong,
+                .blog-article-body a:not([style*="color"]) b,
+                .blog-article-body strong:not([style*="color"]) a,
+                .blog-article-body b:not([style*="color"]) a {
+                  color: #1b4e94;
+                  font-weight: 700 !important;
+                }
+                .blog-article-body a em,
+                .blog-article-body a i,
+                .blog-article-body em a,
+                .blog-article-body i a {
+                  color: #1b4e94 !important;
+                  font-style: italic !important;
+                }
+                .blog-article-body .blog-prose-p p {
+                  margin-bottom: 1.25rem;
+                }
+                .blog-article-body .blog-prose-p p:last-child {
+                  margin-bottom: 0;
+                }
+              `}</style>
               {post.blocks.map((block, idx) => {
                 if (block.type === "h2") {
                   return (
@@ -186,6 +235,18 @@ export function BlogPostView({
                 }
 
                 if (block.type === "p" || (block as any).type === "richtext") {
+                  // 1. If block has rich HTML, render it directly
+                  if (block.html && block.html.includes("<")) {
+                    return (
+                      <div
+                        key={idx}
+                        className="blog-prose-p leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: block.html }}
+                      />
+                    );
+                  }
+
+                  // 2. Otherwise process raw markdown/text
                   const rawText = block.text || "";
                   const paragraphs = rawText.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
 
@@ -197,7 +258,7 @@ export function BlogPostView({
                           return (
                             <p
                               key={pIdx}
-                              className="text-foreground/90 leading-relaxed"
+                              className="leading-relaxed"
                               dangerouslySetInnerHTML={{ __html: renderedHtml }}
                             />
                           );
@@ -206,24 +267,18 @@ export function BlogPostView({
                     );
                   }
 
-                  const renderedHtml =
-                    block.html && block.html.includes("<")
-                      ? block.html
-                      : block.text
-                        ? markdownToHtml(block.text)
-                        : null;
-
+                  const renderedHtml = rawText ? markdownToHtml(rawText) : null;
                   if (renderedHtml) {
                     return (
                       <p
                         key={idx}
-                        className="text-foreground/90 leading-relaxed"
+                        className="leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: renderedHtml }}
                       />
                     );
                   }
                   return (
-                    <p key={idx} className="text-foreground/90 leading-relaxed">
+                    <p key={idx} className="leading-relaxed">
                       {block.text}
                     </p>
                   );
@@ -233,7 +288,7 @@ export function BlogPostView({
                   return (
                     <ul key={idx} className="my-6 space-y-3 pl-2">
                       {block.items?.map((item, i) => {
-                        const itemHtml = markdownToHtml(item);
+                        const itemHtml = item && item.includes("<") ? item : markdownToHtml(item);
                         return (
                           <li key={i} className="flex items-start gap-3 text-foreground/90">
                             <span className="mt-2 size-2 shrink-0 rounded-full bg-blue-600" />
@@ -249,7 +304,7 @@ export function BlogPostView({
                   return (
                     <ol key={idx} className="my-6 space-y-3 list-decimal pl-6 text-foreground/90">
                       {block.items?.map((item, i) => {
-                        const itemHtml = markdownToHtml(item);
+                        const itemHtml = item && item.includes("<") ? item : markdownToHtml(item);
                         return (
                           <li key={i} className="pl-1" dangerouslySetInnerHTML={{ __html: itemHtml }} />
                         );

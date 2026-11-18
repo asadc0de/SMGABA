@@ -109,11 +109,28 @@ export function cleanWordHtml(html: string): string {
     .replace(/<\/?m:[^>]*>/gi, "")
     // 2. Remove Word / Google Docs proprietary attributes
     .replace(/\s+(?:class|paraid|paraeid|data-contrast|data-ccp-[a-z-]+|xml:lang|lang)\s*=\s*["'][^"']*["']/gi, "")
-    // 3. Remove bloated inline styles (editor uses clean prose CSS)
-    .replace(/\s+style\s*=\s*["'][^"']*["']/gi, "")
-    // 4. Remove empty formatting tags
+    // 3. Convert legacy <font color="..."> to modern <span style="color: ...">
+    .replace(/<font\b[^>]*?\bcolor=["']([^"']+)["'][^>]*?>([\s\S]*?)<\/font>/gi, '<span style="color: $1;">$2</span>')
+    .replace(/<\/?font[^>]*>/gi, "")
+    // 4. Sanitize inline styles: keep intentional colors & backgrounds, strip bloated Mso/font-family/margin styles
+    .replace(/\s+style\s*=\s*["']([^"']*)["']/gi, (_match, styleVal) => {
+      const safeStyles: string[] = [];
+      const colorMatch = styleVal.match(/(?:^|;)\s*color\s*:\s*([^;]+)/i);
+      if (colorMatch && !colorMatch[1].toLowerCase().includes("inherit")) {
+        safeStyles.push(`color: ${colorMatch[1].trim()}`);
+      }
+      const bgMatch = styleVal.match(/(?:^|;)\s*background(?:-color)?\s*:\s*([^;]+)/i);
+      if (bgMatch && !bgMatch[1].toLowerCase().includes("transparent")) {
+        safeStyles.push(`background-color: ${bgMatch[1].trim()}`);
+      }
+      if (safeStyles.length > 0) {
+        return ` style="${safeStyles.join("; ")}"`;
+      }
+      return "";
+    })
+    // 5. Remove empty formatting tags
     .replace(/<(i|b|em|strong|span)>\s*<\/\1>/gi, "")
-    // 5. Unwrap redundant span tags: <span>text</span> -> text
+    // 6. Unwrap redundant empty span tags (no attributes): <span>text</span> -> text
     .replace(/<span\s*>([\s\S]*?)<\/span>/gi, "$1")
     .replace(/<span\s*>([\s\S]*?)<\/span>/gi, "$1")
     // 6. Decode any accidental entities of apostrophes and line breaks
