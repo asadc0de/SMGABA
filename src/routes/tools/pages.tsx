@@ -32,6 +32,7 @@ import {
   DEFAULT_CONTACT_PAGE_CONTENT,
   DEFAULT_FOOTER_CONTENT,
   DEFAULT_HEADER_CONTENT,
+  DEFAULT_INTEGRATION_LOGOS,
   type HomePageContent,
   type AboutPageContent,
   type StoryPageContent,
@@ -41,6 +42,7 @@ import {
   type ContactPageContent,
   type FooterContent,
   type HeaderContent,
+  type IntegrationLogoItem,
 } from "@/data/pageContent";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -148,7 +150,28 @@ function SitePagesEditorPage() {
 
   // Form states
   const [home, setHome] = useState<HomePageContent>(loaderData?.home || DEFAULT_HOME_PAGE_CONTENT);
-  const [about, setAbout] = useState<AboutPageContent>(loaderData?.about || DEFAULT_ABOUT_PAGE_CONTENT);
+  const [about, setAbout] = useState<AboutPageContent>(() => {
+    const raw = loaderData?.about || DEFAULT_ABOUT_PAGE_CONTENT;
+    return {
+      ...DEFAULT_ABOUT_PAGE_CONTENT,
+      ...raw,
+      coreValues: {
+        ...DEFAULT_ABOUT_PAGE_CONTENT.coreValues,
+        ...(raw.coreValues || {}),
+      },
+      integrations: {
+        ...DEFAULT_ABOUT_PAGE_CONTENT.integrations,
+        ...(raw.integrations || {}),
+        logos: raw.integrations?.logos && raw.integrations.logos.length > 0
+          ? raw.integrations.logos
+          : (DEFAULT_ABOUT_PAGE_CONTENT.integrations?.logos || DEFAULT_INTEGRATION_LOGOS),
+      },
+      whyWorkWithUs: {
+        ...DEFAULT_ABOUT_PAGE_CONTENT.whyWorkWithUs,
+        ...(raw.whyWorkWithUs || {}),
+      },
+    };
+  });
   const [story, setStory] = useState<StoryPageContent>(loaderData?.story || DEFAULT_STORY_PAGE_CONTENT);
   const [solutions, setSolutions] = useState<SolutionsPageContent>(loaderData?.solutions || DEFAULT_SOLUTIONS_PAGE_CONTENT);
   const [industries, setIndustries] = useState<IndustriesPageContent>(loaderData?.industries || DEFAULT_INDUSTRIES_PAGE_CONTENT);
@@ -1086,9 +1109,248 @@ function SitePagesEditorPage() {
               </div>
             </div>
 
-            {/* Mission Banner */}
+            {/* 3. Integrations Marquee & Partner Logos */}
             <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">3. Mission Blue Banner</h2>
+              <div className="flex items-center justify-between border-b pb-3 flex-wrap gap-2">
+                <div>
+                  <h2 className="text-base font-black text-[#0f2142]">3. Integrations &amp; Partner Logos Slider</h2>
+                  <p className="text-xs text-slate-500">Edit headline, logos, and partners displayed on the marquee ticker.</p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    const currentLogos = about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS;
+                    const newLogo: IntegrationLogoItem = {
+                      src: "/Slider Logos/Intuit_QuickBooks_logo-removebg-preview.png",
+                      alt: "New Integration Partner",
+                    };
+                    setAbout({
+                      ...about,
+                      integrations: {
+                        eyebrow: about.integrations?.eyebrow || "Integrations",
+                        headline: about.integrations?.headline || "We Work With the Tools You Already Use",
+                        logos: [...currentLogos, newLogo],
+                      },
+                    });
+                    toast.success("New logo slot added!");
+                  }}
+                  className="rounded-xl h-8 text-xs font-bold border-blue-200 text-blue-700 hover:bg-blue-50"
+                >
+                  <Plus className="size-3.5 mr-1" /> Add Logo
+                </Button>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Eyebrow</Label>
+                  <Input
+                    value={about.integrations?.eyebrow ?? "Integrations"}
+                    onChange={(e) =>
+                      setAbout({
+                        ...about,
+                        integrations: {
+                          eyebrow: e.target.value,
+                          headline: about.integrations?.headline || "We Work With the Tools You Already Use",
+                          logos: about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS,
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Headline</Label>
+                  <Input
+                    value={about.integrations?.headline ?? "We Work With the Tools You Already Use"}
+                    onChange={(e) =>
+                      setAbout({
+                        ...about,
+                        integrations: {
+                          eyebrow: about.integrations?.eyebrow || "Integrations",
+                          headline: e.target.value,
+                          logos: about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS,
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              {/* Logos List */}
+              <div className="space-y-3 pt-2">
+                <Label className="text-xs font-bold text-slate-700">
+                  Partner Logos ({about.integrations?.logos?.length || DEFAULT_INTEGRATION_LOGOS.length})
+                </Label>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {(about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS).map((logo, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-2.5 relative group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                          Logo #{idx + 1}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const updated = (about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS).filter(
+                              (_, i) => i !== idx
+                            );
+                            setAbout({
+                              ...about,
+                              integrations: {
+                                eyebrow: about.integrations?.eyebrow || "Integrations",
+                                headline: about.integrations?.headline || "We Work With the Tools You Already Use",
+                                logos: updated,
+                              },
+                            });
+                          }}
+                          className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                        >
+                          <Trash2 className="size-3 mr-1" />
+                          <span className="text-xs font-semibold">Delete</span>
+                        </Button>
+                      </div>
+
+                      <div className="space-y-2">
+                        <div className="space-y-1">
+                          <Label className="text-[11px] font-bold text-slate-600">Partner / Brand Alt Text</Label>
+                          <Input
+                            value={logo.alt}
+                            onChange={(e) => {
+                              const updated = [...(about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS)];
+                              updated[idx] = { ...updated[idx], alt: e.target.value };
+                              setAbout({
+                                ...about,
+                                integrations: {
+                                  eyebrow: about.integrations?.eyebrow || "Integrations",
+                                  headline: about.integrations?.headline || "We Work With the Tools You Already Use",
+                                  logos: updated,
+                                },
+                              });
+                            }}
+                            placeholder="e.g. Intuit QuickBooks, ADP, Bill.com"
+                            className="h-8 rounded-lg bg-white text-xs"
+                          />
+                        </div>
+
+                        <div>
+                          <MediaImageInput
+                            label="Logo Image (Upload or select from gallery)"
+                            value={logo.src}
+                            onChange={(url) => {
+                              const updated = [...(about.integrations?.logos || DEFAULT_INTEGRATION_LOGOS)];
+                              updated[idx] = { ...updated[idx], src: url };
+                              setAbout({
+                                ...about,
+                                integrations: {
+                                  eyebrow: about.integrations?.eyebrow || "Integrations",
+                                  headline: about.integrations?.headline || "We Work With the Tools You Already Use",
+                                  logos: updated,
+                                },
+                              });
+                            }}
+                            placeholder="/Slider Logos/logo.png or https://..."
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Core Values Graphic & Motto Banner */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">4. Our Core Values Graphic &amp; Banner</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Section Accessible Title</Label>
+                  <Input
+                    value={about.coreValues?.title ?? "Our Core Values - The Principles That Drive Us"}
+                    onChange={(e) =>
+                      setAbout({
+                        ...about,
+                        coreValues: {
+                          title: e.target.value,
+                          image: about.coreValues?.image || "/core-values-drive.webp",
+                          bottomBannerText: about.coreValues?.bottomBannerText || "STRONG VALUES & STRONG PARTNERSHIPS",
+                          bottomBannerSubtext: about.coreValues?.bottomBannerSubtext || "smgaba.com",
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <MediaImageInput
+                    label="Core Values DRIVE Diagram Graphic (Upload from Device or Gallery)"
+                    value={about.coreValues?.image || "/core-values-drive.webp"}
+                    onChange={(url) =>
+                      setAbout({
+                        ...about,
+                        coreValues: {
+                          title: about.coreValues?.title || "Our Core Values - The Principles That Drive Us",
+                          image: url,
+                          bottomBannerText: about.coreValues?.bottomBannerText || "STRONG VALUES & STRONG PARTNERSHIPS",
+                          bottomBannerSubtext: about.coreValues?.bottomBannerSubtext || "smgaba.com",
+                        },
+                      })
+                    }
+                    placeholder="/core-values-drive.webp or https://..."
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Bottom Motto Banner Headline</Label>
+                  <Input
+                    value={about.coreValues?.bottomBannerText ?? "STRONG VALUES & STRONG PARTNERSHIPS"}
+                    onChange={(e) =>
+                      setAbout({
+                        ...about,
+                        coreValues: {
+                          title: about.coreValues?.title || "Our Core Values - The Principles That Drive Us",
+                          image: about.coreValues?.image || "/core-values-drive.webp",
+                          bottomBannerText: e.target.value,
+                          bottomBannerSubtext: about.coreValues?.bottomBannerSubtext || "smgaba.com",
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Bottom Banner Subtext</Label>
+                  <Input
+                    value={about.coreValues?.bottomBannerSubtext ?? "smgaba.com"}
+                    onChange={(e) =>
+                      setAbout({
+                        ...about,
+                        coreValues: {
+                          title: about.coreValues?.title || "Our Core Values - The Principles That Drive Us",
+                          image: about.coreValues?.image || "/core-values-drive.webp",
+                          bottomBannerText: about.coreValues?.bottomBannerText || "STRONG VALUES & STRONG PARTNERSHIPS",
+                          bottomBannerSubtext: e.target.value,
+                        },
+                      })
+                    }
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 5. Mission Banner */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">5. Mission Blue Banner</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-slate-700">Banner Heading</Label>
@@ -1125,9 +1387,9 @@ function SitePagesEditorPage() {
               </div>
             </div>
 
-            {/* 5 Benefits */}
+            {/* 6. Why Work With Us & 5 Benefits */}
             <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">4. Why Work With Us &amp; Five Benefits</h2>
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">6. Why Work With Us &amp; Five Benefits</h2>
               <div className="grid gap-4 sm:grid-cols-2 mb-4">
                 <div className="space-y-1.5">
                   <Label className="text-xs font-bold text-slate-700">Section Title</Label>
@@ -1145,10 +1407,32 @@ function SitePagesEditorPage() {
                     className="h-10 rounded-xl"
                   />
                 </div>
+                <div className="sm:col-span-2">
+                  <MediaImageInput
+                    label="Circular Feature Image (Upload from Device or Gallery)"
+                    value={about.whyWorkWithUs.image || "/images/solutions/home-feature-hospitality.jpg"}
+                    onChange={(url) => setAbout({ ...about, whyWorkWithUs: { ...about.whyWorkWithUs, image: url } })}
+                    placeholder="/images/solutions/home-feature-hospitality.jpg or https://..."
+                  />
+                </div>
               </div>
 
               <div className="space-y-3">
-                <Label className="text-xs font-bold text-slate-700">5 Benefits Checklist</Label>
+                <div className="flex items-center justify-between">
+                  <Label className="text-xs font-bold text-slate-700">Benefits Checklist</Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const updated = [...(about.whyWorkWithUs.benefits || []), "New Benefit"];
+                      setAbout({ ...about, whyWorkWithUs: { ...about.whyWorkWithUs, benefits: updated } });
+                    }}
+                    className="h-7 text-xs font-semibold rounded-lg"
+                  >
+                    <Plus className="size-3.5 mr-1" /> Add Benefit
+                  </Button>
+                </div>
                 {about.whyWorkWithUs.benefits.map((b, idx) => (
                   <div key={idx} className="flex gap-2 items-center">
                     <span className="text-xs font-bold text-blue-700 bg-blue-50 size-6 rounded-full flex items-center justify-center shrink-0">
@@ -1161,8 +1445,21 @@ function SitePagesEditorPage() {
                         updated[idx] = e.target.value;
                         setAbout({ ...about, whyWorkWithUs: { ...about.whyWorkWithUs, benefits: updated } });
                       }}
-                      className="h-10 rounded-xl"
+                      className="h-10 rounded-xl flex-1"
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const updated = about.whyWorkWithUs.benefits.filter((_, i) => i !== idx);
+                        setAbout({ ...about, whyWorkWithUs: { ...about.whyWorkWithUs, benefits: updated } });
+                      }}
+                      className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-9 px-2"
+                      title="Remove Benefit"
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
                   </div>
                 ))}
               </div>

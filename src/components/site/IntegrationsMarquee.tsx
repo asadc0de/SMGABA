@@ -1,4 +1,6 @@
-const INTEGRATION_LOGOS = [
+import type { IntegrationLogoItem } from "@/data/pageContent";
+
+export const INTEGRATION_LOGOS: IntegrationLogoItem[] = [
   { src: "/Slider Logos/Intuit_QuickBooks_logo-removebg-preview.png", alt: "Intuit QuickBooks" },
   { src: "/Slider Logos/gotab.png", alt: "GoTab", maxHeight: "42px", maxWidth: "80%" },
   { src: "/Slider Logos/adp.png", alt: "ADP", maxHeight: "42px", maxWidth: "80%" },
@@ -21,13 +23,27 @@ const INTEGRATION_LOGOS = [
   { src: "/Slider Logos/logo-removebg-preview.png", alt: "Integration Partner" },
 ];
 
-export function IntegrationsMarquee() {
+export interface IntegrationsMarqueeProps {
+  integrations?: {
+    eyebrow?: string;
+    headline?: string;
+    logos?: IntegrationLogoItem[];
+  };
+}
+
+export function IntegrationsMarquee({ integrations }: IntegrationsMarqueeProps = {}) {
+  const eyebrow = integrations?.eyebrow || "Integrations";
+  const headline = integrations?.headline || "We Work With the Tools You Already Use";
+  const logos = integrations?.logos && integrations.logos.length > 0
+    ? integrations.logos
+    : INTEGRATION_LOGOS;
+
   return (
     <section className="section-y bg-secondary">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow">Integrations</p>
-          <h2 className="mt-3 text-3xl md:text-4xl">We Work With the Tools You Already Use</h2>
+          <p className="eyebrow">{eyebrow}</p>
+          <h2 className="mt-3 text-3xl md:text-4xl">{headline}</h2>
         </div>
       </div>
 
@@ -40,11 +56,11 @@ export function IntegrationsMarquee() {
       >
         <div className="marquee-track flex w-max">
           <ul className="flex shrink-0 items-center gap-14 md:gap-20 pr-14 md:pr-20">
-            {INTEGRATION_LOGOS.map((logo, i) => (
+            {logos.map((logo, i) => (
               <li key={`${logo.src}-${i}`} className="shrink-0 flex items-center justify-center h-14 md:h-16">
                 <img
                   src={logo.src}
-                  alt={logo.alt}
+                  alt={logo.alt || "Integration Partner"}
                   loading="eager"
                   decoding="async"
                   style={{
@@ -61,11 +77,11 @@ export function IntegrationsMarquee() {
           </ul>
 
           <ul className="flex shrink-0 items-center gap-14 md:gap-20 pr-14 md:pr-20" aria-hidden="true">
-            {INTEGRATION_LOGOS.map((logo, i) => (
+            {logos.map((logo, i) => (
               <li key={`${logo.src}-duplicate-${i}`} className="shrink-0 flex items-center justify-center h-14 md:h-16">
                 <img
                   src={logo.src}
-                  alt={logo.alt}
+                  alt={logo.alt || "Integration Partner"}
                   loading="eager"
                   decoding="async"
                   style={{

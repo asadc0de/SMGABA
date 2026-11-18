@@ -154,12 +154,12 @@ function AboutUsPage() {
         {/* =========================================================================
             INTEGRATIONS MARQUEE
            ========================================================================= */}
-        <IntegrationsMarquee />
+        <IntegrationsMarquee integrations={about.integrations} />
 
         {/* =========================================================================
             3. OUR CORE VALUES (5-Petal Flower Radial Diagram matching brand deck)
            ========================================================================= */}
-        <CoreValues />
+        <CoreValues coreValues={about.coreValues} />
 
         {/* =========================================================================
             4. OUR MISSION (Royal Blue Ribbon Banner)
