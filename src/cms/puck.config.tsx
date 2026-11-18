@@ -20,6 +20,9 @@ import { VideoEmbedBlock } from "./blocks/VideoEmbed.editor";
 import { SpacerBlock } from "./blocks/Spacer.editor";
 import { DividerBlock } from "./blocks/Divider.editor";
 import { CalloutBlock } from "./blocks/Callout.editor";
+import { FormBlock } from "./blocks/Form.editor";
+import { IconBlock } from "./blocks/Icon.editor";
+import { QuoteHeroBlock } from "./blocks/QuoteHero.editor";
 import { type CmsComponentProps, type CmsRootProps } from "./render.config";
 import { rootEditorConfig } from "./root.editor";
 
@@ -30,7 +33,7 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     basics: {
       title: "Basics",
       defaultExpanded: true,
-      components: ["Heading", "RichText", "Image", "Button", "Spacer", "Divider"],
+      components: ["Heading", "RichText", "Image", "Icon", "Button", "Spacer", "Divider"],
     },
     sections: {
       title: "Sections",
@@ -46,6 +49,8 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
         "Steps",
         "Testimonial",
         "TestimonialSlider",
+        "Form",
+        "QuoteHero",
       ],
     },
     advanced: {
@@ -76,6 +81,9 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     VideoEmbed: VideoEmbedBlock,
     CalendlyBooking: CalendlyBookingBlock,
     Callout: CalloutBlock,
+    Form: FormBlock,
+    Icon: IconBlock,
+    QuoteHero: QuoteHeroBlock,
   },
   root: rootEditorConfig,
 };

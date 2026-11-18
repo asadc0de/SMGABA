@@ -139,6 +139,7 @@ const FIELD_META_MAP: Record<string, FieldMeta> = {
   caption: { tab: "content", subgroup: "content_media" },
   calendlyUrl: { tab: "content", subgroup: "content_media" },
   icon: { tab: "content", subgroup: "content_media" },
+  iconImage: { tab: "content", subgroup: "content_media" },
 
   // Links & Buttons
   url: { tab: "content", subgroup: "content_links" },

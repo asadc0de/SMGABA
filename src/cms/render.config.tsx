@@ -20,6 +20,9 @@ import { VideoEmbedRender, type VideoEmbedProps } from "./blocks/VideoEmbed";
 import { SpacerRender, type SpacerProps } from "./blocks/Spacer";
 import { DividerRender, type DividerProps } from "./blocks/Divider";
 import { CalloutRender, type CalloutProps } from "./blocks/Callout";
+import { FormRender, type FormProps } from "./blocks/Form";
+import { IconRender, type IconBlockProps } from "./blocks/Icon";
+import { QuoteHeroRender, type QuoteHeroProps } from "./blocks/QuoteHero";
 import { CmsRoot, type CmsRootProps } from "./root";
 
 export type CmsComponentProps = {
@@ -44,6 +47,9 @@ export type CmsComponentProps = {
   VideoEmbed: VideoEmbedProps;
   Spacer: SpacerProps;
   Callout: CalloutProps;
+  Form: FormProps;
+  Icon: IconBlockProps;
+  QuoteHero: QuoteHeroProps;
 };
 
 export { type CmsRootProps } from "./root";
@@ -71,6 +77,9 @@ export const puckRenderConfig: Config<CmsComponentProps, CmsRootProps> = {
     Button: { render: ButtonRender },
     Image: { render: ImageRender },
     ImageGallery: { render: ImageGalleryRender },
+    Form: { render: FormRender },
+    Icon: { render: IconRender },
+    QuoteHero: { render: QuoteHeroRender },
   },
   root: {
     render: CmsRoot,

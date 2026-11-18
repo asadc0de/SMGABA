@@ -66,11 +66,38 @@ A versatile 2, 3, or 4 column grid of features with curated icons and optional l
   - **Plain Minimal**: Clean borderless grid.
   - **Centered**: Center-aligned icons and text.
 - **Curated Icon List**: Choose from ~24 financial & business icons including *Shield, TrendingUp, Calculator, Users, FileText, Building2, Briefcase, Landmark, Handshake, Award*, and more.
+- **Custom Icon Image**: Upload or select an icon image, including `.ico`, for each feature item. If selected, it replaces the curated icon.
 - **Optional Link**: Add an action link (e.g., *"Explore CFO Services"* -> `/solutions/cfo-advisory-services`).
 
 ---
 
-## 5. Steps & Process Flow (Marketing)
+## 5. Form (Lead Capture)
+
+Add a working contact, quote, newsletter, or other lead-capture form to a page. Submissions use the website's existing contact processing, CRM, and email notification workflow.
+
+### Key Fields & Options
+- **Form Design**: Choose an elevated card, bordered panel, or minimal presentation.
+- **Field Layout**: Choose stacked fields or a responsive two-column layout.
+- **Custom Fields**: Add, remove, and reorder short text, email, phone, number, date, long text, dropdown, and checkbox fields. Set labels, field names, placeholders, required status, width, and dropdown options.
+- **Email Field**: At least one Email field is required to submit the form.
+- **Notifications**: Set an optional email subject. Submissions go to the site's configured notification recipient.
+- **Submission Feedback**: Customize the submit button and success message.
+
+---
+
+## 6. Quote Hero + Form (Lead Generation)
+
+Create a split landing-page hero with editable headline and background image beside a compact, two-column quote form.
+
+### Key Fields & Options
+- **Hero Content**: Edit the eyebrow, headline, description, background image, and trust points.
+- **Quote Form**: Customize its heading, submission type, submit button, success message, and field list.
+- **Form Fields**: Add, remove, reorder, and configure the same field types supported by the standalone Form block.
+- **Starter Page**: The **Bookkeeping Lead Generation** template combines this hero with service features, a process section, FAQs, and calls to action.
+
+---
+
+## 7. Steps & Process Flow (Marketing)
 
 Showcase step-by-step onboarding, advisory roadmaps, or proven methodologies.
 
@@ -84,7 +111,7 @@ Showcase step-by-step onboarding, advisory roadmaps, or proven methodologies.
 
 ---
 
-## 6. Calendly Booking Embed (Media)
+## 8. Calendly Booking Embed (Media)
 
 Embed an interactive appointment scheduling calendar directly into the page.
 
@@ -96,7 +123,7 @@ Embed an interactive appointment scheduling calendar directly into the page.
 
 ---
 
-## 7. Video Embed (Media)
+## 9. Video Embed (Media)
 
 Securely embed YouTube and Vimeo videos with accessibility and performance optimizations.
 
@@ -109,7 +136,7 @@ Securely embed YouTube and Vimeo videos with accessibility and performance optim
 
 ---
 
-## 8. Spacer & Divider (Layout)
+## 10. Spacer & Divider (Layout)
 
 Add precise vertical breathing room and optional divider lines between sections or blocks.
 
@@ -124,7 +151,7 @@ Add precise vertical breathing room and optional divider lines between sections 
 
 ---
 
-## 9. Callout / Notice (Typography / Content)
+## 11. Callout / Notice (Typography / Content)
 
 Highlight important updates, tax deadlines, advisory notes, or success messages.
 

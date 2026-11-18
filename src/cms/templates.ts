@@ -1,5 +1,6 @@
 import type { Data } from "@puckeditor/core";
 import type { CmsComponentProps, CmsRootProps } from "./render.config";
+import { defaultQuoteHeroProps } from "./blocks/QuoteHero";
 
 export type CmsTemplateData = Data<CmsComponentProps, CmsRootProps>;
 
@@ -14,9 +15,223 @@ export interface CmsTemplate {
 
 export const PAGE_TEMPLATES: CmsTemplate[] = [
   {
+    id: "bookkeeping-lead-generation",
+    name: "Bookkeeping Lead Generation",
+    description:
+      "A bookkeeping landing page with an embedded quote form, business pain points, service highlights, process, FAQs, and a consultation CTA.",
+    badge: "Bookkeeping",
+    hasFirstBlockHero: true,
+    getInitialData: (title: string): CmsTemplateData => ({
+      content: [
+        {
+          type: "QuoteHero",
+          props: {
+            ...defaultQuoteHeroProps,
+            id: `quote-hero-${Date.now()}-1`,
+          },
+        },
+        {
+          type: "IconFeatures",
+          props: {
+            id: `pain-points-${Date.now()}-2`,
+            heading: "Does Bookkeeping Keep You Up at Night?",
+            subheading:
+              "Get out of the spreadsheet weeds and gain a clear, reliable view of your business finances.",
+            columns: "4",
+            style: "plain",
+            items: [
+              {
+                icon: "Clock",
+                title: "Always Behind",
+                text: "Reconciliations and monthly close keep slipping, leaving you unsure whether your books are current.",
+              },
+              {
+                icon: "TrendingUp",
+                title: "Cash Flow Guesswork",
+                text: "Without dependable financials, it is hard to plan payroll, manage bills, or make your next investment.",
+              },
+              {
+                icon: "FileText",
+                title: "Tax-Time Scramble",
+                text: "Disorganized records make year-end stressful and keep your tax professional from getting what they need.",
+              },
+              {
+                icon: "Briefcase",
+                title: "Too Much Admin",
+                text: "Hours spent entering transactions and chasing receipts are hours taken away from running your business.",
+              },
+            ],
+            marginTop: { base: "xl" },
+            marginBottom: { base: "xl" },
+          },
+        },
+        {
+          type: "IconFeatures",
+          props: {
+            id: `bookkeeping-services-${Date.now()}-3`,
+            heading: "Bookkeeping That Makes Business Easier",
+            subheading:
+              "Get consistent monthly bookkeeping, useful financial reports, and a responsive team that knows your business.",
+            columns: "4",
+            style: "cards",
+            items: [
+              {
+                icon: "Calculator",
+                title: "Accurate Monthly Books",
+                text: "Transactions categorized and your books reconciled on a consistent monthly schedule.",
+              },
+              {
+                icon: "Landmark",
+                title: "Accounts Reconciled",
+                text: "Bank and credit card accounts checked against your records to catch discrepancies early.",
+              },
+              {
+                icon: "BarChart3",
+                title: "Clear Financial Reports",
+                text: "Understand your profit and loss, balance sheet, and cash position with timely reports.",
+              },
+              {
+                icon: "Users",
+                title: "A Real Support Team",
+                text: "Work with knowledgeable professionals who answer questions and help you stay on track.",
+              },
+            ],
+            marginTop: { base: "md" },
+            marginBottom: { base: "xl" },
+          },
+        },
+        {
+          type: "CTABanner",
+          props: {
+            id: `bookkeeping-trust-${Date.now()}-4`,
+            eyebrow: "A Better Bookkeeping Partnership",
+            heading: "A Team That Understands Your Business",
+            description:
+              "We bring experienced professionals, dependable monthly workflows, and practical financial insight together - so you can make decisions with confidence and keep your attention on the business you are building.",
+            primaryButton: {
+              label: "Talk to Our Team",
+              href: "/bookanappointment",
+            },
+            theme: "navy",
+            alignment: "left",
+            layout: "full-width",
+            marginTop: { base: "lg" },
+            marginBottom: { base: "xl" },
+          },
+        },
+        {
+          type: "Steps",
+          props: {
+            id: `bookkeeping-process-${Date.now()}-5`,
+            eyebrow: "Simple, Structured, Supportive",
+            heading: "How It Works",
+            description:
+              "A straightforward process to move from bookkeeping uncertainty to dependable monthly financials.",
+            layout: "horizontal",
+            items: [
+              {
+                stepNumber: "01",
+                title: "Understand Your Business",
+                text: "We learn about your business, accounting setup, goals, and current bookkeeping needs.",
+              },
+              {
+                stepNumber: "02",
+                title: "Organize Your Books",
+                text: "We establish a clear workflow and, if needed, bring overdue records up to date.",
+              },
+              {
+                stepNumber: "03",
+                title: "Close Every Month",
+                text: "Our team categorizes transactions, reconciles accounts, and prepares your financial reports.",
+              },
+              {
+                stepNumber: "04",
+                title: "Review and Plan",
+                text: "Get a consistent point of contact and financial information you can use to plan ahead.",
+              },
+            ],
+            marginTop: { base: "md" },
+            marginBottom: { base: "xl" },
+          },
+        },
+        {
+          type: "Accordion",
+          props: {
+            id: `bookkeeping-faq-${Date.now()}-6`,
+            title: "Bookkeeping Questions, Answered",
+            subtitle: "A few things business owners often ask before getting started.",
+            type: "single",
+            theme: "separated",
+            items: [
+              {
+                question: "What does outsourced bookkeeping include?",
+                answer:
+                  "Services can include transaction categorization, bank and credit card reconciliations, monthly close, and financial statement preparation. We tailor the workflow to your business.",
+              },
+              {
+                question: "Can you help if my books are behind?",
+                answer:
+                  "Yes. We can review your records, identify what is missing, and discuss a cleanup plan before moving to a reliable monthly process.",
+              },
+              {
+                question: "Do I need to use QuickBooks Online?",
+                answer:
+                  "We primarily support businesses using QuickBooks Online. Tell us which accounting software you use and our team can confirm whether it is a fit.",
+              },
+              {
+                question: "Will I still have access to my financial information?",
+                answer:
+                  "Yes. You retain access to your accounting records and receive regular financial reports, with a bookkeeping team available to answer questions.",
+              },
+              {
+                question: "How do I get started?",
+                answer:
+                  "Complete the quote form or schedule a consultation. We will learn about your business and bookkeeping needs before recommending next steps.",
+              },
+            ],
+            marginTop: { base: "md" },
+            marginBottom: { base: "xl" },
+          },
+        },
+        {
+          type: "CTABanner",
+          props: {
+            id: `bookkeeping-cta-${Date.now()}-7`,
+            eyebrow: "Ready for More Clarity?",
+            heading: "Get Back to Running Your Business",
+            description:
+              "Let's talk about a bookkeeping plan that helps you stay organized and make informed decisions.",
+            primaryButton: {
+              label: "Request a Bookkeeping Quote",
+              href: "#bookkeeping-quote",
+            },
+            secondaryButton: {
+              enabled: true,
+              label: "Schedule a Consultation",
+              href: "/bookanappointment",
+            },
+            theme: "navy",
+            alignment: "center",
+            layout: "card",
+            marginTop: { base: "lg" },
+            marginBottom: { base: "xl" },
+          },
+        },
+      ],
+      root: {
+        props: {
+          title: title || "Bookkeeping Services",
+          seoTitle: `${title || "Bookkeeping Services"} | SMG ABA`,
+          showPageHero: false,
+        },
+      },
+    }),
+  },
+  {
     id: "blank",
     name: "Blank Page",
-    description: "Completely clean canvas. Add your own headings, text, buttons, and sections freely.",
+    description:
+      "Completely clean canvas. Add your own headings, text, buttons, and sections freely.",
     badge: "Clean Slate",
     hasFirstBlockHero: false,
     getInitialData: (title: string): Data => ({
@@ -33,7 +248,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
   {
     id: "about-page",
     name: "About Page",
-    description: "Overview page featuring an introductory story, core values feature list, and contact callout.",
+    description:
+      "Overview page featuring an introductory story, core values feature list, and contact callout.",
     badge: "Company & Team",
     hasFirstBlockHero: false,
     getInitialData: (title: string): Data => ({
@@ -64,7 +280,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
           props: {
             id: `feat-${Date.now()}-3`,
             heading: "What Sets Us Apart",
-            subheading: "Tailored advisory built on institutional rigor and personalized dedication.",
+            subheading:
+              "Tailored advisory built on institutional rigor and personalized dedication.",
             columns: "3",
             style: "cards",
             items: [
@@ -100,7 +317,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             id: `cta-${Date.now()}-4`,
             eyebrow: "Connect With Us",
             heading: "Ready to Discuss Your Organization's Goals?",
-            description: "Schedule a confidential discovery consultation with our senior advisory team.",
+            description:
+              "Schedule a confidential discovery consultation with our senior advisory team.",
             primaryButton: {
               label: "Schedule Consultation",
               href: "/bookanappointment",
@@ -130,7 +348,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
   {
     id: "services-page",
     name: "Services & Solutions Page",
-    description: "Structured presentation with a Top Banner, 3-card capability grid, 4-step process roadmap, and booking CTA.",
+    description:
+      "Structured presentation with a Top Banner, 3-card capability grid, 4-step process roadmap, and booking CTA.",
     badge: "Service Overview",
     hasFirstBlockHero: true,
     getInitialData: (title: string): Data => ({
@@ -140,7 +359,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
           props: {
             id: `hero-${Date.now()}-1`,
             headline: title || "Comprehensive Advisory & Financial Solutions",
-            subheadline: "Strategic accounting, proactive tax mitigation, and fractional CFO advisory tailored for forward-thinking leadership.",
+            subheadline:
+              "Strategic accounting, proactive tax mitigation, and fractional CFO advisory tailored for forward-thinking leadership.",
             eyebrow: "Professional Solutions",
             primaryCta: {
               enabled: true,
@@ -170,21 +390,24 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             items: [
               {
                 title: "Fractional CFO Advisory",
-                description: "13-week cash forecasting, debt capitalization, KPI dashboards, and board reporting.",
+                description:
+                  "13-week cash forecasting, debt capitalization, KPI dashboards, and board reporting.",
                 icon: "TrendingUp",
                 ctaText: "Learn More",
                 ctaHref: "/solutions/cfo-advisory-services",
               },
               {
                 title: "Strategic Tax Mitigation",
-                description: "Multi-state structuring, credit optimization, and year-end strategic planning.",
+                description:
+                  "Multi-state structuring, credit optimization, and year-end strategic planning.",
                 icon: "Shield",
                 ctaText: "View Tax Services",
                 ctaHref: "/solutions/tax",
               },
               {
                 title: "Full-Cycle Bookkeeping",
-                description: "Automated daily reconciliations, AP/AR management, and clean monthly financial closes.",
+                description:
+                  "Automated daily reconciliations, AP/AR management, and clean monthly financial closes.",
                 icon: "Calculator",
                 ctaText: "View Bookkeeping",
                 ctaHref: "/solutions/bookkeeping",
@@ -200,13 +423,30 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             id: `steps-${Date.now()}-3`,
             eyebrow: "How We Partner",
             heading: "Our 4-Step Process",
-            description: "A clear, transparent roadmap from initial onboarding to continuous financial clarity.",
+            description:
+              "A clear, transparent roadmap from initial onboarding to continuous financial clarity.",
             layout: "horizontal",
             items: [
-              { stepNumber: "01", title: "Discovery", text: "We review your financial setup and objectives." },
-              { stepNumber: "02", title: "Strategy", text: "We create tailored reporting schedules and workflows." },
-              { stepNumber: "03", title: "Execution", text: "Our team handles recurring close and compliance." },
-              { stepNumber: "04", title: "Advisory", text: "Quarterly reviews and strategic growth planning." },
+              {
+                stepNumber: "01",
+                title: "Discovery",
+                text: "We review your financial setup and objectives.",
+              },
+              {
+                stepNumber: "02",
+                title: "Strategy",
+                text: "We create tailored reporting schedules and workflows.",
+              },
+              {
+                stepNumber: "03",
+                title: "Execution",
+                text: "Our team handles recurring close and compliance.",
+              },
+              {
+                stepNumber: "04",
+                title: "Advisory",
+                text: "Quarterly reviews and strategic growth planning.",
+              },
             ],
             marginTop: { base: "md" },
             marginBottom: { base: "xl" },
@@ -218,7 +458,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             id: `cta-${Date.now()}-4`,
             eyebrow: "Next Steps",
             heading: "Ready to Elevate Your Financial Operations?",
-            description: "Schedule a confidential discovery consultation with our senior advisory team.",
+            description:
+              "Schedule a confidential discovery consultation with our senior advisory team.",
             primaryButton: {
               label: "Schedule Consultation",
               href: "/bookanappointment",
@@ -248,7 +489,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
   {
     id: "events-page",
     name: "Events & Webinar Page",
-    description: "Event landing page with headline, agenda schedule, speaker information, and direct RSVP booking.",
+    description:
+      "Event landing page with headline, agenda schedule, speaker information, and direct RSVP booking.",
     badge: "Events & RSVP",
     hasFirstBlockHero: true,
     getInitialData: (title: string): Data => ({
@@ -258,7 +500,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
           props: {
             id: `hero-${Date.now()}-1`,
             headline: title || "Upcoming Strategic Executive Briefing",
-            subheadline: "Join our senior financial advisors and industry leaders for an insightful deep dive into strategic tax planning and capital management.",
+            subheadline:
+              "Join our senior financial advisors and industry leaders for an insightful deep dive into strategic tax planning and capital management.",
             eyebrow: "Live Briefing",
             primaryCta: {
               enabled: true,
@@ -286,9 +529,21 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             description: "Key topics and presentation highlights.",
             layout: "horizontal",
             items: [
-              { stepNumber: "10:00 AM", title: "Welcome & Overview", text: "Opening remarks and market landscape briefing." },
-              { stepNumber: "10:30 AM", title: "Keynote Strategy", text: "Proactive cash forecasting and tax mitigation frameworks." },
-              { stepNumber: "11:15 AM", title: "Interactive Q&A", text: "Open questions with our senior advisory partners." },
+              {
+                stepNumber: "10:00 AM",
+                title: "Welcome & Overview",
+                text: "Opening remarks and market landscape briefing.",
+              },
+              {
+                stepNumber: "10:30 AM",
+                title: "Keynote Strategy",
+                text: "Proactive cash forecasting and tax mitigation frameworks.",
+              },
+              {
+                stepNumber: "11:15 AM",
+                title: "Interactive Q&A",
+                text: "Open questions with our senior advisory partners.",
+              },
             ],
             marginTop: { base: "lg" },
             marginBottom: { base: "xl" },
@@ -319,7 +574,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
   {
     id: "gallery-page",
     name: "Photo Gallery Page",
-    description: "Visual media showcase featuring an introductory heading, photo gallery grid with zoom lightbox, and closing inquiry card.",
+    description:
+      "Visual media showcase featuring an introductory heading, photo gallery grid with zoom lightbox, and closing inquiry card.",
     badge: "Showcase",
     hasFirstBlockHero: false,
     getInitialData: (title: string): Data => ({
@@ -338,7 +594,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
           type: "RichText",
           props: {
             id: `rich-${Date.now()}-2`,
-            content: "Explore highlights, executive summits, and community initiatives from SMG across New York and Florida.",
+            content:
+              "Explore highlights, executive summits, and community initiatives from SMG across New York and Florida.",
             marginTop: { base: "none" },
             marginBottom: { base: "lg" },
           },
@@ -384,7 +641,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             id: `cta-${Date.now()}-4`,
             eyebrow: "Get in Touch",
             heading: "Interested in Partnering With Us?",
-            description: "Reach out to our team to learn more about upcoming events and advisory services.",
+            description:
+              "Reach out to our team to learn more about upcoming events and advisory services.",
             primaryButton: {
               label: "Contact Our Team",
               href: "/contact",
@@ -409,7 +667,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
   {
     id: "contact-booking-page",
     name: "Contact & Consultation Page",
-    description: "Dedicated inquiry page featuring contact details, interactive Calendly scheduling, and FAQ accordion.",
+    description:
+      "Dedicated inquiry page featuring contact details, interactive Calendly scheduling, and FAQ accordion.",
     badge: "Contact & Booking",
     hasFirstBlockHero: false,
     getInitialData: (title: string): Data => ({
@@ -428,7 +687,8 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
           type: "RichText",
           props: {
             id: `rich-${Date.now()}-2`,
-            content: "Speak directly with an SMG senior advisor. Select a date and time that suits your schedule below for a confidential financial review.",
+            content:
+              "Speak directly with an SMG senior advisor. Select a date and time that suits your schedule below for a confidential financial review.",
             marginTop: { base: "none" },
             marginBottom: { base: "lg" },
           },
@@ -456,11 +716,13 @@ export const PAGE_TEMPLATES: CmsTemplate[] = [
             items: [
               {
                 question: "What should I prepare before our consultation?",
-                answer: "Having high-level financial statements (P&L, Balance Sheet) and your most recent tax filings handy is helpful, but not strictly required for our initial discovery discussion.",
+                answer:
+                  "Having high-level financial statements (P&L, Balance Sheet) and your most recent tax filings handy is helpful, but not strictly required for our initial discovery discussion.",
               },
               {
                 question: "Is the initial consultation confidential?",
-                answer: "Yes, 100% confidential. We operate under strict professional confidentiality and NDA standards for all discussions.",
+                answer:
+                  "Yes, 100% confidential. We operate under strict professional confidentiality and NDA standards for all discussions.",
               },
             ],
             marginTop: { base: "md" },

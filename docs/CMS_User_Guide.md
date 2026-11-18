@@ -87,7 +87,7 @@ USED IN: Section 2. Quick Start
 
 2. Click the **+ New Page** button in the top right corner.
 3. Enter your page title (for example, `Annual Charity Golf Outing`).
-4. Choose a starting template (such as **Event Registration** or **Blank Page**).
+4. Choose a starting template (such as **Bookkeeping Lead Generation**, **Event Registration**, or **Blank Page**).
 5. Click **Create Page**. The visual editor will open immediately.
 
 [SCREENSHOT SS-003: Create New Page Template Selection]
@@ -190,8 +190,8 @@ USED IN: Section 3.2 The Left Panel
 -->
 
 - **Search box**: Type any block name (such as `Button`, `Gallery`, `FAQ`) to filter the list instantly.
-- **Basics**: Core elements including **Heading**, **Text**, **Image**, **Button**, **Spacer**, and **Divider**.
-- **Sections**: Pre-styled content blocks including **Top Banner**, **Cards Grid**, **Photo Gallery**, **FAQ Accordion**, **Call to Action**, **Stats**, **Feature List**, **Process Steps**, **Testimonial Quote**, and **Testimonial Carousel**.
+- **Basics**: Core elements including **Heading**, **Text**, **Image**, **Icon**, **Button**, **Spacer**, and **Divider**.
+- **Sections**: Pre-styled content blocks including **Top Banner**, **Cards Grid**, **Photo Gallery**, **FAQ Accordion**, **Call to Action**, **Stats**, **Feature List**, **Process Steps**, **Testimonial Quote**, **Testimonial Carousel**, **Form**, and **Quote Hero + Form**.
 - **Advanced**: Structural components including **Columns Layout**, **Container Section**, **Video Player**, **Calendly Calendar**, and **Notice Box** (collapsed by default).
 
 ### 3.3 The Center Canvas
@@ -270,7 +270,7 @@ USED IN: Section 3.5 The Empty State
 
 ## 4. Blocks Library Guide
 
-In this section, you will learn about all 21 blocks available in the CMS, when to use each one, and how to configure them.
+In this section, you will learn about all 23 blocks available in the CMS, when to use each one, and how to configure them.
 
 ---
 
@@ -301,6 +301,13 @@ In this section, you will learn about all 21 blocks available in the CMS, when t
   - Corner Rounding: `None`, `Small`, `Medium`, `Large`, or `Pill`.
   - Image Caption and Lightbox click zoom.
 - **Mobile appearance**: Resizes to 100% of the screen width with aspect ratio preserved.
+
+#### Icon
+- **When to use**: To add one standalone symbol next to text, a button, or another block.
+- **How to add**: Drag **Icon** from the **Basics** category, next to **Image**.
+- **What you can edit**: Choose a built-in icon or upload an image/`.ico`, set its size and colors, choose a background shape, and optionally add a link.
+- **Layout**: The icon is inline by default with no extra margins, so nearby content can flow beside it.
+- **Custom image**: Uploading a custom icon image replaces the selected built-in icon.
 
 #### Button
 - **When to use**: For calls to action such as `Register Now`, `Donate Today`, `Download Guide`, or `Contact Us`.
@@ -379,7 +386,13 @@ USED IN: Section 4.2 Sections Category
 
 #### Feature List
 - **When to use**: To list key benefits, schedule highlights, or organization values with colored icons.
-- **What you can edit**: 2 to 4 items with icon picker, item title, and short explanation.
+- **What you can edit**: Add feature items, choose a built-in icon or upload/select a custom icon image (including `.ico`), and edit each title and description.
+- **Custom icon**: In each item, use **Custom Icon Image / .ico** to upload an icon or choose one from the media library. A custom image replaces the selected built-in icon.
+
+#### Form
+- **When to use**: To collect contact requests, quote inquiries, registrations, or other visitor details.
+- **What you can edit**: Choose an elevated card, bordered, or minimal design; set stacked or two-column layout; add and reorder custom fields; and change labels, placeholders, dropdown options, and which fields are required.
+- **Important**: Include an Email field. It is required for submissions to be sent through the website's contact workflow.
 
 #### Process Steps
 - **When to use**: To guide visitors through a step-by-step process (e.g. `Step 1: Register`, `Step 2: Get Confirmation`, `Step 3: Attend`).
@@ -711,4 +724,3 @@ The unlisted client onboarding "Account Access Guide" pages (`/onboarding/ny` an
 - **Adding a Provider**: Copy an existing provider object under `sections.bank`, `sections.payroll`, or `sections.pos`, supply a unique URL-safe `id` (e.g. `chase`), and populate `steps`.
 - **Updating Guest Credentials**: Edit the `guestInfo` block under `ny` or `fl`.
 - **Deploying**: Commit the file and push to the connected git branch; Vercel deploys automatically.
-

@@ -21,6 +21,8 @@ import {
   Video,
   Calendar,
   AlertCircle,
+  ListChecks,
+  Shapes,
   Box,
 } from "lucide-react";
 
@@ -46,6 +48,9 @@ export const BLOCK_LABEL_MAP: Record<string, string> = {
   VideoEmbed: "Video Player",
   CalendlyBooking: "Calendly Calendar",
   Callout: "Notice Box",
+  Form: "Form",
+  Icon: "Icon",
+  QuoteHero: "Quote Hero + Form",
 };
 
 export const BLOCK_ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -70,6 +75,9 @@ export const BLOCK_ICON_MAP: Record<string, React.ComponentType<{ className?: st
   VideoEmbed: Video,
   CalendlyBooking: Calendar,
   Callout: AlertCircle,
+  Form: ListChecks,
+  Icon: Shapes,
+  QuoteHero: ListChecks,
 };
 
 export function getBlockIcon(rawType?: string): React.ComponentType<{ className?: string }> {
@@ -106,9 +114,7 @@ export function CustomActionBar({
         <span>{friendlyLabel}</span>
       </div>
       <div className="h-3.5 w-px bg-white/20 mx-0.5" />
-      <div className="flex items-center gap-1">
-        {children}
-      </div>
+      <div className="flex items-center gap-1">{children}</div>
     </div>
   );
 }
@@ -185,11 +191,7 @@ export function CustomComponentOverlay({
       data-puck-component-id={componentId}
       data-puck-component-type={componentType}
       className={`relative w-full h-full pointer-events-none transition-colors duration-150 group/overlay ${
-        isSelected
-          ? "bg-blue-500/[0.04]"
-          : hover
-          ? "bg-blue-400/[0.02]"
-          : ""
+        isSelected ? "bg-blue-500/[0.04]" : hover ? "bg-blue-400/[0.02]" : ""
       }`}
     >
       {/* Type badge on hover or selection */}
@@ -201,11 +203,7 @@ export function CustomComponentOverlay({
               : "bg-blue-600 text-white shadow-blue-600/20"
           }`}
         >
-          <Icon
-            className={`size-3 shrink-0 ${
-              isSelected ? "text-emerald-400" : "text-white"
-            }`}
-          />
+          <Icon className={`size-3 shrink-0 ${isSelected ? "text-emerald-400" : "text-white"}`} />
           <span>{friendlyName}</span>
         </div>
       )}

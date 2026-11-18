@@ -50,6 +50,7 @@ import {
 
 export interface IconFeatureItem {
   icon?: string;
+  iconImage?: string;
   title: string;
   text: string;
   linkLabel?: string;
@@ -272,7 +273,16 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
                     isCentered ? "mx-auto" : ""
                   }`}
                 >
-                  <IconComponent className="size-6 stroke-[1.8]" />
+                  {item.iconImage ? (
+                    <img
+                      src={item.iconImage}
+                      alt=""
+                      className="size-6 object-contain"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <IconComponent className="size-6 stroke-[1.8]" />
+                  )}
                 </div>
 
                 {/* Title */}
