@@ -111,8 +111,8 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
           eyebrow={data.eyebrow}
           title={data.heroTitle}
           description={data.heroDescription}
-          buttonText="SCHEDULE A CONSULTATION"
-          buttonHref={BOOKING_ROUTE}
+          buttonText={data.buttonText || "SCHEDULE A CONSULTATION"}
+          buttonHref={data.ctaHref || BOOKING_ROUTE}
         />
 
         {/* =========================================================================
@@ -342,7 +342,7 @@ export function LandingPageLayout({ data }: LandingPageLayoutProps) {
                     data-industry={data.slug}
                     className="inline-flex items-center justify-center rounded-full bg-white px-12 py-3.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0b172e] shadow-lg transition-all hover:bg-slate-100 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
-                    {isSubmitting ? "Submitting..." : "SCHEDULE A CONSULTATION"}
+                    {isSubmitting ? "Submitting..." : (data.form.submitButtonText || "SCHEDULE A CONSULTATION")}
                   </button>
                 </div>
               </form>

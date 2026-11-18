@@ -289,18 +289,29 @@ export interface SolutionsPageContent {
     eyebrow: string;
     title: string;
     description: string;
+    heroBg?: string;
+    buttonText?: string;
+    buttonHref?: string;
+    introParagraph?: string;
   };
   solutions: Record<string, SolutionData>;
+  solutionOrder?: string[];
 }
 
 export const DEFAULT_SOLUTIONS_PAGE_CONTENT: SolutionsPageContent = {
   hub: {
-    eyebrow: "Financial Solutions",
-    title: "Solutions Tailored to Your Business",
+    eyebrow: "Our Solutions",
+    title: "Financial Solutions Built for Growth",
     description:
-      "Explore SMG's financial solutions: Outsourced Bookkeeping, CFO Advisory Services, Tax Services, and Wealth Management tailored for your business.",
+      "SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy, with wealth management available through our strategic partner, Kuttin Wealth Management—tailored to give your business clarity and momentum.",
+    heroBg: "/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.webp",
+    buttonText: "SCHEDULE A CONSULTATION",
+    buttonHref: BOOKING_ROUTE,
+    introParagraph:
+      "When bookkeeping, accounting, tax and advisory all come from one firm, your financial data flows seamlessly—connecting your daily numbers, proactive tax strategy and executive decisions under an integrated relationship. That integration saves time, eliminates communication gaps, and gives you a clearer picture of where your business stands.",
   },
   solutions: { ...SOLUTIONS_DATA },
+  solutionOrder: ["bookkeeping", "cfo-advisory-services", "tax", "wealth-management"],
 };
 
 // ==========================================
@@ -313,8 +324,10 @@ export interface IndustriesPageContent {
     description: string;
     heading: string;
     subheading: string;
+    heroBg?: string;
   };
   industries: Record<string, IndustryData>;
+  industryOrder?: string[];
 }
 
 export const DEFAULT_INDUSTRIES_PAGE_CONTENT: IndustriesPageContent = {
@@ -326,8 +339,19 @@ export const DEFAULT_INDUSTRIES_PAGE_CONTENT: IndustriesPageContent = {
     heading: "Tailored Expertise Across 8 Core Sectors",
     subheading:
       "We combine accounting rigor with deep vertical knowledge so your financial statements drive real operational growth.",
+    heroBg: "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp",
   },
   industries: { ...INDUSTRIES_DATA },
+  industryOrder: [
+    "hospitality",
+    "real-estate",
+    "automotive",
+    "healthcare",
+    "legal-professionals",
+    "construction",
+    "manufacturers",
+    "retail",
+  ],
 };
 
 // ==========================================

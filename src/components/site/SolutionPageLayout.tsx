@@ -92,22 +92,26 @@ function getIcon(name: string): ComponentType<LucideProps> {
 interface SolutionPageLayoutProps {
   data: SolutionData;
   /** Per-solution "Why SMG" blurb rendered in the dark philosophy section */
-  philosophyBlurb: string;
+  philosophyBlurb?: string;
   /** Three numbered principle cards for the philosophy section */
-  philosophyCards: { heading: string; body: string }[];
+  philosophyCards?: { heading: string; body: string }[];
   /** Success story quote for the callout banner */
-  successStoryQuote: string;
+  successStoryQuote?: string;
   /** Success story badge label */
-  successStoryBadge: string;
+  successStoryBadge?: string;
 }
 
 export function SolutionPageLayout({
   data,
-  philosophyBlurb,
-  philosophyCards,
-  successStoryQuote,
-  successStoryBadge,
+  philosophyBlurb: philosophyBlurbProp,
+  philosophyCards: philosophyCardsProp,
+  successStoryQuote: successStoryQuoteProp,
+  successStoryBadge: successStoryBadgeProp,
 }: SolutionPageLayoutProps) {
+  const philosophyBlurb = data.philosophyBlurb || philosophyBlurbProp || "";
+  const philosophyCards = data.philosophyCards || philosophyCardsProp || [];
+  const successStoryQuote = data.successStoryQuote || successStoryQuoteProp || "";
+  const successStoryBadge = data.successStoryBadge || successStoryBadgeProp || "";
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
       <Header />
@@ -270,67 +274,82 @@ export function SolutionPageLayout({
         )}
 
         {/* ── Trust Stats ───────────────────────────────────────────────── */}
-        <section className="py-20 sm:py-28 bg-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-10">
-            <div className="mx-auto max-w-2xl text-center mb-16">
-              <span className="text-xs font-bold uppercase tracking-widest text-[#1b4e94]">
-                Why Businesses Trust Us
-              </span>
-              <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
-                Experience. Expertise. Results.
-              </h2>
-            </div>
+        {(() => {
+          const stats = data.trustStats && data.trustStats.length > 0 ? data.trustStats : COMMON_TRUST_STATS;
+          const eyebrow = data.trustStatsEyebrow || "Why Businesses Trust Us";
+          const heading = data.trustStatsHeading || "Experience. Expertise. Results.";
+          const tagline = data.successStoryTagline || "Your financial statements should answer questions—not create them.";
+          const btnText = data.successStoryButtonText || "SCHEDULE A REVIEW";
+          const btnHref = data.successStoryButtonHref || "#contact-form";
 
-            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {COMMON_TRUST_STATS.map((stat) => {
-                const Icon = getIcon(stat.iconName);
-                return (
-                  <div
-                    key={stat.label}
-                    className="rounded-3xl border border-border/70 bg-[#faf9f6] p-8 text-center"
-                  >
-                    <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-white text-[#1b4e94] shadow-sm mb-4">
-                      <Icon className="size-6" />
-                    </div>
-                    <div className="font-serif-hero text-3xl font-black text-[#142340]">
-                      {stat.value}
-                    </div>
-                    <h3 className="mt-1 text-sm font-bold text-[#1b4e94] uppercase tracking-wider">
-                      {stat.label}
-                    </h3>
-                    <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                      {stat.desc}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Success Story Callout */}
-            <div className="mt-16 rounded-3xl border border-blue-200/80 bg-gradient-to-r from-blue-900 to-[#142340] p-8 sm:p-12 text-white shadow-xl">
-              <div className="flex flex-col lg:flex-row items-center gap-8 justify-between">
-                <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold text-blue-200 mb-4">
-                    <Award className="size-3.5" />
-                    <span>{successStoryBadge}</span>
-                  </div>
-                  <blockquote className="font-serif-hero text-xl sm:text-2xl italic leading-relaxed text-blue-50">
-                    "{successStoryQuote}"
-                  </blockquote>
-                  <h4 className="mt-4 text-xs font-bold uppercase tracking-widest text-blue-300">
-                    Your financial statements should answer questions—not create them.
-                  </h4>
+          return (
+            <section className="py-20 sm:py-28 bg-white">
+              <div className="mx-auto max-w-7xl px-6 lg:px-10">
+                <div className="mx-auto max-w-2xl text-center mb-16">
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#1b4e94]">
+                    {eyebrow}
+                  </span>
+                  <h2 className="mt-3 font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold text-[#142340]">
+                    {heading}
+                  </h2>
                 </div>
-                <a
-                  href="#contact-form"
-                  className="shrink-0 rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-[#142340] shadow-lg transition hover:bg-blue-50 hover:scale-105"
-                >
-                  SCHEDULE A REVIEW
-                </a>
+
+                <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  {stats.map((stat, idx) => {
+                    const Icon = getIcon(stat.iconName);
+                    return (
+                      <div
+                        key={stat.label || idx}
+                        className="rounded-3xl border border-border/70 bg-[#faf9f6] p-8 text-center"
+                      >
+                        <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-white text-[#1b4e94] shadow-sm mb-4">
+                          <Icon className="size-6" />
+                        </div>
+                        <div className="font-serif-hero text-3xl font-black text-[#142340]">
+                          {stat.value}
+                        </div>
+                        <h3 className="mt-1 text-sm font-bold text-[#1b4e94] uppercase tracking-wider">
+                          {stat.label}
+                        </h3>
+                        <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                          {stat.desc}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Success Story Callout */}
+                {(successStoryQuote || data.successStoryQuote) && (
+                  <div className="mt-16 rounded-3xl border border-blue-200/80 bg-gradient-to-r from-blue-900 to-[#142340] p-8 sm:p-12 text-white shadow-xl">
+                    <div className="flex flex-col lg:flex-row items-center gap-8 justify-between">
+                      <div className="max-w-2xl">
+                        {(successStoryBadge || data.successStoryBadge) && (
+                          <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/20 px-3 py-1 text-xs font-bold text-blue-200 mb-4">
+                            <Award className="size-3.5" />
+                            <span>{successStoryBadge || data.successStoryBadge}</span>
+                          </div>
+                        )}
+                        <blockquote className="font-serif-hero text-xl sm:text-2xl italic leading-relaxed text-blue-50">
+                          "{successStoryQuote || data.successStoryQuote}"
+                        </blockquote>
+                        <h4 className="mt-4 text-xs font-bold uppercase tracking-widest text-blue-300">
+                          {tagline}
+                        </h4>
+                      </div>
+                      <a
+                        href={btnHref}
+                        className="shrink-0 rounded-full bg-white px-8 py-3.5 text-xs font-bold uppercase tracking-wider text-[#142340] shadow-lg transition hover:bg-blue-50 hover:scale-105"
+                      >
+                        {btnText}
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          );
+        })()}
 
         {/* ── Testimonials ──────────────────────────────────────────────── */}
         {(() => {

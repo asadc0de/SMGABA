@@ -31,6 +31,12 @@ export interface SolutionData {
   id: string;
   href: string;
   title: string;
+  subtitle?: string;
+  partnerNote?: string;
+  points?: string[];
+  image?: string;
+  reverse?: boolean;
+  bgClass?: string;
   metaTitle: string;
   metaDescription: string;
   heroBg: string;
@@ -48,6 +54,16 @@ export interface SolutionData {
   targetProfilesHeading?: string;
   targetProfiles?: string[];
   testimonials: Testimonial[];
+  philosophyBlurb?: string;
+  philosophyCards?: { heading: string; body: string }[];
+  trustStatsEyebrow?: string;
+  trustStatsHeading?: string;
+  trustStats?: TrustStat[];
+  successStoryQuote?: string;
+  successStoryBadge?: string;
+  successStoryTagline?: string;
+  successStoryButtonText?: string;
+  successStoryButtonHref?: string;
 }
 
 export const COMMON_TRUST_STATS: TrustStat[] = [
@@ -94,6 +110,42 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     id: "bookkeeping",
     href: "/solutions/bookkeeping",
     title: "Bookkeeping Services",
+    subtitle:
+      "Accurate, timely bookkeeping backed by responsive professionals who help you stay organized and focused on growth.",
+    image: "/images/solutions/smg-bookkeeping-1.jpeg",
+    points: [
+      "Monthly Bookkeeping & Closing",
+      "Bank & Credit Card Reconciliations",
+      "Financial Statements Preparation",
+      "Accounts Payable & Receivable Support",
+      "Catch-Up & Cleanup Bookkeeping",
+      "Year-End Reporting Support",
+    ],
+    philosophyBlurb:
+      "When bookkeeping falls behind, financial reports become unreliable, tax season becomes stressful, and owners lose confidence in their numbers. Our role is to restore order and deliver accurate, timely financials so you can lead your business with clarity.",
+    philosophyCards: [
+      {
+        heading: "Financial Clarity",
+        body: "Clean financial statements that give you an honest, transparent view of business performance.",
+      },
+      {
+        heading: "Timely Monthly Cadence",
+        body: "Dependable reconciliations and reporting closed on schedule each month—never delayed until tax time.",
+      },
+      {
+        heading: "Actionable Insights",
+        body: "Organized data structured to help leadership evaluate costs, manage cash flow, and plan future growth.",
+      },
+    ],
+    successStoryBadge: "Bookkeeping Success Story",
+    successStoryQuote:
+      "Helped a growing hospitality business improve monthly financial reporting, streamline bookkeeping processes, and gain better visibility into cash flow and business performance.",
+    trustStatsEyebrow: "Why Businesses Trust Us",
+    trustStatsHeading: "Experience. Expertise. Results.",
+    trustStats: [...COMMON_TRUST_STATS],
+    successStoryTagline: "Your financial statements should answer questions—not create them.",
+    successStoryButtonText: "SCHEDULE A REVIEW",
+    successStoryButtonHref: "#contact-form",
     metaTitle: "Bookkeeping Services | SMG ABA",
     metaDescription:
       "Accurate, timely bookkeeping backed by responsive professionals who help you stay organized, make confident decisions, and focus on growing your business.",
@@ -192,6 +244,41 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     id: "cfo-advisory-services",
     href: "/solutions/cfo-advisory-services",
     title: "CFO Advisory Services",
+    subtitle:
+      "Executive-level financial leadership, cash flow forecasting, and strategy to improve profitability without the overhead of a full-time CFO.",
+    image: "/images/solutions/adobestock-201950021-1.jpeg",
+    points: [
+      "Financial Strategy & Multi-Year Planning",
+      "Budgeting & Dynamic Cash Flow Forecasting",
+      "KPI & Performance Dashboard Reporting",
+      "Profitability & Margin Analysis",
+      "Business Growth & Financing Advisory",
+    ],
+    philosophyBlurb:
+      "Growing businesses often hit a ceiling when financial complexity outpaces the owner's ability to manage it alone. Our fractional CFO advisory bridges the gap—delivering enterprise-grade financial strategy without the full-time overhead, so your leadership team can execute with clarity and confidence.",
+    philosophyCards: [
+      {
+        heading: "Strategic Roadmap",
+        body: "Connect your monthly financial performance directly to capital allocation, margin improvement, and growth targets.",
+      },
+      {
+        heading: "Proactive Forecasting",
+        body: "Move beyond static historical reports toward dynamic rolling forecasts that prepare you for what comes next.",
+      },
+      {
+        heading: "Executive Guidance",
+        body: "Work alongside a seasoned financial executive who understands your operational goals and industry challenges.",
+      },
+    ],
+    successStoryBadge: "CFO Advisory Success Story",
+    successStoryQuote:
+      "Partnered with a multi-location service business to implement rolling cash-flow forecasting, reduce overhead by 12%, and build a financing package that secured $1.2M in commercial credit.",
+    trustStatsEyebrow: "Why Businesses Trust Us",
+    trustStatsHeading: "Experience. Expertise. Results.",
+    trustStats: [...COMMON_TRUST_STATS],
+    successStoryTagline: "Your financial statements should answer questions—not create them.",
+    successStoryButtonText: "SCHEDULE A REVIEW",
+    successStoryButtonHref: "#contact-form",
     metaTitle: "CFO Advisory Services | SMG ABA",
     metaDescription:
       "Gain the financial clarity, forecasting, and executive guidance you need to make smarter business decisions, improve margins, and grow your business.",
@@ -291,6 +378,42 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     id: "tax",
     href: "/solutions/tax",
     title: "Tax Services",
+    subtitle:
+      "Proactive, year-round tax planning and accurate preparation tailored to reduce liabilities and eliminate surprises.",
+    image: "/images/solutions/smg-tax-services-1.jpeg",
+    points: [
+      "Business Tax Return Preparation (Federal, State, Local)",
+      "Strategic Year-Round Tax Planning",
+      "Estimated & Quarterly Tax Management",
+      "Multi-State Compliance & Filing Support",
+      "Tax Notice & Audit Representation",
+      "Entity & Transaction Structuring",
+    ],
+    philosophyBlurb:
+      "Most businesses overpay taxes not because the law requires it, but because they lack a proactive advisor in their corner throughout the year. We shift the conversation from reactive compliance to year-round tax strategy—identifying opportunities before December 31st when it still matters.",
+    philosophyCards: [
+      {
+        heading: "Year-Round Strategy",
+        body: "Tax planning shouldn't start in March. We build proactive tax strategies throughout the operating year to maximize savings.",
+      },
+      {
+        heading: "Compliance Confidence",
+        body: "Stay fully compliant across federal, state, and local jurisdictions with experts who track regulatory changes on your behalf.",
+      },
+      {
+        heading: "Proactive Advisors",
+        body: "We're available when you need guidance—not just at filing time—because the best tax decisions happen during the year.",
+      },
+    ],
+    successStoryBadge: "Tax Strategy Success Story",
+    successStoryQuote:
+      "Identified a missed entity election and Section 179 opportunity for a professional services firm that reduced their effective tax rate by over 6% in the first year of advisory engagement.",
+    trustStatsEyebrow: "Why Businesses Trust Us",
+    trustStatsHeading: "Experience. Expertise. Results.",
+    trustStats: [...COMMON_TRUST_STATS],
+    successStoryTagline: "Your financial statements should answer questions—not create them.",
+    successStoryButtonText: "SCHEDULE A REVIEW",
+    successStoryButtonHref: "#contact-form",
     metaTitle: "Tax Services & Strategic Planning | SMG ABA",
     metaDescription:
       "Stay ahead of tax deadlines, reduce surprises, and make confident decisions with year-round tax planning and preparation tailored to your business.",
@@ -391,6 +514,19 @@ export const SOLUTIONS_DATA: Record<string, SolutionData> = {
     id: "wealth-management",
     href: "/solutions/wealth-management",
     title: "Wealth Management",
+    partnerNote: "Offered through our partner, Kuttin Wealth Management.",
+    subtitle:
+      "Through our strategic partner, Kuttin Wealth Management, clients have access to comprehensive wealth management, retirement planning, and financial strategies to protect and grow their legacy.",
+    image: "/images/solutions/smg-back-office-1.jpeg",
+    points: [
+      "Comprehensive Wealth Strategy",
+      "Retirement & Exit Planning",
+      "Executive Financial Advisory",
+      "Asset Protection & Legacy Structuring",
+    ],
+    trustStatsEyebrow: "Why Businesses Trust Us",
+    trustStatsHeading: "Experience. Expertise. Results.",
+    trustStats: [...COMMON_TRUST_STATS],
     metaTitle: "Wealth Management - SMG Accountants, Bookkeepers & Advisors",
     metaDescription:
       "Retirement planning, investment guidance, and wealth strategies through SMG ABA's strategic partnership with Ameriprise Financial and Kuttin Wealth Management.",

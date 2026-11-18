@@ -57,6 +57,12 @@ function IndustriesPage() {
   const pageData = loaderData?.pageData || DEFAULT_INDUSTRIES_PAGE_CONTENT;
   const hub = pageData.hub || DEFAULT_INDUSTRIES_PAGE_CONTENT.hub;
 
+  const industriesMap = pageData.industries || DEFAULT_INDUSTRIES_PAGE_CONTENT.industries;
+  const order = pageData.industryOrder || Object.keys(industriesMap);
+  const displayedIndustries = order
+    .map((slug) => industriesMap[slug])
+    .filter(Boolean);
+
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
       <Header />
@@ -66,7 +72,7 @@ function IndustriesPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"
+          bgImage={hub.heroBg || "/images/stock/unsplash-photo-1486406146926-c627a92ad1ab.webp"}
           eyebrow={hub.eyebrow || "Industry Specializations"}
           title={hub.title || "Industries We Serve"}
           description={
@@ -91,7 +97,7 @@ function IndustriesPage() {
             </div>
 
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-2">
-              {ALL_INDUSTRIES_LIST.map((ind) => {
+              {displayedIndustries.map((ind) => {
                 const Icon = ICON_MAP[ind.iconName] || Building2;
                 return (
                   <div

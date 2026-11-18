@@ -10,6 +10,8 @@ import {
   ArrowRight,
   AlertCircle,
   Loader2,
+  Sparkles,
+  Layers,
 } from "lucide-react";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
@@ -17,23 +19,36 @@ import { WealthDisclosure } from "@/components/site/WealthDisclosure";
 import { SubpageHero } from "@/components/site/SubpageHero";
 import { submitNoCrmLead } from "@/lib/leads.server";
 import { BOOKING_ROUTE } from "@/data/calendly";
-
+import { getSolutionsPageContentServer } from "@/lib/site-content.server";
+import { DEFAULT_SOLUTIONS_PAGE_CONTENT } from "@/data/pageContent";
 
 export const Route = createFileRoute("/solutions/")({
-  head: () => ({
-    meta: [
-      { title: "Solutions | SMG Accounting, Bookkeeping & Advisory" },
-      {
-        name: "description",
-        content:
-          "Explore SMG's financial solutions: Outsourced Bookkeeping, CFO Advisory Services, Tax Services, and Wealth Management tailored for your business.",
-      },
-    ],
-  }),
+  loader: async () => {
+    try {
+      const content = await getSolutionsPageContentServer();
+      return { content: content || DEFAULT_SOLUTIONS_PAGE_CONTENT };
+    } catch {
+      return { content: DEFAULT_SOLUTIONS_PAGE_CONTENT };
+    }
+  },
+  head: ({ loaderData }) => {
+    const hub = loaderData?.content?.hub || DEFAULT_SOLUTIONS_PAGE_CONTENT.hub;
+    return {
+      meta: [
+        { title: hub.title ? `${hub.title} | SMG ABA` : "Solutions | SMG Accounting, Bookkeeping & Advisory" },
+        {
+          name: "description",
+          content:
+            hub.description ||
+            "Explore SMG's financial solutions: Outsourced Bookkeeping, CFO Advisory Services, Tax Services, and Wealth Management tailored for your business.",
+        },
+      ],
+    };
+  },
   component: SolutionsIndexPage,
 });
 
-const SOLUTIONS_DATA = [
+const DEFAULT_FALLBACK_SOLUTIONS = [
   {
     id: "bookkeeping",
     href: "/solutions/bookkeeping",
@@ -54,7 +69,7 @@ const SOLUTIONS_DATA = [
     bgClass: "bg-white",
   },
   {
-    id: "cfo-advisory",
+    id: "cfo-advisory-services",
     href: "/solutions/cfo-advisory-services",
     title: "CFO Advisory Services",
     subtitle:
@@ -98,7 +113,12 @@ const SOLUTIONS_DATA = [
     subtitle:
       "Through our strategic partner, Kuttin Wealth Management, clients have access to comprehensive wealth management, retirement planning, and financial strategies to protect and grow their legacy.",
     icon: Landmark,
-    points: [] as string[],
+    points: [
+      "Comprehensive Wealth Strategy",
+      "Retirement & Exit Planning",
+      "Executive Financial Advisory",
+      "Asset Protection & Legacy Structuring",
+    ],
     image: "/images/solutions/smg-back-office-1.jpeg",
     reverse: true,
     bgClass: "bg-[#faf9f6]",
@@ -142,6 +162,36 @@ const ALL_TESTIMONIALS: SolutionTestimonialItem[] = [
 const TESTIMONIALS = ALL_TESTIMONIALS.filter((t) => !t.hidden);
 
 function SolutionsIndexPage() {
+  const loaderData = Route.useLoaderData();
+  const content = loaderData?.content || DEFAULT_SOLUTIONS_PAGE_CONTENT;
+  const hub = content.hub || DEFAULT_SOLUTIONS_PAGE_CONTENT.hub;
+
+  // Build solutions list from CMS data merged with icon mapping
+  const ICON_MAP: Record<string, typeof BookOpen> = {
+    bookkeeping: BookOpen,
+    "cfo-advisory-services": TrendingUp,
+    tax: FileCheck2,
+    "wealth-management": Landmark,
+  };
+
+  const solutionOrder = content.solutionOrder || Object.keys(content.solutions || {});
+  const cmsSolutions = solutionOrder.map((key, idx) => {
+    const sol = content.solutions?.[key];
+    const fallback = DEFAULT_FALLBACK_SOLUTIONS.find((s) => s.id === key);
+    return {
+      id: key,
+      href: sol?.href || fallback?.href || `/solutions/${key}`,
+      title: sol?.title || fallback?.title || key,
+      subtitle: sol?.subtitle || fallback?.subtitle || "",
+      partnerNote: sol?.partnerNote || fallback?.partnerNote || "",
+      points: sol?.points || fallback?.points || [],
+      image: sol?.image || fallback?.image || "",
+      icon: ICON_MAP[key] || Layers,
+      reverse: idx % 2 !== 0,
+      bgClass: idx % 2 !== 0 ? "bg-[#faf9f6]" : "bg-white",
+    };
+  });
+
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -227,19 +277,19 @@ function SolutionsIndexPage() {
             1. HERO SECTION
            ========================================================================= */}
         <SubpageHero
-          bgImage="/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.webp"
-          eyebrow="Our Solutions"
-          title="Financial Solutions Built for Growth"
-          description="SMG offers a comprehensive suite of financial services—from outsourced bookkeeping and CFO advisory to proactive tax strategy, with wealth management available through our strategic partner, Kuttin Wealth Management—tailored to give your business clarity and momentum."
-          buttonText="SCHEDULE A CONSULTATION"
-          buttonHref={BOOKING_ROUTE}
+          bgImage={hub.heroBg || "/images/stock/unsplash-photo-1454165804606-c3d57bc86b40.webp"}
+          eyebrow={hub.eyebrow || "Our Solutions"}
+          title={hub.title || "Financial Solutions Built for Growth"}
+          description={hub.description}
+          buttonText={hub.buttonText || "SCHEDULE A CONSULTATION"}
+          buttonHref={hub.buttonHref || BOOKING_ROUTE}
         />
 
         {/* Intro paragraph */}
         <div className="py-10 sm:py-12 bg-white border-b border-slate-100">
           <div className="mx-auto max-w-3xl px-6 lg:px-8 text-center">
             <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-              When bookkeeping, accounting, tax and advisory all come from one firm, your financial data flows seamlessly—connecting your daily numbers, proactive tax strategy and executive decisions under an integrated relationship. That integration saves time, eliminates communication gaps, and gives you a clearer picture of where your business stands.
+              {hub.introParagraph || "When bookkeeping, accounting, tax and advisory all come from one firm, your financial data flows seamlessly—connecting your daily numbers, proactive tax strategy and executive decisions under an integrated relationship. That integration saves time, eliminates communication gaps, and gives you a clearer picture of where your business stands."}
             </p>
           </div>
         </div>
@@ -248,7 +298,7 @@ function SolutionsIndexPage() {
             2. SOLUTIONS CARDS SECTION (Alternating Zig-Zag)
            ========================================================================= */}
         <div className="space-y-0">
-          {SOLUTIONS_DATA.map((sol) => {
+          {cmsSolutions.map((sol) => {
             const IconComponent = sol.icon;
             return (
               <section

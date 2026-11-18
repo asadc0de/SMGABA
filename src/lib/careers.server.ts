@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import FALLBACK_JOBS from "@/data/fallbackJobs.json";
 
 export interface JobPosting {
   referenceNumber: string;
@@ -116,13 +117,14 @@ export const getCareersFeed = createServerFn({ method: "GET" }).handler(
           "User-Agent": "Mozilla/5.0 (compatible; SMGABA-Careers/1.0)",
           Accept: "application/xml, text/xml, */*",
         },
+        signal: AbortSignal.timeout(5000),
       });
 
       if (!res.ok) {
-        console.error(`[Careers Feed] Fetch error status ${res.status}: ${res.statusText}`);
+        console.warn(`[Careers Feed] Fetch error status ${res.status}: ${res.statusText}, falling back to cached jobs`);
         return {
-          jobs: [],
-          error: "Unable to load current openings, please check back shortly",
+          jobs: (FALLBACK_JOBS as unknown as JobPosting[]) || [],
+          error: null,
         };
       }
 
@@ -130,14 +132,14 @@ export const getCareersFeed = createServerFn({ method: "GET" }).handler(
       const jobs = parseJobsXml(xmlText);
 
       return {
-        jobs,
+        jobs: jobs.length > 0 ? jobs : ((FALLBACK_JOBS as unknown as JobPosting[]) || []),
         error: null,
       };
     } catch (error: unknown) {
-      console.error("[Careers Feed] Fetch exception:", error);
+      console.warn("[Careers Feed] Local network/DNS unable to reach feed URL, using fallback jobs:", error);
       return {
-        jobs: [],
-        error: "Unable to load current openings, please check back shortly",
+        jobs: (FALLBACK_JOBS as unknown as JobPosting[]) || [],
+        error: null,
       };
     }
   },

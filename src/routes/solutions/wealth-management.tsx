@@ -2,18 +2,32 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { ExternalLink, CheckCircle2, Shield } from "lucide-react";
+import { SOLUTIONS_DATA } from "@/data/solutions";
+import { getSolutionsPageContentServer } from "@/lib/site-content.server";
 
 export const Route = createFileRoute("/solutions/wealth-management")({
-  head: () => ({
-    meta: [
-      { title: "Wealth Management & Financial Advice | SMG ABA" },
-      {
-        name: "description",
-        content:
-          "Wealth management and financial advice tailored to you. Kuttin Wealth Management, a private wealth advisory practice of Ameriprise Financial Services, LLC.",
-      },
-    ],
-  }),
+  loader: async () => {
+    try {
+      const res = await getSolutionsPageContentServer();
+      return { data: res.solutions?.["wealth-management"] || SOLUTIONS_DATA["wealth-management"] };
+    } catch {
+      return { data: SOLUTIONS_DATA["wealth-management"] };
+    }
+  },
+  head: ({ loaderData }) => {
+    const data = loaderData?.data || SOLUTIONS_DATA["wealth-management"];
+    return {
+      meta: [
+        { title: data.metaTitle || "Wealth Management & Financial Advice | SMG ABA" },
+        {
+          name: "description",
+          content:
+            data.metaDescription ||
+            "Wealth management and financial advice tailored to you. Kuttin Wealth Management, a private wealth advisory practice of Ameriprise Financial Services, LLC.",
+        },
+      ],
+    };
+  },
   component: WealthManagementPage,
 });
 
@@ -80,6 +94,14 @@ const DISCLOSURES = [
 ];
 
 function WealthManagementPage() {
+  const loaderData = Route.useLoaderData();
+  const data = loaderData?.data || SOLUTIONS_DATA["wealth-management"];
+
+  const adviceBullets =
+    data.services && data.services.length > 0
+      ? data.services.map((s) => s.title)
+      : ADVICE_BULLETS;
+
   return (
     <div className="min-h-screen bg-white text-[#1c2d42] font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
       <Header />
@@ -91,7 +113,7 @@ function WealthManagementPage() {
         <section className="relative isolate overflow-hidden bg-[#0e1d3a] pt-36 pb-20 sm:pt-44 sm:pb-28 lg:pt-48 lg:pb-32 text-white">
           {/* Photographic background matching site theme */}
           <img
-            src="/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.webp"
+            src={data.heroBg || "/images/stock/unsplash-photo-1579532537598-459ecdaf39cc.webp"}
             alt=""
             aria-hidden="true"
             className="absolute inset-0 size-full object-cover object-center"
@@ -123,22 +145,22 @@ function WealthManagementPage() {
               <div className="lg:col-span-7 space-y-6">
                 {/* Standard Site Eyebrow */}
                 <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-blue-200 backdrop-blur-md border border-white/15">
-                  <span>Solutions / Wealth Management</span>
+                  <span>{data.eyebrow || "Solutions / Wealth Management"}</span>
                 </div>
 
                 {/* H1 Title */}
                 <h1 className="font-serif-hero text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15] drop-shadow-sm">
-                  Wealth management and financial advice tailored to you.
+                  {data.heroTitle || "Wealth management and financial advice tailored to you."}
                 </h1>
 
                 {/* Lead Narrative */}
                 <p className="text-base sm:text-lg text-blue-100/95 leading-relaxed font-light">
-                  True wealth is built with purpose—and it starts with a personalized financial plan designed around your goals, values, and vision for the future.
+                  {data.heroDescription || "True wealth is built with purpose—and it starts with a personalized financial plan designed around your goals, values, and vision for the future."}
                 </p>
 
                 {/* Body Description */}
                 <p className="text-sm sm:text-base text-blue-100/80 leading-relaxed font-normal">
-                  As the preferred financial planning alliance of SMG ABA, Kuttin Wealth Management brings together deep experience, advanced tools, and a personalized approach to help you navigate every stage of your financial journey. Whether you're focused on long-term growth, retirement, or legacy planning, we align our strategies with your timeline, priorities, and risk profile.
+                  {data.subtitle || "As the preferred financial planning alliance of SMG ABA, Kuttin Wealth Management brings together deep experience, advanced tools, and a personalized approach to help you navigate every stage of your financial journey. Whether you're focused on long-term growth, retirement, or legacy planning, we align our strategies with your timeline, priorities, and risk profile."}
                 </p>
 
                 {/* Clean Consultation Prompt Callout */}
@@ -238,7 +260,7 @@ function WealthManagementPage() {
                 </div>
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                  {ADVICE_BULLETS.map((bullet) => (
+                  {adviceBullets.map((bullet) => (
                     <div
                       key={bullet}
                       className="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs transition duration-200 hover:-translate-y-0.5 hover:border-[#1b4e94]/40 hover:shadow-md"

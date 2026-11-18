@@ -44,6 +44,7 @@ import {
   type HeaderContent,
   type IntegrationLogoItem,
 } from "@/data/pageContent";
+import { COMMON_TRUST_STATS, type TrustStat } from "@/data/solutions";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Button } from "@/components/ui/button";
@@ -1628,14 +1629,78 @@ function SitePagesEditorPage() {
             <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl p-4">
               <div>
                 <h3 className="text-sm font-bold text-blue-900">Editing Solutions Pages (/solutions/*)</h3>
-                <p className="text-xs text-blue-700">Select a solution below to edit its hero, services, and value propositions.</p>
+                <p className="text-xs text-blue-700">Edit the solutions hub page and each individual solution's full content below.</p>
               </div>
               <Button asChild variant="outline" size="sm" className="rounded-full bg-white text-xs font-bold">
-                <a href={`/solutions/${selectedSolutionKey}`} target="_blank" rel="noreferrer">
-                  <span>View Live Solution</span>
+                <a href="/solutions" target="_blank" rel="noreferrer">
+                  <span>View Solutions Hub</span>
                   <ExternalLink className="size-3 ml-1" />
                 </a>
               </Button>
+            </div>
+
+            {/* ── Hub / Index Page Fields ── */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Solutions Hub Page (/solutions)</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Eyebrow</Label>
+                  <Input
+                    value={solutions.hub?.eyebrow || ""}
+                    onChange={(e) => setSolutions({ ...solutions, hub: { ...solutions.hub, eyebrow: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Title</Label>
+                  <Input
+                    value={solutions.hub?.title || ""}
+                    onChange={(e) => setSolutions({ ...solutions, hub: { ...solutions.hub, title: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Description</Label>
+                  <Textarea
+                    rows={2}
+                    value={solutions.hub?.description || ""}
+                    onChange={(e) => setSolutions({ ...solutions, hub: { ...solutions.hub, description: e.target.value } })}
+                    className="rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Button Text</Label>
+                  <Input
+                    value={solutions.hub?.buttonText || ""}
+                    onChange={(e) => setSolutions({ ...solutions, hub: { ...solutions.hub, buttonText: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Button Link</Label>
+                  <Input
+                    value={solutions.hub?.buttonHref || ""}
+                    onChange={(e) => setSolutions({ ...solutions, hub: { ...solutions.hub, buttonHref: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Hero Background Image</Label>
+                  <MediaImageInput
+                    value={solutions.hub?.heroBg || ""}
+                    onChange={(url) => setSolutions({ ...solutions, hub: { ...solutions.hub, heroBg: url } })}
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Intro Paragraph</Label>
+                  <Textarea
+                    rows={3}
+                    value={solutions.hub?.introParagraph || ""}
+                    onChange={(e) => setSolutions({ ...solutions, hub: { ...solutions.hub, introParagraph: e.target.value } })}
+                    className="rounded-xl"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Solution Selector */}
@@ -1659,13 +1724,114 @@ function SitePagesEditorPage() {
                   {sol.label}
                 </button>
               ))}
+              <Button asChild variant="outline" size="sm" className="rounded-full bg-white text-xs font-bold ml-auto">
+                <a href={`/solutions/${selectedSolutionKey}`} target="_blank" rel="noreferrer">
+                  <span>View Live</span>
+                  <ExternalLink className="size-3 ml-1" />
+                </a>
+              </Button>
             </div>
 
             {currentSolution && (
               <div className="space-y-6">
-                {/* Hero / Header */}
+                {/* ── Hub Card Fields (title, subtitle, image, points for index page) ── */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Hero &amp; Meta</h2>
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Hub Card (shown on /solutions index)</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Title</Label>
+                      <Input
+                        value={currentSolution.title}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, title: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Partner Note (optional)</Label>
+                      <Input
+                        value={currentSolution.partnerNote || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, partnerNote: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        placeholder="e.g. Offered through our partner..."
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Subtitle</Label>
+                      <Textarea
+                        rows={2}
+                        value={currentSolution.subtitle || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, subtitle: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Card Image</Label>
+                      <MediaImageInput
+                        value={currentSolution.image || ""}
+                        onChange={(url) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, image: url } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {/* Points (bullet items on hub card) */}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-slate-700">Points ({(currentSolution.points || []).length})</Label>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          const pts = [...(currentSolution.points || []), "New Point"];
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, points: pts } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white h-7 px-3"
+                      >
+                        <Plus className="size-3 mr-1" /> Add
+                      </Button>
+                    </div>
+                    {(currentSolution.points || []).map((pt: string, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <Input
+                          value={pt}
+                          onChange={(e) => {
+                            const pts = [...(currentSolution.points || [])];
+                            pts[idx] = e.target.value;
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, points: pts } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="h-9 rounded-xl bg-white text-xs flex-1"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const pts = (currentSolution.points || []).filter((_: string, i: number) => i !== idx);
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, points: pts } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Hero & Meta ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Sub-Page Hero &amp; Meta</h2>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-slate-700">Eyebrow</Label>
@@ -1701,12 +1867,33 @@ function SitePagesEditorPage() {
                         className="rounded-xl"
                       />
                     </div>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Hero Background Image</Label>
+                      <MediaImageInput
+                        value={currentSolution.heroBg || ""}
+                        onChange={(url) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, heroBg: url } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                      />
+                    </div>
                     <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-slate-700">Meta Title</Label>
                       <Input
                         value={currentSolution.metaTitle}
                         onChange={(e) => {
                           const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, metaTitle: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Meta Description</Label>
+                      <Input
+                        value={currentSolution.metaDescription}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, metaDescription: e.target.value } };
                           setSolutions({ ...solutions, solutions: updated });
                         }}
                         className="h-10 rounded-xl"
@@ -1723,10 +1910,21 @@ function SitePagesEditorPage() {
                         className="h-10 rounded-xl"
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">CTA Link</Label>
+                      <Input
+                        value={currentSolution.ctaHref || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, ctaHref: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Services Grid */}
+                {/* ── Services Grid ── */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
                   <div className="flex items-center justify-between border-b pb-3">
                     <div>
@@ -1797,6 +1995,558 @@ function SitePagesEditorPage() {
                     ))}
                   </div>
                 </div>
+
+                {/* ── Pain Points ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div>
+                      <h2 className="text-base font-black text-[#0f2142]">Pain Points ({(currentSolution.painPoints || []).length})</h2>
+                      <p className="text-xs text-slate-500">Challenges section shown on the sub-page.</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const pp = [...(currentSolution.painPoints || []), { title: "New Pain Point", desc: "Description...", iconName: "AlertCircle" }];
+                        const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, painPoints: pp } };
+                        setSolutions({ ...solutions, solutions: updated });
+                      }}
+                      className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white"
+                    >
+                      <Plus className="size-3.5 mr-1" /> Add
+                    </Button>
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Pain Points Heading</Label>
+                      <Input
+                        value={currentSolution.painPointsHeading || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, painPointsHeading: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Pain Points Subheading</Label>
+                      <Input
+                        value={currentSolution.painPointsSubheading || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, painPointsSubheading: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    {(currentSolution.painPoints || []).map((pp, idx) => (
+                      <div key={idx} className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-600">Pain Point #{idx + 1}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const list = (currentSolution.painPoints || []).filter((_, i) => i !== idx);
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, painPoints: list } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                          >
+                            <Trash2 className="size-3.5 mr-1" />
+                            <span className="text-xs font-semibold">Delete</span>
+                          </Button>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Input
+                            placeholder="Title..."
+                            value={pp.title}
+                            onChange={(e) => {
+                              const list = [...(currentSolution.painPoints || [])];
+                              list[idx] = { ...list[idx], title: e.target.value };
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, painPoints: list } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="h-9 rounded-xl bg-white text-xs font-bold"
+                          />
+                          <Input
+                            placeholder="Description..."
+                            value={pp.desc}
+                            onChange={(e) => {
+                              const list = [...(currentSolution.painPoints || [])];
+                              list[idx] = { ...list[idx], desc: e.target.value };
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, painPoints: list } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="h-9 rounded-xl bg-white text-xs"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Target Profiles ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div>
+                      <h2 className="text-base font-black text-[#0f2142]">Target Profiles ({(currentSolution.targetProfiles || []).length})</h2>
+                      <p className="text-xs text-slate-500">"Is this right for you?" checklist items.</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const tp = [...(currentSolution.targetProfiles || []), "New target profile description..."];
+                        const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, targetProfiles: tp } };
+                        setSolutions({ ...solutions, solutions: updated });
+                      }}
+                      className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white"
+                    >
+                      <Plus className="size-3.5 mr-1" /> Add
+                    </Button>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-slate-700">Section Heading</Label>
+                    <Input
+                      value={currentSolution.targetProfilesHeading || ""}
+                      onChange={(e) => {
+                        const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, targetProfilesHeading: e.target.value } };
+                        setSolutions({ ...solutions, solutions: updated });
+                      }}
+                      className="h-10 rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    {(currentSolution.targetProfiles || []).map((profile: string, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <Input
+                          value={profile}
+                          onChange={(e) => {
+                            const tp = [...(currentSolution.targetProfiles || [])];
+                            tp[idx] = e.target.value;
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, targetProfiles: tp } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="h-9 rounded-xl bg-white text-xs flex-1"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const tp = (currentSolution.targetProfiles || []).filter((_: string, i: number) => i !== idx);
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, targetProfiles: tp } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Testimonials ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div>
+                      <h2 className="text-base font-black text-[#0f2142]">Testimonials ({(currentSolution.testimonials || []).length})</h2>
+                      <p className="text-xs text-slate-500">Client quotes shown at the bottom of the solution page.</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const tl = [...(currentSolution.testimonials || []), { quote: "New testimonial...", author: "Client Name", title: "Title" }];
+                        const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, testimonials: tl } };
+                        setSolutions({ ...solutions, solutions: updated });
+                      }}
+                      className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white"
+                    >
+                      <Plus className="size-3.5 mr-1" /> Add
+                    </Button>
+                  </div>
+                  <div className="space-y-3">
+                    {(currentSolution.testimonials || []).map((t, idx) => (
+                      <div key={idx} className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-600">Testimonial #{idx + 1}{t.hidden ? " (Hidden)" : ""}</span>
+                          <div className="flex gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const tl = [...(currentSolution.testimonials || [])];
+                                tl[idx] = { ...tl[idx], hidden: !tl[idx].hidden };
+                                const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, testimonials: tl } };
+                                setSolutions({ ...solutions, solutions: updated });
+                              }}
+                              className="text-slate-600 hover:bg-slate-100 h-7 px-2 text-xs"
+                            >
+                              {t.hidden ? "Show" : "Hide"}
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                const tl = (currentSolution.testimonials || []).filter((_, i) => i !== idx);
+                                const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, testimonials: tl } };
+                                setSolutions({ ...solutions, solutions: updated });
+                              }}
+                              className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                            >
+                              <Trash2 className="size-3.5 mr-1" />
+                              <span className="text-xs font-semibold">Delete</span>
+                            </Button>
+                          </div>
+                        </div>
+                        <Textarea
+                          rows={2}
+                          placeholder="Quote..."
+                          value={t.quote}
+                          onChange={(e) => {
+                            const tl = [...(currentSolution.testimonials || [])];
+                            tl[idx] = { ...tl[idx], quote: e.target.value };
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, testimonials: tl } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="rounded-xl bg-white text-xs"
+                        />
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <Input
+                            placeholder="Author..."
+                            value={t.author}
+                            onChange={(e) => {
+                              const tl = [...(currentSolution.testimonials || [])];
+                              tl[idx] = { ...tl[idx], author: e.target.value };
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, testimonials: tl } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="h-9 rounded-xl bg-white text-xs font-bold"
+                          />
+                          <Input
+                            placeholder="Title..."
+                            value={t.title}
+                            onChange={(e) => {
+                              const tl = [...(currentSolution.testimonials || [])];
+                              tl[idx] = { ...tl[idx], title: e.target.value };
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, testimonials: tl } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="h-9 rounded-xl bg-white text-xs"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Philosophy / Why SMG ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Philosophy / Why SMG Section</h2>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-slate-700">Philosophy Blurb</Label>
+                    <Textarea
+                      rows={3}
+                      value={currentSolution.philosophyBlurb || ""}
+                      onChange={(e) => {
+                        const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, philosophyBlurb: e.target.value } };
+                        setSolutions({ ...solutions, solutions: updated });
+                      }}
+                      className="rounded-xl"
+                    />
+                  </div>
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-slate-700">Philosophy Cards ({(currentSolution.philosophyCards || []).length})</Label>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          const pc = [...(currentSolution.philosophyCards || []), { heading: "New Card", body: "Description..." }];
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, philosophyCards: pc } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white h-7 px-3"
+                      >
+                        <Plus className="size-3 mr-1" /> Add Card
+                      </Button>
+                    </div>
+                    {(currentSolution.philosophyCards || []).map((card, idx) => (
+                      <div key={idx} className="p-3 rounded-xl border border-slate-200 bg-slate-50/50 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-600">Card #{idx + 1}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const pc = (currentSolution.philosophyCards || []).filter((_, i) => i !== idx);
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, philosophyCards: pc } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
+                        <Input
+                          placeholder="Heading..."
+                          value={card.heading}
+                          onChange={(e) => {
+                            const pc = [...(currentSolution.philosophyCards || [])];
+                            pc[idx] = { ...pc[idx], heading: e.target.value };
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, philosophyCards: pc } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="h-9 rounded-xl bg-white text-xs font-bold"
+                        />
+                        <Textarea
+                          rows={2}
+                          placeholder="Body..."
+                          value={card.body}
+                          onChange={(e) => {
+                            const pc = [...(currentSolution.philosophyCards || [])];
+                            pc[idx] = { ...pc[idx], body: e.target.value };
+                            const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, philosophyCards: pc } };
+                            setSolutions({ ...solutions, solutions: updated });
+                          }}
+                          className="rounded-xl bg-white text-xs"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Trust Stats ("Why Businesses Trust Us") ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <div className="flex items-center justify-between border-b pb-3">
+                    <div>
+                      <h2 className="text-base font-black text-[#0f2142]">
+                        Why Businesses Trust Us (Trust Stats) ({(currentSolution.trustStats || COMMON_TRUST_STATS).length})
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        Stat counter cards displayed on this solution's page (Experience. Expertise. Results.).
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const currentList = currentSolution.trustStats || [...COMMON_TRUST_STATS];
+                        const updatedList = [
+                          ...currentList,
+                          { value: "100%", label: "NEW STAT", desc: "Description of this accomplishment or metric...", iconName: "Award" },
+                        ];
+                        const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStats: updatedList } };
+                        setSolutions({ ...solutions, solutions: updated });
+                      }}
+                      className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white"
+                    >
+                      <Plus className="size-3.5 mr-1" />
+                      <span>Add Stat</span>
+                    </Button>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Section Eyebrow</Label>
+                      <Input
+                        value={currentSolution.trustStatsEyebrow || "Why Businesses Trust Us"}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStatsEyebrow: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Section Heading</Label>
+                      <Input
+                        value={currentSolution.trustStatsHeading || "Experience. Expertise. Results."}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStatsHeading: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
+                    {(currentSolution.trustStats || COMMON_TRUST_STATS).map((stat: TrustStat, idx: number) => (
+                      <div key={idx} className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-slate-600">Stat Card #{idx + 1}</span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const currentList = currentSolution.trustStats || [...COMMON_TRUST_STATS];
+                              const updatedList = currentList.filter((_, i) => i !== idx);
+                              const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStats: updatedList } };
+                              setSolutions({ ...solutions, solutions: updated });
+                            }}
+                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                          >
+                            <Trash2 className="size-3.5 mr-1" />
+                            <span className="text-xs font-semibold">Delete</span>
+                          </Button>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          <div>
+                            <Label className="text-[11px] font-semibold text-slate-600 mb-1 block">Value</Label>
+                            <Input
+                              placeholder="e.g. 10+ Years"
+                              value={stat.value}
+                              onChange={(e) => {
+                                const currentList = [...(currentSolution.trustStats || COMMON_TRUST_STATS)];
+                                currentList[idx] = { ...currentList[idx], value: e.target.value };
+                                const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStats: currentList } };
+                                setSolutions({ ...solutions, solutions: updated });
+                              }}
+                              className="h-9 rounded-xl bg-white text-xs font-black text-[#142340]"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-[11px] font-semibold text-slate-600 mb-1 block">Label</Label>
+                            <Input
+                              placeholder="e.g. IN BUSINESS"
+                              value={stat.label}
+                              onChange={(e) => {
+                                const currentList = [...(currentSolution.trustStats || COMMON_TRUST_STATS)];
+                                currentList[idx] = { ...currentList[idx], label: e.target.value };
+                                const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStats: currentList } };
+                                setSolutions({ ...solutions, solutions: updated });
+                              }}
+                              className="h-9 rounded-xl bg-white text-xs font-bold text-blue-900 uppercase"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-[11px] font-semibold text-slate-600 mb-1 block">Icon Name</Label>
+                            <Input
+                              placeholder="Building2, Users, Award..."
+                              value={stat.iconName}
+                              onChange={(e) => {
+                                const currentList = [...(currentSolution.trustStats || COMMON_TRUST_STATS)];
+                                currentList[idx] = { ...currentList[idx], iconName: e.target.value };
+                                const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStats: currentList } };
+                                setSolutions({ ...solutions, solutions: updated });
+                              }}
+                              className="h-9 rounded-xl bg-white text-xs"
+                            />
+                          </div>
+                          <div className="sm:col-span-3">
+                            <Label className="text-[11px] font-semibold text-slate-600 mb-1 block">Description</Label>
+                            <Input
+                              placeholder="Short description..."
+                              value={stat.desc}
+                              onChange={(e) => {
+                                const currentList = [...(currentSolution.trustStats || COMMON_TRUST_STATS)];
+                                currentList[idx] = { ...currentList[idx], desc: e.target.value };
+                                const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, trustStats: currentList } };
+                                setSolutions({ ...solutions, solutions: updated });
+                              }}
+                              className="h-9 rounded-xl bg-white text-xs"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Success Story ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Success Story Callout</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Badge Label</Label>
+                      <Input
+                        value={currentSolution.successStoryBadge || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, successStoryBadge: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Tagline Below Quote</Label>
+                      <Input
+                        value={currentSolution.successStoryTagline || ""}
+                        placeholder="Your financial statements should answer questions..."
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, successStoryTagline: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Button Text</Label>
+                      <Input
+                        value={currentSolution.successStoryButtonText || ""}
+                        placeholder="SCHEDULE A REVIEW"
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, successStoryButtonText: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Button Link</Label>
+                      <Input
+                        value={currentSolution.successStoryButtonHref || ""}
+                        placeholder="#contact-form"
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, successStoryButtonHref: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Success Story Quote</Label>
+                      <Textarea
+                        rows={3}
+                        value={currentSolution.successStoryQuote || ""}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, successStoryQuote: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="rounded-xl"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* ── Services Heading ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Services Section Copy</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Services Heading</Label>
+                      <Input
+                        value={currentSolution.servicesHeading}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, servicesHeading: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Services Subheading</Label>
+                      <Input
+                        value={currentSolution.servicesSubheading}
+                        onChange={(e) => {
+                          const updated = { ...solutions.solutions, [selectedSolutionKey]: { ...currentSolution, servicesSubheading: e.target.value } };
+                          setSolutions({ ...solutions, solutions: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -1807,15 +2557,70 @@ function SitePagesEditorPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-2xl p-4">
               <div>
-                <h3 className="text-sm font-bold text-blue-900">Editing Industries Practice Pages</h3>
-                <p className="text-xs text-blue-700">Select an industry vertical below to edit its hero copy, deep expertise text, and tailored services.</p>
+                <h3 className="text-sm font-bold text-blue-900">Editing Industries Practice Pages (/industries &amp; sub-pages)</h3>
+                <p className="text-xs text-blue-700">Manage the industries hub page and all 8 industry vertical practice pages below.</p>
               </div>
               <Button asChild variant="outline" size="sm" className="rounded-full bg-white text-xs font-bold">
-                <a href={`/${selectedIndustryKey}`} target="_blank" rel="noreferrer">
-                  <span>View Live Page</span>
+                <a href="/industries" target="_blank" rel="noreferrer">
+                  <span>View Industries Hub</span>
                   <ExternalLink className="size-3 ml-1" />
                 </a>
               </Button>
+            </div>
+
+            {/* ── Industries Hub Page (/industries) ── */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+              <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Industries Hub Page (/industries)</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Eyebrow</Label>
+                  <Input
+                    value={industries.hub?.eyebrow || ""}
+                    onChange={(e) => setIndustries({ ...industries, hub: { ...industries.hub, eyebrow: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Page Title</Label>
+                  <Input
+                    value={industries.hub?.title || ""}
+                    onChange={(e) => setIndustries({ ...industries, hub: { ...industries.hub, title: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Hero Description</Label>
+                  <Textarea
+                    rows={2}
+                    value={industries.hub?.description || ""}
+                    onChange={(e) => setIndustries({ ...industries, hub: { ...industries.hub, description: e.target.value } })}
+                    className="rounded-xl"
+                  />
+                </div>
+                <div className="sm:col-span-2 space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Hero Background Image</Label>
+                  <MediaImageInput
+                    value={industries.hub?.heroBg || ""}
+                    onChange={(url) => setIndustries({ ...industries, hub: { ...industries.hub, heroBg: url } })}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Grid Section Heading</Label>
+                  <Input
+                    value={industries.hub?.heading || ""}
+                    onChange={(e) => setIndustries({ ...industries, hub: { ...industries.hub, heading: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-bold text-slate-700">Grid Section Subheading</Label>
+                  <Input
+                    value={industries.hub?.subheading || ""}
+                    onChange={(e) => setIndustries({ ...industries, hub: { ...industries.hub, subheading: e.target.value } })}
+                    className="h-10 rounded-xl"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Industry Selector */}
@@ -1843,16 +2648,22 @@ function SitePagesEditorPage() {
                   {ind.label}
                 </button>
               ))}
+              <Button asChild variant="outline" size="sm" className="rounded-full bg-white text-xs font-bold ml-auto">
+                <a href={`/${selectedIndustryKey}`} target="_blank" rel="noreferrer">
+                  <span>View Live</span>
+                  <ExternalLink className="size-3 ml-1" />
+                </a>
+              </Button>
             </div>
 
             {currentIndustry && (
               <div className="space-y-6">
-                {/* Hero / Meta */}
+                {/* ── Hub Card Settings (shown on /industries) ── */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Hero &amp; Meta ({currentIndustry.title})</h2>
-                  <div className="grid gap-4 sm:grid-cols-2">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Hub Card Settings (shown on /industries grid)</h2>
+                  <div className="grid gap-4 sm:grid-cols-3">
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-bold text-slate-700">Page Title</Label>
+                      <Label className="text-xs font-bold text-slate-700">Industry Name</Label>
                       <Input
                         value={currentIndustry.title}
                         onChange={(e) => {
@@ -1862,6 +2673,81 @@ function SitePagesEditorPage() {
                         className="h-10 rounded-xl"
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Badge (optional)</Label>
+                      <Input
+                        placeholder="e.g. Core Practice"
+                        value={currentIndustry.badge || ""}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, badge: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Icon Name</Label>
+                      <Input
+                        placeholder="e.g. Car, Utensils, Building2..."
+                        value={currentIndustry.iconName || ""}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, iconName: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Highlights List */}
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs font-bold text-slate-700">Key Practice Highlights ({(currentIndustry.highlights || []).length})</Label>
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          const list = [...(currentIndustry.highlights || []), "New Practice Highlight"];
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, highlights: list } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white h-7 px-3"
+                      >
+                        <Plus className="size-3 mr-1" /> Add Highlight
+                      </Button>
+                    </div>
+                    {(currentIndustry.highlights || []).map((h: string, idx: number) => (
+                      <div key={idx} className="flex items-center gap-2">
+                        <Input
+                          value={h}
+                          onChange={(e) => {
+                            const list = [...(currentIndustry.highlights || [])];
+                            list[idx] = e.target.value;
+                            const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, highlights: list } };
+                            setIndustries({ ...industries, industries: updated });
+                          }}
+                          className="h-9 rounded-xl bg-white text-xs flex-1"
+                        />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const list = (currentIndustry.highlights || []).filter((_: string, i: number) => i !== idx);
+                            const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, highlights: list } };
+                            setIndustries({ ...industries, industries: updated });
+                          }}
+                          className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Sub-Page Hero & Meta (/{selectedIndustryKey}) ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Sub-Page Hero &amp; Meta (/{selectedIndustryKey})</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-slate-700">Eyebrow</Label>
                       <Input
@@ -1873,7 +2759,7 @@ function SitePagesEditorPage() {
                         className="h-10 rounded-xl"
                       />
                     </div>
-                    <div className="sm:col-span-2 space-y-1.5">
+                    <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-slate-700">Hero Headline</Label>
                       <Input
                         value={currentIndustry.heroTitle}
@@ -1896,25 +2782,76 @@ function SitePagesEditorPage() {
                         className="rounded-xl"
                       />
                     </div>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Hero Background Image</Label>
+                      <MediaImageInput
+                        value={currentIndustry.heroBg || ""}
+                        onChange={(url) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, heroBg: url } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Meta Title</Label>
+                      <Input
+                        value={currentIndustry.metaTitle}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, metaTitle: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Meta Description</Label>
+                      <Input
+                        value={currentIndustry.metaDescription}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, metaDescription: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Hero Button Text</Label>
+                      <Input
+                        placeholder="SCHEDULE A CONSULTATION"
+                        value={currentIndustry.buttonText || ""}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, buttonText: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Hero Button Link</Label>
+                      <Input
+                        placeholder="/booking"
+                        value={currentIndustry.ctaHref || ""}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, ctaHref: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
                   </div>
                 </div>
 
-                {/* Deep Expertise Narrative */}
+                {/* ── Deep Expertise Narrative ── */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
-                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Expertise Narrative</h2>
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Expertise Narrative Section</h2>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <Label className="text-xs font-bold text-slate-700">Expertise Heading</Label>
                       <Input
                         value={currentIndustry.expertise.heading}
                         onChange={(e) => {
-                          const updated = {
-                            ...industries.industries,
-                            [selectedIndustryKey]: {
-                              ...currentIndustry,
-                              expertise: { ...currentIndustry.expertise, heading: e.target.value },
-                            },
-                          };
+                          const updatedExpertise = { ...currentIndustry.expertise, heading: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
                           setIndustries({ ...industries, industries: updated });
                         }}
                         className="h-10 rounded-xl"
@@ -1925,47 +2862,129 @@ function SitePagesEditorPage() {
                       <Input
                         value={currentIndustry.expertise.subheading}
                         onChange={(e) => {
-                          const updated = {
-                            ...industries.industries,
-                            [selectedIndustryKey]: {
-                              ...currentIndustry,
-                              expertise: { ...currentIndustry.expertise, subheading: e.target.value },
-                            },
-                          };
+                          const updatedExpertise = { ...currentIndustry.expertise, subheading: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
                           setIndustries({ ...industries, industries: updated });
                         }}
                         className="h-10 rounded-xl"
                       />
                     </div>
-                    <div className="sm:col-span-2 space-y-3">
-                      <Label className="text-xs font-bold text-slate-700">Paragraphs</Label>
-                      {currentIndustry.expertise.paragraphs.map((p, idx) => (
-                        <div key={idx} className="flex gap-2 items-start">
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Expertise Circular Image</Label>
+                      <MediaImageInput
+                        value={currentIndustry.expertise.image || ""}
+                        onChange={(url) => {
+                          const updatedExpertise = { ...currentIndustry.expertise, image: url };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                      />
+                    </div>
+
+                    {/* Paragraphs */}
+                    <div className="sm:col-span-2 space-y-3 pt-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-bold text-slate-700">
+                          Paragraphs ({(currentIndustry.expertise.paragraphs || []).length})
+                        </Label>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            const pars = [...(currentIndustry.expertise.paragraphs || []), "New narrative paragraph text..."];
+                            const updatedExpertise = { ...currentIndustry.expertise, paragraphs: pars };
+                            const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
+                            setIndustries({ ...industries, industries: updated });
+                          }}
+                          className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white h-7 px-3"
+                        >
+                          <Plus className="size-3 mr-1" /> Add Paragraph
+                        </Button>
+                      </div>
+                      {(currentIndustry.expertise.paragraphs || []).map((p, idx) => (
+                        <div key={idx} className="flex gap-2 items-start bg-slate-50/70 p-3 rounded-2xl border border-slate-200">
                           <span className="text-xs font-bold text-slate-400 mt-2">#{idx + 1}</span>
                           <Textarea
                             rows={2}
                             value={p}
                             onChange={(e) => {
-                              const updatedPars = [...currentIndustry.expertise.paragraphs];
-                              updatedPars[idx] = e.target.value;
-                              const updated = {
-                                ...industries.industries,
-                                [selectedIndustryKey]: {
-                                  ...currentIndustry,
-                                  expertise: { ...currentIndustry.expertise, paragraphs: updatedPars },
-                                },
-                              };
+                              const pars = [...(currentIndustry.expertise.paragraphs || [])];
+                              pars[idx] = e.target.value;
+                              const updatedExpertise = { ...currentIndustry.expertise, paragraphs: pars };
+                              const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
                               setIndustries({ ...industries, industries: updated });
                             }}
-                            className="rounded-xl flex-1"
+                            className="rounded-xl flex-1 bg-white text-xs"
                           />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const pars = (currentIndustry.expertise.paragraphs || []).filter((_, i) => i !== idx);
+                              const updatedExpertise = { ...currentIndustry.expertise, paragraphs: pars };
+                              const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
+                              setIndustries({ ...industries, industries: updated });
+                            }}
+                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2 mt-1"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Accreditations / Badges */}
+                    <div className="sm:col-span-2 space-y-2 pt-2">
+                      <div className="flex items-center justify-between">
+                        <Label className="text-xs font-bold text-slate-700">
+                          Accreditation Badges ({(currentIndustry.expertise.badges || []).length})
+                        </Label>
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            const badges = [...(currentIndustry.expertise.badges || []), { text: "New Award / Recognition" }];
+                            const updatedExpertise = { ...currentIndustry.expertise, badges };
+                            const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
+                            setIndustries({ ...industries, industries: updated });
+                          }}
+                          className="rounded-full text-xs font-bold bg-[#0f2142] hover:bg-blue-700 text-white h-7 px-3"
+                        >
+                          <Plus className="size-3 mr-1" /> Add Badge
+                        </Button>
+                      </div>
+                      {(currentIndustry.expertise.badges || []).map((badge, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <Input
+                            placeholder="Badge text..."
+                            value={badge.text}
+                            onChange={(e) => {
+                              const badges = [...(currentIndustry.expertise.badges || [])];
+                              badges[idx] = { text: e.target.value };
+                              const updatedExpertise = { ...currentIndustry.expertise, badges };
+                              const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
+                              setIndustries({ ...industries, industries: updated });
+                            }}
+                            className="h-9 rounded-xl bg-white text-xs flex-1"
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const badges = (currentIndustry.expertise.badges || []).filter((_, i) => i !== idx);
+                              const updatedExpertise = { ...currentIndustry.expertise, badges };
+                              const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, expertise: updatedExpertise } };
+                              setIndustries({ ...industries, industries: updated });
+                            }}
+                            className="text-rose-600 hover:text-rose-700 hover:bg-rose-50 h-7 px-2"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
                         </div>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                {/* Services List */}
+                {/* ── Services Grid ── */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
                   <div className="flex items-center justify-between border-b pb-3">
                     <div>
@@ -1989,7 +3008,32 @@ function SitePagesEditorPage() {
                     </Button>
                   </div>
 
-                  <div className="space-y-3">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Services Section Title</Label>
+                      <Input
+                        value={currentIndustry.servicesTitle}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, servicesTitle: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Services Section Description</Label>
+                      <Input
+                        value={currentIndustry.servicesDescription}
+                        onChange={(e) => {
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, servicesDescription: e.target.value } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-2">
                     {currentIndustry.services.map((srv, idx) => (
                       <div key={idx} className="p-4 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
                         <div className="flex items-center justify-between">
@@ -2034,6 +3078,87 @@ function SitePagesEditorPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+
+                {/* ── Consultation Form Copy ── */}
+                <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-4">
+                  <h2 className="text-base font-black text-[#0f2142] border-b pb-3">Consultation Form Copy</h2>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Form Heading</Label>
+                      <Input
+                        value={currentIndustry.form.heading}
+                        onChange={(e) => {
+                          const updatedForm = { ...currentIndustry.form, heading: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, form: updatedForm } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Form Subheading</Label>
+                      <Input
+                        value={currentIndustry.form.subheading}
+                        onChange={(e) => {
+                          const updatedForm = { ...currentIndustry.form, subheading: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, form: updatedForm } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Business Name Placeholder</Label>
+                      <Input
+                        value={currentIndustry.form.businessFieldPlaceholder}
+                        onChange={(e) => {
+                          const updatedForm = { ...currentIndustry.form, businessFieldPlaceholder: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, form: updatedForm } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Notes Placeholder</Label>
+                      <Input
+                        value={currentIndustry.form.notesPlaceholder}
+                        onChange={(e) => {
+                          const updatedForm = { ...currentIndustry.form, notesPlaceholder: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, form: updatedForm } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
+                    <div className="sm:col-span-2 space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Thank You Message</Label>
+                      <Textarea
+                        rows={2}
+                        value={currentIndustry.form.thankYouMessage}
+                        onChange={(e) => {
+                          const updatedForm = { ...currentIndustry.form, thankYouMessage: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, form: updatedForm } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-bold text-slate-700">Submit Button Text</Label>
+                      <Input
+                        placeholder="SCHEDULE A CONSULTATION"
+                        value={currentIndustry.form.submitButtonText || ""}
+                        onChange={(e) => {
+                          const updatedForm = { ...currentIndustry.form, submitButtonText: e.target.value };
+                          const updated = { ...industries.industries, [selectedIndustryKey]: { ...currentIndustry, form: updatedForm } };
+                          setIndustries({ ...industries, industries: updated });
+                        }}
+                        className="h-10 rounded-xl"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

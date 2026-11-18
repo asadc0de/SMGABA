@@ -17,6 +17,7 @@ export interface IndustryFormConfig {
   businessFieldPlaceholder: string;
   notesPlaceholder: string;
   thankYouMessage: string;
+  submitButtonText?: string;
 }
 
 export interface IndustryData {
@@ -28,6 +29,8 @@ export interface IndustryData {
   eyebrow: string;
   heroTitle: string;
   heroDescription: string;
+  buttonText?: string;
+  ctaHref?: string;
   expertise: IndustryExpertise;
   servicesTitle: string;
   servicesDescription: string;
