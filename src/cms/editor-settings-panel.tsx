@@ -106,6 +106,7 @@ const FIELD_META_MAP: Record<string, FieldMeta> = {
   content: { tab: "content", subgroup: "content_main" },
   heading: { tab: "content", subgroup: "content_main" },
   subheading: { tab: "content", subgroup: "content_main" },
+  iconPosition: { tab: "content", subgroup: "content_main" },
   headline: { tab: "content", subgroup: "content_main" },
   subheadline: { tab: "content", subgroup: "content_main" },
   eyebrow: { tab: "content", subgroup: "content_main" },
@@ -526,11 +527,24 @@ export function RedesignedSettingsPanel({
   // Reset open groups when tab or selected block changes: default only 1st group open
   useEffect(() => {
     if (currentTabSubgroups.length > 0) {
-      setOpenGroups([currentTabSubgroups[0].id]);
+      const featureListGroups =
+        blockType === "IconFeatures"
+          ? ["content_main", "content_items"].filter((groupId) =>
+              currentTabSubgroups.some((subgroup) => subgroup.id === groupId),
+            )
+          : [];
+      const firstGroup = currentTabSubgroups[0]?.id;
+      setOpenGroups(
+        featureListGroups.length > 0
+          ? featureListGroups
+          : firstGroup
+            ? [firstGroup]
+            : [],
+      );
     } else {
       setOpenGroups([]);
     }
-  }, [activeTab, selectedId, editorMode]);
+  }, [activeTab, selectedId, blockType, editorMode]);
 
   const handleTabChange = (newTab: SettingTabId) => {
     setActiveTab(newTab);

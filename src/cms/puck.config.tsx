@@ -1,6 +1,7 @@
 import type { Config } from "@puckeditor/core";
 import { HeadingBlock } from "./blocks/Heading.editor";
 import { RichTextBlock } from "./blocks/RichText.editor";
+import { ListBlock } from "./blocks/List.editor";
 import { ButtonBlock } from "./blocks/Button.editor";
 import { SectionBlock } from "./blocks/Section.editor";
 import { ColumnsBlock } from "./blocks/Columns.editor";
@@ -33,7 +34,7 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     basics: {
       title: "Basics",
       defaultExpanded: true,
-      components: ["Heading", "RichText", "Image", "Icon", "Button", "Spacer", "Divider"],
+      components: ["Heading", "RichText", "List", "Image", "Icon", "Button", "Spacer", "Divider"],
     },
     sections: {
       title: "Sections",
@@ -62,6 +63,7 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
   components: {
     Heading: HeadingBlock,
     RichText: RichTextBlock,
+    List: ListBlock,
     Image: ImageBlock,
     Button: ButtonBlock,
     Spacer: SpacerBlock,
