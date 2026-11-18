@@ -55,6 +55,18 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
       type: "textarea",
       label: "Subheading (Optional)",
     },
+    iconPosition: createSegmentedField({
+      label: "Icon Position (all cards)",
+      description: "Choose one position to apply it to every feature card.",
+      options: [
+        { label: "Top Left", value: "top", description: "Above the text, aligned left" },
+        { label: "Top Center", value: "center", description: "Above the text, centered" },
+        { label: "Left", value: "left", description: "Beside the text on the left" },
+        { label: "Right", value: "right", description: "Beside the text on the right" },
+      ],
+      defaultValue: "top",
+      fullWidth: true,
+    }),
     titleTypography: createTypographyField({
       label: "Features Title Typography",
     }),
@@ -131,16 +143,6 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
           type: "select",
           label: "Choose Icon",
           options: ICON_OPTIONS,
-        },
-        iconPosition: {
-          type: "select",
-          label: "Icon Position",
-          options: [
-            { label: "Top Left", value: "top" },
-            { label: "Top Center", value: "center" },
-            { label: "Left", value: "left" },
-            { label: "Right", value: "right" },
-          ],
         },
         iconImage: createImagePickerField({
           label: "Custom Icon Image / .ico (Optional)",

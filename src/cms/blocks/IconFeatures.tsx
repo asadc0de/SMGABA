@@ -45,7 +45,7 @@ import {
 
 export interface IconFeatureItem {
   icon?: string;
-  iconPosition?: "top" | "center" | "left" | "right";
+  iconPosition?: IconFeatureIconPosition;
   iconImage?: string;
   title?: string;
   text?: string;
@@ -53,12 +53,14 @@ export interface IconFeatureItem {
   linkHref?: string;
 }
 
+export type IconFeatureIconPosition = "top" | "center" | "left" | "right";
 export type IconFeaturesColumns = "2" | "3" | "4";
 export type IconFeaturesStyle = "cards" | "plain" | "centered";
 
 export interface IconFeaturesProps extends BlockStyleProps {
   heading?: string;
   subheading?: string;
+  iconPosition?: IconFeatureIconPosition;
   columns?: IconFeaturesColumns;
   style?: IconFeaturesStyle;
   titleTypography?: TypographyConfig;
@@ -252,7 +254,7 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
               item.linkLabel && item.linkHref && isValidButtonUrl(item.linkHref),
             );
             const itemAnimStyles = buildAnimationStyles(props.animation, idx);
-            const iconPosition = item.iconPosition || "top";
+            const iconPosition = props.iconPosition ?? item.iconPosition ?? "top";
             const isSideIcon = iconPosition === "left" || iconPosition === "right";
             const centeredContent = isCentered || iconPosition === "center";
 

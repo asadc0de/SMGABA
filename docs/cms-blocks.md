@@ -72,7 +72,7 @@ A versatile 2, 3, or 4 column grid of features with curated icons and optional l
   - **Centered**: Center-aligned icons and text.
 - **Curated Icon List**: Choose from ~24 financial & business icons including _Shield, TrendingUp, Calculator, Users, FileText, Building2, Briefcase, Landmark, Handshake, Award_, and more.
 - **Custom Icon Image**: Upload or select an icon image, including `.ico`, for each feature item. If selected, it replaces the curated icon.
-- **Icon Position**: Set each feature icon to **Top Left**, **Top Center**, **Left**, or **Right**.
+- **Icon Position (all cards)**: Choose **Top Left**, **Top Center**, **Left**, or **Right** once to apply the same position to every feature card.
 - **Feature Items**: Use the list controls to add or remove cards. The title, description, and link are optional; clear a field to hide that part of the card.
 - **Optional Link**: Add an action link (e.g., _"Explore CFO Services"_ -> `/solutions/cfo-advisory-services`).
 
