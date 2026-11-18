@@ -158,16 +158,33 @@ export function BlogPostView({
             {/* Main Content Body */}
             <article className="lg:col-span-12 space-y-6 text-foreground/90 text-base sm:text-lg leading-relaxed blog-article-body">
               <style>{`
-                .blog-article-body a {
+                .blog-article-body a:not(.no-prose-link) {
                   color: #1b4e94;
                   text-decoration: underline !important;
                   text-underline-offset: 3px;
                   font-weight: 600;
                   transition: color 0.15s ease;
                 }
-                .blog-article-body a:hover {
+                .blog-article-body a:not(.no-prose-link):hover {
                   color: #2563eb;
                   text-decoration-thickness: 2px;
+                }
+                .blog-article-body .no-prose-link,
+                .blog-article-body .no-prose-link:hover,
+                .blog-bottom-nav a,
+                .blog-bottom-nav a:hover,
+                .blog-bottom-nav a span {
+                  text-decoration: none !important;
+                }
+                .blog-bottom-nav a.btn-talk-advisor,
+                .blog-bottom-nav a.btn-talk-advisor:hover,
+                .blog-bottom-nav a.btn-talk-advisor span {
+                  color: #ffffff !important;
+                  text-decoration: none !important;
+                }
+                .blog-bottom-nav a.btn-back,
+                .blog-bottom-nav a.btn-back:hover {
+                  text-decoration: none !important;
                 }
                 .blog-article-body strong,
                 .blog-article-body b {
@@ -516,15 +533,26 @@ export function BlogPostView({
               </div>
 
               {/* Back to index button */}
-              <div className="pt-8 flex items-center justify-between">
-                <Button asChild variant="outline" className="gap-2 rounded-full">
-                  <a href={parentHref}>
+              <div className="pt-8 flex items-center justify-between blog-bottom-nav">
+                <Button asChild variant="outline" className="gap-2 rounded-full hover:bg-slate-100 transition-colors shadow-2xs">
+                  <a
+                    href={parentHref}
+                    className="no-prose-link btn-back inline-flex items-center gap-2 text-slate-700 hover:text-navy font-semibold !no-underline"
+                    style={{ textDecoration: "none" }}
+                  >
                     <ArrowLeft className="size-4" /> Back to All {parentLabel}
                   </a>
                 </Button>
-                <Button asChild className="gap-2 rounded-full bg-navy text-white hover:bg-navy/90">
-                  <a href="/contact">
-                    Talk to an Advisor <ArrowRight className="size-4" />
+                <Button asChild className="gap-2 rounded-full bg-[#0e1b36] hover:bg-[#162a52] text-white shadow-md transition-colors">
+                  <a
+                    href="/contact"
+                    className="no-prose-link btn-talk-advisor inline-flex items-center gap-2 !text-white hover:!text-white font-semibold !no-underline"
+                    style={{ color: "#ffffff", textDecoration: "none" }}
+                  >
+                    <span className="text-white font-semibold" style={{ color: "#ffffff" }}>
+                      Talk to an Advisor
+                    </span>
+                    <ArrowRight className="size-4 text-white" style={{ color: "#ffffff" }} />
                   </a>
                 </Button>
               </div>
