@@ -122,14 +122,25 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
     advancedLayout: createAdvancedLayoutField({ defaultDisplay: "grid" }),
     items: {
       type: "array",
-      label: "Features List",
-      min: 1,
-      getItemSummary: (item, idx) => item?.title || `Feature #${(idx ?? 0) + 1}`,
+      label: "Feature Cards — click a card to edit it",
+      min: 0,
+      getItemSummary: (item, idx) =>
+        `Edit icon & content — ${item?.title || `Feature #${(idx ?? 0) + 1}`}`,
       arrayFields: {
         icon: {
           type: "select",
-          label: "Icon",
+          label: "Choose Icon",
           options: ICON_OPTIONS,
+        },
+        iconPosition: {
+          type: "select",
+          label: "Icon Position",
+          options: [
+            { label: "Top Left", value: "top" },
+            { label: "Top Center", value: "center" },
+            { label: "Left", value: "left" },
+            { label: "Right", value: "right" },
+          ],
         },
         iconImage: createImagePickerField({
           label: "Custom Icon Image / .ico (Optional)",
@@ -137,11 +148,11 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
         }),
         title: {
           type: "text",
-          label: "Feature Title",
+          label: "Feature Title (Optional)",
         },
         text: {
           type: "textarea",
-          label: "Feature Description",
+          label: "Feature Description (Optional)",
         },
         linkLabel: {
           type: "text",
@@ -154,20 +165,13 @@ export const IconFeaturesBlock: ComponentConfig<IconFeaturesProps> = {
       },
       defaultItemProps: {
         icon: "TrendingUp",
+        iconPosition: "top",
         title: "Strategic Financial Advisory",
         text: "Customized roadmaps and proactive guidance engineered for high-growth enterprises.",
         linkLabel: "Learn More",
         linkHref: "/solutions",
       },
     },
-    sizePercent: createSizeSliderField({
-      label: "Container Width",
-      min: 50,
-      max: 100,
-      step: 5,
-      defaultValue: 100,
-      presets: [60, 75, 90, 100],
-    }),
     marginTop: createResponsiveSpaceField("Margin Top", "md"),
     marginBottom: createResponsiveSpaceField("Margin Bottom", "md"),
     paddingTop: createResponsiveSpaceField("Padding Top", "none"),

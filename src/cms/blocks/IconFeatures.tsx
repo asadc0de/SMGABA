@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  type BlockStyleProps,
-  type Responsive,
-  type Align,
-  buildStyleClasses,
-} from "../style";
+import { type BlockStyleProps, type Responsive, type Align, buildStyleClasses } from "../style";
 import { isValidButtonUrl } from "./Button";
 import {
   Shield,
@@ -50,9 +45,10 @@ import {
 
 export interface IconFeatureItem {
   icon?: string;
+  iconPosition?: "top" | "center" | "left" | "right";
   iconImage?: string;
-  title: string;
-  text: string;
+  title?: string;
+  text?: string;
   linkLabel?: string;
   linkHref?: string;
 }
@@ -109,7 +105,8 @@ export const ICON_FEATURES_MAP: Record<string, React.ComponentType<{ className?:
 
 export const defaultIconFeaturesProps: IconFeaturesProps = {
   heading: "Strategic Accounting & Advisory Capabilities",
-  subheading: "Proactive financial leadership, aggressive tax mitigation, and robust compliance engineered for modern enterprises.",
+  subheading:
+    "Proactive financial leadership, aggressive tax mitigation, and robust compliance engineered for modern enterprises.",
   columns: "3",
   style: "cards",
   sizePercent: 100,
@@ -120,6 +117,7 @@ export const defaultIconFeaturesProps: IconFeaturesProps = {
   items: [
     {
       icon: "TrendingUp",
+      iconPosition: "top",
       title: "Fractional CFO Advisory",
       text: "Executive-level financial guidance, cash flow modeling, and capital allocation strategies to accelerate your growth.",
       linkLabel: "Explore CFO Services",
@@ -127,6 +125,7 @@ export const defaultIconFeaturesProps: IconFeaturesProps = {
     },
     {
       icon: "Shield",
+      iconPosition: "top",
       title: "Strategic Tax Mitigation",
       text: "Multi-state entity planning, proactive R&D credits, and structured deductions to preserve maximum wealth.",
       linkLabel: "View Tax Strategy",
@@ -134,6 +133,7 @@ export const defaultIconFeaturesProps: IconFeaturesProps = {
     },
     {
       icon: "Calculator",
+      iconPosition: "top",
       title: "Full-Cycle Accounting",
       text: "GAAP-compliant monthly closes, automated reconciliations, and custom executive dashboards for real-time clarity.",
       linkLabel: "Learn More",
@@ -195,7 +195,7 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
     gridColsClass = "sm:grid-cols-2 lg:grid-cols-4";
   }
 
-  const safeItems = Array.isArray(items) && items.length > 0 ? items : defaultIconFeaturesProps.items;
+  const safeItems = Array.isArray(items) ? items : defaultIconFeaturesProps.items;
   const isCentered = style === "centered";
   const isCard = style === "cards";
 
@@ -222,7 +222,9 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
       <div style={containerStyle} className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {(heading || subheading) && (
-          <div className={`mb-10 sm:mb-14 ${isCentered ? "text-center max-w-3xl mx-auto" : "max-w-2xl"}`}>
+          <div
+            className={`mb-10 sm:mb-14 ${isCentered ? "text-center max-w-3xl mx-auto" : "max-w-2xl"}`}
+          >
             {heading && (
               <h2 className="font-serif-hero text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#142340] leading-[1.2]">
                 {heading}
@@ -244,9 +246,15 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
           }
         >
           {safeItems.map((item, idx) => {
-            const IconComponent = (item.icon && ICON_FEATURES_MAP[item.icon]) ? ICON_FEATURES_MAP[item.icon] : Sparkles;
-            const hasLink = Boolean(item.linkLabel && item.linkHref && isValidButtonUrl(item.linkHref));
+            const IconComponent =
+              item.icon && ICON_FEATURES_MAP[item.icon] ? ICON_FEATURES_MAP[item.icon] : Sparkles;
+            const hasLink = Boolean(
+              item.linkLabel && item.linkHref && isValidButtonUrl(item.linkHref),
+            );
             const itemAnimStyles = buildAnimationStyles(props.animation, idx);
+            const iconPosition = item.iconPosition || "top";
+            const isSideIcon = iconPosition === "left" || iconPosition === "right";
+            const centeredContent = isCentered || iconPosition === "center";
 
             const itemCustomStyle: React.CSSProperties = {
               ...(isSameSize ? { flex: "1 1 0px", width: "100%" } : {}),
@@ -263,14 +271,17 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
                   isCard
                     ? "rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 shadow-sm hover:shadow-md hover:border-blue-300/80 hover:-translate-y-0.5"
                     : "p-2"
-                } ${isCentered ? "text-center flex flex-col items-center" : "text-left flex flex-col items-start"} ${
+                } ${isSideIcon ? "flex flex-row items-start" : `flex flex-col ${centeredContent ? "items-center" : "items-start"}`} ${
                   isEqualHeight ? "h-full justify-between" : ""
                 } ${animClasses}`}
               >
-                {/* Icon Container */}
                 <div
-                  className={`mb-4 flex size-12 items-center justify-center rounded-xl bg-blue-50 text-[#1b4e94] transition-colors group-hover:bg-[#1b4e94] group-hover:text-white shadow-xs ${
-                    isCentered ? "mx-auto" : ""
+                  className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#1b4e94] transition-colors group-hover:bg-[#1b4e94] group-hover:text-white shadow-xs ${
+                    iconPosition === "left"
+                      ? "mr-4"
+                      : iconPosition === "right"
+                        ? "order-2 ml-4"
+                        : `mb-4 ${centeredContent ? "mx-auto" : ""}`
                   }`}
                 >
                   {item.iconImage ? (
@@ -285,44 +296,49 @@ export function IconFeaturesRender(props: IconFeaturesProps) {
                   )}
                 </div>
 
-                {/* Title */}
-                <h3
-                  style={buildTypographyStyles(props.titleTypography)}
-                  className="font-serif-hero text-lg sm:text-xl font-bold text-[#142340] tracking-tight group-hover:text-[#1b4e94] transition-colors"
-                >
-                  {item.title}
-                </h3>
-
-                {/* Text */}
-                <p
-                  style={buildTypographyStyles(props.bodyTypography)}
-                  className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed flex-1"
-                >
-                  {item.text}
-                </p>
-
-                {/* Optional Link */}
-                {hasLink && (
-                  <div className="mt-4 pt-2">
-                    <a
-                      href={item.linkHref!.trim()}
-                      target={
-                        item.linkHref!.startsWith("http://") || item.linkHref!.startsWith("https://")
-                          ? "_blank"
-                          : undefined
-                      }
-                      rel={
-                        item.linkHref!.startsWith("http://") || item.linkHref!.startsWith("https://")
-                          ? "noopener noreferrer"
-                          : undefined
-                      }
-                      className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1b4e94] hover:text-[#0f2142] group-hover:underline underline-offset-4"
+                <div className={`min-w-0 flex-1 ${centeredContent ? "text-center" : "text-left"}`}>
+                  {item.title && (
+                    <h3
+                      style={buildTypographyStyles(props.titleTypography)}
+                      className="font-serif-hero text-lg sm:text-xl font-bold text-[#142340] tracking-tight group-hover:text-[#1b4e94] transition-colors"
                     >
-                      <span>{item.linkLabel}</span>
-                      <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
-                    </a>
-                  </div>
-                )}
+                      {item.title}
+                    </h3>
+                  )}
+
+                  {item.text && (
+                    <p
+                      style={buildTypographyStyles(props.bodyTypography)}
+                      className="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed"
+                    >
+                      {item.text}
+                    </p>
+                  )}
+
+                  {hasLink && (
+                    <div className="mt-4 pt-2">
+                      <a
+                        href={item.linkHref!.trim()}
+                        target={
+                          item.linkHref!.startsWith("http://") ||
+                          item.linkHref!.startsWith("https://")
+                            ? "_blank"
+                            : undefined
+                        }
+                        rel={
+                          item.linkHref!.startsWith("http://") ||
+                          item.linkHref!.startsWith("https://")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
+                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold uppercase tracking-wider text-[#1b4e94] hover:text-[#0f2142] group-hover:underline underline-offset-4"
+                      >
+                        <span>{item.linkLabel}</span>
+                        <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1" />
+                      </a>
+                    </div>
+                  )}
+                </div>
               </div>
             );
           })}

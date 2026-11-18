@@ -526,11 +526,17 @@ export function RedesignedSettingsPanel({
   // Reset open groups when tab or selected block changes: default only 1st group open
   useEffect(() => {
     if (currentTabSubgroups.length > 0) {
-      setOpenGroups([currentTabSubgroups[0].id]);
+      const defaultOpenGroup =
+        blockType === "IconFeatures"
+          ? currentTabSubgroups.find((subgroup) => subgroup.id === "content_items")?.id
+          : undefined;
+      const firstGroup = currentTabSubgroups[0]?.id;
+      const openGroup = defaultOpenGroup || firstGroup;
+      setOpenGroups(openGroup ? [openGroup] : []);
     } else {
       setOpenGroups([]);
     }
-  }, [activeTab, selectedId, editorMode]);
+  }, [activeTab, selectedId, blockType, editorMode]);
 
   const handleTabChange = (newTab: SettingTabId) => {
     setActiveTab(newTab);

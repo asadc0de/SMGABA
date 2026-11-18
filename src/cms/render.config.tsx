@@ -1,6 +1,7 @@
 import type { Config } from "@puckeditor/core";
 import { HeadingRender, type HeadingProps } from "./blocks/Heading";
 import { RichTextRender, type RichTextProps } from "./blocks/RichText";
+import { ListRender, type ListProps } from "./blocks/List";
 import { ButtonRender, type ButtonBlockProps } from "./blocks/Button";
 import { SectionRender, type SectionProps } from "./blocks/Section";
 import { ColumnsRender, type ColumnsProps } from "./blocks/Columns";
@@ -28,6 +29,7 @@ import { CmsRoot, type CmsRootProps } from "./root";
 export type CmsComponentProps = {
   Heading: HeadingProps;
   RichText: RichTextProps;
+  List: ListProps;
   Button: ButtonBlockProps;
   Divider: DividerProps;
   Section: SectionProps;
@@ -74,6 +76,7 @@ export const puckRenderConfig: Config<CmsComponentProps, CmsRootProps> = {
     Columns: { render: ColumnsRender },
     Heading: { render: HeadingRender },
     RichText: { render: RichTextRender },
+    List: { render: ListRender },
     Button: { render: ButtonRender },
     Image: { render: ImageRender },
     ImageGallery: { render: ImageGalleryRender },
