@@ -534,3 +534,50 @@
 .cms-content-flow > [data-cms-width="85%"], .cms-drop-flow > [data-cms-width="85%"] { width: 85% !important; flex: 0 0 85% !important; }
 .cms-content-flow > [data-cms-width="90%"], .cms-drop-flow > [data-cms-width="90%"] { width: 90% !important; flex: 0 0 90% !important; }
 .cms-content-flow > [data-cms-width="auto"], .cms-drop-flow > [data-cms-width="auto"] { width: max-content !important; max-width: 100% !important; flex: 0 0 auto !important; }
+
+/* Blog Article Body Typography & List Formatting */
+.blog-article-body ul,
+.blog-article-body .blog-prose-p ul,
+.blog-article-body div ul,
+.blog-article-body p ul {
+  list-style-type: disc !important;
+  list-style: disc !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  padding-left: 2rem !important;
+}
+
+.blog-article-body ol,
+.blog-article-body .blog-prose-p ol,
+.blog-article-body div ol,
+.blog-article-body p ol {
+  list-style-type: decimal !important;
+  list-style: decimal !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  padding-left: 2rem !important;
+}
+
+.blog-article-body li,
+.blog-article-body .blog-prose-p li,
+.blog-article-body div li,
+.blog-article-body p li {
+  display: list-item !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.75 !important;
+  padding-left: 0.25rem !important;
+}
+
+.blog-article-body ul > li::marker,
+.blog-article-body .blog-prose-p ul > li::marker,
+.blog-article-body div ul > li::marker {
+  color: #1b4e94 !important;
+  font-size: 1.15em !important;
+}
+
+.blog-article-body ol > li::marker,
+.blog-article-body .blog-prose-p ol > li::marker,
+.blog-article-body div ol > li::marker {
+  color: #1b4e94 !important;
+  font-weight: 700 !important;
+}

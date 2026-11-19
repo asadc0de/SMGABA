@@ -222,6 +222,64 @@ export function BlogPostView({
                 .blog-article-body .blog-prose-p p:last-child {
                   margin-bottom: 0;
                 }
+                /* Semantic lists in blog content (HTML or parsed) */
+                .blog-article-body ul,
+                .blog-article-body .blog-prose-p ul,
+                .blog-article-body div ul,
+                .blog-article-body p ul {
+                  list-style-type: disc !important;
+                  list-style: disc !important;
+                  margin-top: 1rem !important;
+                  margin-bottom: 1.5rem !important;
+                  padding-left: 2rem !important;
+                }
+                .blog-article-body ol,
+                .blog-article-body .blog-prose-p ol,
+                .blog-article-body div ol,
+                .blog-article-body p ol {
+                  list-style-type: decimal !important;
+                  list-style: decimal !important;
+                  margin-top: 1rem !important;
+                  margin-bottom: 1.5rem !important;
+                  padding-left: 2rem !important;
+                }
+                .blog-article-body li,
+                .blog-article-body .blog-prose-p li,
+                .blog-article-body div li,
+                .blog-article-body p li {
+                  display: list-item !important;
+                  margin-bottom: 0.5rem !important;
+                  line-height: 1.75 !important;
+                  padding-left: 0.25rem !important;
+                }
+                .blog-article-body ul > li::marker,
+                .blog-article-body .blog-prose-p ul > li::marker,
+                .blog-article-body div ul > li::marker {
+                  color: #1b4e94 !important;
+                  font-size: 1.15em !important;
+                }
+                .blog-article-body ol > li::marker,
+                .blog-article-body .blog-prose-p ol > li::marker,
+                .blog-article-body div ol > li::marker {
+                  color: #1b4e94 !important;
+                  font-weight: 700 !important;
+                }
+                .blog-article-body blockquote,
+                .blog-article-body .blog-prose-p blockquote {
+                  border-left: 4px solid #1b4e94 !important;
+                  background-color: #f8fafc !important;
+                  padding: 1rem 1.5rem !important;
+                  margin: 1.5rem 0 !important;
+                  border-radius: 0 0.75rem 0.75rem 0 !important;
+                  font-style: italic !important;
+                  color: #1e293b !important;
+                }
+                .blog-article-body hr,
+                .blog-article-body .blog-prose-p hr {
+                  border: 0 !important;
+                  border-top: 2px dashed #cbd5e1 !important;
+                  margin: 2.25rem 0 !important;
+                }
               `}</style>
               {post.blocks.map((block, idx) => {
                 if (block.type === "h2") {

@@ -59,9 +59,9 @@ export function linksToHtml(text: string): string {
 }
 
 /**
- * Converts markdown links [label](url), bold **text**, and italic *text* into safe HTML.
+ * Converts markdown links [label](url), bold **text**, and italic *text* into safe inline HTML.
  */
-export function markdownToHtml(text: string): string {
+export function formatInlineMarkdown(text: string): string {
   if (!text || typeof text !== "string") return "";
   let html = linksToHtml(text);
   // Bold **text**
@@ -69,6 +69,69 @@ export function markdownToHtml(text: string): string {
   // Italic *text*
   html = html.replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, '$1<em>$2</em>$3');
   return html;
+}
+
+/**
+ * Converts markdown links, bold, italic, and bulleted/numbered lists into semantic HTML.
+ */
+export function markdownToHtml(text: string): string {
+  if (!text || typeof text !== "string") return "";
+
+  // Check if text has bullet lines (starting with •, *, -, or digits with a dot)
+  const lines = text.split(/\r?\n/);
+  const hasLists = lines.some((l) => /^\s*(?:[•*–-]\s+|\d+\.\s+)/.test(l));
+
+  if (hasLists) {
+    const output: string[] = [];
+    let inUl = false;
+    let inOl = false;
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      const isBullet = /^(?:[•*–-]\s+)(.*)$/.exec(line);
+      const isNumber = /^(\d+)\.\s+(.*)$/.exec(line);
+
+      if (isBullet) {
+        if (inOl) {
+          output.push("</ol>");
+          inOl = false;
+        }
+        if (!inUl) {
+          output.push("<ul>");
+          inUl = true;
+        }
+        output.push(`<li>${formatInlineMarkdown(isBullet[1])}</li>`);
+      } else if (isNumber) {
+        if (inUl) {
+          output.push("</ul>");
+          inUl = false;
+        }
+        if (!inOl) {
+          output.push("<ol>");
+          inOl = true;
+        }
+        output.push(`<li>${formatInlineMarkdown(isNumber[2])}</li>`);
+      } else {
+        if (inUl) {
+          output.push("</ul>");
+          inUl = false;
+        }
+        if (inOl) {
+          output.push("</ol>");
+          inOl = false;
+        }
+        if (line) {
+          output.push(`<p>${formatInlineMarkdown(line)}</p>`);
+        }
+      }
+    }
+    if (inUl) output.push("</ul>");
+    if (inOl) output.push("</ol>");
+
+    return output.join("\n");
+  }
+
+  return formatInlineMarkdown(text);
 }
 
 /**

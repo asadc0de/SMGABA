@@ -622,6 +622,55 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
         headers: headers.length > 0 ? headers : ["Column 1", "Column 2"],
         rows: rows.length > 0 ? rows : [["Data 1", "Data 2"]],
       });
+    } else if (el.querySelector("ul, ol") && !el.classList.contains("article-callout") && !el.classList.contains("article-stat")) {
+      // Wrapper div/p containing list(s) and accompanying paragraphs
+      const childNodes = Array.from(el.childNodes);
+      let currentTextParts: string[] = [];
+      let currentHtmlParts: string[] = [];
+
+      const flushText = () => {
+        const text = currentTextParts.join(" ").trim().replace(/&#39;|&amp;#39;/g, "'");
+        const rawHtml = cleanWordHtml(currentHtmlParts.join("").trim());
+        if (text || rawHtml) {
+          blocks.push({
+            type: "p",
+            text,
+            html: rawHtml || linksToHtml(text),
+          });
+        }
+        currentTextParts = [];
+        currentHtmlParts = [];
+      };
+
+      for (const child of childNodes) {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          const childEl = child as HTMLElement;
+          const childTag = childEl.tagName.toLowerCase();
+          if (childTag === "ul") {
+            flushText();
+            const items = Array.from(childEl.querySelectorAll("li"))
+              .map((li) => li.innerHTML.trim())
+              .filter(Boolean);
+            if (items.length > 0) blocks.push({ type: "ul", items });
+          } else if (childTag === "ol") {
+            flushText();
+            const items = Array.from(childEl.querySelectorAll("li"))
+              .map((li) => li.innerHTML.trim())
+              .filter(Boolean);
+            if (items.length > 0) blocks.push({ type: "ol", items });
+          } else {
+            currentTextParts.push(childEl.textContent?.trim() || "");
+            currentHtmlParts.push(childEl.outerHTML);
+          }
+        } else if (child.nodeType === Node.TEXT_NODE) {
+          const t = child.textContent?.trim();
+          if (t) {
+            currentTextParts.push(t);
+            currentHtmlParts.push(escapeHtml(t));
+          }
+        }
+      }
+      flushText();
     } else {
       // General paragraph or div
       const innerHtml = cleanWordHtml(el.innerHTML.trim());
