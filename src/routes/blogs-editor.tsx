@@ -386,10 +386,18 @@ function blocksToHtml(blocks: ContentBlock[]): string {
     } else if (block.type === "divider") {
       htmlChunks.push(`<hr>`);
     } else if (block.type === "ul") {
-      const lis = (block.items || []).map((item) => `<li>${markdownToHtml(item)}</li>`).join("");
+      const lis = (block.items || []).map((item) => {
+        const cleaned = cleanWordHtml(cleanInnerHtml(item || ""));
+        const formatted = cleaned.includes("<") ? cleaned : markdownToHtml(cleaned);
+        return `<li>${formatted}</li>`;
+      }).join("");
       htmlChunks.push(`<ul>${lis}</ul>`);
     } else if (block.type === "ol") {
-      const lis = (block.items || []).map((item) => `<li>${markdownToHtml(item)}</li>`).join("");
+      const lis = (block.items || []).map((item) => {
+        const cleaned = cleanWordHtml(cleanInnerHtml(item || ""));
+        const formatted = cleaned.includes("<") ? cleaned : markdownToHtml(cleaned);
+        return `<li>${formatted}</li>`;
+      }).join("");
       htmlChunks.push(`<ol>${lis}</ol>`);
     } else if (block.type === "image") {
       htmlChunks.push(`
@@ -521,16 +529,52 @@ function blocksToHtml(blocks: ContentBlock[]): string {
   return htmlChunks.join("");
 }
 
+/**
+ * Strip dev-only attributes (TanStack Router source tracking, React internals)
+ * and Word-pasted artifacts from innerHTML before storing in block data.
+ * Prevents the editor↔preview round-trip from accumulating stale markup.
+ */
+function cleanInnerHtml(raw: string): string {
+  if (!raw) return "";
+  let clean = raw
+    // Strip encoded span and font tags completely
+    .replace(/&lt;\s*\/?\s*(?:span|font)\b[\s\S]*?&gt;/gi, "")
+    // Strip TanStack dev source tracking attributes: data-tsd-source="..."
+    .replace(/\s*data-tsd-source=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    // Strip React internal attributes and all data- attributes
+    .replace(/\s*data-[a-zA-Z0-9_-]+=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    // Strip windowtext spans
+    .replace(/<span\b[^>]*?windowtext[\s\S]*?>([\s\S]*?)<\/span>/gi, "$1")
+    // Strip empty attribute remnants
+    .replace(/<(\w+)\s+>/g, "<$1>");
+
+  // Repeatedly unwrap empty spans or spans without attributes
+  let prev = "";
+  let it = 0;
+  while (prev !== clean && it < 5) {
+    prev = clean;
+    clean = clean.replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1");
+    it++;
+  }
+
+  return clean;
+}
+
 function parseHtmlToBlocks(html: string): ContentBlock[] {
   if (typeof window === "undefined" || !html) {
     return [{ type: "p", text: html || "", html: html || "" }];
   }
 
+  // Pre-clean: strip dev-only attributes before DOM parsing
+  const cleanedHtml = cleanInnerHtml(html);
+
   const parser = new DOMParser();
-  const doc = parser.parseFromString(`<body>${html}</body>`, "text/html");
+  const doc = parser.parseFromString(`<body>${cleanedHtml}</body>`, "text/html");
   // Remove editor-only controls (like Delete buttons and badges) before parsing
   doc.body.querySelectorAll(".component-controls, .delete-component-btn").forEach((el) => el.remove());
   doc.body.querySelectorAll(".active-table-cell").forEach((el) => el.classList.remove("active-table-cell"));
+  // Strip any remaining data-tsd-source attributes from all elements in the parsed DOM
+  doc.body.querySelectorAll("[data-tsd-source]").forEach((el) => el.removeAttribute("data-tsd-source"));
   const nodes = Array.from(doc.body.childNodes);
   const blocks: ContentBlock[] = [];
 
@@ -568,14 +612,14 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
       blocks.push({ type: "divider" });
     } else if (tagName === "ul") {
       const items = Array.from(el.querySelectorAll("li"))
-        .map((li) => li.innerHTML.trim())
+        .map((li) => cleanInnerHtml(li.innerHTML.trim()))
         .filter(Boolean);
       if (items.length > 0) {
         blocks.push({ type: "ul", items });
       }
     } else if (tagName === "ol") {
       const items = Array.from(el.querySelectorAll("li"))
-        .map((li) => li.innerHTML.trim())
+        .map((li) => cleanInnerHtml(li.innerHTML.trim()))
         .filter(Boolean);
       if (items.length > 0) {
         blocks.push({ type: "ol", items });
@@ -649,18 +693,18 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
           if (childTag === "ul") {
             flushText();
             const items = Array.from(childEl.querySelectorAll("li"))
-              .map((li) => li.innerHTML.trim())
+              .map((li) => cleanInnerHtml(li.innerHTML.trim()))
               .filter(Boolean);
             if (items.length > 0) blocks.push({ type: "ul", items });
           } else if (childTag === "ol") {
             flushText();
             const items = Array.from(childEl.querySelectorAll("li"))
-              .map((li) => li.innerHTML.trim())
+              .map((li) => cleanInnerHtml(li.innerHTML.trim()))
               .filter(Boolean);
             if (items.length > 0) blocks.push({ type: "ol", items });
           } else {
             currentTextParts.push(childEl.textContent?.trim() || "");
-            currentHtmlParts.push(childEl.outerHTML);
+            currentHtmlParts.push(cleanInnerHtml(childEl.outerHTML));
           }
         } else if (child.nodeType === Node.TEXT_NODE) {
           const t = child.textContent?.trim();
@@ -673,7 +717,7 @@ function parseHtmlToBlocks(html: string): ContentBlock[] {
       flushText();
     } else {
       // General paragraph or div
-      const innerHtml = cleanWordHtml(el.innerHTML.trim());
+      const innerHtml = cleanInnerHtml(cleanWordHtml(el.innerHTML.trim()));
       const textContent = (el.textContent?.trim() || "").replace(/&#39;|&amp;#39;/g, "'");
       if (textContent || innerHtml) {
         blocks.push({
@@ -2400,7 +2444,7 @@ function BlogsEditorPage() {
           return {
             ...block,
             items: (block.items || []).map((item) => {
-              const cleaned = cleanWordHtml(item).replace(/&#39;|&amp;#39;/g, "'");
+              const cleaned = cleanWordHtml(cleanInnerHtml(item || "")).replace(/&#39;|&amp;#39;/g, "'");
               return cleaned;
             }),
           };

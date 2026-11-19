@@ -31,19 +31,22 @@ import { QuoteForm } from "@/components/site/QuoteForm";
 function sanitizeBlockHtml(html: string): string {
   if (!html) return "";
   let clean = html;
-  // Strip <span style="color: windowtext...">content</span> → content
-  clean = clean.replace(/<span\b[^>]*?color\s*:\s*windowtext[^>]*?>([\s\S]*?)<\/span>/gi, "$1");
-  // Strip <span style="color: windowtext; background-color: rgb(245, 245, 245)...">content</span>
-  clean = clean.replace(/<span\b[^>]*?background-color\s*:\s*rgb\(245,\s*245,\s*245\)[^>]*?>([\s\S]*?)<\/span>/gi, "$1");
-  // Strip any remaining empty-style spans: <span style="">content</span> → content
-  clean = clean.replace(/<span\s+style=["']\s*["']\s*>([\s\S]*?)<\/span>/gi, "$1");
-  // Strip any bare <span> without attributes: <span>content</span> → content
-  clean = clean.replace(/<span\s*>([\s\S]*?)<\/span>/gi, "$1");
-  // Strip encoded/escaped span tags: &lt;span...&gt; and &lt;/span&gt;
-  clean = clean.replace(/&lt;span\b[^&]*?&gt;/gi, "");
-  clean = clean.replace(/&lt;\/span&gt;/gi, "");
-  // Also clean via cleanWordHtml for comprehensive sanitization
+  // 1. Strip ALL leaked/encoded span or font tags (&lt;span...&gt;, &lt;/span&gt;)
+  clean = clean.replace(/&lt;\s*\/?\s*(?:span|font)\b[\s\S]*?&gt;/gi, "");
+  // 2. Strip dev source tracking and data- attributes
+  clean = clean.replace(/\s*data-[a-zA-Z0-9_-]+=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+  // 3. Strip windowtext spans
+  clean = clean.replace(/<span\b[^>]*?windowtext[\s\S]*?>([\s\S]*?)<\/span>/gi, "$1");
+  // 4. Run cleanWordHtml for comprehensive sanitization
   clean = cleanWordHtml(clean);
+  // 5. Repeatedly unwrap empty or bare spans
+  let prev = "";
+  let it = 0;
+  while (prev !== clean && it < 5) {
+    prev = clean;
+    clean = clean.replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1");
+    it++;
+  }
   return clean;
 }
 
@@ -356,9 +359,9 @@ export function BlogPostView({
                         {paragraphs.map((para, pIdx) => {
                           const renderedHtml = markdownToHtml(para);
                           return (
-                            <p
+                            <div
                               key={pIdx}
-                              className="leading-relaxed"
+                              className="blog-prose-p leading-relaxed"
                               dangerouslySetInnerHTML={{ __html: renderedHtml }}
                             />
                           );
@@ -370,9 +373,9 @@ export function BlogPostView({
                   const renderedHtml = rawText ? markdownToHtml(rawText) : null;
                   if (renderedHtml) {
                     return (
-                      <p
+                      <div
                         key={idx}
-                        className="leading-relaxed"
+                        className="blog-prose-p leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: renderedHtml }}
                       />
                     );
@@ -388,8 +391,8 @@ export function BlogPostView({
                   return (
                     <ul key={idx} className="my-6 space-y-3 pl-2">
                       {block.items?.map((item, i) => {
-                        const rawItemHtml = item && item.includes("<") ? item : markdownToHtml(item);
-                        const itemHtml = sanitizeBlockHtml(rawItemHtml);
+                        const sanitized = sanitizeBlockHtml(item || "");
+                        const itemHtml = sanitized.includes("<") ? sanitized : markdownToHtml(sanitized);
                         return (
                           <li key={i} className="flex items-start gap-3 text-foreground/90">
                             <span className="mt-2 size-2 shrink-0 rounded-full bg-blue-600" />
@@ -405,8 +408,8 @@ export function BlogPostView({
                   return (
                     <ol key={idx} className="my-6 space-y-3 list-decimal pl-6 text-foreground/90">
                       {block.items?.map((item, i) => {
-                        const rawItemHtml = item && item.includes("<") ? item : markdownToHtml(item);
-                        const itemHtml = sanitizeBlockHtml(rawItemHtml);
+                        const sanitized = sanitizeBlockHtml(item || "");
+                        const itemHtml = sanitized.includes("<") ? sanitized : markdownToHtml(sanitized);
                         return (
                           <li key={i} className="pl-1" dangerouslySetInnerHTML={{ __html: itemHtml }} />
                         );

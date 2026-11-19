@@ -23,6 +23,7 @@ export function escapeHtml(str: string): string {
 
 /**
  * Escapes HTML characters first, then converts [label](url) into <a> tags.
+ * - If text already contains HTML tags, preserves existing HTML structure instead of destroying it.
  * - Internal URLs (starting with "/") open in the same tab.
  * - External URLs (http/https) get target="_blank" rel="noopener noreferrer".
  * - Rejects javascript:, data:, and vbscript: URLs (renders label as plain text).
@@ -30,12 +31,12 @@ export function escapeHtml(str: string): string {
 export function linksToHtml(text: string): string {
   if (!text || typeof text !== "string") return "";
 
-  // 1. Escape HTML characters first
-  const escaped = escapeHtml(text);
+  // If text already has HTML tags (like <a>, <span>, <strong>), don't escape existing HTML tags
+  const alreadyHasHtml = /<[a-z/][\s\S]*>/i.test(text);
+  const base = alreadyHasHtml ? text : escapeHtml(text);
 
-  // 2. Convert markdown-style [label](url)
-  // Supports URLs with balanced parentheses such as query params or function calls
-  return escaped.replace(/\[([^\]]+)\]\(((?:[^()\s]+|\([^()\s]*\))+)\)/g, (_match, label, url) => {
+  // Convert markdown-style [label](url)
+  return base.replace(/\[([^\]]+)\]\(((?:[^()\s]+|\([^()\s]*\))+)\)/g, (_match, label, url) => {
     const trimmedUrl = (url || "").trim();
     const lowerUrl = trimmedUrl.toLowerCase();
 
@@ -164,21 +165,22 @@ export function htmlToLinks(html: string): string {
 export function cleanWordHtml(html: string): string {
   if (!html || typeof html !== "string") return "";
 
-  return html
+  let result = html
     // 1. Remove comments and Word XML tags
     .replace(/<!--[\s\S]*?-->/g, "")
     .replace(/<\/?o:[^>]*>/gi, "")
     .replace(/<\/?w:[^>]*>/gi, "")
     .replace(/<\/?m:[^>]*>/gi, "")
-    // 2. Remove Word / Google Docs proprietary attributes
-    .replace(/\s+(?:class|paraid|paraeid|data-contrast|data-ccp-[a-z-]+|xml:lang|lang)\s*=\s*["'][^"']*["']/gi, "")
-    // 3. Remove leaked or encoded span tags (&lt;span...&gt; and &lt;/span&gt;)
-    .replace(/&lt;\/?span\b[^&]*?&gt;/gi, "")
-    .replace(/&lt;\/span&gt;/gi, "")
-    // 4. Convert legacy <font color="..."> to modern <span style="color: ...">
+    // 2. Strip ALL leaked or encoded span/font tags (&lt;span...&gt;, &lt;/span&gt;, etc.)
+    .replace(/&lt;\s*\/?\s*(?:span|font)\b[\s\S]*?&gt;/gi, "")
+    // 3. Remove ALL data- attributes (including TanStack data-tsd-source, React data-react*, Word data-contrast, etc.)
+    .replace(/\s+data-[a-zA-Z0-9_-]+=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    // 4. Remove Word / Google Docs proprietary attributes
+    .replace(/\s+(?:class|paraid|paraeid|xml:lang|lang)\s*=\s*["'][^"']*["']/gi, "")
+    // 5. Convert legacy <font color="..."> to modern <span style="color: ...">
     .replace(/<font\b[^>]*?\bcolor=["']([^"']+)["'][^>]*?>([\s\S]*?)<\/font>/gi, '<span style="color: $1;">$2</span>')
     .replace(/<\/?font[^>]*>/gi, "")
-    // 5. Sanitize inline styles: reject Word's "windowtext" and pasted grey highlights
+    // 6. Sanitize inline styles: reject Word's "windowtext" and pasted grey highlights
     .replace(/\s+style\s*=\s*["']([^"']*)["']/gi, (_match, styleVal) => {
       const safeStyles: string[] = [];
       const colorMatch = styleVal.match(/(?:^|;)\s*color\s*:\s*([^;]+)/i);
@@ -202,15 +204,23 @@ export function cleanWordHtml(html: string): string {
       }
       return "";
     })
-    // 6. Remove empty formatting tags
+    // 7. Remove empty formatting tags
     .replace(/<(i|b|em|strong|span)>\s*<\/\1>/gi, "")
-    // 7. Unwrap redundant empty span tags (no attributes or empty style): <span>text</span> -> text
-    .replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1")
-    .replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1")
-    // Unwrap any span containing windowtext or empty content
-    .replace(/<span\b[^>]*?windowtext[^>]*?>([\s\S]*?)<\/span>/gi, "$1")
-    .replace(/<span\b[^>]*?>\s*<\/span>/gi, "")
-    // 8. Decode any accidental entities of apostrophes and line breaks
+    // 8. Unwrap any span containing windowtext or empty content
+    .replace(/<span\b[^>]*?windowtext[\s\S]*?>([\s\S]*?)<\/span>/gi, "$1")
+    .replace(/<span\b[^>]*?>\s*<\/span>/gi, "");
+
+  // 9. Repeatedly unwrap redundant empty span tags (no attributes or empty style): <span>text</span> -> text
+  let prev = "";
+  let iterations = 0;
+  while (prev !== result && iterations < 5) {
+    prev = result;
+    result = result.replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1");
+    iterations++;
+  }
+
+  // 10. Decode any accidental entities of apostrophes and line breaks
+  return result
     .replace(/&amp;#39;/g, "'")
     .replace(/&#39;/g, "'")
     .replace(/&lt;br\s*\/?&gt;/gi, "<br>")
