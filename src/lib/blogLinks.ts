@@ -172,18 +172,29 @@ export function cleanWordHtml(html: string): string {
     .replace(/<\/?m:[^>]*>/gi, "")
     // 2. Remove Word / Google Docs proprietary attributes
     .replace(/\s+(?:class|paraid|paraeid|data-contrast|data-ccp-[a-z-]+|xml:lang|lang)\s*=\s*["'][^"']*["']/gi, "")
-    // 3. Convert legacy <font color="..."> to modern <span style="color: ...">
+    // 3. Remove leaked or encoded span tags (&lt;span...&gt; and &lt;/span&gt;)
+    .replace(/&lt;\/?span\b[^&]*?&gt;/gi, "")
+    .replace(/&lt;\/span&gt;/gi, "")
+    // 4. Convert legacy <font color="..."> to modern <span style="color: ...">
     .replace(/<font\b[^>]*?\bcolor=["']([^"']+)["'][^>]*?>([\s\S]*?)<\/font>/gi, '<span style="color: $1;">$2</span>')
     .replace(/<\/?font[^>]*>/gi, "")
-    // 4. Sanitize inline styles: keep intentional colors & backgrounds, strip bloated Mso/font-family/margin styles
+    // 5. Sanitize inline styles: reject Word's "windowtext" and pasted grey highlights
     .replace(/\s+style\s*=\s*["']([^"']*)["']/gi, (_match, styleVal) => {
       const safeStyles: string[] = [];
       const colorMatch = styleVal.match(/(?:^|;)\s*color\s*:\s*([^;]+)/i);
-      if (colorMatch && !colorMatch[1].toLowerCase().includes("inherit")) {
+      if (
+        colorMatch &&
+        !colorMatch[1].toLowerCase().includes("inherit") &&
+        !colorMatch[1].toLowerCase().includes("windowtext")
+      ) {
         safeStyles.push(`color: ${colorMatch[1].trim()}`);
       }
       const bgMatch = styleVal.match(/(?:^|;)\s*background(?:-color)?\s*:\s*([^;]+)/i);
-      if (bgMatch && !bgMatch[1].toLowerCase().includes("transparent")) {
+      if (
+        bgMatch &&
+        !bgMatch[1].toLowerCase().includes("transparent") &&
+        !bgMatch[1].includes("245, 245, 245")
+      ) {
         safeStyles.push(`background-color: ${bgMatch[1].trim()}`);
       }
       if (safeStyles.length > 0) {
@@ -191,12 +202,15 @@ export function cleanWordHtml(html: string): string {
       }
       return "";
     })
-    // 5. Remove empty formatting tags
+    // 6. Remove empty formatting tags
     .replace(/<(i|b|em|strong|span)>\s*<\/\1>/gi, "")
-    // 6. Unwrap redundant empty span tags (no attributes): <span>text</span> -> text
-    .replace(/<span\s*>([\s\S]*?)<\/span>/gi, "$1")
-    .replace(/<span\s*>([\s\S]*?)<\/span>/gi, "$1")
-    // 6. Decode any accidental entities of apostrophes and line breaks
+    // 7. Unwrap redundant empty span tags (no attributes or empty style): <span>text</span> -> text
+    .replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1")
+    .replace(/<span\s*(?:style=["']\s*["'])?\s*>([\s\S]*?)<\/span>/gi, "$1")
+    // Unwrap any span containing windowtext or empty content
+    .replace(/<span\b[^>]*?windowtext[^>]*?>([\s\S]*?)<\/span>/gi, "$1")
+    .replace(/<span\b[^>]*?>\s*<\/span>/gi, "")
+    // 8. Decode any accidental entities of apostrophes and line breaks
     .replace(/&amp;#39;/g, "'")
     .replace(/&#39;/g, "'")
     .replace(/&lt;br\s*\/?&gt;/gi, "<br>")

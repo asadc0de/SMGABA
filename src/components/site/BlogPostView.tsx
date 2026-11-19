@@ -17,11 +17,35 @@ import {
 } from "lucide-react";
 import type { BlogPost } from "@/data/blogPosts";
 import type { ResourcePost } from "@/data/resourcePosts";
-import { linksToHtml, markdownToHtml } from "@/lib/blogLinks";
+import { linksToHtml, markdownToHtml, cleanWordHtml } from "@/lib/blogLinks";
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { QuoteForm } from "@/components/site/QuoteForm";
+
+/**
+ * Sanitize HTML at render-time: strip Word-pasted windowtext spans,
+ * encoded span tags, and other formatting artifacts that may be
+ * stored in Supabase blog data.
+ */
+function sanitizeBlockHtml(html: string): string {
+  if (!html) return "";
+  let clean = html;
+  // Strip <span style="color: windowtext...">content</span> → content
+  clean = clean.replace(/<span\b[^>]*?color\s*:\s*windowtext[^>]*?>([\s\S]*?)<\/span>/gi, "$1");
+  // Strip <span style="color: windowtext; background-color: rgb(245, 245, 245)...">content</span>
+  clean = clean.replace(/<span\b[^>]*?background-color\s*:\s*rgb\(245,\s*245,\s*245\)[^>]*?>([\s\S]*?)<\/span>/gi, "$1");
+  // Strip any remaining empty-style spans: <span style="">content</span> → content
+  clean = clean.replace(/<span\s+style=["']\s*["']\s*>([\s\S]*?)<\/span>/gi, "$1");
+  // Strip any bare <span> without attributes: <span>content</span> → content
+  clean = clean.replace(/<span\s*>([\s\S]*?)<\/span>/gi, "$1");
+  // Strip encoded/escaped span tags: &lt;span...&gt; and &lt;/span&gt;
+  clean = clean.replace(/&lt;span\b[^&]*?&gt;/gi, "");
+  clean = clean.replace(/&lt;\/span&gt;/gi, "");
+  // Also clean via cleanWordHtml for comprehensive sanitization
+  clean = cleanWordHtml(clean);
+  return clean;
+}
 
 interface BlogPostViewProps {
   post: BlogPost | ResourcePost;
@@ -310,13 +334,14 @@ export function BlogPostView({
                 }
 
                 if (block.type === "p" || (block as any).type === "richtext") {
-                  // 1. If block has rich HTML, render it directly
+                  // 1. If block has rich HTML, sanitize and render it
                   if (block.html && block.html.includes("<")) {
+                    const cleanHtml = sanitizeBlockHtml(block.html);
                     return (
                       <div
                         key={idx}
                         className="blog-prose-p leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: block.html }}
+                        dangerouslySetInnerHTML={{ __html: cleanHtml }}
                       />
                     );
                   }
@@ -363,7 +388,8 @@ export function BlogPostView({
                   return (
                     <ul key={idx} className="my-6 space-y-3 pl-2">
                       {block.items?.map((item, i) => {
-                        const itemHtml = item && item.includes("<") ? item : markdownToHtml(item);
+                        const rawItemHtml = item && item.includes("<") ? item : markdownToHtml(item);
+                        const itemHtml = sanitizeBlockHtml(rawItemHtml);
                         return (
                           <li key={i} className="flex items-start gap-3 text-foreground/90">
                             <span className="mt-2 size-2 shrink-0 rounded-full bg-blue-600" />
@@ -379,7 +405,8 @@ export function BlogPostView({
                   return (
                     <ol key={idx} className="my-6 space-y-3 list-decimal pl-6 text-foreground/90">
                       {block.items?.map((item, i) => {
-                        const itemHtml = item && item.includes("<") ? item : markdownToHtml(item);
+                        const rawItemHtml = item && item.includes("<") ? item : markdownToHtml(item);
+                        const itemHtml = sanitizeBlockHtml(rawItemHtml);
                         return (
                           <li key={i} className="pl-1" dangerouslySetInnerHTML={{ __html: itemHtml }} />
                         );
