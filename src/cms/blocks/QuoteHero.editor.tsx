@@ -6,6 +6,14 @@ export const QuoteHeroBlock: ComponentConfig<QuoteHeroProps> = {
   label: "Quote Hero + Form",
   defaultProps: defaultQuoteHeroProps,
   fields: {
+    isTopHero: {
+      type: "radio",
+      label: "Top Hero Mode (Full Screen Width)",
+      options: [
+        { label: "Yes (Full Width Edge-to-Edge)", value: true },
+        { label: "Boxed Section", value: false },
+      ],
+    },
     eyebrow: { type: "text", label: "Eyebrow" },
     heading: { type: "textarea", label: "Main Heading" },
     description: { type: "textarea", label: "Description" },

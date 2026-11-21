@@ -497,6 +497,25 @@
   box-sizing: border-box;
 }
 
+/* Full-bleed edge-to-edge breakout for Hero, QuoteHero, and fullwidth sections */
+.cms-content-flow > [data-cms-fullwidth="true"],
+.cms-drop-flow > [data-cms-fullwidth="true"],
+.cms-content-flow > .cms-fullwidth-bleed,
+.cms-drop-flow > .cms-fullwidth-bleed,
+[data-cms-fullwidth="true"],
+.cms-fullwidth-bleed {
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-width: 100vw !important;
+  flex: 0 0 100vw !important;
+  position: relative !important;
+  left: 50% !important;
+  right: 50% !important;
+  margin-left: -50vw !important;
+  margin-right: -50vw !important;
+  box-sizing: border-box !important;
+}
+
 .cms-content-flow > [data-cms-display="inline"],
 .cms-content-flow > [data-cms-display="inline-block"],
 .cms-content-flow > [data-cms-display="inline-flex"],
@@ -516,17 +535,35 @@
   flex-shrink: 0 !important;
 }
 
-/* Ensure centered elements in CMS content flow span full width and center horizontally */
+/* Ensure aligned elements in CMS content flow span full width and align horizontally */
 .cms-content-flow > [data-cms-align="center"],
-.cms-drop-flow > [data-cms-align="center"],
-.cms-content-flow > .justify-center,
-.cms-drop-flow > .justify-center {
+.cms-drop-flow > [data-cms-align="center"] {
   display: flex !important;
   width: 100% !important;
   max-width: 100% !important;
   flex: 0 0 100% !important;
   justify-content: center !important;
   text-align: center !important;
+}
+
+.cms-content-flow > [data-cms-align="right"],
+.cms-drop-flow > [data-cms-align="right"] {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+  justify-content: flex-end !important;
+  text-align: right !important;
+}
+
+.cms-content-flow > [data-cms-align="left"],
+.cms-drop-flow > [data-cms-align="left"] {
+  display: flex !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
 }
 
 .cms-content-flow > [data-cms-width="20%"], .cms-drop-flow > [data-cms-width="20%"] { width: 20% !important; flex: 0 0 20% !important; }

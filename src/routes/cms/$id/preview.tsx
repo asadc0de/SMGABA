@@ -213,7 +213,7 @@ function CmsDraftPreviewRoute() {
         const rootProps = page.data?.root?.props as CmsRootProps | undefined;
         const showPageHero = Boolean(rootProps?.showPageHero);
         const firstBlock = page.data?.content?.[0];
-        const hasFirstBlockHero = firstBlock?.type === "Hero";
+        const hasFirstBlockHero = firstBlock?.type === "Hero" || firstBlock?.type === "QuoteHero";
         const hasHero = showPageHero || hasFirstBlockHero;
 
         let preparedData = page.data || { content: [], root: {} };
@@ -234,8 +234,24 @@ function CmsDraftPreviewRoute() {
         }
 
         if (hasFirstBlockHero) {
+          const isQuoteHero = firstBlock?.type === "QuoteHero";
           preparedData = {
             ...preparedData,
+            content: isQuoteHero
+              ? [
+                  {
+                    ...firstBlock,
+                    props: {
+                      ...firstBlock.props,
+                      isTopHero:
+                        firstBlock.props?.isTopHero !== undefined
+                          ? Boolean(firstBlock.props.isTopHero)
+                          : !showPageHero,
+                    },
+                  },
+                  ...(preparedData.content || []).slice(1),
+                ]
+              : preparedData.content,
             root: {
               ...preparedData.root,
               props: {

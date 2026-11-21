@@ -214,17 +214,16 @@ export function HeroRender(props: HeroProps) {
     ...animStyles,
   };
 
-  const fullBleedClass = isEditor
-    ? "relative w-full"
-    : "relative w-screen left-1/2 -translate-x-1/2";
+  const fullBleedClass = "cms-fullwidth-bleed";
 
   return (
     <section
+      data-cms-fullwidth="true"
       style={{
         ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
         ...elementStyle,
       }}
-      className={`${fullBleedClass} overflow-hidden text-white ${styleClasses} ${animClasses}`}
+      className={`w-full ${fullBleedClass} overflow-hidden text-white ${styleClasses} ${animClasses}`}
     >
       {/* Background photographic image or fallback */}
       {validBgImage ? (

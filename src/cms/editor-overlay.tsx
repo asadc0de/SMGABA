@@ -24,6 +24,7 @@ import {
   ListChecks,
   Shapes,
   Box,
+  BadgeCheck,
 } from "lucide-react";
 
 export const BLOCK_LABEL_MAP: Record<string, string> = {
@@ -38,6 +39,7 @@ export const BLOCK_LABEL_MAP: Record<string, string> = {
   ImageGallery: "Photo Gallery",
   Accordion: "FAQ Accordion",
   CTABanner: "Call to Action",
+  PartnerBanner: "Partner Banner",
   Stats: "Stats",
   IconFeatures: "Feature List",
   Steps: "Process Steps",
@@ -65,6 +67,7 @@ export const BLOCK_ICON_MAP: Record<string, React.ComponentType<{ className?: st
   ImageGallery: Images,
   Accordion: ListCollapse,
   CTABanner: Megaphone,
+  PartnerBanner: BadgeCheck,
   Stats: BarChart3,
   IconFeatures: CheckCircle2,
   Steps: ListOrdered,
@@ -150,6 +153,7 @@ export function CustomComponentOverlay({
     componentType === "CardGrid" ||
     componentType === "Accordion" ||
     componentType === "CTABanner" ||
+    componentType === "PartnerBanner" ||
     componentType === "Stats" ||
     componentType === "IconFeatures" ||
     componentType === "Steps" ||
@@ -190,18 +194,16 @@ export function CustomComponentOverlay({
     <div
       data-puck-component-id={componentId}
       data-puck-component-type={componentType}
-      className={`relative w-full h-full pointer-events-none transition-colors duration-150 group/overlay ${
-        isSelected ? "bg-blue-500/[0.04]" : hover ? "bg-blue-400/[0.02]" : ""
-      }`}
+      className={`relative w-full h-full pointer-events-none transition-colors duration-150 group/overlay ${isSelected ? "bg-blue-500/[0.04]" : hover ? "bg-blue-400/[0.02]" : ""
+        }`}
     >
       {/* Type badge on hover or selection */}
       {(hover || isSelected) && (
         <div
-          className={`absolute -top-3.5 left-2 pointer-events-none z-30 flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shadow-md select-none transition-all ${
-            isSelected
-              ? "bg-[#0f2142] text-white ring-1 ring-white/20 shadow-blue-900/20"
-              : "bg-blue-600 text-white shadow-blue-600/20"
-          }`}
+          className={`absolute -top-3.5 left-2 pointer-events-none z-30 flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider shadow-md select-none transition-all ${isSelected
+            ? "bg-[#0f2142] text-white ring-1 ring-white/20 shadow-blue-900/20"
+            : "bg-blue-600 text-white shadow-blue-600/20"
+            }`}
         >
           <Icon className={`size-3 shrink-0 ${isSelected ? "text-emerald-400" : "text-white"}`} />
           <span>{friendlyName}</span>

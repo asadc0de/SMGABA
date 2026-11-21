@@ -184,7 +184,7 @@ function DynamicSlugPage() {
     const rootProps = cmsPage.data?.root?.props as CmsRootProps | undefined;
     const showPageHero = Boolean(rootProps?.showPageHero);
     const firstBlock = cmsPage.data?.content?.[0];
-    const hasFirstBlockHero = firstBlock?.type === "Hero";
+    const hasFirstBlockHero = firstBlock?.type === "Hero" || firstBlock?.type === "QuoteHero";
     const hasHero = showPageHero || hasFirstBlockHero;
 
     // Avoid a double H1: when the automatic hero is on, render a first-block Heading of level h1 as h2
@@ -206,8 +206,24 @@ function DynamicSlugPage() {
     }
 
     if (hasFirstBlockHero) {
+      const isQuoteHero = firstBlock?.type === "QuoteHero";
       preparedData = {
         ...preparedData,
+        content: isQuoteHero
+          ? [
+              {
+                ...firstBlock,
+                props: {
+                  ...firstBlock.props,
+                  isTopHero:
+                    firstBlock.props?.isTopHero !== undefined
+                      ? Boolean(firstBlock.props.isTopHero)
+                      : !showPageHero,
+                },
+              },
+              ...(preparedData.content || []).slice(1),
+            ]
+          : preparedData.content,
         root: {
           ...preparedData.root,
           props: {

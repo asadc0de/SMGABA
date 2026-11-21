@@ -81,8 +81,11 @@ export function CmsRootEditor(props: CmsRootProps) {
     });
   };
 
+  const firstBlockType = appState.data?.content?.[0]?.type;
+  const isFirstBlockHero = firstBlockType === "Hero" || firstBlockType === "QuoteHero";
+
   return (
-    <div className="w-full relative pb-20">
+    <div className="w-full relative pb-20 overflow-x-clip">
       {/* Visual selection and hover outline styles injected directly into canvas iframe */}
       <style>{`
         :root {
@@ -164,9 +167,8 @@ export function CmsRootEditor(props: CmsRootProps) {
           margin-bottom: 0.25rem;
         }
 
-        /* Ensure centered elements in editor take full row and center horizontally */
-        [data-puck-component]:has([data-cms-align="center"]),
-        [data-puck-component]:has(.justify-center) {
+        /* Ensure aligned elements in editor take full row and align horizontally */
+        [data-puck-component]:has([data-cms-align="center"]) {
           width: 100% !important;
           max-width: 100% !important;
           flex: 0 0 100% !important;
@@ -174,11 +176,38 @@ export function CmsRootEditor(props: CmsRootProps) {
           justify-content: center !important;
           text-align: center !important;
         }
-        [data-puck-component]:has([data-cms-align="center"]) > div,
-        [data-puck-component]:has(.justify-center) > div {
+        [data-puck-component]:has([data-cms-align="center"]) > div {
           width: 100% !important;
           display: flex !important;
           justify-content: center !important;
+        }
+
+        [data-puck-component]:has([data-cms-align="right"]) {
+          width: 100% !important;
+          max-width: 100% !important;
+          flex: 0 0 100% !important;
+          display: flex !important;
+          justify-content: flex-end !important;
+          text-align: right !important;
+        }
+        [data-puck-component]:has([data-cms-align="right"]) > div {
+          width: 100% !important;
+          display: flex !important;
+          justify-content: flex-end !important;
+        }
+
+        [data-puck-component]:has([data-cms-align="left"]) {
+          width: 100% !important;
+          max-width: 100% !important;
+          flex: 0 0 100% !important;
+          display: flex !important;
+          justify-content: flex-start !important;
+          text-align: left !important;
+        }
+        [data-puck-component]:has([data-cms-align="left"]) > div {
+          width: 100% !important;
+          display: flex !important;
+          justify-content: flex-start !important;
         }
 
         /* Ensure inner container inside inline puck component respects inline sizing */
@@ -211,9 +240,39 @@ export function CmsRootEditor(props: CmsRootProps) {
         [data-puck-component]:has([data-cms-width="85%"]) { width: 85% !important; flex: 0 0 85% !important; }
         [data-puck-component]:has([data-cms-width="90%"]) { width: 90% !important; flex: 0 0 90% !important; }
         [data-puck-component]:has([data-cms-width="auto"]) { width: max-content !important; max-width: 100% !important; flex: 0 0 auto !important; }
+
+        /* Full-bleed edge-to-edge breakout for Puck components in editor */
+        [data-puck-component]:has([data-cms-fullwidth="true"]),
+        [data-puck-component]:has(.cms-fullwidth-bleed),
+        [data-puck-component][data-cms-fullwidth="true"] {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          min-width: 100vw !important;
+          flex: 0 0 100vw !important;
+          position: relative !important;
+          left: 50% !important;
+          right: 50% !important;
+          margin-left: -50vw !important;
+          margin-right: -50vw !important;
+          box-sizing: border-box !important;
+        }
+
+        [data-puck-component]:has([data-cms-fullwidth="true"]) > div,
+        [data-puck-component]:has(.cms-fullwidth-bleed) > div,
+        [data-puck-component]:has([data-cms-fullwidth="true"]) section,
+        [data-puck-component]:has(.cms-fullwidth-bleed) section {
+          width: 100% !important;
+          max-width: 100% !important;
+          left: auto !important;
+          right: auto !important;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          transform: none !important;
+          box-sizing: border-box !important;
+        }
       `}</style>
 
-      <CmsRoot {...props}>
+      <CmsRoot {...props} _hasFirstBlockHero={props._hasFirstBlockHero || isFirstBlockHero}>
         {props.children}
       </CmsRoot>
 

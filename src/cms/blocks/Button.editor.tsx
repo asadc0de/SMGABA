@@ -37,7 +37,7 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
     url: "/contact",
     variant: "primary",
     size: "md",
-    align: { base: "center" },
+    align: "center",
     marginTop: { base: "none" },
     marginBottom: { base: "none" },
     paddingTop: { base: "none" },

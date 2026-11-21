@@ -13,6 +13,7 @@ import { TestimonialBlock } from "./blocks/Testimonial.editor";
 import { TestimonialSliderBlock } from "./blocks/TestimonialSlider.editor";
 import { AccordionBlock } from "./blocks/Accordion.editor";
 import { CTABannerBlock } from "./blocks/CTABanner.editor";
+import { PartnerBannerBlock } from "./blocks/PartnerBanner.editor";
 import { StatsBlock } from "./blocks/Stats.editor";
 import { IconFeaturesBlock } from "./blocks/IconFeatures.editor";
 import { StepsBlock } from "./blocks/Steps.editor";
@@ -45,6 +46,7 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
         "ImageGallery",
         "Accordion",
         "CTABanner",
+        "PartnerBanner",
         "Stats",
         "IconFeatures",
         "Steps",
@@ -73,6 +75,7 @@ export const puckEditorConfig: Config<CmsComponentProps, CmsRootProps> = {
     ImageGallery: ImageGalleryBlock,
     Accordion: AccordionBlock,
     CTABanner: CTABannerBlock,
+    PartnerBanner: PartnerBannerBlock,
     Stats: StatsBlock,
     IconFeatures: IconFeaturesBlock,
     Steps: StepsBlock,

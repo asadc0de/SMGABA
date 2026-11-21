@@ -197,6 +197,7 @@ export function ImageRender(props: ImageBlockProps) {
     <div
       data-cms-inline={isShrunk ? "true" : undefined}
       data-cms-display={props.advancedLayout?.display || (isShrunk ? "inline" : "block")}
+      data-cms-align={normalizedAlign.base || "left"}
       data-cms-width={widthAttr}
       style={outerWrapperStyle}
       className={`${wrapperDisplayClass} ${advClasses} ${styleClasses} ${animClasses}`}

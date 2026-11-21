@@ -13,6 +13,7 @@ import { TestimonialRender, type TestimonialProps } from "./blocks/Testimonial";
 import { TestimonialSliderRender, type TestimonialSliderProps } from "./blocks/TestimonialSlider";
 import { AccordionRender, type AccordionProps } from "./blocks/Accordion";
 import { CTABannerRender, type CTABannerProps } from "./blocks/CTABanner";
+import { PartnerBannerRender, type PartnerBannerProps } from "./blocks/PartnerBanner";
 import { StatsRender, type StatsProps } from "./blocks/Stats";
 import { IconFeaturesRender, type IconFeaturesProps } from "./blocks/IconFeatures";
 import { StepsRender, type StepsProps } from "./blocks/Steps";
@@ -42,6 +43,7 @@ export type CmsComponentProps = {
   TestimonialSlider: TestimonialSliderProps;
   Accordion: AccordionProps;
   CTABanner: CTABannerProps;
+  PartnerBanner: PartnerBannerProps;
   Stats: StatsProps;
   IconFeatures: IconFeaturesProps;
   Steps: StepsProps;
@@ -64,6 +66,7 @@ export const puckRenderConfig: Config<CmsComponentProps, CmsRootProps> = {
     TestimonialSlider: { render: TestimonialSliderRender },
     Accordion: { render: AccordionRender },
     CTABanner: { render: CTABannerRender },
+    PartnerBanner: { render: PartnerBannerRender },
     Stats: { render: StatsRender },
     IconFeatures: { render: IconFeaturesRender },
     Steps: { render: StepsRender },

@@ -34,7 +34,12 @@ export function SegmentedControl<T extends string | number = string>({
   description,
   fullWidth = false,
 }: SegmentedControlProps<T>) {
-  const currentVal = value !== undefined ? value : defaultValue ?? options[0]?.value;
+  // Support both scalar values and responsive object values like { base: 'center' }
+  const resolvedValue =
+    typeof value === "object" && value !== null && "base" in value
+      ? (value as any).base
+      : value;
+  const currentVal = resolvedValue !== undefined ? resolvedValue : defaultValue ?? options[0]?.value;
 
   // Determine if labels are short enough to fit horizontally on the right
   const isCompactRow = !fullWidth && options.length <= 4 && options.every((o) => o.label.length <= 8);

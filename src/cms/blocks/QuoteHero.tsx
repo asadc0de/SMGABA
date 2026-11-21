@@ -1,6 +1,8 @@
+import * as React from "react";
 import { FormRender, type CmsFormField } from "./Form";
 import { isValidImageUrl } from "./Image";
 import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export interface QuoteHeroProps {
   eyebrow?: string;
@@ -14,6 +16,7 @@ export interface QuoteHeroProps {
   submitLabel?: string;
   successMessage?: string;
   formFields?: CmsFormField[];
+  isTopHero?: boolean;
 }
 
 export const defaultQuoteHeroProps: QuoteHeroProps = {
@@ -29,6 +32,7 @@ export const defaultQuoteHeroProps: QuoteHeroProps = {
   formType: "Bookkeeping Quote Request",
   submitLabel: "Get a Personalized Quote",
   successMessage: "Thank you! Our bookkeeping team will be in touch.",
+  isTopHero: true,
   formFields: [
     { name: "name", label: "Full Name", type: "text", required: true, width: "half" },
     { name: "email", label: "Business Email", type: "email", required: true, width: "half" },
@@ -60,6 +64,23 @@ export const defaultQuoteHeroProps: QuoteHeroProps = {
   ],
 };
 
+function useIsInPuckEditor(): boolean {
+  const [inEditor, setInEditor] = React.useState(false);
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isEditor = Boolean(
+      document.querySelector("[data-puck-drop-zone]") ||
+      document.querySelector("[data-puck-component]") ||
+      document.querySelector(".puck") ||
+      (window.self !== window.top && (window.top?.location?.pathname?.includes("/cms/") || window.top?.location?.pathname?.includes("/internal/pages/")))
+    );
+    if (isEditor) {
+      setInEditor(true);
+    }
+  }, []);
+  return inEditor;
+}
+
 export function QuoteHeroRender(props: QuoteHeroProps) {
   const {
     eyebrow = defaultQuoteHeroProps.eyebrow,
@@ -73,6 +94,7 @@ export function QuoteHeroRender(props: QuoteHeroProps) {
     submitLabel = defaultQuoteHeroProps.submitLabel,
     successMessage = defaultQuoteHeroProps.successMessage,
     formFields = defaultQuoteHeroProps.formFields,
+    isTopHero = true,
   } = props;
   const validBackground = backgroundImage && isValidImageUrl(backgroundImage);
   const trustItems = (trustPoints || "")
@@ -80,10 +102,17 @@ export function QuoteHeroRender(props: QuoteHeroProps) {
     .map((item) => item.trim())
     .filter(Boolean);
 
+  const fullBleedClass = isTopHero ? "cms-fullwidth-bleed" : "w-full";
+
+  const paddingClass = isTopHero
+    ? "px-4 pt-28 pb-12 sm:px-6 sm:pt-36 sm:pb-16 lg:px-8 lg:pt-40 lg:pb-20"
+    : "px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16";
+
   return (
     <section
       id="bookkeeping-quote"
-      className="relative isolate overflow-hidden bg-slate-50"
+      data-cms-fullwidth={isTopHero ? "true" : undefined}
+      className={cn("w-full overflow-hidden bg-slate-50", fullBleedClass)}
       style={
         validBackground
           ? {
@@ -94,7 +123,7 @@ export function QuoteHeroRender(props: QuoteHeroProps) {
           : undefined
       }
     >
-      <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.05fr_.95fr] lg:gap-10 lg:px-8 lg:py-16">
+      <div className={cn("mx-auto grid max-w-7xl items-center gap-8", paddingClass, "lg:grid-cols-[1.05fr_.95fr] lg:gap-10")}>
         <div className="py-2">
           {eyebrow && (
             <p className="mb-4 text-xs font-bold uppercase tracking-[0.12em] text-[#1b4e94] sm:text-sm">
@@ -146,3 +175,5 @@ export function QuoteHeroRender(props: QuoteHeroProps) {
     </section>
   );
 }
+
+export default QuoteHeroRender;
