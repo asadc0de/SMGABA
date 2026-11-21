@@ -1,7 +1,9 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 import {
   type BlockStyleProps,
   buildStyleClasses,
+  renderFormattedText,
 } from "../style";
 import { isValidButtonUrl } from "./Button";
 import { isValidImageUrl } from "./Image";
@@ -53,6 +55,8 @@ import {
 export interface CardGridProps extends BlockStyleProps {
   heading?: string;
   subheading?: string;
+  headingWrap?: "normal" | "nowrap" | "balance";
+  headingMaxWidth?: "normal" | "wide" | "full";
   columns: "2" | "3" | "4";
   gap?: "sm" | "md" | "lg";
   cardStyle?: "elevated" | "bordered" | "navy-card" | "glass";
@@ -212,6 +216,8 @@ export function CardGridRender(props: CardGridProps) {
   const {
     heading,
     subheading,
+    headingWrap = "normal",
+    headingMaxWidth = "normal",
     columns = "3",
     gap = "md",
     cardStyle = "elevated",
@@ -270,15 +276,33 @@ export function CardGridRender(props: CardGridProps) {
     <section className={`w-full ${styleClasses} ${animClasses}`} style={customSectionStyle}>
       {/* Optional Header Section */}
       {(heading || subheading) && (
-        <div className="mb-10 text-center max-w-3xl mx-auto px-4 space-y-3">
+        <div
+          className={cn(
+            "mb-10 text-center mx-auto px-4 space-y-3",
+            headingMaxWidth === "wide" || headingWrap === "nowrap"
+              ? "max-w-5xl"
+              : headingMaxWidth === "full"
+              ? "max-w-7xl"
+              : "max-w-3xl"
+          )}
+        >
           {heading && heading.trim() && (
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-serif-hero text-navy tracking-tight">
-              {heading}
+            <h2
+              className={cn(
+                "font-bold font-serif-hero text-navy tracking-tight",
+                headingWrap === "nowrap"
+                  ? "text-xl sm:text-2xl md:text-3xl lg:text-[2.2rem] lg:whitespace-nowrap"
+                  : headingWrap === "balance"
+                  ? "text-2xl sm:text-3xl lg:text-4xl [text-wrap:balance]"
+                  : "text-2xl sm:text-3xl lg:text-4xl"
+              )}
+            >
+              {renderFormattedText(heading)}
             </h2>
           )}
           {subheading && subheading.trim() && (
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-              {subheading}
+              {renderFormattedText(subheading)}
             </p>
           )}
         </div>

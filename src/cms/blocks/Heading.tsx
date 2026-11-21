@@ -1,9 +1,11 @@
 import * as React from "react";
+import { cn } from "@/lib/utils";
 import {
   type BlockStyleProps,
   type Responsive,
   type Align,
   buildStyleClasses,
+  renderFormattedText,
 } from "../style";
 
 import { buildSizeStyles, type SizeControlConfig } from "../fields/SizeControls";
@@ -15,6 +17,7 @@ import { buildAdvancedLayoutClasses, type AdvancedLayoutConfig } from "../fields
 export interface HeadingProps extends BlockStyleProps {
   text: string;
   level: "h1" | "h2" | "h3";
+  headingWrap?: "normal" | "nowrap" | "balance";
   sizePercent?: number;
   fontSizePx?: number;
   sizeControls?: SizeControlConfig;
@@ -31,6 +34,7 @@ export function HeadingRender(props: HeadingProps) {
   const {
     text,
     level = "h2",
+    headingWrap = "normal",
     sizePercent = 100,
     fontSizePx,
     sizeControls,
@@ -112,6 +116,13 @@ export function HeadingRender(props: HeadingProps) {
   const advClasses = buildAdvancedLayoutClasses(advancedLayout);
   const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max" : "w-full";
 
+  const wrapClass =
+    headingWrap === "nowrap"
+      ? "lg:whitespace-nowrap"
+      : headingWrap === "balance"
+      ? "[text-wrap:balance]"
+      : "";
+
   if (level === "h1") {
     return (
       <div
@@ -121,9 +132,12 @@ export function HeadingRender(props: HeadingProps) {
       >
         <h1
           style={finalStyle}
-          className="font-serif-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-[1.12]"
+          className={cn(
+            "font-serif-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-navy leading-[1.12]",
+            wrapClass
+          )}
         >
-          {text}
+          {renderFormattedText(text)}
         </h1>
       </div>
     );
@@ -138,9 +152,12 @@ export function HeadingRender(props: HeadingProps) {
       >
         <h3
           style={finalStyle}
-          className="font-serif-hero text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight leading-snug"
+          className={cn(
+            "font-serif-hero text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight leading-snug",
+            wrapClass
+          )}
         >
-          {text}
+          {renderFormattedText(text)}
         </h3>
       </div>
     );
@@ -154,9 +171,12 @@ export function HeadingRender(props: HeadingProps) {
     >
       <h2
         style={finalStyle}
-        className="font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-[1.2]"
+        className={cn(
+          "font-serif-hero text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-[1.2]",
+          wrapClass
+        )}
       >
-        {text}
+        {renderFormattedText(text)}
       </h2>
     </div>
   );

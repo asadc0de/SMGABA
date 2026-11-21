@@ -17,9 +17,28 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
   defaultProps: defaultCardGridProps,
   fields: {
     heading: {
-      type: "text",
+      type: "textarea",
       label: "Section Heading (Optional)",
+      description: "Tip: Press Enter or use <br> to break lines. Use 'Heading Line Layout' below to keep on 1 line.",
     },
+    headingWrap: createSegmentedField({
+      label: "Heading Line Layout",
+      options: [
+        { label: "Auto", value: "normal", description: "Standard responsive wrap" },
+        { label: "1 Line (Desktop)", value: "nowrap", description: "Keep entire heading on one single line on desktop" },
+        { label: "Balanced", value: "balance", description: "Evenly balanced line breaks" },
+      ],
+      defaultValue: "normal",
+    }),
+    headingMaxWidth: createSegmentedField({
+      label: "Heading Width Limit",
+      options: [
+        { label: "Standard", value: "normal", description: "Default compact width (48rem)" },
+        { label: "Wide", value: "wide", description: "Wider container for long single-line headings (64rem)" },
+        { label: "Full", value: "full", description: "No width limit" },
+      ],
+      defaultValue: "normal",
+    }),
     subheading: {
       type: "textarea",
       label: "Section Subheading (Optional)",

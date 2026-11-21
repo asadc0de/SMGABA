@@ -177,21 +177,45 @@ export function ButtonRender(props: ButtonBlockProps) {
   const isValid = isValidButtonUrl(url);
   const variantClass = getButtonVariantClasses(variant);
   const sizeClass = getButtonSizeClasses(size);
-  const isInline = advancedLayout?.display !== "block";
+
+  const isCentered =
+    normalizedAlign.base === "center" ||
+    normalizedAlign.md === "center" ||
+    normalizedAlign.lg === "center";
+  const isRight =
+    normalizedAlign.base === "right" ||
+    normalizedAlign.md === "right" ||
+    normalizedAlign.lg === "right";
+
+  // Explicitly block when center or right aligned, or when display is block
+  const isBlock = advancedLayout?.display === "block" || isCentered || isRight;
+  const isInline = !isBlock;
   const advClasses = buildAdvancedLayoutClasses(advancedLayout);
-  const wrapperDisplayClass = isInline ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max" : "flex w-full";
+
+  const wrapperDisplayClass = isInline
+    ? "inline-flex items-center align-middle cms-inline-element w-auto max-w-max"
+    : cn(
+        "flex w-full items-center",
+        isCentered
+          ? "justify-center text-center"
+          : isRight
+            ? "justify-end text-right"
+            : "justify-start text-left"
+      );
 
   if (!isValid) {
     return (
       <div
         data-cms-inline={isInline ? "true" : undefined}
-        data-cms-display={advancedLayout?.display || "inline"}
-        className={cn(wrapperDisplayClass, advClasses, styleClasses, animClasses)}
+        data-cms-display={advancedLayout?.display || (isCentered ? "block" : isInline ? "inline" : "block")}
+        data-cms-align={isCentered ? "center" : isRight ? "right" : "left"}
+        className={cn(wrapperDisplayClass, isCentered && "justify-center text-center", advClasses, styleClasses, animClasses)}
       >
         <span
           style={combinedButtonStyle}
           className={cn(
             "inline-flex items-center justify-center rounded-full opacity-60 cursor-not-allowed select-none transition-all",
+            isCentered && "mx-auto",
             variantClass,
             sizeClass
           )}
@@ -209,8 +233,9 @@ export function ButtonRender(props: ButtonBlockProps) {
   return (
     <div
       data-cms-inline={isInline ? "true" : undefined}
-      data-cms-display={advancedLayout?.display || "inline"}
-      className={cn(wrapperDisplayClass, advClasses, styleClasses, animClasses)}
+      data-cms-display={advancedLayout?.display || (isCentered ? "block" : isInline ? "inline" : "block")}
+      data-cms-align={isCentered ? "center" : isRight ? "right" : "left"}
+      className={cn(wrapperDisplayClass, isCentered && "justify-center text-center", advClasses, styleClasses, animClasses)}
     >
       <a
         href={safeUrl}
@@ -219,6 +244,7 @@ export function ButtonRender(props: ButtonBlockProps) {
         style={combinedButtonStyle}
         className={cn(
           "inline-flex items-center justify-center rounded-full tracking-wide transition-all duration-200 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+          isCentered && "mx-auto",
           variantClass,
           sizeClass
         )}

@@ -8,6 +8,7 @@ import { createSizeControlsField, createToggleField } from "../fields/SizeContro
 import { createTypographyField } from "../fields/TextFormatting";
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
+import { createSegmentedField } from "../fields/SegmentedControl";
 
 export const StepsBlock: ComponentConfig<StepsProps> = {
   label: "Process Steps",
@@ -18,9 +19,28 @@ export const StepsBlock: ComponentConfig<StepsProps> = {
       label: "Eyebrow (Optional)",
     },
     heading: {
-      type: "text",
+      type: "textarea",
       label: "Main Heading (Optional)",
+      description: "Tip: Press Enter or use <br> to break into 2 lines where you want.",
     },
+    headingWrap: createSegmentedField({
+      label: "Heading Line Layout",
+      options: [
+        { label: "Auto", value: "normal", description: "Standard responsive wrap" },
+        { label: "1 Line (Desktop)", value: "nowrap", description: "Keep entire heading on one single line on desktop" },
+        { label: "Balanced", value: "balance", description: "Evenly balanced line breaks" },
+      ],
+      defaultValue: "normal",
+    }),
+    headingMaxWidth: createSegmentedField({
+      label: "Heading Width Limit",
+      options: [
+        { label: "Standard", value: "normal", description: "Default compact width (48rem)" },
+        { label: "Wide", value: "wide", description: "Wider container for long single-line headings (64rem)" },
+        { label: "Full", value: "full", description: "No width limit" },
+      ],
+      defaultValue: "normal",
+    }),
     titleTypography: createTypographyField({
       label: "Step Titles Typography",
     }),

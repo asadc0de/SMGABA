@@ -1,3 +1,5 @@
+import * as React from "react";
+
 export type Device = "base" | "md" | "lg";
 export type Responsive<T> = {
   base?: T;
@@ -7,6 +9,23 @@ export type Responsive<T> = {
 
 export type Space = "none" | "sm" | "md" | "lg" | "xl";
 export type Align = "left" | "center" | "right";
+
+/**
+ * Renders text with support for both \n and <br> / <br/> line breaks
+ */
+export function renderFormattedText(text?: string): React.ReactNode {
+  if (!text) return null;
+  const parts = text.split(/(?:<br\s*\/?>|\n)/gi);
+  if (parts.length === 1) return text;
+  return parts.map((part, i) =>
+    React.createElement(
+      React.Fragment,
+      { key: i },
+      part,
+      i < parts.length - 1 ? React.createElement("br") : null
+    )
+  );
+}
 
 export interface BlockStyleProps {
   paddingTop?: Responsive<Space>;

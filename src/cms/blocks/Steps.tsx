@@ -1,9 +1,11 @@
 import * as React from "react";
+import { cn } from "@/lib/utils";
 import {
   type BlockStyleProps,
   type Responsive,
   type Align,
   buildStyleClasses,
+  renderFormattedText,
 } from "../style";
 
 export interface StepItem {
@@ -31,6 +33,8 @@ export type StepsLayout = "horizontal" | "vertical" | "timeline";
 export interface StepsProps extends BlockStyleProps {
   eyebrow?: string;
   heading?: string;
+  headingWrap?: "normal" | "nowrap" | "balance";
+  headingMaxWidth?: "normal" | "wide" | "full";
   description?: string;
   layout?: StepsLayout;
   titleTypography?: TypographyConfig;
@@ -86,6 +90,8 @@ export function StepsRender(props: StepsProps) {
   const {
     eyebrow = defaultStepsProps.eyebrow,
     heading = defaultStepsProps.heading,
+    headingWrap = "normal",
+    headingMaxWidth = "normal",
     description = defaultStepsProps.description,
     layout = "horizontal",
     backgroundColor,
@@ -163,20 +169,38 @@ export function StepsRender(props: StepsProps) {
       <div style={containerStyle} className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         {(eyebrow || heading || description) && (
-          <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <div
+            className={cn(
+              "text-center mx-auto mb-12 sm:mb-16",
+              headingMaxWidth === "wide" || headingWrap === "nowrap"
+                ? "max-w-5xl"
+                : headingMaxWidth === "full"
+                ? "max-w-7xl"
+                : "max-w-3xl"
+            )}
+          >
             {eyebrow && (
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-3 bg-blue-50 text-[#1b4e94] border border-blue-200/80">
                 {eyebrow}
               </div>
             )}
             {heading && (
-              <h2 className="font-serif-hero text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#142340] leading-[1.2]">
-                {heading}
+              <h2
+                className={cn(
+                  "font-serif-hero font-bold tracking-tight text-[#142340] leading-[1.2]",
+                  headingWrap === "nowrap"
+                    ? "text-xl sm:text-2xl md:text-3xl lg:text-[2.2rem] lg:whitespace-nowrap"
+                    : headingWrap === "balance"
+                    ? "text-2xl sm:text-3xl md:text-4xl [text-wrap:balance]"
+                    : "text-2xl sm:text-3xl md:text-4xl"
+                )}
+              >
+                {renderFormattedText(heading)}
               </h2>
             )}
             {description && (
               <p className="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
-                {description}
+                {renderFormattedText(description)}
               </p>
             )}
           </div>

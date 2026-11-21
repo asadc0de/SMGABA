@@ -37,12 +37,12 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
     url: "/contact",
     variant: "primary",
     size: "md",
-    align: { base: "left" },
+    align: { base: "center" },
     marginTop: { base: "none" },
     marginBottom: { base: "none" },
     paddingTop: { base: "none" },
     paddingBottom: { base: "none" },
-    advancedLayout: { display: "inline" },
+    advancedLayout: { display: "block" },
   },
   fields: {
     label: {
@@ -107,7 +107,16 @@ export const ButtonBlock: ComponentConfig<ButtonBlockProps> = {
       ],
       defaultValue: "md",
     }),
-    align: createResponsiveAlignField("Alignment", "left"),
+    align: createSegmentedField<any>({
+      label: "Button Alignment",
+      options: [
+        { label: "Left", value: "left", description: "Align to left side" },
+        { label: "Center", value: "center", description: "Center horizontally on page" },
+        { label: "Right", value: "right", description: "Align to right side" },
+      ],
+      defaultValue: "center",
+      fullWidth: true,
+    }),
     marginTop: createResponsiveSpaceField("Margin Top", "md"),
     marginBottom: createResponsiveSpaceField("Margin Bottom", "md"),
     paddingTop: createResponsiveSpaceField("Padding Top", "none"),

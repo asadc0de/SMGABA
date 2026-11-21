@@ -1,5 +1,667 @@
 [
   {
+    "id": "392671da-7285-4aa7-a94a-0f7f2947e923",
+    "slug": "how-to-avoid-surprise-tax-bills-as-a-business-owner",
+    "title": "How to Avoid Surprise Tax Bills as a Business Owner",
+    "meta_title": "How to Avoid Surprise Tax Bills as a Business Owner  | SMG ABA",
+    "meta_description": "Few business owners want to reach a tax deadline and discover that they owe significantly more than expected.",
+    "h1": "How to Avoid Surprise Tax Bills as a Business Owner",
+    "date": "Nov 20, 2026",
+    "publish_date": null,
+    "author": "SMG Advisory Team",
+    "category": "Bookkeeping",
+    "image": "https://dtygudbvdgkkrntosfun.supabase.co/storage/v1/object/public/event-images/cms/1795184408283-How_to_Avoid_Surprise_Tax_Bills_as_a_Business_Owner___2_.png",
+    "read_time": "4 min read",
+    "excerpt": "Few business owners want to reach a tax deadline and discover that they owe significantly more than expected.",
+    "status": "published",
+    "archived": false,
+    "blocks": [
+      {
+        "html": "While it may not always be possible to predict a tax liability perfectly, a surprise tax bill can sometimes result when business performance changes, significant transactions occur, or estimated payments are not revisited as financial conditions evolve.",
+        "text": "While it may not always be possible to predict a tax liability perfectly, a surprise tax bill can sometimes result when business performance changes, significant transactions occur, or estimated payments are not revisited as financial conditions evolve.",
+        "type": "p"
+      },
+      {
+        "html": "Most surprise tax bills occur because business results or significant transactions changed while estimated payments and cash-flow plans remained based on older information. The best defense is to keep the books current, update tax projections throughout the year, and revisit estimates whenever the business changes materially.",
+        "text": "Most surprise tax bills occur because business results or significant transactions changed while estimated payments and cash-flow plans remained based on older information. The best defense is to keep the books current, update tax projections throughout the year, and revisit estimates whenever the business changes materially.",
+        "type": "p"
+      },
+      {
+        "html": "Avoiding unexpected tax obligations is therefore not simply about preparing an accurate return. It requires current financial information, ongoing communication with your accounting and tax professionals, and proactive planning throughout the year.",
+        "text": "Avoiding unexpected tax obligations is therefore not simply about preparing an accurate return. It requires current financial information, ongoing communication with your accounting and tax professionals, and proactive planning throughout the year.",
+        "type": "p"
+      },
+      {
+        "html": "Here are practical steps business owners can take to gain better visibility into potential tax obligations before a filing deadline arrives.",
+        "text": "Here are practical steps business owners can take to gain better visibility into potential tax obligations before a filing deadline arrives.",
+        "type": "p"
+      },
+      {
+        "text": "1. Keep Your Bookkeeping Current Throughout the Year",
+        "type": "h2"
+      },
+      {
+        "html": "Effective business tax planning starts with reliable financial information.",
+        "text": "Effective business tax planning starts with reliable financial information.",
+        "type": "p"
+      },
+      {
+        "html": "If your books are several months behind, it becomes difficult to understand how the business is actually performing. Your tax professional may also have limited information for estimating potential tax obligations.",
+        "text": "If your books are several months behind, it becomes difficult to understand how the business is actually performing. Your tax professional may also have limited information for estimating potential tax obligations.",
+        "type": "p"
+      },
+      {
+        "html": "Current bookkeeping can provide visibility into areas such as:",
+        "text": "Current bookkeeping can provide visibility into areas such as:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Year-to-date revenue&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Operating expenses&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Profitability&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Significant asset purchases&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Owner distributions or other relevant transactions&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Changes from prior periods&nbsp;</p>"
+        ]
+      },
+      {
+        "html": "This does not mean accounting records alone determine your final tax liability. Taxable income and financial statement income can differ for several reasons, and the applicable treatment depends on the business and circumstances.",
+        "text": "This does not mean accounting records alone determine your final tax liability. Taxable income and financial statement income can differ for several reasons, and the applicable treatment depends on the business and circumstances.",
+        "type": "p"
+      },
+      {
+        "html": "However, accurate and current records provide a much stronger starting point for meaningful tax planning.",
+        "text": "However, accurate and current records provide a much stronger starting point for meaningful tax planning.",
+        "type": "p"
+      },
+      {
+        "html": "Waiting until tax preparation begins to clean up an entire year's financial activity can make it harder to identify significant changes early enough to evaluate their potential tax implications.",
+        "text": "Waiting until tax preparation begins to clean up an entire year's financial activity can make it harder to identify significant changes early enough to evaluate their potential tax implications.",
+        "type": "p"
+      },
+      {
+        "text": "2. Calculate and Update Estimated Tax Payments",
+        "type": "h2"
+      },
+      {
+        "html": "One common source of an unexpected tax obligation is a mismatch between estimated tax payments and the taxpayer's actual circumstances.",
+        "text": "One common source of an unexpected tax obligation is a mismatch between estimated tax payments and the taxpayer's actual circumstances.",
+        "type": "p"
+      },
+      {
+        "html": "Depending on the business structure and owner's situation, federal and state estimated tax obligations may apply at the business level, individual owner level, or both.",
+        "text": "Depending on the business structure and owner's situation, federal and state estimated tax obligations may apply at the business level, individual owner level, or both.",
+        "type": "p"
+      },
+      {
+        "html": "The applicable rules and payment requirements vary, which is why simply making the same estimated payment every period may not always remain appropriate.",
+        "text": "The applicable rules and payment requirements vary, which is why simply making the same estimated payment every period may not always remain appropriate.",
+        "type": "p"
+      },
+      {
+        "html": "Suppose a business begins the year expecting results similar to the prior year. Estimated payments may initially reflect those assumptions or another applicable calculation method.",
+        "text": "Suppose a business begins the year expecting results similar to the prior year. Estimated payments may initially reflect those assumptions or another applicable calculation method.",
+        "type": "p"
+      },
+      {
+        "html": "Then the business changes.",
+        "text": "Then the business changes.",
+        "type": "p"
+      },
+      {
+        "html": "Revenue increases, profit margins improve, a major contract closes, expenses decrease, or another development materially changes expected taxable income. Estimates based on earlier information may no longer align with the current outlook.",
+        "text": "Revenue increases, profit margins improve, a major contract closes, expenses decrease, or another development materially changes expected taxable income. Estimates based on earlier information may no longer align with the current outlook.",
+        "type": "p"
+      },
+      {
+        "html": "The reverse can also occur if profitability declines or unexpected expenses arise.",
+        "text": "The reverse can also occur if profitability declines or unexpected expenses arise.",
+        "type": "p"
+      },
+      {
+        "html": "<b>Avoiding a Penalty Is Not the Same as Avoiding a Balance Due</b>",
+        "text": "Avoiding a Penalty Is Not the Same as Avoiding a Balance Due",
+        "type": "p"
+      },
+      {
+        "html": "An estimated-payment strategy should consider two different questions: whether payments are sufficient under applicable <a href=\"https://www.irs.gov/taxtopics/tc306\" target=\"_blank\" rel=\"noreferrer noopener\"><span style=\"color: rgb(70, 120, 134)\">underpayment-penalty rules</span></a> and whether they remain consistent with the projected total tax liability.",
+        "text": "An estimated-payment strategy should consider two different questions: whether payments are sufficient under applicable underpayment-penalty rules and whether they remain consistent with the projected total tax liability.",
+        "type": "p"
+      },
+      {
+        "html": "A taxpayer may satisfy an applicable federal safe harbor and still owe a meaningful balance when the return is filed. State requirements may also differ.",
+        "text": "A taxpayer may satisfy an applicable federal safe harbor and still owe a meaningful balance when the return is filed. State requirements may also differ.",
+        "type": "p"
+      },
+      {
+        "html": "For that reason, estimated-tax reviews should not focus solely on whether a penalty may apply. Business owners should also consider the projected overall liability and whether sufficient cash will be available for an expected payment.",
+        "text": "For that reason, estimated-tax reviews should not focus solely on whether a penalty may apply. Business owners should also consider the projected overall liability and whether sufficient cash will be available for an expected payment.",
+        "type": "p"
+      },
+      {
+        "html": "Regularly reviewing estimated payments with a qualified tax professional can help determine whether adjustments should be considered based on updated financial information.",
+        "text": "Regularly reviewing estimated payments with a qualified tax professional can help determine whether adjustments should be considered based on updated financial information.",
+        "type": "p"
+      },
+      {
+        "text": "3. Understand How Pass-Through Income Can Affect an Owner's Taxes",
+        "type": "h2"
+      },
+      {
+        "html": "Pass-through entities can create another source of tax surprises.",
+        "text": "Pass-through entities can create another source of tax surprises.",
+        "type": "p"
+      },
+      {
+        "html": "Owners of partnerships and S corporations may have business income reported on their individual tax returns even when they leave cash in the business or receive distributions that do not equal their taxable share of income.",
+        "text": "Owners of partnerships and S corporations may have business income reported on their individual tax returns even when they leave cash in the business or receive distributions that do not equal their taxable share of income.",
+        "type": "p"
+      },
+      {
+        "html": "That distinction is important.",
+        "text": "That distinction is important.",
+        "type": "p"
+      },
+      {
+        "html": "If business profits increase but the owner's estimated payments are not updated, the result may be a larger individual tax balance without a corresponding increase in personal cash available to make the payment.",
+        "text": "If business profits increase but the owner's estimated payments are not updated, the result may be a larger individual tax balance without a corresponding increase in personal cash available to make the payment.",
+        "type": "p"
+      },
+      {
+        "html": "This is another reason financial visibility matters beyond day-to-day business management.",
+        "text": "This is another reason financial visibility matters beyond day-to-day business management.",
+        "type": "p"
+      },
+      {
+        "html": "Business owners and their advisors should consider changes in business profitability, distributions, and projected taxable income together rather than assuming that the amount of cash distributed to an owner represents the amount subject to tax.",
+        "text": "Business owners and their advisors should consider changes in business profitability, distributions, and projected taxable income together rather than assuming that the amount of cash distributed to an owner represents the amount subject to tax.",
+        "type": "p"
+      },
+      {
+        "html": "The specific treatment depends on entity structure and individual circumstances, so owners should work with their tax professionals to understand how business results may affect their personal tax obligations.",
+        "text": "The specific treatment depends on entity structure and individual circumstances, so owners should work with their tax professionals to understand how business results may affect their personal tax obligations.",
+        "type": "p"
+      },
+      {
+        "text": "4. Do Not Confuse Cash in the Bank With Taxable Income",
+        "type": "h2"
+      },
+      {
+        "html": "A healthy bank balance does not necessarily tell you how much tax you may owe.",
+        "text": "A healthy bank balance does not necessarily tell you how much tax you may owe.",
+        "type": "p"
+      },
+      {
+        "html": "Cash flow, accounting profit, and taxable income are related concepts, but they are not interchangeable.",
+        "text": "Cash flow, accounting profit, and taxable income are related concepts, but they are not interchangeable.",
+        "type": "p"
+      },
+      {
+        "html": "For example, borrowing money can increase cash without creating business revenue. Paying loan principal can reduce cash without generally being treated the same way as a deductible operating expense. Certain expenditures may also be capitalized rather than immediately deducted, depending on applicable rules and circumstances.",
+        "text": "For example, borrowing money can increase cash without creating business revenue. Paying loan principal can reduce cash without generally being treated the same way as a deductible operating expense. Certain expenditures may also be capitalized rather than immediately deducted, depending on applicable rules and circumstances.",
+        "type": "p"
+      },
+      {
+        "html": "Likewise, the timing and recognition of income and deductions can differ based on the taxpayer's accounting method and other tax rules.",
+        "text": "Likewise, the timing and recognition of income and deductions can differ based on the taxpayer's accounting method and other tax rules.",
+        "type": "p"
+      },
+      {
+        "html": "This is why looking at a bank account alone is not enough to estimate a potential tax obligation.",
+        "text": "This is why looking at a bank account alone is not enough to estimate a potential tax obligation.",
+        "type": "p"
+      },
+      {
+        "html": "Business owners should review appropriate financial reports and work with their accounting and tax professionals to understand the differences among cash position, financial statement profitability, and estimated taxable income.",
+        "text": "Business owners should review appropriate financial reports and work with their accounting and tax professionals to understand the differences among cash position, financial statement profitability, and estimated taxable income.",
+        "type": "p"
+      },
+      {
+        "text": "5. Tell Your Tax Advisor About Significant Business Changes",
+        "type": "h2"
+      },
+      {
+        "html": "Your tax advisor cannot plan around information they do not have.",
+        "text": "Your tax advisor cannot plan around information they do not have.",
+        "type": "p"
+      },
+      {
+        "html": "Significant business decisions can potentially affect taxes, which is why communication should happen before or during the decision-making process when possible.",
+        "text": "Significant business decisions can potentially affect taxes, which is why communication should happen before or during the decision-making process when possible.",
+        "type": "p"
+      },
+      {
+        "html": "Depending on your circumstances, contact your accounting or tax professional when considering or experiencing events such as:",
+        "text": "Depending on your circumstances, contact your accounting or tax professional when considering or experiencing events such as:",
+        "type": "p"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Purchasing or selling significant business assets&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Buying or selling real estate&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Major equipment purchases&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Changes in business ownership&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Changes in entity structure&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Expansion into another state or jurisdiction</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Significant changes in profitability&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Major owner distributions&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Acquisitions or sales&nbsp;</p>"
+        ]
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<p>Other unusual or material transactions&nbsp;</p>"
+        ]
+      },
+      {
+        "html": "Not every event will create the same tax consequences, and some may have little or no effect depending on the circumstances.",
+        "text": "Not every event will create the same tax consequences, and some may have little or no effect depending on the circumstances.",
+        "type": "p"
+      },
+      {
+        "html": "The point is not that every business decision requires a tax strategy. It is that significant transactions should be evaluated early enough for the appropriate professionals to identify potential accounting and tax considerations.",
+        "text": "The point is not that every business decision requires a tax strategy. It is that significant transactions should be evaluated early enough for the appropriate professionals to identify potential accounting and tax considerations.",
+        "type": "p"
+      },
+      {
+        "text": "6. Review Profitability, Not Just Revenue Growth",
+        "type": "h2"
+      },
+      {
+        "html": "A growing business can create a larger tax obligation even when the owner does not feel significantly more cash-rich.",
+        "text": "A growing business can create a larger tax obligation even when the owner does not feel significantly more cash-rich.",
+        "type": "p"
+      },
+      {
+        "html": "That is why revenue alone should not be the primary measure used when thinking about potential taxes.",
+        "text": "That is why revenue alone should not be the primary measure used when thinking about potential taxes.",
+        "type": "p"
+      },
+      {
+        "html": "Suppose revenue increases substantially while expenses remain relatively stable. Profitability may increase faster than the owner expected, potentially affecting taxable income after applicable tax adjustments.",
+        "text": "Suppose revenue increases substantially while expenses remain relatively stable. Profitability may increase faster than the owner expected, potentially affecting taxable income after applicable tax adjustments.",
+        "type": "p"
+      },
+      {
+        "html": "The opposite can also occur. A company may experience strong revenue growth while rising payroll, materials, occupancy costs, or other expenses limit profitability.",
+        "text": "The opposite can also occur. A company may experience strong revenue growth while rising payroll, materials, occupancy costs, or other expenses limit profitability.",
+        "type": "p"
+      },
+      {
+        "html": "For tax planning purposes, financial statement profitability is a starting point rather than a final tax calculation.<br><br>A qualified tax professional must consider applicable adjustments and tax rules when estimating taxable income.",
+        "text": "For tax planning purposes, financial statement profitability is a starting point rather than a final tax calculation.A qualified tax professional must consider applicable adjustments and tax rules when estimating taxable income.",
+        "type": "p"
+      },
+      {
+        "html": "Reviewing profitability alongside revenue can therefore provide a better understanding of how business performance is changing and whether previous tax projections may need to be updated.",
+        "text": "Reviewing profitability alongside revenue can therefore provide a better understanding of how business performance is changing and whether previous tax projections may need to be updated.",
+        "type": "p"
+      },
+      {
+        "text": "7. Include Taxes in Your Cash Flow Planning",
+        "type": "h2"
+      },
+      {
+        "html": "Knowing that a tax payment may be coming is only part of the equation.",
+        "text": "Knowing that a tax payment may be coming is only part of the equation.",
+        "type": "p"
+      },
+      {
+        "html": "The business or owner also needs to be financially prepared to make the payment when required.",
+        "text": "The business or owner also needs to be financially prepared to make the payment when required.",
+        "type": "p"
+      },
+      {
+        "html": "This is where cash flow planning becomes important.",
+        "text": "This is where cash flow planning becomes important.",
+        "type": "p"
+      },
+      {
+        "html": "If an updated tax projection indicates a potential upcoming obligation, management can incorporate that information when evaluating future cash requirements.",
+        "text": "If an updated tax projection indicates a potential upcoming obligation, management can incorporate that information when evaluating future cash requirements.",
+        "type": "p"
+      },
+      {
+        "html": "This does not necessarily mean leaving the entire projected amount untouched in a bank account. The appropriate approach depends on the business's circumstances and financial needs.",
+        "text": "This does not necessarily mean leaving the entire projected amount untouched in a bank account. The appropriate approach depends on the business's circumstances and financial needs.",
+        "type": "p"
+      },
+      {
+        "html": "But taxes should not be invisible within cash planning.",
+        "text": "But taxes should not be invisible within cash planning.",
+        "type": "p"
+      },
+      {
+        "html": "Upcoming estimated payments, filing-related payments, payroll taxes, sales taxes, and other applicable obligations can place pressure on cash when they are not anticipated.",
+        "text": "Upcoming estimated payments, filing-related payments, payroll taxes, sales taxes, and other applicable obligations can place pressure on cash when they are not anticipated.",
+        "type": "p"
+      },
+      {
+        "html": "Maintaining visibility into upcoming obligations can help management make more informed decisions about spending, distributions, financing, and other cash needs.",
+        "text": "Maintaining visibility into upcoming obligations can help management make more informed decisions about spending, distributions, financing, and other cash needs.",
+        "type": "p"
+      },
+      {
+        "text": "8. Plan Before the Return Is Prepared",
+        "type": "h2"
+      },
+      {
+        "html": "Tax preparation and tax planning serve different purposes.",
+        "text": "Tax preparation and tax planning serve different purposes.",
+        "type": "p"
+      },
+      {
+        "html": "Tax preparation primarily focuses on accurately reporting activity that has already occurred and meeting applicable filing requirements.",
+        "text": "Tax preparation primarily focuses on accurately reporting activity that has already occurred and meeting applicable filing requirements.",
+        "type": "p"
+      },
+      {
+        "html": "Tax planning is forward-looking. It allows business owners and their advisors to consider potential implications of financial changes and significant transactions before the relevant period has ended or, ideally, before certain decisions are finalized.",
+        "text": "Tax planning is forward-looking. It allows business owners and their advisors to consider potential implications of financial changes and significant transactions before the relevant period has ended or, ideally, before certain decisions are finalized.",
+        "type": "p"
+      },
+      {
+        "html": "By the time a return is being prepared, many of those decisions have already been made.",
+        "text": "By the time a return is being prepared, many of those decisions have already been made.",
+        "type": "p"
+      },
+      {
+        "html": "For calendar-year businesses, a more focused review often occurs before year-end. However, significant transactions may require attention much earlier, and fiscal-year businesses should plan relative to their own tax year.",
+        "text": "For calendar-year businesses, a more focused review often occurs before year-end. However, significant transactions may require attention much earlier, and fiscal-year businesses should plan relative to their own tax year.",
+        "type": "p"
+      },
+      {
+        "html": "<b>An Extension Does Not Generally Extend the Time to Pay</b>",
+        "text": "An Extension Does Not Generally Extend the Time to Pay",
+        "type": "p"
+      },
+      {
+        "html": "Business owners should also understand the difference between extending a return and extending a tax payment.",
+        "text": "Business owners should also understand the difference between extending a return and extending a tax payment.",
+        "type": "p"
+      },
+      {
+        "html": "Filing an extension generally provides additional time to submit the return—not additional time to pay the estimated tax due.",
+        "text": "Filing an extension generally provides additional time to submit the return—not additional time to pay the estimated tax due.",
+        "type": "p"
+      },
+      {
+        "html": "Business owners should therefore obtain an appropriate tax projection before the original payment deadline, even when an extension is planned.",
+        "text": "Business owners should therefore obtain an appropriate tax projection before the original payment deadline, even when an extension is planned.",
+        "type": "p"
+      },
+      {
+        "html": "This helps reduce the risk of treating the extended filing date as though it were also the payment deadline.",
+        "text": "This helps reduce the risk of treating the extended filing date as though it were also the payment deadline.",
+        "type": "p"
+      },
+      {
+        "html": "For more detail about year-end timing and planning considerations, see our guide to year-end tax planning.",
+        "text": "For more detail about year-end timing and planning considerations, see our guide to year-end tax planning.",
+        "type": "p"
+      },
+      {
+        "text": "A Practical Tax Review Schedule for Business Owners",
+        "type": "h2"
+      },
+      {
+        "rows": [
+          [
+            "After each monthly close",
+            "Current revenue, expenses, profitability, and distributions"
+          ],
+          [
+            "After each quarter",
+            "Projected taxable income, payments already made, and remaining estimates"
+          ],
+          [
+            "After a material event",
+            "Asset sales, ownership changes, new states, major contracts, or unusual transactions"
+          ],
+          [
+            "Before year-end",
+            "Updated projection, planning opportunities, and cash requirements"
+          ],
+          [
+            "Before the original filing deadline",
+            "Expected payment, even if an extension will be filed"
+          ]
+        ],
+        "type": "table",
+        "headers": [
+          "Review Point",
+          "What to Evaluate"
+        ],
+        "hasHeader": true
+      },
+      {
+        "html": "<p>The appropriate frequency may vary depending on the business.</p>",
+        "text": "The appropriate frequency may vary depending on the business.",
+        "type": "p"
+      },
+      {
+        "html": "<p>A company experiencing rapid growth, significant transactions, or substantial changes in profitability may benefit from more frequent reviews than a business with relatively stable operations.</p>",
+        "text": "A company experiencing rapid growth, significant transactions, or substantial changes in profitability may benefit from more frequent reviews than a business with relatively stable operations.",
+        "type": "p"
+      },
+      {
+        "html": "<p>The important point is to update the tax conversation when the underlying financial circumstances change.</p>",
+        "text": "The important point is to update the tax conversation when the underlying financial circumstances change.",
+        "type": "p"
+      },
+      {
+        "html": "<h2 style=\"color: rgb(15, 71, 97)\">The Goal Is Better Tax Visibility, Not a Perfect Prediction</h2>",
+        "text": "The Goal Is Better Tax Visibility, Not a Perfect Prediction",
+        "type": "p"
+      },
+      {
+        "html": "<p>Even with careful planning, a business owner may not be able to predict a final tax bill down to the dollar months in advance.</p>",
+        "text": "Even with careful planning, a business owner may not be able to predict a final tax bill down to the dollar months in advance.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Financial performance can change. Transactions may occur unexpectedly. Tax laws and individual circumstances can affect the final calculation.</p>",
+        "text": "Financial performance can change. Transactions may occur unexpectedly. Tax laws and individual circumstances can affect the final calculation.",
+        "type": "p"
+      },
+      {
+        "html": "<p>The objective of proactive planning is therefore not to promise that there will never be a tax surprise.</p>",
+        "text": "The objective of proactive planning is therefore not to promise that there will never be a tax surprise.",
+        "type": "p"
+      },
+      {
+        "html": "<p>It is to reduce uncertainty and provide more time to prepare.</p>",
+        "text": "It is to reduce uncertainty and provide more time to prepare.",
+        "type": "p"
+      },
+      {
+        "html": "<p>SMG Insight: A useful tax-estimate review starts with three questions: Are the books current? What has changed since the previous projection? Do estimated payments and available cash still match the updated outlook? Connecting those three areas helps turn tax planning into an ongoing financial process instead of a filing-season reaction.</p>",
+        "text": "SMG Insight: A useful tax-estimate review starts with three questions: Are the books current? What has changed since the previous projection? Do estimated payments and available cash still match the updated outlook? Connecting those three areas helps turn tax planning into an ongoing financial process instead of a filing-season reaction.",
+        "type": "p"
+      },
+      {
+        "html": "<p>For growing businesses, this connection between accounting and tax planning can become particularly important because financial conditions may change substantially from one period to the next.</p>",
+        "text": "For growing businesses, this connection between accounting and tax planning can become particularly important because financial conditions may change substantially from one period to the next.",
+        "type": "p"
+      },
+      {
+        "text": "Frequently Asked Questions About Surprise Tax Bills",
+        "type": "h2"
+      },
+      {
+        "text": "Why do I owe taxes even though I made estimated payments?",
+        "type": "h3"
+      },
+      {
+        "html": "<p>Making estimated payments does not necessarily mean the payments will equal your final tax liability. Business profitability, transactions, deductions, credits, and other circumstances may change throughout the year.</p>",
+        "text": "Making estimated payments does not necessarily mean the payments will equal your final tax liability. Business profitability, transactions, deductions, credits, and other circumstances may change throughout the year.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Additionally, satisfying applicable underpayment-penalty requirements does not necessarily mean there will be no balance due when the return is filed.</p>",
+        "text": "Additionally, satisfying applicable underpayment-penalty requirements does not necessarily mean there will be no balance due when the return is filed.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Reviewing estimates as financial circumstances change can provide better visibility into the potential final obligation.</p>",
+        "text": "Reviewing estimates as financial circumstances change can provide better visibility into the potential final obligation.",
+        "type": "p"
+      },
+      {
+        "text": "Can I owe tax on business income I did not withdraw?",
+        "type": "h3"
+      },
+      {
+        "html": "<p>Potentially, yes.</p>",
+        "text": "Potentially, yes.",
+        "type": "p"
+      },
+      {
+        "html": "<p>For certain pass-through entities, including partnerships and S corporations, owners may have income reported on their individual returns even when that amount was not distributed to them in cash.</p>",
+        "text": "For certain pass-through entities, including partnerships and S corporations, owners may have income reported on their individual returns even when that amount was not distributed to them in cash.",
+        "type": "p"
+      },
+      {
+        "html": "<p>The amount of taxable income and the amount of cash distributed are not necessarily the same. Owners should work with their tax professionals to understand how the business's results affect their individual tax position.</p>",
+        "text": "The amount of taxable income and the amount of cash distributed are not necessarily the same. Owners should work with their tax professionals to understand how the business's results affect their individual tax position.",
+        "type": "p"
+      },
+      {
+        "text": "Does filing an extension give me more time to pay?",
+        "type": "h3"
+      },
+      {
+        "html": "<p>Generally, an extension provides additional time to file a tax return, not additional time to pay tax that is due.</p>",
+        "text": "Generally, an extension provides additional time to file a tax return, not additional time to pay tax that is due.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Business owners planning to file an extension should still work with their tax professionals to estimate the amount due by the applicable original payment deadline.</p>",
+        "text": "Business owners planning to file an extension should still work with their tax professionals to estimate the amount due by the applicable original payment deadline.",
+        "type": "p"
+      },
+      {
+        "text": "Conclusion",
+        "type": "h2"
+      },
+      {
+        "html": "<p>Avoiding a surprise tax bill starts long before a tax return is prepared.</p>",
+        "text": "Avoiding a surprise tax bill starts long before a tax return is prepared.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Current bookkeeping provides reliable financial information. Updated tax projections help determine whether earlier estimates still align with business performance. Communication allows significant transactions to be evaluated sooner, while cash flow planning helps prepare for potential payments.</p>",
+        "text": "Current bookkeeping provides reliable financial information. Updated tax projections help determine whether earlier estimates still align with business performance. Communication allows significant transactions to be evaluated sooner, while cash flow planning helps prepare for potential payments.",
+        "type": "p"
+      },
+      {
+        "html": "<p>None of these steps guarantees a particular tax outcome.</p>",
+        "text": "None of these steps guarantees a particular tax outcome.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Together, however, they can provide greater visibility into potential obligations and more time to prepare.</p>",
+        "text": "Together, however, they can provide greater visibility into potential obligations and more time to prepare.",
+        "type": "p"
+      },
+      {
+        "html": "<p>Taxes should be part of the financial conversation throughout the year—not something a business discovers only when the return is completed.</p>",
+        "text": "Taxes should be part of the financial conversation throughout the year—not something a business discovers only when the return is completed.",
+        "type": "p"
+      },
+      {
+        "text": "Gain Greater Visibility Into Your Business Tax Obligations",
+        "type": "h2"
+      },
+      {
+        "html": "<p>At SMG ABA, we connect current accounting records with year-round tax planning so business owners can understand potential obligations earlier and prepare their cash flow accordingly.</p>",
+        "text": "At SMG ABA, we connect current accounting records with year-round tax planning so business owners can understand potential obligations earlier and prepare their cash flow accordingly.",
+        "type": "p"
+      },
+      {
+        "html": "<p>If your estimated payments have not been reviewed since your business results changed, explore our Tax Services or <a href=\"https://www.smgaba.com/contact\">schedule a complimentary consultation</a> with SMG ABA to discuss your accounting and tax needs.</p>",
+        "text": "If your estimated payments have not been reviewed since your business results changed, explore our Tax Services or schedule a complimentary consultation with SMG ABA to discuss your accounting and tax needs.",
+        "type": "p"
+      },
+      {
+        "html": "<p><i>This article provides general educational information and is not individualized accounting, tax, legal, or financial advice. Tax obligations, estimated payment requirements, and planning considerations vary based on entity structure, jurisdiction, transactions, applicable law, and individual circumstances. Consult the appropriate qualified professionals regarding your specific situation.</i></p>",
+        "text": "This article provides general educational information and is not individualized accounting, tax, legal, or financial advice. Tax obligations, estimated payment requirements, and planning considerations vary based on entity structure, jurisdiction, transactions, applicable law, and individual circumstances. Consult the appropriate qualified professionals regarding your specific situation.",
+        "type": "p"
+      }
+    ],
+    "created_at": "2026-11-20T14:16:26.367117+00:00",
+    "updated_at": "2026-11-20T17:12:12.746+00:00"
+  },
+  {
     "id": "dc887e22-2220-4925-aa26-89d02d6c097e",
     "slug": "when-should-you-hire-a-fractional-cfo-5-signs-your-business-is-ready",
     "title": "When Should You Hire a Fractional CFO? 5 Signs Your Business Is Ready",

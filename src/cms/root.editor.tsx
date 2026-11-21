@@ -164,6 +164,23 @@ export function CmsRootEditor(props: CmsRootProps) {
           margin-bottom: 0.25rem;
         }
 
+        /* Ensure centered elements in editor take full row and center horizontally */
+        [data-puck-component]:has([data-cms-align="center"]),
+        [data-puck-component]:has(.justify-center) {
+          width: 100% !important;
+          max-width: 100% !important;
+          flex: 0 0 100% !important;
+          display: flex !important;
+          justify-content: center !important;
+          text-align: center !important;
+        }
+        [data-puck-component]:has([data-cms-align="center"]) > div,
+        [data-puck-component]:has(.justify-center) > div {
+          width: 100% !important;
+          display: flex !important;
+          justify-content: center !important;
+        }
+
         /* Ensure inner container inside inline puck component respects inline sizing */
         [data-puck-component]:has([data-cms-display="inline"]) > div,
         [data-puck-component]:has([data-cms-display="inline-block"]) > div,

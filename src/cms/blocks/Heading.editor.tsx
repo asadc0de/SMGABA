@@ -28,9 +28,19 @@ export const HeadingBlock: ComponentConfig<HeadingProps> = {
   },
   fields: {
     text: {
-      type: "text",
+      type: "textarea",
       label: "Heading Text",
+      description: "Tip: Press Enter or use <br> to split into multiple lines where you want.",
     },
+    headingWrap: createSegmentedField({
+      label: "Line Wrapping Mode",
+      options: [
+        { label: "Auto", value: "normal", description: "Standard responsive text wrap" },
+        { label: "1 Line (Desktop)", value: "nowrap", description: "Keep entire heading on one single line on desktop" },
+        { label: "Balanced", value: "balance", description: "Balanced line lengths" },
+      ],
+      defaultValue: "normal",
+    }),
     advancedLayout: createAdvancedLayoutField({ defaultDisplay: "block" }),
     level: createSegmentedField({
       label: "Heading Level",
