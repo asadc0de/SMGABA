@@ -68,6 +68,9 @@ export interface CardGridProps extends BlockStyleProps {
   animation?: AnimationConfig;
   sameItemSize?: boolean;
   equalHeightCards?: boolean;
+  background?: "white" | "none" | "light" | "navy" | "image" | "color";
+  backgroundImage?: string;
+  overlayStrength?: "none" | "subtle" | "medium" | "heavy" | "navy";
   backgroundColor?: string;
   textColor?: string;
   borderColor?: string;
@@ -225,6 +228,9 @@ export function CardGridRender(props: CardGridProps) {
     sizeControls,
     sameItemSize,
     equalHeightCards,
+    background = "none",
+    backgroundImage,
+    overlayStrength = "medium",
     styleControls,
     animation,
     backgroundColor,
@@ -242,8 +248,61 @@ export function CardGridRender(props: CardGridProps) {
   const gapClass = getGapClass(gap);
   const styleTokens = getCardStyleClasses(cardStyle);
 
+  const isDarkBackground =
+    background === "navy" ||
+    (background === "image" && overlayStrength !== "none") ||
+    backgroundColor === "#0f2142" ||
+    backgroundColor === "#142340";
+
+  const validBgImage =
+    (background === "image" || Boolean(backgroundImage)) &&
+    backgroundImage &&
+    isValidImageUrl(backgroundImage)
+      ? backgroundImage
+      : undefined;
+
+  let bgClass = "";
+  if (backgroundColor && backgroundColor !== "transparent") {
+    bgClass = "";
+  } else if (validBgImage) {
+    bgClass = "bg-[#0f2142] text-white";
+  } else if (background === "white") {
+    bgClass = "bg-white border border-slate-200/80 shadow-xs";
+  } else if (background === "light") {
+    bgClass = "bg-[#f8fafc] border border-slate-200/70";
+  } else if (background === "navy") {
+    bgClass = "bg-[#0f2142] text-white";
+  } else {
+    bgClass = "bg-transparent";
+  }
+
+  const overlayClass =
+    overlayStrength === "subtle"
+      ? "bg-black/30"
+      : overlayStrength === "heavy"
+      ? "bg-black/75"
+      : overlayStrength === "navy"
+      ? "bg-[#0f2142]/85"
+      : overlayStrength === "none"
+      ? ""
+      : "bg-black/50";
+
+  const contrastClasses = isDarkBackground
+    ? "[&_h2]:text-white [&_p]:text-slate-200"
+    : "";
+
+  const hasPadding = Boolean(validBgImage || (background && background !== "none") || (backgroundColor && backgroundColor !== "transparent"));
+
   const customSectionStyle: React.CSSProperties = {
     ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(validBgImage
+      ? {
+          backgroundImage: `url("${validBgImage}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }
+      : {}),
     ...(textColor ? { color: textColor } : {}),
     ...(borderColor ? { borderColor, borderWidth: 1 } : {}),
   };
@@ -273,8 +332,23 @@ export function CardGridRender(props: CardGridProps) {
   const isSameSize = Boolean(sameItemSize || sizeControls?.sameItemSize);
 
   return (
-    <section className={`w-full ${styleClasses} ${animClasses}`} style={customSectionStyle}>
-      {/* Optional Header Section */}
+    <section
+      className={cn(
+        "w-full relative overflow-hidden transition-all",
+        hasPadding && "py-10 px-6 sm:px-8 rounded-3xl",
+        bgClass,
+        contrastClasses,
+        styleClasses,
+        animClasses
+      )}
+      style={customSectionStyle}
+    >
+      {/* Background Image Overlay */}
+      {validBgImage && overlayClass && (
+        <div className={cn("absolute inset-0 pointer-events-none z-0", overlayClass)} aria-hidden="true" />
+      )}
+      <div className="relative z-10 w-full">
+        {/* Optional Header Section */}
       {(heading || subheading) && (
         <div
           className={cn(
@@ -400,6 +474,7 @@ export function CardGridRender(props: CardGridProps) {
             </div>
           );
         })}
+      </div>
       </div>
     </section>
   );

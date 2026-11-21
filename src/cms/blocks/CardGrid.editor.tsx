@@ -86,8 +86,35 @@ export const CardGridBlock: ComponentConfig<CardGridProps> = {
       defaultValue: "elevated",
       fullWidth: true,
     }),
+    background: createSegmentedField({
+      label: "Section Background",
+      options: [
+        { label: "None", value: "none", description: "Transparent" },
+        { label: "White", value: "white", description: "White container card" },
+        { label: "Image", value: "image", description: "Background photo" },
+        { label: "Slate", value: "light", description: "Light slate (#f8fafc)" },
+        { label: "Navy", value: "navy", description: "Navy brand (#0f2142)" },
+      ],
+      defaultValue: "none",
+    }),
+    backgroundImage: createImagePickerField({
+      label: "Background Image (when Image selected)",
+      placeholder: "Select image or enter URL",
+    }),
+    overlayStrength: createSegmentedField({
+      label: "Image Dark Overlay",
+      options: [
+        { label: "None", value: "none" },
+        { label: "Subtle", value: "subtle" },
+        { label: "Medium", value: "medium" },
+        { label: "Heavy", value: "heavy" },
+        { label: "Navy", value: "navy" },
+      ],
+      defaultValue: "medium",
+    }),
     backgroundColor: createColorPickerField({
-      label: "Section Background Color",
+      label: "Custom Background Color",
+      description: "Pick color swatch or enter hex color",
     }),
     textColor: createColorPickerField({
       label: "Text Color",

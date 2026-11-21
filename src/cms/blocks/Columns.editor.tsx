@@ -12,6 +12,7 @@ import { createSizeControlsField, createToggleField } from "../fields/SizeContro
 import { createStyleControlsField } from "../fields/StyleControls";
 import { createAnimationControlsField } from "../fields/AnimationControls";
 import { createSegmentedField } from "../fields/SegmentedControl";
+import { createImagePickerField } from "../fields/ImagePicker";
 
 export const ColumnsBlock: ComponentConfig<ColumnsProps> = {
   label: "Columns Layout",
@@ -19,6 +20,8 @@ export const ColumnsBlock: ComponentConfig<ColumnsProps> = {
     columns: "2",
     gap: "md",
     sizePercent: 100,
+    background: "white",
+    overlayStrength: "medium",
     align: { base: "left" },
     marginTop: { base: "md" },
     marginBottom: { base: "md" },
@@ -44,8 +47,36 @@ export const ColumnsBlock: ComponentConfig<ColumnsProps> = {
       ],
       defaultValue: "md",
     }),
+    background: createSegmentedField({
+      label: "Background Style",
+      options: [
+        { label: "White", value: "white", description: "Clean white card (Default)" },
+        { label: "Image", value: "image", description: "Background photo" },
+        { label: "Color", value: "color", description: "Custom background color" },
+        { label: "Slate", value: "light", description: "Light slate (#f8fafc)" },
+        { label: "Navy", value: "navy", description: "Navy brand (#0f2142)" },
+        { label: "None", value: "none", description: "Transparent" },
+      ],
+      defaultValue: "white",
+    }),
+    backgroundImage: createImagePickerField({
+      label: "Background Image (when Image selected)",
+      placeholder: "Select image or enter URL",
+    }),
+    overlayStrength: createSegmentedField({
+      label: "Image Dark Overlay",
+      options: [
+        { label: "None", value: "none" },
+        { label: "Subtle", value: "subtle" },
+        { label: "Medium", value: "medium" },
+        { label: "Heavy", value: "heavy" },
+        { label: "Navy", value: "navy" },
+      ],
+      defaultValue: "medium",
+    }),
     backgroundColor: createColorPickerField({
-      label: "Container Background Color",
+      label: "Custom Background Color",
+      description: "Pick color swatch or enter hex color",
     }),
     textColor: createColorPickerField({
       label: "Text Color",

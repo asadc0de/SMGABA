@@ -1,5 +1,7 @@
 import * as React from "react";
 import { DropZone } from "@puckeditor/core";
+import { cn } from "@/lib/utils";
+import { isValidImageUrl } from "@/lib/cms-urls";
 import {
   type BlockStyleProps,
   type Responsive,
@@ -14,6 +16,8 @@ import { buildAnimationClasses, buildAnimationStyles, type AnimationConfig } fro
 
 export type ColumnCount = "2" | "3";
 export type ColumnGap = "sm" | "md" | "lg" | "xl";
+export type ColumnBackground = "white" | "none" | "light" | "navy" | "image" | "color";
+export type ColumnOverlayStrength = "none" | "subtle" | "medium" | "heavy" | "navy";
 
 export interface ColumnsProps extends BlockStyleProps {
   columns?: ColumnCount;
@@ -23,6 +27,9 @@ export interface ColumnsProps extends BlockStyleProps {
   styleControls?: StyleControlConfig;
   animation?: AnimationConfig;
   equalHeightCards?: boolean;
+  background?: ColumnBackground;
+  backgroundImage?: string;
+  overlayStrength?: ColumnOverlayStrength;
   backgroundColor?: string;
   textColor?: string;
   borderColor?: string;
@@ -52,6 +59,9 @@ export function ColumnsRender(props: ColumnsProps) {
     styleControls,
     animation,
     equalHeightCards,
+    background = "white",
+    backgroundImage,
+    overlayStrength = "medium",
     backgroundColor,
     textColor,
     borderColor,
@@ -100,12 +110,68 @@ export function ColumnsRender(props: ColumnsProps) {
   const animationClasses = buildAnimationClasses(animation);
   const animationStyles = buildAnimationStyles(animation);
 
+  const isDarkBackground =
+    background === "navy" ||
+    (background === "image" && overlayStrength !== "none") ||
+    backgroundColor === "#0f2142" ||
+    backgroundColor === "#142340" ||
+    backgroundColor === "#0b172e";
+
+  const validBgImage =
+    (background === "image" || Boolean(backgroundImage)) &&
+    backgroundImage &&
+    isValidImageUrl(backgroundImage)
+      ? backgroundImage
+      : undefined;
+
+  let bgClass = "";
+  if (backgroundColor && backgroundColor !== "transparent") {
+    bgClass = "";
+  } else if (validBgImage) {
+    bgClass = "bg-[#0f2142] text-white";
+  } else if (background === "white") {
+    bgClass = "bg-white border border-slate-200/80 shadow-xs";
+  } else if (background === "light") {
+    bgClass = "bg-[#f8fafc] border border-slate-200/70";
+  } else if (background === "navy") {
+    bgClass = "bg-[#0f2142] text-white shadow-md";
+  } else if (background === "none" || background === "transparent") {
+    bgClass = "bg-transparent";
+  } else {
+    bgClass = "bg-white border border-slate-200/80 shadow-xs";
+  }
+
+  const overlayClass =
+    overlayStrength === "subtle"
+      ? "bg-black/30"
+      : overlayStrength === "heavy"
+      ? "bg-black/75"
+      : overlayStrength === "navy"
+      ? "bg-[#0f2142]/85"
+      : overlayStrength === "none"
+      ? ""
+      : "bg-black/50";
+
+  const contrastClasses = isDarkBackground
+    ? "[&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_h4]:text-white [&_p]:text-slate-200 [&_a]:text-blue-300 [&_li]:text-slate-200 [&_strong]:text-white"
+    : "";
+
+  const hasPadding = background !== "none" && background !== "transparent";
+
   const customStyle: React.CSSProperties = {
     ...computedSizeStyles,
     ...(computedSizeStyles.maxWidth && computedSizeStyles.maxWidth !== "100%"
       ? { margin: normalizedAlign.base === "center" ? "0 auto" : undefined }
       : {}),
-    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor, padding: "1.5rem", borderRadius: "1.25rem" } : {}),
+    ...(backgroundColor && backgroundColor !== "transparent" ? { backgroundColor } : {}),
+    ...(validBgImage
+      ? {
+          backgroundImage: `url("${validBgImage}")`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }
+      : {}),
     ...(textColor ? { color: textColor } : {}),
     ...(borderColor ? { borderColor, borderWidth: 1, borderStyle: "solid" } : {}),
     ...elementCustomStyles,
@@ -116,35 +182,49 @@ export function ColumnsRender(props: ColumnsProps) {
     <div className={`w-full ${styleClasses}`}>
       <div
         style={customStyle}
-        className={
-          `${animationClasses} ` +
-          (layoutClasses ||
-            `w-full ${gridLayoutClass} ${gapClass} ${isEqualHeight ? "items-stretch" : "items-start"}`)
-        }
+        className={cn(
+          "w-full relative overflow-hidden transition-all",
+          hasPadding ? "p-6 sm:p-8 md:p-10 rounded-2xl" : "rounded-xl",
+          bgClass,
+          contrastClasses,
+          animationClasses
+        )}
       >
-        <div className={`w-full flex flex-col min-w-0 ${isEqualHeight ? "h-full justify-between" : ""}`}>
-          <DropZone
-            zone="column-1"
-            minEmptyHeight={60}
-            className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
-          />
-        </div>
-        <div className={`w-full flex flex-col min-w-0 ${isEqualHeight ? "h-full justify-between" : ""}`}>
-          <DropZone
-            zone="column-2"
-            minEmptyHeight={60}
-            className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
-          />
-        </div>
-        {isThreeColumns && (
+        {/* Background Image Overlay */}
+        {validBgImage && overlayClass && (
+          <div className={cn("absolute inset-0 pointer-events-none z-0", overlayClass)} aria-hidden="true" />
+        )}
+
+        <div
+          className={cn(
+            "relative z-10 w-full",
+            layoutClasses || `${gridLayoutClass} ${gapClass} ${isEqualHeight ? "items-stretch" : "items-start"}`
+          )}
+        >
           <div className={`w-full flex flex-col min-w-0 ${isEqualHeight ? "h-full justify-between" : ""}`}>
             <DropZone
-              zone="column-3"
+              zone="column-1"
               minEmptyHeight={60}
               className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
             />
           </div>
-        )}
+          <div className={`w-full flex flex-col min-w-0 ${isEqualHeight ? "h-full justify-between" : ""}`}>
+            <DropZone
+              zone="column-2"
+              minEmptyHeight={60}
+              className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
+            />
+          </div>
+          {isThreeColumns && (
+            <div className={`w-full flex flex-col min-w-0 ${isEqualHeight ? "h-full justify-between" : ""}`}>
+              <DropZone
+                zone="column-3"
+                minEmptyHeight={60}
+                className="w-full cms-drop-flow flex flex-row flex-wrap items-center gap-3 min-h-[60px] h-full"
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
